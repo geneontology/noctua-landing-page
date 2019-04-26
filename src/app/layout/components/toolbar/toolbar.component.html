@@ -1,0 +1,46 @@
+<mat-toolbar class="" fxLayout="row" fxLayoutAlign="start center">
+  <mat-progress-bar *ngIf="showLoadingBar" class="loading-bar" color="accent" mode="indeterminate"></mat-progress-bar>
+  <div class="noc-br" fxLayout="row" fxLayoutAlign="start center" fxFlex="220px">
+    <div fxLayoutAlign="center center" class="noc-logo-filler">
+      <button mat-icon-button target="_blank">
+        <img src="assets/images/logos/go-logo.png">
+      </button>
+    </div>
+    <div class="noc-logo" fxLayout="row" fxLayoutAlign="start">
+      <a class="noc-main-logo" target="_blank">
+        Noctua
+      </a>
+      <a class="noc-sub-logo" target="_blank">
+        Search
+      </a>
+    </div>
+  </div>
+  <span fxFlex=""></span>
+  <!--
+  <div class="toolbar-separator"></div>
+  <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100">
+    <noctua-search-bar fxFlex="60" class="noc-search-bar" (input)="search($event)"></noctua-search-bar>
+  </div>
+  <div class="toolbar-separator"></div>
+-->
+  <div *ngIf="!noctuaUserService.user" fxLayout="row" fxLayoutAlign="end center" fxFlex="250px">
+    <a mat-button href="{{loginUrl}}">
+      Login
+    </a>
+  </div>
+  <div *ngIf="noctuaUserService.user" fxLayout="row" fxLayoutAlign="end center" fxFlex="250px">
+    <button mat-button class="noc-name-button">
+      <div fxLayout="row" fxLayoutAlign="start center">
+        <div class="noc-info" fxLayout="column" fxLayoutAlign="start start">
+          <div class="noc-name text-truncate">
+            {{noctuaUserService.user.name}}
+          </div>
+          <div class="noc-group-name text-truncate">
+            {{noctuaUserService.user?.group?.label}}
+          </div>
+        </div>
+        <b class="caret"></b>
+      </div>
+    </button>
+  </div>
+</mat-toolbar>

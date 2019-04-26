@@ -1,0 +1,122 @@
+@import "src/@noctua/scss/noctua";
+@import "src/@noctua.common/scss/noctua.common";
+
+:host {
+  position: relative;
+  display: flex;
+  flex: 0 0 auto;
+  z-index: 4;
+
+  border-bottom: 2px solid $noc-primary-color;
+
+  .noc-logo-filler {
+    @include deep-width(50px);
+
+    img {
+      height: 30px;
+    }
+  }
+
+  .mat-toolbar {
+    padding: 0 10px 0 5px;
+    background-color: #FFF;
+    @include deep-height(50px);
+    color: inherit;
+    position: relative;
+
+    mat-toolbar-row {
+      @include deep-height(40px);
+
+      &.noc-subtoolbar {
+        button {
+          margin-right: 8px;
+          height: 30px;
+          line-height: 30px;
+          padding-left: 8px;
+          padding-right: 8px;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .loading-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+    }
+  }
+
+
+  //  @include mat-elevation(1);
+  .noc-title {
+    padding: 0 10px;
+    @include deep-height(50px);
+    //min-height: 35px;
+    background-color: #FFF;
+    font-size: 12px;
+
+    .noc-action-button {
+      padding: 0 5px;
+      @include deep-height(20px);
+      line-height: 20px;
+      font-size: 10px;
+      border-radius: 10px;
+    }
+
+    strong {
+      font-size: 12px;
+    }
+  }
+
+
+  .noc-name-button {
+    @include deep-height(40px);
+    text-align: left;
+    text-transform: initial;
+    line-height: 20px;
+    font-size: 12px;
+
+    .noc-info {
+      margin-right: 5px;
+      max-width: 150px;
+      overflow: hidden;
+
+      .noc-group-name {
+        font-size: 10px;
+        color: #888;
+      }
+    }
+  }
+
+  .noc-logo {
+
+    //@include deep-width(130px);
+    .noc-main-logo,
+    .noc-sub-logo {
+      cursor: pointer;
+      font-size: 20px;
+      text-decoration: none !important;
+      text-align: left;
+      color: #555;
+
+      &:hover {
+        color: #000000;
+      }
+    }
+
+    .noc-main-logo {
+      margin-right: 4px;
+      font-weight: bold;
+    }
+
+    .noc-sub-logo {
+      font-weight: normal;
+    }
+  }
+
+  .noc-search-bar {
+    max-width: 600px !important;
+  }
+}
