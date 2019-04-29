@@ -1,6 +1,20 @@
 @import "src/@noctua/scss/noctua";
 @import "src/@noctua.common/scss/noctua.common";
 
+.noc-left-drawer {
+  @include deep-height(100%);
+  @include deep-width(400px);
+  background-color: #FFF;
+  border-right: #BBB solid 1px;
+  @include mat-elevation(4);
+}
+
+.noc-right-drawer {
+  @include deep-height(100%);
+  background-color: #FFF;
+  border-left: #BBB solid 1px;
+}
+
 :host {
   padding: 0px;
   width: 100%;
@@ -10,6 +24,41 @@
     width: 100%;
   }
 
+  .noc-drawer-container {
+    background-color: #E2E2E2;
+  }
+
+  .noc-summary-bar {
+    margin-bottom: 4px;
+    padding: 0 10px;
+    @include deep-height(40px);
+    //min-height: 35px;
+    background-color: #FFF;
+    font-size: 16px;
+
+    @include mat-elevation(2);
+
+    .noc-summary-bar-section {
+      .noc-section-label {
+        font-size: 12px;
+        color: #555;
+      }
+    }
+
+    .noc-title {
+      strong {
+        font-size: 12px;
+      }
+    }
+
+    .noc-title-truncate {
+      max-width: 200px
+    }
+
+    mat-icon-button {
+      border-radius: 0 !important;
+    }
+  }
 
   .noc-sidemenu {
     padding: 0;
@@ -110,18 +159,5 @@
       display:flex;
       justify-content:flex-end;
      } */
-  }
-
-  .noc-left-drawer {
-    @include deep-height(100%);
-    background-color: #FFF;
-    border-right: #BBB solid 1px;
-    @include mat-elevation(4);
-  }
-
-  .noc-right-drawer {
-    @include deep-height(100%);
-    background-color: #FFF;
-    border-left: #BBB solid 1px;
   }
 }

@@ -3,13 +3,36 @@
 $noc-primary-color: #039be5;
 $noc-secondary-color: #995014;
 
+@mixin deep-width($number) {
+  width: $number;
+  min-width: $number;
+  max-width: $number;
+}
+
+@mixin deep-height($number) {
+  height: $number;
+  min-height: $number;
+  max-height: $number;
+}
+
+@mixin noc-icon-size($number) {
+  font-size: $number;
+  @include deep-width($number);
+  @include deep-height($number);
+}
+
 .navbar {
   display: none !important;
   visibility: hidden
 }
 
+.noc-search-database-dialog {
+  @include deep-height(90%);
+  @include deep-width(1100px);
+}
+
 textarea {
-  resize: none;
+  resize: none !important;
   overflow: hidden;
 }
 
@@ -29,23 +52,7 @@ textarea {
   }
 }
 
-@mixin deep-width($number) {
-  width: $number;
-  min-width: $number;
-  max-width: $number;
-}
 
-@mixin deep-height($number) {
-  height: $number;
-  min-height: $number;
-  max-height: $number;
-}
-
-@mixin noc-icon-size($number) {
-  font-size: $number;
-  @include deep-width($number);
-  @include deep-height($number);
-}
 
 .noc-dropdown-menu {
   .noc-menu-heading {

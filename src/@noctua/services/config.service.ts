@@ -7,9 +7,7 @@ import * as _ from 'lodash';
 
 export const NOCTUA_CONFIG = new InjectionToken('noctuaCustomConfig');
 
-@Injectable({
-    providedIn: 'root'
-})
+@Injectable()
 export class NoctuaConfigService {
     private _configSubject: BehaviorSubject<any>;
     private readonly _defaultConfig: any;

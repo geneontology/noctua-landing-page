@@ -39,6 +39,19 @@ export class ReviewService {
     }
   }
 
+
+  createNewMenu = [{
+    label: 'Noctua Form',
+    url: environment.workbenchUrl + 'noctua-form?',
+  }, {
+    label: 'Graph Editor',
+    url: environment.noctuaUrl + "/editor/graph/"
+  }, {
+    label: 'Macromolecular Complex Creator',
+    url: environment.workbenchUrl + 'mmcc?'
+  }]
+
+
   selectedLeftPanel;
 
   onCuratorsChanged: BehaviorSubject<any>;

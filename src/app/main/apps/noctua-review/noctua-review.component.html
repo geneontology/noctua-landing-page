@@ -17,15 +17,40 @@
     </button>
   </div>
   <mat-drawer-container class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start" autosize>
-    <mat-drawer #leftDrawer class="noc-left-drawer" fxFlex="200px" mode="side" position="start">
+    <mat-drawer #leftDrawer class="noc-left-drawer" mode="side" position="start">
       <div [ngSwitch]="reviewService.selectedLeftPanel.id" class="h-100-p">
         <noc-review-search *ngSwitchCase="reviewService.leftPanel.search.id"></noc-review-search>
         <noc-review-curators *ngSwitchCase="reviewService.leftPanel.curator.id"></noc-review-curators>
         <noc-review-species *ngSwitchCase="reviewService.leftPanel.species.id"></noc-review-species>
       </div>
     </mat-drawer>
-    <mat-drawer-content class="noc-section-body w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start">
-      <noc-cams-table></noc-cams-table>
+    <mat-drawer-content class="noc-section-body w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start stretch">
+      <div class="noc-summary-bar" fxLayout="row" fxLayoutAlign="start center">
+        <div class="noc-summary-bar-section mr-12">
+          <button mat-flat-button [matMenuTriggerFor]="createNewMenu" color="primary"
+            class="noc-rounded-button noc-sm mr-8">
+            <mat-icon class=""> add </mat-icon> Create New
+          </button>
+          <mat-menu #createNewMenu="matMenu">
+            <a *ngFor="let workbench of reviewService.createNewMenu" href="{{workbench.url}}" target="_blank"
+              mat-menu-item>
+              {{workbench.label}}
+            </a>
+          </mat-menu>
+        </div>
+        <div class="noc-summary-bar-section noc-br">
+          <span class="noc-section-label">
+            2433
+          </span>
+          <button mat-stroked-button (click)="openCamForm()" color="primary"
+            class="noc-rounded-button noc-sm ml-4 mr-8">
+            All Models
+          </button>
+        </div>
+      </div>
+      <div class="w-100-p" noctuaPerfectScrollbar>
+        <noc-cams-table></noc-cams-table>
+      </div>
     </mat-drawer-content>
     <mat-drawer #rightDrawer class="noc-right-drawer" noctuaPerfectScrollbar mode="side" position="end">
 

@@ -2,15 +2,19 @@ $noc-toolbar-color: #e7ecf4;
 $noc-primary-color: #3b5998;
 $noc-primary-color-accent: #8b9dc3;
 $noc-primary-color-lighter: #dfe3ee;
-$noc-primary-color-light: rgba(#798fb8, 0.4);
+$noc-primary-color-light: rgba(#798fb8, 0.3);
 $noc-primary-color-text: #4a8bfc;
 
+$primary: map-get($theme, primary);
+$accent: map-get($theme, accent);
 
-.input-headline {
-  font-size: 28px;
-  line-height: 32px;
-  font-weight: 400;
+
+.noc-disabled {
+  pointer-events: none;
+  opacity: 0.3;
 }
+
+
 
 .mat-row {
   &:hover {
@@ -77,6 +81,53 @@ $noc-primary-color-text: #4a8bfc;
   }
 }
 
+.noc-dialog {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+
+  .noc-dialog-header {
+    padding: 0 12px;
+    background-color: rgba(map-get($primary, default), 0.7);
+    color: #EEE;
+    @include deep-height(40px);
+    @include mat-elevation(2);
+    z-index: 1000;
+
+    .noc-dialog-header-title {
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    button {
+      color: #EEE;
+      border: #CCC solid 1px;
+
+      &:hover {
+        color: #CCC;
+        border: #BBB solid 1px;
+      }
+    }
+  }
+
+  .noc-dialog-body {
+    min-height: calc(100% - 90px);
+  }
+
+  .noc-dialog-footer {
+    padding: 0 12px;
+    @include deep-height(50px);
+    background-color: #F2F2F2;
+
+    border-top: 1px solid #CCC;
+    z-index: 1000;
+
+    -webkit-box-shadow: 2px -5px 2px 0px rgba(0, 0, 0, 0.26);
+    -moz-box-shadow: 2px -5px 2px 0px rgba(0, 0, 0, 0.26);
+    box-shadow: 2px -5px 2px 0px rgba(0, 0, 0, 0.26);
+  }
+}
+
 .noc-form-section {
   width: 100%;
   background-color: #FFF;
@@ -99,7 +150,7 @@ $noc-primary-color-text: #4a8bfc;
   }
 
   .noc-section-body {
-    padding: 5px 5px;
+    padding: 4px 8px;
   }
 }
 
