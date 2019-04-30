@@ -34,6 +34,18 @@ import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 })
 export class CamsTableComponent implements OnInit, OnDestroy {
 
+  displayedColumns = [
+    'title'];
+
+  @ViewChild(MatPaginator)
+  paginator: MatPaginator;
+
+  @ViewChild('filter')
+  filter: ElementRef;
+
+  @ViewChild(MatSort)
+  sort: MatSort;
+
   searchCriteria: any = {};
   searchFormData: any = []
   searchForm: FormGroup;
@@ -67,11 +79,12 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
     this.sparqlService.onCamsChanged
       .pipe(takeUntil(this.unsubscribeAll))
       .subscribe(cams => {
         this.cams = cams;
+
+        console.log(cams)
         this.summary.detail = this.sparqlService.searchSummary;
         this.loadCams();
       });

@@ -15,6 +15,9 @@
       "node_modules/@types"
     ],
     "paths": {
+      "@angular/*": [
+        "node_modules/@angular/*"
+      ],
       "noctua-form": [
         "./src/app/main/apps/noctua-form"
       ],

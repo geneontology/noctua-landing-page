@@ -203,18 +203,13 @@ export class SparqlService {
 
       cam.id = uuid();
       cam.graph = null;
+      cam.id = modelId;
+      cam.title = response.modelTitle.value;
+
       cam.model = Object.assign({}, {
-        id: modelId,
-        title: response.modelTitle.value,
         modelInfo: this.noctuaFormConfigService.getModelUrls(modelId)
       }),
-        cam.annotatedEntity = {};
-      // aspect: this.noctuaFormConfigService.getAspect(this.curieUtil.getCurie(cam.aspect.value)),
-      // term: Object.assign({}, {
-      //    id: this.curieUtil.getCurie(cam.term.value),
-      //  label: cam.termLabel.value
-      //   }),;
-      result.push(cam);
+        result.push(cam);
     });
 
     return result;

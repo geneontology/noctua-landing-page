@@ -52,58 +52,47 @@
     </mat-progress-spinner>
   </div>
   <div *ngIf="!sparqlService.loading" class="w-100-p p-8">
-    <div *ngFor="let cam of cams" class="mat-elevation-z2 mb-16">
-      <div class="noc-cam-table-heading" fxLayout="row" fxLayoutAlign="start center">
-        <div fxFlex="50px" (click)="$event.stopPropagation()">
-          <button mat-icon-button (click)="toggleExpand(cam)" class="noc-br">
-            <mat-icon *ngIf="!cam.expanded" class="s-16 fa fa-caret-right">
-            </mat-icon>
-            <mat-icon *ngIf="cam.expanded" class="s-12 mat-icon-rtl-mirror">
-              signal_cellular_4_bar
-            </mat-icon>
-          </button>
-        </div>
-        <div class="" fxFlex="200px">
-          <div class="text-truncate">
-            <small>Id: </small> {{cam.model?.id }}
-          </div>
-        </div>
-        <div class="" fxFlex="50%">
-          <div class="text-truncate">
-            <small>Title: </small> {{cam.model?.title }}
-          </div>
-        </div>
-        <span fxFlex=""></span>
-        <div class="" fxFlex="150px" fxLayout="row" fxLayoutAlign="end center">
-          <button mat-icon-button [matMenuTriggerFor]="changeView" class="noc-bl">
-            <mat-icon>apps</mat-icon>
-          </button>
-          <mat-menu #changeView="matMenu">
-            <a *ngFor="let workbench of cam.model?.modelInfo.workbenches" href="{{workbench.url}}" target="_blank"
-              mat-menu-item>
-              {{workbench.label}}
-            </a>
-          </mat-menu>
-          <button mat-icon-button (click)="refresh(cam)" class="noc-bl">
-            <mat-icon class="">
-              refresh
-            </mat-icon>
-          </button>
+    <div class="noc-cam-table w-100-p" fxFlex="">
+      <mat-table class="w-100-p" #table [dataSource]="cams" matSort [@animateStagger]="{value:'50'}"
+        noctuaPerfectScrollbar>
+        <ng-container cdkColumnDef="actions" sticky>
+          <mat-header-cell *cdkHeaderCellDef fxFlex="120px"></mat-header-cell>
+          <mat-cell *cdkCellDef="let cam" fxFlex="120px">
+            <div class="" fxFlex="150px" fxLayout="row" fxLayoutAlign="end center">
+              <button mat-icon-button [matMenuTriggerFor]="changeView" class="noc-bl">
+                <mat-icon>apps</mat-icon>
+              </button>
+              <mat-menu #changeView="matMenu">
+                <a *ngFor="let workbench of cam.model?.modelInfo.workbenches" href="{{workbench.url}}" target="_blank"
+                  mat-menu-item>
+                  {{workbench.label}}
+                </a>
+              </mat-menu>
+              <button mat-icon-button (click)="toggleExpand(cam)" class="noc-bl">
+                <mat-icon *ngIf="!cam.expanded" class="">
+                  keyboard_arrow_down
+                </mat-icon>
+                <mat-icon *ngIf="cam.expanded" class="">
+                  keyboard_arrow_up
+                </mat-icon>
+              </button>
+            </div>
+          </mat-cell>
+        </ng-container>
+        <ng-container cdkColumnDef="title">
+          <mat-header-cell *cdkHeaderCellDef fxFlex="120px">Title</mat-header-cell>
+          <mat-cell *cdkCellDef="let cam" fxFlex="120px">
+            <p class="">{{cam.title}}</p>
+          </mat-cell>
+        </ng-container>
 
-          <button mat-icon-button (click)="toggleExpand(cam)" class="noc-bl">
-            <mat-icon *ngIf="!cam.expanded" class="">
-              keyboard_arrow_down
-            </mat-icon>
-            <mat-icon *ngIf="cam.expanded" class="">
-              keyboard_arrow_up
-            </mat-icon>
-          </button>
-        </div>
+        <mat-header-row *cdkHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *cdkRowDef="let entity; columns: displayedColumns;" class="" matRipple
+          (click)="selectEntity(entity.node)"></mat-row>
+      </mat-table>
+      <div *ngIf="cams?.length===0" class="noc-no-info">
+        no results yet.
       </div>
-      <!--
-      <noc-cam-table [cam]="cam" *ngIf="cam.expanded" class="noc-cam-table-body" fxLayout="row"
-        fxLayoutAlign="start center">
-      </noc-cam-table>-->
     </div>
   </div>
 </div>
