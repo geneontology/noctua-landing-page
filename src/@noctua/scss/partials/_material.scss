@@ -25,3 +25,7 @@ $accent: map-get($theme, accent);
     }
   }
 }
+
+.mat-expansion-panel-body {
+  padding: 0 !important;
+}

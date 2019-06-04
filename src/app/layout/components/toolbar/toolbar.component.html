@@ -1,6 +1,6 @@
 <mat-toolbar class="" fxLayout="row" fxLayoutAlign="start center">
   <mat-progress-bar *ngIf="showLoadingBar" class="loading-bar" color="accent" mode="indeterminate"></mat-progress-bar>
-  <div class="noc-br" fxLayout="row" fxLayoutAlign="start center" fxFlex="220px">
+  <div class="" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayoutAlign="center center" class="noc-logo-filler">
       <button mat-icon-button target="_blank">
         <img src="assets/images/logos/go-logo.png">
@@ -12,6 +12,14 @@
       </a>
     </div>
   </div>
+  <button mat-flat-button [matMenuTriggerFor]="createMenu" color="primary" class="noc-rounded-button noc-sm mr-8">
+    <mat-icon class=""> add </mat-icon> Create New
+  </button>
+  <mat-menu #createMenu="matMenu">
+    <a *ngFor="let workbench of createNewMenu" href="{{workbench.url}}" target="_blank" mat-menu-item>
+      {{workbench.label}}
+    </a>
+  </mat-menu>
   <span fxFlex=""></span>
   <!--
   <div class="toolbar-separator"></div>

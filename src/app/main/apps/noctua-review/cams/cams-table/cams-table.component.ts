@@ -14,17 +14,25 @@ import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/distinctUntilChanged";
 import { forEach } from '@angular/router/src/utils/collection';
 
-import { NoctuaFormConfigService } from 'noctua-form-base';
-import { NoctuaGraphService } from 'noctua-form-base';
-import { NoctuaLookupService } from 'noctua-form-base';
-
-
-
 import { ReviewService } from './../../services/review.service';
 import { ReviewDialogService } from './../../services/review-dialog.service';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
-
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
+
+import {
+  NoctuaGraphService,
+  NoctuaFormConfigService,
+  NoctuaLookupService,
+  CamService
+} from 'noctua-form-base';
+
+import {
+  Cam,
+  Annoton,
+  AnnotonNode
+} from 'noctua-form-base';
+
+
 
 @Component({
   selector: 'noc-cams-table',
@@ -33,18 +41,7 @@ import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
   animations: noctuaAnimations
 })
 export class CamsTableComponent implements OnInit, OnDestroy {
-
-  displayedColumns = [
-    'title'];
-
-  @ViewChild(MatPaginator)
-  paginator: MatPaginator;
-
-  @ViewChild('filter')
-  filter: ElementRef;
-
-  @ViewChild(MatSort)
-  sort: MatSort;
+  private _unsubscribeAll: Subject<any>;
 
   searchCriteria: any = {};
   searchFormData: any = []
@@ -54,20 +51,14 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     mode: 'indeterminate'
   }
 
-  summary: any = {
-    expanded: false,
-    detail: {}
-  }
-
   cams: any[] = [];
   searchResults = [];
 
 
-  private unsubscribeAll: Subject<any>;
 
   constructor(private route: ActivatedRoute,
     public noctuaFormConfigService: NoctuaFormConfigService,
-    private noctuaSearchService: NoctuaSearchService,
+    public noctuaSearchService: NoctuaSearchService,
     public reviewService: ReviewService,
     private reviewDialogService: ReviewDialogService,
     private noctuaLookupService: NoctuaLookupService,
@@ -75,17 +66,15 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     public sparqlService: SparqlService) {
 
     this.searchFormData = this.noctuaFormConfigService.createReviewSearchFormData();
-    this.unsubscribeAll = new Subject();
+    this._unsubscribeAll = new Subject();
   }
 
   ngOnInit(): void {
+
     this.sparqlService.onCamsChanged
-      .pipe(takeUntil(this.unsubscribeAll))
+      .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(cams => {
         this.cams = cams;
-
-        console.log(cams)
-        this.summary.detail = this.sparqlService.searchSummary;
         this.loadCams();
       });
   }
@@ -104,21 +93,12 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     this.cams = this.sparqlService.cams;
   }
 
-  toggleSummaryExpand() {
-    this.summary.expanded = !this.summary.expanded;
-  }
-
   toggleExpand(cam) {
     if (cam.expanded) {
       cam.expanded = false;
     } else {
       cam.expanded = true;
-      this.noctuaGraphService.getGraphInfo(cam, cam.model.id)
-      cam.onGraphChanged.subscribe((annotons) => {
-        //  let data = this.summaryGridService.getGrid(annotons);
-        // this.sparqlService.addCamChildren(cam, data);
-        //  this.dataSource = new CamsDataSource(this.sparqlService, this.paginator, this.sort);
-      });
+      this.noctuaGraphService.getGraphInfo(cam, cam.id);
     }
   }
 
@@ -126,13 +106,16 @@ export class CamsTableComponent implements OnInit, OnDestroy {
 
   }
 
+  changeCamDisplayView(cam: Cam, displayType) {
+    cam.displayType = displayType;
+  }
 
-  selectCam(cam) {
+  selectCam(cam: Cam) {
     this.sparqlService.onCamChanged.next(cam);
   }
 
   ngOnDestroy(): void {
-    this.unsubscribeAll.next();
-    this.unsubscribeAll.complete();
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
   }
 }

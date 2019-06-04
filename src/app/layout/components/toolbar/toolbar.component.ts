@@ -4,7 +4,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import {
     Cam,
-    Curator,
+    Contributor,
     CamService,
     NoctuaUserService,
     NoctuaFormConfigService,
@@ -13,6 +13,7 @@ import {
 } from 'noctua-form-base';
 
 import { NoctuaConfigService } from '@noctua/services/config.service';
+import { environment } from 'environments/environment';
 
 @Component({
     selector: 'noctua-toolbar',
@@ -21,7 +22,7 @@ import { NoctuaConfigService } from '@noctua/services/config.service';
 })
 
 export class NoctuaToolbarComponent implements OnInit {
-    public user: Curator;
+    public user: Contributor;
     public cam: Cam;
     userStatusOptions: any[];
     languages: any;
@@ -32,6 +33,17 @@ export class NoctuaToolbarComponent implements OnInit {
     navigation: any;
 
     loginUrl;
+
+    createNewMenu = [{
+        label: 'Noctua Form',
+        url: environment.workbenchUrl + 'noctua-form?',
+    }, {
+        label: 'Graph Editor',
+        url: environment.noctuaUrl + "/editor/graph/"
+    }, {
+        label: 'Macromolecular Complex Creator',
+        url: environment.workbenchUrl + 'mmcc?'
+    }];
 
     constructor(
         private router: Router,
@@ -45,23 +57,6 @@ export class NoctuaToolbarComponent implements OnInit {
     ) {
         console.log(window.location)
         this.loginUrl = 'http://barista-dev.berkeleybop.org/login?return=' + window.location.origin;
-        this.languages = [{
-            'id': 'en',
-            'title': 'English',
-            'flag': 'us'
-        }, {
-            'id': 'tr',
-            'title': 'Turkish',
-            'flag': 'tr'
-        }];
-
-        this.selectedLanguage = this.languages[0];
-
-        this.route
-            .queryParams
-            .subscribe(params => {
-                // Defaults to 0 if no query param provided.
-            });
 
         this.getUserInfo();
         this.router.events.subscribe(
@@ -91,7 +86,7 @@ export class NoctuaToolbarComponent implements OnInit {
 
         this.noctuaUserService.onUserChanged.subscribe((response) => {
             if (response) {
-                this.user = new Curator()
+                this.user = new Contributor()
                 this.user.name = response.nickname;
                 this.user.groups = response.groups;
             }

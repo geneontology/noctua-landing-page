@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
 
   createAnswerForm() {
     return new FormGroup({
-      goTerm: new FormControl(this.searchCriteria.goTerm),
+      goterm: new FormControl(this.searchCriteria.goterm),
       geneProduct: new FormControl(this.searchCriteria.geneProduct),
       pmid: new FormControl(this.searchCriteria.pmid),
     });

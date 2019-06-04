@@ -2,49 +2,18 @@
 @import "src/@noctua.common/scss/noctua.common";
 
 :host {
-  width: 100%; // display: block;
+  @include deep-width(100%);
+  @include deep-height(100%);
+
   background-color: white;
-  @include mat-elevation(4);
 
-  .noc-header {
-    @include deep-height(30px);
-    background-color: #EEE;
-    border-bottom: #CCC solid 1px;
-
-    mat-icon-button {
-      @include deep-height(30px);
-      @include deep-width(30px);
-      line-height: 30px;
-    }
-
-    .noc-title {
-      font-size: 10px;
-      padding: 0 14px;
-    }
-  }
-
-  .noc-body {
-    padding: 0 14px 14px 14px;
-  }
-
-
-  .noc-organism-row {
-    padding: 0 10px;
-    @include deep-height(50px);
-    border-top: #CCC solid 1px;
-    font-size: 14px;
-
-    .noc-cams-number {
-      padding: 2px 5px;
-      @include deep-height(20px);
-      background-color: #DDD;
-      font-size: 10px;
-      border-radius: 25%;
-    }
-
-    &:hover {
-      background-color: #F2F2F2;
-    }
+  mat-chip {
+    font-size: 12px;
+    font-weight: normal;
+    //min-height: 30px;
+    //  max-width: 200px;
+    // text-overflow: ellipsis;
+    //  white-space: nowrap;
   }
 
   .noc-search-form {
@@ -151,6 +120,7 @@
         padding-left: 5px;
       }
     }
+
 
     .noc-submit-row {
       margin: 10px 0;

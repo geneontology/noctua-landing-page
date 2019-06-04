@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  spaqrlApiUrl: 'http://rdf.geneontology.org/blazegraph/sparql',
+  spaqrlApiUrl: 'http://rdf-internal.berkeleybop.io/blazegraph/sparql',
+  // spaqrlApiUrl: 'http://rdf.geneontology.org/blazegraph/sparql',
   // gorestApiUrl: 'https://api.geneontology.cloud/'
   gorestApiUrl: 'http://localhost:3000/',
   globalGolrServer: ' http://noctua-golr.berkeleybop.org/',//'http://amigo-dev-golr.berkeleybop.org/',

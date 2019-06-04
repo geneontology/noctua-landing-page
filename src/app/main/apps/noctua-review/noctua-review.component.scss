@@ -3,7 +3,7 @@
 
 .noc-left-drawer {
   @include deep-height(100%);
-  @include deep-width(400px);
+  @include deep-width(300px);
   background-color: #FFF;
   border-right: #BBB solid 1px;
   @include mat-elevation(4);
@@ -32,11 +32,22 @@
     margin-bottom: 4px;
     padding: 0 10px;
     @include deep-height(40px);
-    //min-height: 35px;
+    //  min-height: 40px; //min-height: 35px;
     background-color: #FFF;
     font-size: 16px;
+    overflow: hidden;
 
     @include mat-elevation(2);
+
+    &.noc-expanded {
+      @include deep-height(150px);
+    }
+
+    mat-chip {
+      font-size: 14px;
+      font-weight: normal;
+      @include deep-height(30px);
+    }
 
     .noc-summary-bar-section {
       .noc-section-label {

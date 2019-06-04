@@ -2,7 +2,7 @@
   class="noc-drawer w-100-p h-100-p">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
-      General Search</span>
+      Search</span>
     <span fxFlex></span>
     <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
       aria-label="Close dialog">
@@ -11,19 +11,13 @@
   </div>
   <div class="noc-drawer-body noc-annoton-form" noctuaPerfectScrollbar>
     <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
-      <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
-        <div class="noc-section-heading">
-          Required
-        </div>
-        <span fxFlex></span>
-      </div>
       <div class="noc-section-body pt-8" fxLayout="column" fxLayoutAlign="start stretch">
         <div class="noc-annoton-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm">
-            <mat-label>Go Term</mat-label>
-            <textarea type="text" matInput formControlName="goTerm" [matAutocomplete]="goTermAuto" rows="2"></textarea>
-            <mat-autocomplete #goTermAuto="matAutocomplete" [displayWith]="termDisplayFn" class="noc-term-autocomplete">
-              <mat-option class="noc-term-autocomplete" *ngFor="let item of searchFormData['goTerm']?.searchResults"
+            <mat-label>GO Term</mat-label>
+            <textarea type="text" matInput formControlName="goterm" [matAutocomplete]="gotermAuto" rows="2"></textarea>
+            <mat-autocomplete #gotermAuto="matAutocomplete" [displayWith]="termDisplayFn" class="noc-term-autocomplete">
+              <mat-option class="noc-term-autocomplete" *ngFor="let item of searchFormData['goterm']?.searchResults"
                 [value]="item">
                 <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
                   <div class="noc-term-label">
@@ -65,38 +59,43 @@
     <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
-          Curator (optional)
+          Contributor (optional)
         </div>
         <span fxFlex></span>
       </div>
       <div class="noc-section-body pt-8" fxLayout="column" fxLayoutAlign="start stretch">
         <div class="ph-15 noc-annoton-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm">
-            <input type="text" matInput formControlName="curator" placeholder="Curator"
-              [matAutocomplete]="curatorAuto" />
-            <mat-autocomplete #curatorAuto="matAutocomplete">
-              <mat-option *ngFor="let item of searchFormData['curator']?.searchResults" [value]="item.orcid">
+            <input type="text" matInput formControlName="contributor" placeholder="Contributor"
+              [matAutocomplete]="contributorAuto" />
+            <mat-autocomplete #contributorAuto="matAutocomplete" [displayWith]="contributorDisplayFn"
+              class="noc-term-autocomplete">
+              <mat-option class="noc-term-autocomplete" *ngFor="let item of filteredContributors | async"
+                [value]="item">
                 <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
-                  <div>
+                  <div class="noc-term-label">
                     {{ item.name }}
                   </div>
                   <span fxFlex></span>
-                  {{ item.orcid }}
+                  <div class="noc-term-id">
+                    {{ item.orcid }}
+                  </div>
                 </div>
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
           <mat-form-field appearance="outline" class="noc-sm">
-            <input type="text" matInput formControlName="providedBy" placeholder="Group"
-              [matAutocomplete]="providedByAuto" />
-            <mat-autocomplete #providedByAuto="matAutocomplete">
-              <mat-option *ngFor="let item of searchFormData['providedBy']?.searchResults" [value]="item.url">
+            <input type="text" matInput formControlName="group" placeholder="Group" [matAutocomplete]="groupAuto" />
+            <mat-autocomplete #groupAuto="matAutocomplete" class="noc-term-autocomplete" [displayWith]="groupDisplayFn">
+              <mat-option *ngFor="let item of filteredGroups | async" [value]="item">
                 <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
-                  <div>
+                  <div class="noc-term-label">
                     {{ item.name }}
                   </div>
                   <span fxFlex></span>
-                  {{ item.url }}
+                  <div class="noc-term-id">
+                    {{ item.url }}
+                  </div>
                 </div>
               </mat-option>
             </mat-autocomplete>
@@ -116,12 +115,18 @@
           <mat-form-field appearance="outline" class="noc-sm">
             <mat-label>Organisms</mat-label>
             <input matInput formControlName="organism" placeholder="Species" [matAutocomplete]="speciesAuto" />
-            <mat-autocomplete #speciesAuto="matAutocomplete" [displayWith]="organismDisplayFn">
-              [value]="item">
+            <mat-autocomplete #speciesAuto="matAutocomplete" [displayWith]="organismDisplayFn"
+              class="noc-term-autocomplete">
               <mat-option *ngFor="let organism of filteredOrganisms | async" [value]="organism">
-                <span>{{organism.long_name}}</span>
-                <span fxFlex=""></span>
-                <span>{{organism.taxon_id}}</span>
+                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+                  <div class="noc-term-label">
+                    {{organism.taxonName}}
+                  </div>
+                  <span fxFlex></span>
+                  <div class="noc-term-id">
+                    {{organism.taxonIri}}
+                  </div>
+                </div>
               </mat-option>
             </mat-autocomplete>
           </mat-form-field>
@@ -134,7 +139,7 @@
       Why is the "Search" button disabled?
     </button>
     <span fxFlex></span>
-    <button (click)='close()' type="button" mat-raised-button color="" class="mr-8">Clear</button>
+    <button (click)='clear()' type="button" mat-raised-button color="" class="mr-8">Clear</button>
     <button (click)="search()" type="button" mat-raised-button color="primary">Search</button>
   </div>
 </form>

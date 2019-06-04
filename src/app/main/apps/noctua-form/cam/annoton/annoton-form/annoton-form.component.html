@@ -1,0 +1,95 @@
+ <form name="annotonFormGroup" [formGroup]="annotonFormGroup" fxLayout="column" fxLayoutAlign="start stretch"
+   class="noc-drawer w-100-p h-100-p">
+   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
+     <span class="noc-drawer-header-title">
+       Activity Form</span>
+     <span fxFlex></span>
+     <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
+       aria-label="Close dialog">
+       <mat-icon>close</mat-icon> Close
+     </button>
+   </div>
+   <div class="noc-drawer-body noc-annoton-form" noctuaPerfectScrollbar>
+     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
+       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+         <div class="noc-section-heading">
+           Gene Product
+         </div>
+         <span fxFlex></span>
+         <button mat-stroked-button [matMenuTriggerFor]="annotonTypeOptions" class="noc-rounded-button noc-xs">
+           {{noctuaAnnotonFormService.annoton.annotonType}} <b class="caret"></b>
+         </button>
+         <mat-menu #annotonTypeOptions="matMenu">
+           <a mat-menu-item *ngFor="let annotonType of noctuaFormConfigService.annotonType.options"
+             (click)="changeAnnotonTypeForm(annotonType)">
+             {{annotonType.label}}
+           </a>
+           <a *ngFor="let noctuaFormExample of noctuaFormConfigService.noctuaFormExample.basic" mat-menu-item
+             (click)="createExample(noctuaFormExample.annoton)">
+             {{noctuaFormExample.name}}
+           </a>
+         </mat-menu>
+       </div>
+       <div class="noc-section-body p-0" fxLayout="column" fxLayoutAlign="start stretch">
+         <div class="p-12" fxLayout="column">
+           <mat-form-field appearance="outline" class="noc-sm">
+             <mat-label>Gene Product</mat-label>
+             <textarea type="text" matInput formControlName="gp" [matAutocomplete]="gpAuto" rows="2"></textarea>
+             <mat-autocomplete #gpAuto="matAutocomplete" [displayWith]="termDisplayFn" class="noc-term-autocomplete">
+               <mat-option class="noc-term-autocomplete"
+                 *ngFor="let item of noctuaAnnotonFormService.annoton.presentation?.geneProduct.term.lookup.results"
+                 [value]="item">
+                 <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+                   <div class="noc-term-label">
+                     {{ item.label }}
+                   </div>
+                   <span fxFlex></span>
+                   <div class="noc-term-id">
+                     {{ item.id }}
+                   </div>
+                 </div>
+               </mat-option>
+             </mat-autocomplete>
+           </mat-form-field>
+         </div>
+       </div>
+     </div>
+     <div class="noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
+       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+         <div class="noc-section-heading">
+           Function Description
+         </div>
+         <span fxFlex></span>
+         <button mat-stroked-button [matMenuTriggerFor]="annotonModelTypeOptions" class="noc-rounded-button noc-xs">
+           {{noctuaAnnotonFormService.annoton.annotonModelType}} <b class="caret"></b>
+         </button>
+         <mat-menu #annotonModelTypeOptions="matMenu">
+           <a mat-menu-item *ngFor="let annotonModelType of noctuaFormConfigService.annotonModelType.options"
+             (click)="changeAnnotonModelTypeForm(annotonModelType)">
+             {{annotonModelType.label}}
+           </a>
+         </mat-menu>
+       </div>
+       <div class="noc-section-body p-0" fxLayout="column" fxLayoutAlign="start stretch">
+         <div [formArrayName]="'fd'" *ngFor="let nodeGroup of annotonFormGroup.get('fd')?.controls; let i = index;"
+           class="mat-elevation-z1 mb-4 px-8 pt-4">
+           <div [formGroupName]="i" *ngFor="let entity of nodeGroup.get('entityGroup')?.controls| keyvalue" class="">
+             <noc-entity-form [entityFormGroup]="entity.value" [nodeGroupName]="nodeGroup.get('name').value"
+               [entityName]="entity.key" fxLayout="row" fxLayoutAlign="start center" class="w-100-p">
+             </noc-entity-form>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+   <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
+     <button *ngIf="noctuaAnnotonFormService.annoton.submitErrors.length>0" (click)='checkErrors()' mat-button
+       color="warn" class="noc-rounded-button noc-sm">
+       Why is the "Save" button disabled?
+     </button>
+     <span fxFlex></span>
+     <button (click)='clear()' type="button" mat-raised-button color="" class="mr-8">Clear</button>
+     <button [disabled]="noctuaAnnotonFormService.annoton.submitErrors.length>0" (click)="save()" type="submit" class=""
+       mat-raised-button color="primary">Save</button>
+   </div>
+ </form>

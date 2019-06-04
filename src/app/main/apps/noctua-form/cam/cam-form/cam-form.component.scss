@@ -1,0 +1,34 @@
+@import "src/@noctua/scss/noctua";
+@import "src/@noctua.common/scss/noctua.common";
+
+:host {
+  //width: 100%; // display: block;
+  @include deep-width(40px);
+  background-color: white;
+  @include mat-elevation(4);
+
+  .noc-header {
+    @include deep-height(40px);
+    background-color: #EEE;
+    border-bottom: #CCC solid 1px;
+
+    mat-icon-button {
+      @include deep-height(40px);
+      @include deep-width(40px);
+      line-height: 40px;
+    }
+
+    .noc-title {
+      font-size: 10px;
+      padding: 0 14px;
+    }
+  }
+
+  .noc-body {
+    padding: 0 14px 14px 14px;
+  }
+
+  .noc-cam-form {
+    width: 500px;
+  }
+}

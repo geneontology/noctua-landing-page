@@ -2,6 +2,7 @@
 export const goContextConfig =
 {
     "@context": {
+        "gomodel": "http://model.geneontology.org/",
         "BIOMD": "http://www.ebi.ac.uk/compneur-srv/biomodels-main/publ-model.do?mid=",
         "COG_Function": "http://www.ncbi.nlm.nih.gov/COG/grace/shokog.cgi?fun=",
         "WB": "http://identifiers.org/wormbase/",

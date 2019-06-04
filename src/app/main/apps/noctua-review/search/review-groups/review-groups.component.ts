@@ -15,29 +15,33 @@ import { forEach } from '@angular/router/src/utils/collection';
 import { ReviewService } from '../../services/review.service';
 
 import { NoctuaTranslationLoaderService } from '@noctua/services/translation-loader.service';
-import { NoctuaFormConfigService } from 'noctua-form-base';
+import {
+  NoctuaFormConfigService,
+  NoctuaUserService
+} from 'noctua-form-base';
 import { NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
 
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 
 @Component({
-  selector: 'noc-review-curators',
-  templateUrl: './review-curators.component.html',
-  styleUrls: ['./review-curators.component.scss'],
+  selector: 'noc-review-groups',
+  templateUrl: './review-groups.component.html',
+  styleUrls: ['./review-groups.component.scss'],
 })
 
-export class ReviewCuratorsComponent implements OnInit, OnDestroy {
+export class ReviewGroupsComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
   searchForm: FormGroup;
   groupsForm: FormGroup;
   searchFormData: any = []
-  groups: any[] = [];
-  curators: any[] = [];
+  // groups: any[] = [];
+  // groups: any[] = [];
 
   private unsubscribeAll: Subject<any>;
 
   constructor(private route: ActivatedRoute,
+    public noctuaUserService: NoctuaUserService,
     private noctuaSearchService: NoctuaSearchService,
     private formBuilder: FormBuilder,
     public noctuaFormConfigService: NoctuaFormConfigService,
@@ -45,7 +49,7 @@ export class ReviewCuratorsComponent implements OnInit, OnDestroy {
     private reviewService: ReviewService,
     private sparqlService: SparqlService,
     private noctuaTranslationLoader: NoctuaTranslationLoaderService) {
-    this.curators = this.reviewService.curators;
+    // this.groups = this.reviewService.groups;
     this.searchFormData = this.noctuaFormConfigService.createReviewSearchFormData();
     this.unsubscribeAll = new Subject();
 
@@ -55,32 +59,20 @@ export class ReviewCuratorsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.reviewService.onCuratorsChanged
-      .pipe(takeUntil(this.unsubscribeAll))
-      .subscribe(curators => {
-        this.curators = curators;
-        let grouped = this.reviewService.groupCurators();
-      });
 
-    this.reviewService.onGroupsChanged
-      .pipe(takeUntil(this.unsubscribeAll))
-      .subscribe(groups => {
-        this.groups = groups;
-      });
 
     //this.searchForm = this.createSearchForm();
   }
 
-  selectCurator(curator) {
-    this.searchCriteria.curator = curator.orcid;
-    this.noctuaSearchService.searchByCurator(this.searchCriteria)
+  selectGroup(group) {
+    this.searchCriteria.group = group;
+    this.noctuaSearchService.search(this.searchCriteria);
   }
 
 
   search() {
     let searchCriteria = this.searchForm.value;
 
-    console.dir(searchCriteria)
     this.noctuaSearchService.search(searchCriteria);
   }
 

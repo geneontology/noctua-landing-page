@@ -1,0 +1,351 @@
+<div *ngIf="selectedPanel.id === panel.selectConnector.id" fxLayout="column" fxLayoutAlign="start stretch"
+  class="noc-drawer w-100-p h-100-p">
+  <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
+    <span class="noc-drawer-header-title">
+      Select Activity</span>
+    <span fxFlex></span>
+    <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
+      aria-label="Close dialog">
+      <mat-icon>close</mat-icon> Close
+    </button>
+  </div>
+  <div class="noc-drawer-body" fxLayout="row" fxLayoutAlign="start start">
+    <div class="noc-annoton-list h-100-p p-12" noctuaPerfectScrollbar>
+      <div fxLayout="column" fxLayoutAlign="start stretch" class="w-100-p">
+        <div class="noc-annoton-connector-box" *ngFor="let connector of noctuaAnnotonConnectorService.connectors">
+          <div class="noc-annoton-header w-100-p" fxLayout="row" fxLayoutAlign="start center">
+            <div>
+              {{ connector.annoton.presentation.mfText}}<br>
+              <small> enabled by:</small>
+              <strong>{{ connector.annoton.presentation.gpText}}</strong>
+            </div>
+            <span fxFlex></span>
+            <button *ngIf="!connector.rules.originalTriple.edge?.id" mat-raised-button color="primary"
+              class="noc-rounded-button noc-sm" (click)="openAnnotonConnector(connector.annoton)">
+              Connect
+            </button>
+            <button *ngIf="connector.rules.originalTriple.edge?.id" mat-stroked-button color="primary"
+              class="noc-rounded-button noc-sm" (click)="openEditAnnotonConnector(connector.annoton)">
+              <small>
+                Edit Connection
+              </small>
+            </button>
+          </div>
+          <div fxLayout="column" fxLayoutAlign="start stretch" class="noc-form-section noc-bt w-100-p">
+            <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+              <div class="noc-section-heading">
+                Notes
+              </div>
+            </div>
+            <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
+              <div class="noc-note" [ngClass]="{'noc-note-disabled':!note.condition}"
+                *ngFor="let note of connector.notes" fxLayout="row" fxLayoutAlign="start center">
+                <mat-icon *ngIf="note.condition" class="green-500-fg">check_circle</mat-icon>
+                <mat-icon *ngIf="!note.condition">check_circle_outline</mat-icon>
+                <span class="noc-description">
+                  {{note.description}} <strong>
+                    {{note.descriptionSuffix}}
+                  </strong>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div *ngIf="connector.rules.originalTriple.edge?.id" fxLayout="column" fxLayoutAlign="start stretch"
+            class="noc-form-section noc-bt w-100-p">
+            <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+              <div class="noc-section-heading">
+                <strong>Connected:</strong> Connection Summary
+              </div>
+            </div>
+            <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
+              <span>
+                {{ connector.rules.originalTriple.edge?.label }}<small>({{ connector.rules.originalTriple.edge?.id }})</small>
+              </span>
+            </div>
+            <br>
+            <div class="noc-section-body noc-triple w-100-p p-0" fxLayout="row" fxLayoutAlign="start start">
+              <div class="noc-annoton-box" fxLayout="column" fxLayoutAlign="center center">
+                <span>
+                  {{ connector.rules.originalTriple.subject?.getTerm().label}}
+                </span>
+              </div>
+              <div class="noc-line" fxFlex="" fxLayout="column" fxLayoutAlign="end stretch">
+                {{ connector.rules.originalTriple.edge?.label}}
+              </div>
+              <mat-icon class="s-32 noc-arrow">chevron_right</mat-icon>
+              <div class="noc-annoton-box" fxLayout="column" fxLayoutAlign="center center">
+                <span>
+                  {{ connector.rules.originalTriple.object?.getTerm().label}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
+    <span fxFlex></span>
+    <button (click)='close()' type="button" mat-raised-button color="" class="mr-8">Close</button>
+  </div>
+</div>
+<form *ngIf="selectedPanel.id === panel.annotonConnectorForm.id" name="connectorFormGroup"
+  [formGroup]="connectorFormGroup" fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer w-100-p h-100-p">
+  <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
+    <button mat-icon-button (click)="selectPanel(panel.selectConnector)" class="noc-rounded-button noc-sm"
+      color="primary">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <span class="noc-drawer-header-title">
+      Causal Relation Form</span>
+    <span fxFlex></span>
+    <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
+      aria-label="Close dialog">
+      <mat-icon>close</mat-icon> Close
+    </button>
+  </div>
+  <div class="noc-drawer-body" fxLayout="row" fxLayoutAlign="start start">
+    <div *ngIf="connectorFormGroup" class="noc-connector-form h-100-p" noctuaPerfectScrollbar>
+      <div fxLayout="column" fxLayoutAlign="start stretch" class="noc-form-section w-100-p">
+        <div class="noc-section-body w-100-p p-0" fxLayout="column" fxLayoutAlign="start center">
+          <div fxLayout="row" fxLayoutAlign="center center" class="noc-summary-row w-100-p">
+            <div class="noc-annoton-box" fxLayout="column" fxLayoutAlign="center center">
+              <span>
+                <small>{{ noctuaAnnotonConnectorService.subjectAnnoton?.presentation.mfText}}</small>
+                enabled by:
+                <strong>{{ noctuaAnnotonConnectorService.subjectAnnoton?.presentation.gpText}}</strong>
+              </span>
+            </div>
+            <div>
+              <mat-icon class="s-32">arrow_right_alt</mat-icon>
+            </div>
+            <div class="noc-annoton-box" fxLayout="column" fxLayoutAlign="center center">
+              <span>
+                <small>{{ noctuaAnnotonConnectorService.objectAnnoton?.presentation.mfText}}</small>
+                enabled by:
+                <strong>{{ noctuaAnnotonConnectorService.objectAnnoton?.presentation.gpText}}</strong>
+              </span>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="noctuaAnnotonConnectorService.displaySection.annotonsConsecutive"
+          class="noc-form-section p-0 w-100-p">
+          <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+            <div class="noc-section-heading">
+              Are the activities consecutive?
+            </div>
+          </div>
+          <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
+            <div class="px-12 noc-annoton-group-row" fxLayout="column">
+              <mat-radio-group formControlName="annotonsConsecutive" fxLayout="column" fxLayoutAlign="start stretch">
+                <mat-radio-button class="mt-8 mb-4" [value]="false" fxFlex="30"> No/unknown</mat-radio-button>
+                <mat-radio-button class="mt-8 mb-4" [value]="true" fxFlex="30"> Yes</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="noctuaAnnotonConnectorService.displaySection.causalEffect" class="noc-form-section p-0 w-100-p">
+          <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+            <div class="noc-section-heading">
+              Causal Relation
+            </div>
+          </div>
+          <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
+            <div class="px-12 noc-annoton-group-row" fxLayout="column">
+              <mat-radio-group formControlName="causalEffect" fxLayout="column" fxLayoutAlign="start stretch">
+                <mat-radio-button *ngFor="let causalEffect of noctuaFormConfigService.causalEffect.options"
+                  class="mt-8 mb-4" [value]="causalEffect" fxFlex="30">
+                  {{causalEffect.label}}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="noctuaAnnotonConnectorService.displaySection.causalReactionProduct"
+          class="noc-form-section p-0 w-100-p">
+          <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+            <div class="noc-section-heading">
+              Does the product of reaction 1 REGULATE or become the SUBSTRATE for activity 2?
+            </div>
+          </div>
+          <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
+            <div class="px-12 noc-annoton-group-row" fxLayout="column">
+              <mat-radio-group formControlName="causalReactionProduct" fxLayout="column" fxLayoutAlign="start stretch">
+                <mat-radio-button
+                  *ngFor="let causalReactionProduct of noctuaFormConfigService.causalReactionProduct.options"
+                  class="mt-8 mb-4" [value]="causalReactionProduct" fxFlex="30">
+                  {{causalReactionProduct.label}}
+                </mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </div>
+        </div>
+        <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+          <div class="noc-section-heading">
+            Evidence
+          </div>
+        </div>
+        <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
+          <div class="px-12 noc-annoton-group-row" fxLayout="column">
+            <div formArrayName="evidenceFormArray"
+              *ngFor="let evidence of connectorFormGroup.get('evidenceFormArray')?.controls; let i = index;">
+              <div [formGroupName]="i" fxLayout="row" fxLayoutAlign="start center" class="w-100-p">
+                <div class="p-4" fxFlex="55">
+                  <mat-form-field appearance="outline" class="noc-sm w-100-p">
+                    <mat-label>Evidence</mat-label>
+                    <textarea type="text" matInput formControlName="evidence" [matAutocomplete]="evidenceAuto"
+                      rows="2"></textarea>
+                    <mat-autocomplete #evidenceAuto="matAutocomplete" [displayWith]="evidenceDisplayFn"
+                      class="noc-term-autocomplete">
+                      <mat-option
+                        *ngFor="let item of noctuaAnnotonConnectorService.subjectMFNode?.evidence[i]?.evidence.lookup.results"
+                        [value]="item">
+                        <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+                          <div class="noc-term-label">
+                            {{ item.label }}
+                          </div>
+                          <span fxFlex></span>
+                          <div class="noc-term-id">
+                            {{ item.id }}
+                          </div>
+                        </div>
+                      </mat-option>
+                    </mat-autocomplete>
+                  </mat-form-field>
+                </div>
+                <div class="p-4" fxFlex="25">
+                  <mat-form-field appearance="outline" class="noc-sm w-100-p">
+                    <mat-label>Reference</mat-label>
+                    <textarea matInput formControlName="reference" rows="2"></textarea>
+                  </mat-form-field>
+                </div>
+                <div class="p-4" fxFlex fxFlex="20">
+                  <mat-form-field appearance="outline" class="noc-sm w-100-p">
+                    <mat-label>With</mat-label>
+                    <textarea matInput formControlName="with" rows="2"></textarea>
+                  </mat-form-field>
+                </div>
+                <span fxFlex=""></span>
+                <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
+                  <mat-icon>more_vert</mat-icon>
+                </button>
+                <mat-menu #entityMenu="matMenu" class="noc-disabled noc-dropdown-menu">
+                  <!--
+                  <h6 class="noc-menu-heading"> Evidence</h6>
+                  <button mat-menu-item class="" (click)="openSelectEvidenceDialog(evidence)">
+                    Clone Evidence
+                  </button>
+                  <button mat-menu-item class="" (click)="openMoreEvidenceDialog()">
+                    More Evidence
+                  </button>
+                  <button mat-menu-item class="" (click)="addEvidence()">
+                    Add Evidence
+                  </button>
+                  <button (click)="removeEvidence(i)" mat-menu-item>
+                    Remove Evidence
+                  </button>
+                  <button mat-menu-item class="" (click)="addNDEvidence(entity.evidence[0])">
+                    Add ND Reference
+                  </button>
+                  <h6 class="noc-menu-heading"> Term </h6>
+                  <button mat-menu-item class="" (click)="entity.clearValues()">
+                    Clear
+                  </button>
+                -->
+                </mat-menu>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="noc-connector-form-notes p-12 h-100-p" noctuaPerfectScrollbar>
+      <div fxLayout="column" fxLayoutAlign="start stretch" class="noc-form-section w-100-p">
+        <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+          <div class="noc-section-heading">
+            Notes
+          </div>
+        </div>
+        <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
+          <div class="noc-note" [ngClass]="{'noc-note-disabled':!note.condition}"
+            *ngFor="let note of noctuaAnnotonConnectorService.notes" fxLayout="row" fxLayoutAlign="start center">
+            <mat-icon *ngIf="note.condition" class="green-500-fg">check_circle</mat-icon>
+            <mat-icon *ngIf="!note.condition">check_circle_outline</mat-icon>
+            <span class="noc-description">
+              {{note.description}} <strong>
+                {{note.descriptionSuffix}}
+              </strong>
+            </span>
+          </div>
+        </div>
+        <div *ngIf="noctuaAnnotonConnectorService.rules.originalTriple.edge?.id"
+          class="noc-form-section noc-bt w-100-p">
+          <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+            <div class="noc-section-heading">
+              Current Causal Relation
+            </div>
+          </div>
+          <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
+            {{ noctuaAnnotonConnectorService.rules.originalTriple.edge?.label}}
+          </div>
+          <br>
+          <div class="noc-section-body w-100-p p-0" fxLayout="column" fxLayoutAlign="start center">
+            <div class="noc-section-body noc-triple noc-sm w-100-p p-0" fxLayout="row" fxLayoutAlign="start start">
+              <div class="noc-annoton-box" fxLayout="column" fxLayoutAlign="center center">
+                <span>
+                  {{ noctuaAnnotonConnectorService.rules.originalTriple.subject?.getTerm().label}}
+                </span>
+              </div>
+              <div class="noc-line" fxFlex="" fxLayout="column" fxLayoutAlign="end stretch">
+                {{ noctuaAnnotonConnectorService.rules.originalTriple.edge?.label}}
+              </div>
+              <mat-icon class="s-32 noc-arrow">chevron_right</mat-icon>
+              <div class="noc-annoton-box" fxLayout="column" fxLayoutAlign="center center">
+                <span>
+                  {{ noctuaAnnotonConnectorService.rules.originalTriple.object?.getTerm().label}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="noc-section-header noc-bt" fxLayout="row" fxLayoutAlign="start center">
+          <div class="noc-section-heading">
+            Suggested Causal Relation
+          </div>
+        </div>
+        <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
+          {{ noctuaAnnotonConnectorService.rules.triple.edge?.label}}
+        </div>
+        <br>
+        <div class="noc-section-body w-100-p p-0" fxLayout="column" fxLayoutAlign="start center">
+          <div class="noc-section-body noc-triple noc-sm w-100-p p-0" fxLayout="row" fxLayoutAlign="start start">
+            <div class="noc-annoton-box" fxLayout="column" fxLayoutAlign="center center">
+              <span>
+                {{ noctuaAnnotonConnectorService.rules.triple.subject?.getTerm().label}}
+              </span>
+            </div>
+            <div class="noc-line" fxFlex="" fxLayout="column" fxLayoutAlign="end stretch">
+              {{ noctuaAnnotonConnectorService.rules.triple.edge?.label}}
+            </div>
+            <mat-icon class="s-32 noc-arrow">chevron_right</mat-icon>
+            <div class="noc-annoton-box" fxLayout="column" fxLayoutAlign="center center">
+              <span>
+                {{ noctuaAnnotonConnectorService.rules.triple.object?.getTerm().label}}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
+    <button *ngIf="!connectorFormGroup.valid" (click)='checkErrors()' mat-button color="warn"
+      class="noc-rounded-button noc-sm">
+      Why is the "Save" button disabled?
+    </button>
+    <span fxFlex></span>
+    <button (click)='clear()' type="button" mat-raised-button color="" class="mr-8">Clear</button>
+    <button [disabled]="!connectorFormGroup.valid" (click)="save()" type="submit" class="noc-rounded-button"
+      mat-raised-button color="primary">Save</button>
+  </div>
+</form>

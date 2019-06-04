@@ -1,6 +1,8 @@
 @import "src/@noctua/scss/noctua";
 @import "src/@noctua.common/scss/noctua.common";
 
+
+
 :host {
   padding: 0px;
   width: 100%;
@@ -14,6 +16,25 @@
     width: 100%;
   }
 
+  .noc-loading-container {
+    background-color: rgba(#555, 0.4);
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 1000;
+  }
+
+  mat-chip {
+    font-size: 12px;
+    font-weight: normal;
+    @include deep-height(30px);
+    max-width: 200px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .noc-sidemenu {
     padding: 10px 0;
     margin-right: 5px;
@@ -25,16 +46,26 @@
   }
 
   .noc-cam-table-heading {
+    padding: 8px 12px;
     margin-bottom: 4px;
-    // @include deep-height(80px);
     min-height: 50px;
     background-color: #f2f2f2;
-    font-size: 16px;
+    font-size: 12px;
 
     //  @include mat-elevation(1);
-    button {
-      border-radius: 0 !important;
+
+    .noc-title {
+      font-size: 12px;
     }
+
+    .noc-model-state {
+      mat-chip {
+        @include deep-height(25px);
+        font-size: 10px;
+      }
+
+    }
+
   }
 
   .noc-cam-table-body {
@@ -61,79 +92,7 @@
     }
   }
 
-
-
   .cams-table {
-    // position: relative;
-    //  flex: 1 1 auto;
-    //    border-bottom: 1px solid rgba(0, 0, 0, .12);
-    //  overflow: auto;
-
-
-
-
-    .mat-cell {
-      padding: 0 10px;
-      font-size: 12px !important;
-      color: #000;
-    }
-
-    .mat-header-cell {
-      padding: 0 10px;
-      font-size: 10px !important;
-      //color: #0F0; // map-get($primary, default);
-      font-weight: bold;
-    }
-
-    .mat-header-cell,
-    .mat-header-row {
-      display: none;
-      @include deep-height(0);
-      /*
-      //padding: 0;
-      min-height: 40px;
-      position: sticky;
-      position: -webkit-sticky;
-      top: 0;
-      z-index: 1000;
-      //  background-color: $noc-primary-color-light;
-      // font-size: 3px !important;
-      */
-    }
-
-    .noc-paginator {
-      @include deep-height(0);
-    }
-
-    .annoton {
-      position: relative;
-      cursor: pointer;
-      min-height: 40px;
-      font-size: 12px;
-    }
-
-
-    .mat-cell {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-    }
-
-    .mat-column-id {
-      flex: 0 1 84px;
-    }
-
-    .mat-column-buttons {
-      flex: 0 1 80px;
-    }
-
-    /* .mat-header-cell {
-      display:flex;
-      justify-content:flex-end;
-     } */
-  }
-
-  .cams-table-2 {
     width: 100%;
     @include deep-height(100%);
     padding-bottom: 300px;
@@ -142,19 +101,6 @@
     //    border-bottom: 1px solid rgba(0, 0, 0, .12);
     //  overflow: auto;
 
-    .noc-cams-table-header {
-      padding: 0;
-      margin-bottom: 5px;
-      @include deep-height(50px);
-      position: sticky;
-      position: -webkit-sticky;
-      top: 0;
-      z-index: 1000;
-      background-color: #F7F7F7;
-      //  @include mat-elevation(1);
-      //  background-color: $noc-primary-color-light;
-      // font-size: 3px !important;
-    }
 
     .cam {
       position: relative;
