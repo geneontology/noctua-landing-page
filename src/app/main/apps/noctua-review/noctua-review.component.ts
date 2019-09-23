@@ -37,10 +37,10 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class NoctuaReviewComponent implements OnInit, OnDestroy {
 
-  @ViewChild('leftDrawer')
+  @ViewChild('leftDrawer', { static: true })
   leftDrawer: MatDrawer;
 
-  @ViewChild('rightDrawer')
+  @ViewChild('rightDrawer', { static: true })
   rightDrawer: MatDrawer;
 
 
@@ -109,7 +109,6 @@ export class NoctuaReviewComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.reviewService.setLeftDrawer(this.leftDrawer);
-    //  this.reviewService.setRightDrawer(this.rightDrawer);
     this.noctuaFormService.setRightDrawer(this.rightDrawer);
 
     /*
@@ -119,11 +118,19 @@ export class NoctuaReviewComponent implements OnInit, OnDestroy {
     });
     */
 
+    this.rightDrawer.open();
+
     this.sparqlService.getAllContributors()
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((response: any) => {
         this.reviewService.contributors = response;
         this.reviewService.onContributorsChanged.next(response);
+        this.noctuaSearchService.searchCriteria.goterms.push(
+          {
+            "id": "GO:0042632",
+            "label": "cholesterol homeostasis"
+          }
+        )
         this.noctuaSearchService.updateSearch();
       });
 
@@ -171,7 +178,6 @@ export class NoctuaReviewComponent implements OnInit, OnDestroy {
 
   search() {
     let searchCriteria = this.searchForm.value;
-    console.dir(searchCriteria)
     this.noctuaSearchService.search(searchCriteria);
   }
 
@@ -188,7 +194,6 @@ export class NoctuaReviewComponent implements OnInit, OnDestroy {
       cam.expanded = false;
     } else {
       cam.expanded = true;
-      this.noctuaGraphService.getGraphInfo(cam, cam.model.id);
     }
   }
 

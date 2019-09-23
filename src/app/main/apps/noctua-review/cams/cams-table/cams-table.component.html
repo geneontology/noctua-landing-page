@@ -1,4 +1,4 @@
-<div *ngIf="sparqlService.loading" class="noc-loading-container" fxLayout="column" fxLayoutAlign="center center">
+<div *ngIf="noctuaSearchService.loading" class="noc-loading-container" fxLayout="column" fxLayoutAlign="center center">
   <mat-progress-spinner class="example-margin" [color]="loadingSpinner.color" [mode]="loadingSpinner.mode">
   </mat-progress-spinner>
 </div>
@@ -6,6 +6,16 @@
   <div class="w-100-p">
     <div *ngFor="let cam of cams" class="mat-elevation-z1">
       <div class="noc-cam-table-heading" fxLayout="row" fxLayoutAlign="start center">
+        <div fxFlex="50px" (click)="$event.stopPropagation()">
+          <button mat-icon-button (click)="toggleExpand(cam)" class="">
+            <mat-icon *ngIf="!cam.expanded" class="s-32">
+              arrow_right
+            </mat-icon>
+            <mat-icon *ngIf="cam.expanded" class="s-12 mat-icon-rtl-mirror">
+              signal_cellular_4_bar
+            </mat-icon>
+          </button>
+        </div>
         <div class="pr-8" fxFlex="250px">
           <div class="noc-title">
             {{cam.title }}
@@ -30,6 +40,15 @@
           </mat-chip-list>
         </div>
         <div class="" fxFlex="200px" fxLayout="row" fxLayoutAlign="end center">
+          <button mat-stroked-button [matMenuTriggerFor]="displayTypeMenu" class="noc-rounded-button noc-sm">
+            View As
+          </button>
+          <mat-menu #displayTypeMenu="matMenu">
+            <button *ngFor="let displayType of noctuaFormConfigService.camDisplayType.options" mat-menu-item
+              (click)="changeCamDisplayView(cam, displayType)">
+              {{displayType.label}}
+            </button>
+          </mat-menu>
           <button mat-icon-button [matMenuTriggerFor]="appsMenu" class="">
             <mat-icon>apps</mat-icon>
           </button>
@@ -39,8 +58,16 @@
               {{workbench.label}}
             </a>
           </mat-menu>
+          <button mat-icon-button (click)="openCamForm(cam)" class="">
+            <mat-icon class="">
+              info
+            </mat-icon>
+          </button>
         </div>
       </div>
+      <noc-cam-table [cam]="cam" *ngIf="cam.expanded" class="noc-cam-table-body" fxLayout="row"
+        fxLayoutAlign="start center">
+      </noc-cam-table>
     </div>
   </div>
 </div>

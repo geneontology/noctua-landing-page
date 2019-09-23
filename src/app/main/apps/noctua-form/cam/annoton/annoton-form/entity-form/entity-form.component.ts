@@ -2,7 +2,7 @@ import { Component, Input, Inject, OnInit, ElementRef, OnDestroy, ViewEncapsulat
 import { CdkTextareaAutosize } from '@angular/cdk/text-field';
 import { FormBuilder, FormControl, FormGroup, FormArray, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatSort } from '@angular/material';
+import { MatPaginator, MatSort, MatMenuTrigger } from '@angular/material';
 import { DataSource } from '@angular/cdk/collections';
 import { merge, Observable, BehaviorSubject, fromEvent, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, map, take } from 'rxjs/operators';
@@ -30,7 +30,11 @@ import {
   NoctuaAnnotonFormService,
   NoctuaLookupService,
   AnnotonNode,
-  Evidence
+  Evidence,
+  noctuaFormConfig,
+  Entity,
+  EntityDefinition,
+  AnnotonNodeType
 } from 'noctua-form-base';
 
 @Component({
@@ -40,27 +44,16 @@ import {
 })
 
 export class EntityFormComponent implements OnInit, OnDestroy {
-  searchCriteria: any = {};
-  // annotonForm: FormGroup;
-  annotonFormPresentation: any;
-  evidenceFormArray: FormArray;
-  autcompleteResults = {
-    term: [],
-    evidence: []
-  };
-  cams: any[] = [];
-
-  nodeGroup: any = {}
-  entity: AnnotonNode;
-
   @Input('entityFormGroup')
   public entityFormGroup: FormGroup;
 
-  @Input('nodeGroupName')
-  public nodeGroupName: any;
+  @ViewChild('evidenceDBreferenceMenuTrigger', { static: true, read: MatMenuTrigger })
+  evidenceDBreferenceMenuTrigger: MatMenuTrigger;
 
-  @Input('entityName')
-  public entityName: any;
+  evidenceDBForm: FormGroup;
+  evidenceFormArray: FormArray;
+  entity: AnnotonNode;
+  insertMenuItems = [];
 
   private unsubscribeAll: Subject<any>;
 
@@ -81,31 +74,29 @@ export class EntityFormComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-    this.nodeGroup = this.noctuaAnnotonFormService.annoton.presentation['fd'][this.nodeGroupName];
-    this.entity = <AnnotonNode>_.find(this.nodeGroup.nodes, { id: this.entityName });
-    // this.entityFormGroup = this.createEntityGroup();
+    this.entity = this.noctuaAnnotonFormService.annoton.getNode(this.entityFormGroup.get('id').value);
 
+    this.evidenceDBForm = this._createEvidenceDBForm();
+    this.insertMenuItems = this.noctuaFormConfigService.getInsertEntityMenuItems(this.entity.type);
+  }
 
+  ngOnDestroy(): void {
+    this.unsubscribeAll.next();
+    this.unsubscribeAll.complete();
   }
 
   addEvidence() {
     const self = this;
 
-    let evidenceFormGroup: FormArray = this.entityFormGroup.get('evidenceFormArray') as FormArray;
-
-    evidenceFormGroup.push(this.formBuilder.group({
-      evidence: new FormControl(),
-      reference: new FormControl(),
-      with: new FormControl(),
-    }));
+    self.entity.predicate.addEvidence();
+    self.noctuaAnnotonFormService.initializeForm();
   }
 
-  removeEvidence(index) {
+  removeEvidence(index: number) {
     const self = this;
 
-    let evidenceFormGroup: FormArray = <FormArray>self.entityFormGroup.get('evidenceFormArray');
-
-    evidenceFormGroup.removeAt(index);
+    self.entity.predicate.removeEvidence(index);
+    self.noctuaAnnotonFormService.initializeForm();
   }
 
   toggleIsComplement(entity: AnnotonNode) {
@@ -114,84 +105,101 @@ export class EntityFormComponent implements OnInit, OnDestroy {
 
   openSearchDatabaseDialog(entity: AnnotonNode) {
     const self = this;
-    let gpNode = this.noctuaAnnotonFormService.annotonForm.gp.value;
+    const gpNode = this.noctuaAnnotonFormService.annoton.getGPNode();
 
     if (gpNode) {
-      let data = {
+      const data = {
         readonly: false,
-        gpNode: gpNode,
+        gpNode: gpNode.term,
         aspect: entity.aspect,
         entity: entity,
         params: {
           term: '',
           evidence: ''
         }
-      }
+      };
 
-      let success = function (selected) {
+      const success = function (selected) {
         if (selected.term) {
-          entity.setTerm(selected.term.getTerm());
+          entity.term = new Entity(selected.term.term.id, selected.term.term.label);
 
           if (selected.evidences && selected.evidences.length > 0) {
-            entity.setEvidence(selected.evidences);
+            entity.predicate.setEvidence(selected.evidences);
           }
           self.noctuaAnnotonFormService.initializeForm();
         }
       }
-      self.noctuaFormDialogService.openSearchDatabaseDialog(data, success)
+      self.noctuaFormDialogService.openSearchDatabaseDialog(data, success);
     } else {
-      let errors = [];
-      let meta = {
+      const errors = [];
+      const meta = {
         aspect: gpNode ? gpNode.label : 'Gene Product'
       }
-      // let error = new AnnotonError('error', 1, "Please enter a gene product", meta)
+      // const error = new AnnotonError('error', 1, "Please enter a gene product", meta)
       //errors.push(error);
       // self.dialogService.openAnnotonErrorsDialog(ev, entity, errors)
     }
   }
 
-  openMoreEvidenceDialog() {
-
+  insertEntity(nodeType: AnnotonNodeType) {
+    this.noctuaFormConfigService.insertAnnotonNode(this.noctuaAnnotonFormService.annoton, this.entity, nodeType);
+    this.noctuaAnnotonFormService.initializeForm();
   }
 
-
-  addNDEvidence(srcEvidence: Evidence) {
-
-  }
-
-  openSelectEvidenceDialog(evidence) {
+  addRootTerm() {
     const self = this;
 
-    /*
-  
-    let evidences = Util.addUniqueEvidencesFromAnnoton(self.annotonForm.annoton);
-    Util.getUniqueEvidences(self.summaryData.annotons, evidences);
-  
-    let gpNode = self.annotonForm.annotonPresentation.geneProduct;
-  
-    let data = {
-      readonly: false,
-      gpNode: gpNode,
-      aspect: entity.aspect,
-      node: entity,
-      evidences: evidences,
-      params: {
-        term: entity.term.control.value.id,
+    const term = _.find(noctuaFormConfig.rootNode, (rootNode) => {
+      return rootNode.aspect === self.entity.aspect;
+    });
+
+    if (term) {
+      self.entity.term = new Entity(term.id, term.label);
+      self.noctuaAnnotonFormService.initializeForm();
+
+      const evidence = new Evidence();
+      evidence.setEvidence(new Entity(
+        noctuaFormConfig.evidenceAutoPopulate.nd.evidence.id,
+        noctuaFormConfig.evidenceAutoPopulate.nd.evidence.label));
+      evidence.reference = noctuaFormConfig.evidenceAutoPopulate.nd.reference;
+      self.entity.predicate.setEvidence([evidence]);
+      self.noctuaAnnotonFormService.initializeForm();
+    }
+  }
+
+  clearValues() {
+    const self = this;
+
+    self.entity.clearValues();
+    self.noctuaAnnotonFormService.initializeForm();
+  }
+
+  openSelectEvidenceDialog() {
+    const self = this;
+    const evidences: Evidence[] = this.camService.getUniqueEvidence(self.noctuaAnnotonFormService.annoton);
+    const success = (selected) => {
+      if (selected.evidences && selected.evidences.length > 0) {
+        self.entity.predicate.setEvidence(selected.evidences, ['assignedBy']);
+        self.noctuaAnnotonFormService.initializeForm();
       }
-    }
-  
-    let success = function (selected) {
-      entity.addEvidences(selected.evidences, ['assignedBy']);
-    }
-    */
-
-    let evidences: Evidence[] = this.camService.getUniqueEvidence();
-    let success = (evidences: Evidence[]) => {
-
-      self.entity.setEvidence(evidences, ['assignedBy']);
-    }
+    };
 
     self.noctuaFormDialogService.openSelectEvidenceDialog(evidences, success);
+  }
+
+  onSubmitEvidedenceDb(evidence: FormGroup, name: string) {
+    console.log(evidence);
+    console.log(this.evidenceDBForm.value);
+
+    const DB = this.evidenceDBForm.value.db;
+    const accession = this.evidenceDBForm.value.accession;
+
+    const control: FormControl = evidence.controls[name] as FormControl;
+    control.setValue(DB.name + ':' + accession);
+  }
+
+  cancelEvidenceDb() {
+    this.evidenceDBForm.controls['accession'].setValue('');
   }
 
   termDisplayFn(term): string | undefined {
@@ -202,8 +210,10 @@ export class EntityFormComponent implements OnInit, OnDestroy {
     return evidence ? evidence.label : undefined;
   }
 
-  ngOnDestroy(): void {
-    this.unsubscribeAll.next();
-    this.unsubscribeAll.complete();
+  private _createEvidenceDBForm() {
+    return new FormGroup({
+      db: new FormControl(this.noctuaFormConfigService.evidenceDBs.selected),
+      accession: new FormControl()
+    });
   }
 }

@@ -12,7 +12,7 @@ import { takeUntil, startWith } from 'rxjs/internal/operators';
 
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/distinctUntilChanged";
-import { forEach } from '@angular/router/src/utils/collection';
+
 
 import { ReviewService } from './../../services/review.service';
 import { ReviewDialogService } from './../../services/review-dialog.service';
@@ -23,7 +23,8 @@ import {
   NoctuaGraphService,
   NoctuaFormConfigService,
   NoctuaLookupService,
-  CamService
+  CamService,
+  noctuaFormConfig
 } from 'noctua-form-base';
 
 import {
@@ -31,6 +32,7 @@ import {
   Annoton,
   AnnotonNode
 } from 'noctua-form-base';
+import { NoctuaFormService } from './../../../noctua-form/services/noctua-form.service';
 
 
 
@@ -54,12 +56,12 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   cams: any[] = [];
   searchResults = [];
 
-
-
   constructor(private route: ActivatedRoute,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaSearchService: NoctuaSearchService,
     public reviewService: ReviewService,
+    private camService: CamService,
+    private noctuaFormService: NoctuaFormService,
     private reviewDialogService: ReviewDialogService,
     private noctuaLookupService: NoctuaLookupService,
     private noctuaGraphService: NoctuaGraphService,
@@ -93,12 +95,12 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     this.cams = this.sparqlService.cams;
   }
 
-  toggleExpand(cam) {
+  toggleExpand(cam: Cam) {
     if (cam.expanded) {
       cam.expanded = false;
     } else {
       cam.expanded = true;
-      this.noctuaGraphService.getGraphInfo(cam, cam.id);
+      this.changeCamDisplayView(cam, cam.displayType);
     }
   }
 
@@ -106,8 +108,22 @@ export class CamsTableComponent implements OnInit, OnDestroy {
 
   }
 
+  openCamForm(cam: Cam) {
+    this.sparqlService.getModelMeta(cam.id).subscribe((response: any) => {
+      if (response && response.length > 0) {
+        let responseCam = <Cam>response[0];
+        cam.contributors = responseCam.contributors;
+        cam.groups = responseCam.groups;
+        this.camService.onCamChanged.next(cam);
+      }
+    });
+    this.camService.initializeForm(cam);
+    this.noctuaFormService.openRightDrawer(this.noctuaFormService.panel.camForm);
+  }
+
   changeCamDisplayView(cam: Cam, displayType) {
     cam.displayType = displayType;
+    this.noctuaGraphService.getGraphInfo(cam, cam.id);
   }
 
   selectCam(cam: Cam) {

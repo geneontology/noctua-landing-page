@@ -9,9 +9,26 @@ $accent: map-get($theme, accent);
   background-color: white;
   @include mat-elevation(4);
 
+  .noc-radio-button-rounded {
+    min-width: 110px;
+  }
+
   .noc-connector-form {
     width: 600px;
     background-color: #FFF;
+    padding-bottom: 300px;
+  }
+
+  .noc-form-section {
+    .noc-group-row {
+      padding: 10px 0;
+      border-bottom: rgba(map-get($primary, default), 0.6) solid 1px;
+    }
+
+    .noc-hint {
+      font-size: 12px;
+      color: #676767;
+    }
   }
 
   .noc-annoton-list {
@@ -64,16 +81,14 @@ $accent: map-get($theme, accent);
     }
   }
 
+  .noc-graph-preview {
+    height: 400px;
+    width: 100%;
+  }
+
   .noc-connector-form-notes {
-    width: 500px;
+    width: 416px;
     background-color: rgba($noc-primary-color-lighter, 0.6);
-
-
-
-
-
-
-
 
     .noc-form-section {
       padding-left: 0;
@@ -117,7 +132,7 @@ $accent: map-get($theme, accent);
   .noc-annoton-box {
     width: 250px;
     height: 100px;
-    padding: 12px;
+    // padding: 12px;
     //box-shadow: 0 1px 40px 0 #B0C1D9;
     @include mat-elevation(2);
     text-align: center;
@@ -127,6 +142,14 @@ $accent: map-get($theme, accent);
     cursor: move;
     background-color: white;
     font-size: 12px;
+
+    .noc-annoton-box-header {
+      @include deep-height(30px);
+      width: 100%;
+      border-bottom: rgba(map-get($primary, default), 0.6) solid 1px;
+      font-size: 12px;
+      color: #777;
+    }
 
     &.noc-sm {
       width: 200px;
@@ -184,6 +207,39 @@ $accent: map-get($theme, accent);
         margin-top: 35px;
       }
     }
+  }
+
+
+
+  .noc-triple-v {
+    .noc-annoton-box {
+      padding: 4px;
+      width: 100%;
+      @include deep-height(90px);
+      font-size: 12px;
+      @include mat-elevation(1);
+      text-align: center;
+      z-index: 4;
+      border: 1px solid #2e6f9a;
+      opacity: 1;
+      cursor: initial;
+      background-color: white;
+    }
+
+    .noc-predicate {
+      font-size: 10px;
+    }
+
+    .noc-line {
+      stroke: #2e6f9a;
+      stroke-width: 2;
+    }
+
+    .noc-arrow {
+      color: #2e6f9a;
+      // margin-top: 40px;
+    }
+
   }
 
   .noc-header {

@@ -12,7 +12,6 @@ import { NoctuaAnnotonFormService } from 'noctua-form-base';
 import { CamService } from 'noctua-form-base'
 import { Annoton } from 'noctua-form-base';
 import { AnnotonNode } from 'noctua-form-base';
-import { ComponentFactoryResolver } from '@angular/core/src/render3';
 
 @Component({
   selector: 'noc-nodes-container',
@@ -22,9 +21,9 @@ import { ComponentFactoryResolver } from '@angular/core/src/render3';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class NodesContainerComponent implements OnChanges, AfterViewInit {
-  @ViewChild('nodes', { read: ViewContainerRef }) viewContainerRef: ViewContainerRef;
+  @ViewChild('nodes', { read: ViewContainerRef, static: true }) viewContainerRef: ViewContainerRef;
   @Input() nodes: any[];
-  @ViewChild(ContextMenuComponent) public basicMenu: ContextMenuComponent;
+  @ViewChild(ContextMenuComponent, { static: true }) public basicMenu: ContextMenuComponent;
 
   constructor(
     public noctuaFormService: NoctuaFormService,
@@ -76,17 +75,17 @@ export class NodesContainerComponent implements OnChanges, AfterViewInit {
       self.nodes.forEach((annoton: Annoton) => {
         let connections = annoton.annotonConnections;
 
-        connections.forEach(connection => {
-          //   let effect = self.camDiagramService.getCausalEffect(annoton.connectionId, connection.object.individualId);
+        //connections.forEach(connection => {
+        //   let effect = self.camDiagramService.getCausalEffect(annoton.connectionId, connection.object.uuid);
 
-          //   self.camDiagramService.jsPlumbInstance.connect({
-          //      source: annoton.connectionId,
-          //     target: connection.object.individualId,
-          //     type: "basic",
-          // paintStyle: { strokeWidth: 1, stroke: '#000000' },
-          // endpointStyle: { fill: '#000000' }
-          //    });
-        });
+        //   self.camDiagramService.jsPlumbInstance.connect({
+        //      source: annoton.connectionId,
+        //     target: connection.object.uuid,
+        //     type: "basic",
+        // paintStyle: { strokeWidth: 1, stroke: '#000000' },
+        // endpointStyle: { fill: '#000000' }
+        //    });
+        //  });
       });
 
       self.camDiagramService.registeJSPlumbrEvents()

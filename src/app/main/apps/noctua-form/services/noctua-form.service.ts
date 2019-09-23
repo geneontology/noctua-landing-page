@@ -19,13 +19,17 @@ export class NoctuaFormService {
       id: 2
     }, annotonEntityForm: {
       id: 3
-    }, camDiagram: {
+    }, tripleForm: {
       id: 4
-    }, camTable: {
+    }, camDiagram: {
       id: 5
-    }, connectorForm: {
+    }, camPreview: {
       id: 6
-    },
+    }, camTable: {
+      id: 7
+    }, connectorForm: {
+      id: 8
+    }
   }
 
   selectedLeftPanel;
@@ -36,9 +40,9 @@ export class NoctuaFormService {
   private rightDrawer: MatDrawer;
 
   constructor() {
-    this.selectedLeftPanel = this.panel.annotonForm;
+    // this.selectedLeftPanel = this.panel.annotonForm;
     this.selectedMiddlePanel = this.panel.camTable;
-    this.selectedRightPanel = this.panel.annotonForm;
+    // this.selectedRightPanel = this.panel.tripleForm;
   }
 
   selectLeftPanel(panel) {
@@ -57,29 +61,22 @@ export class NoctuaFormService {
     this.leftDrawer = leftDrawer;
   }
 
-  public openLeftDrawer() {
-    return this.leftDrawer.open();
-  }
-
   public closeLeftDrawer() {
     return this.leftDrawer.close();
   }
 
-  public toggleLeftDrawer(panel) {
-    if (this.selectedLeftPanel.id === panel.id) {
-      this.leftDrawer.toggle();
-    } else {
-      this.selectLeftPanel(panel)
-      return this.openLeftDrawer();
-    }
-  }
 
   public setRightDrawer(rightDrawer: MatDrawer) {
     this.rightDrawer = rightDrawer;
   }
 
   public openMiddlePanel(panel) {
-    this.selectMiddlePanel(panel)
+    this.selectMiddlePanel(panel);
+  }
+
+  public openLeftDrawer(panel) {
+    this.selectLeftPanel(panel)
+    return this.leftDrawer.open();
   }
 
   public openRightDrawer(panel) {

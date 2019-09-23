@@ -20,14 +20,21 @@
       <textarea type="text" matInput formControlName="term" [matAutocomplete]="termAuto" row="2">
     </textarea>
       <mat-autocomplete #termAuto="matAutocomplete" [displayWith]="termDisplayFn" class="noc-term-autocomplete">
-        <mat-option *ngFor="let item of entity?.term.lookup.results" [value]="item">
+        <mat-option *ngFor="let item of entity?.termLookup.results" [value]="item">
           <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
             <div class="noc-term-label">
               {{ item.label }}
             </div>
             <span fxFlex></span>
+            <div class="noc-term-id mr-8">
+              <strong>
+                {{ item.xref }}
+              </strong>
+            </div>
             <div class="noc-term-id">
-              {{ item.id }}
+              <a (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
+                {{ item.id }}
+              </a>
             </div>
           </div>
         </mat-option>
@@ -45,14 +52,21 @@
               rows="2"></textarea>
             <mat-autocomplete #evidenceAuto="matAutocomplete" [displayWith]="evidenceDisplayFn"
               class="noc-term-autocomplete">
-              <mat-option *ngFor="let item of entity?.evidence[i]?.evidence.lookup.results" [value]="item">
+              <mat-option *ngFor="let item of entity?.predicate?.evidenceLookup.results" [value]="item">
                 <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
                   <div class="noc-term-label">
                     {{ item.label }}
                   </div>
                   <span fxFlex></span>
+                  <div class="noc-term-id mr-8">
+                    <strong>
+                      {{ item.xref }}
+                    </strong>
+                  </div>
                   <div class="noc-term-id">
-                    {{ item.id }}
+                    <a (click)="$event.stopPropagation()" href="{{item.link}}" target="_blank">
+                      {{ item.id }}
+                    </a>
                   </div>
                 </div>
               </mat-option>
@@ -63,6 +77,10 @@
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Reference</mat-label>
             <textarea matInput formControlName="reference" rows="2"></textarea>
+            <button mat-icon-button matSuffix class="noc-evidence-db-trigger" [matMenuTriggerFor]="evidenceDBMenu"
+              [matMenuTriggerData]="{evidence: evidence, name: 'reference'}">
+              <mat-icon>playlist_add</mat-icon>
+            </button>
           </mat-form-field>
         </div>
         <div class="p-4" fxFlex fxFlex="20">
@@ -76,37 +94,65 @@
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu">
-          <h6 class="noc-menu-heading"> Search </h6>
           <button mat-menu-item *ngIf="entity.aspect" class="" (click)="openSearchDatabaseDialog(entity)">
             Search Database
           </button>
-          <!--
-          <h6 class="noc-menu-heading"> Evidence</h6>
-          <button mat-menu-item class="" (click)="openSelectEvidenceDialog(evidence)">
-            Clone Evidence
+          <button mat-menu-item *ngIf="entity.treeLevel===0" class="" (click)="toggleIsComplement(entity)">
+            NOT Qualifier
           </button>
-          <button mat-menu-item class="" (click)="openMoreEvidenceDialog()">
-            More Evidence
+          <button mat-menu-item [matMenuTriggerFor]="addMenu">Add</button>
+          <button mat-menu-item [matMenuTriggerFor]="evidenceMenu">Evidence</button>
+          <button mat-menu-item [matMenuTriggerFor]="helpersMenu">Easy Fill</button>
+          <button mat-menu-item class="" (click)="clearValues()">
+            Clear Values
           </button>
+        </mat-menu>
+        <mat-menu #addMenu="matMenu">
+          <button mat-menu-item *ngFor="let insertMenuItem of insertMenuItems" class=""
+            (click)="insertEntity(insertMenuItem.id)">
+            {{insertMenuItem.label}}
+          </button>
+        </mat-menu>
+        <mat-menu #evidenceMenu="matMenu">
           <button mat-menu-item class="" (click)="addEvidence()">
             Add Evidence
           </button>
           <button (click)="removeEvidence(i)" mat-menu-item>
             Remove Evidence
           </button>
-          <button mat-menu-item class="" (click)="addNDEvidence(entity.evidence[0])">
-            Add ND Reference
+          <button mat-menu-item class="" (click)="openSelectEvidenceDialog(evidence)">
+            Clone Evidence
           </button>
-          <h6 class="noc-menu-heading"> Term </h6>
-          <button mat-menu-item *ngIf="entity.treeLevel===0" class="" (click)="toggleIsComplement(entity)">
-            NOT Qualifier
+        </mat-menu>
+        <mat-menu #helpersMenu="matMenu">
+          <button mat-menu-item *ngIf="entity.aspect" class="" (click)="addRootTerm()">
+            Add Root Term Value
           </button>
-          <button mat-menu-item class="" (click)="entity.clearValues()">
-            Clear
-          </button>
-          -->
         </mat-menu>
       </div>
     </div>
   </div>
 </div>
+<mat-menu #evidenceDBMenu="matMenu" class="noc-evidence-db-menu" xPosition="before">
+  <ng-template matMenuContent let-evidence="evidence" let-name="name">
+    <form [formGroup]="evidenceDBForm" (ngSubmit)="onSubmitEvidedenceDb(evidence, name)" novalidate
+      (click)="$event.stopPropagation()" class="pl-8 pr-8 w-100-p" fxLayout="row" fxLayoutAlign="start center">
+      <mat-form-field appearance="outline" fxFlex="100px" class="noc-sm  mr-12">
+        <mat-select placeholder="" formControlName="db">
+          <mat-option *ngFor="let evidenceDB of noctuaFormConfigService.evidenceDBs.options" [value]="evidenceDB">
+            {{evidenceDB.label}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+      <mat-form-field appearance="outline" fxFlex="" class="noc-sm w-100-p">
+        <input matInput formControlName="accession" type="text" placeholder="Accession">
+      </mat-form-field>
+      <button mat-icon-button (click)="cancelEvidenceDb()">
+        <mat-icon>cancel</mat-icon>
+      </button>
+      <button mat-icon-button (click)="onSubmitEvidedenceDb(evidence, name)">
+        <mat-icon>check_circle</mat-icon>
+      </button>
+    </form>
+  </ng-template>
+</mat-menu>

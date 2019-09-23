@@ -20,15 +20,15 @@
       [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
       <mat-icon>person_outline</mat-icon>
     </button>
-    <button mat-icon-button color="primary" class="noc-rounded-button" (click)="
+    <!--   <button mat-icon-button color="primary" class="noc-rounded-button" (click)="
       toggleLeftDrawer(reviewService.leftPanel.species)" matTooltip="Search by species" [matTooltipPosition]="'after'"
       [matTooltipShowDelay]="1000">
       <mat-icon> pets </mat-icon>
-    </button>
+    </button> -->
   </div>
   <mat-drawer-container class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start" autosize>
     <mat-drawer #leftDrawer class="noc-left-drawer" mode="side" position="start">
-      <div [ngSwitch]="reviewService.selectedLeftPanel.id" class="h-100-p">
+      <div [ngSwitch]="reviewService.selectedLeftPanel?.id" class="h-100-p">
         <noc-review-search *ngSwitchCase="reviewService.leftPanel.search.id"></noc-review-search>
         <noc-review-filter *ngSwitchCase="reviewService.leftPanel.filter.id"></noc-review-filter>
         <noc-review-groups *ngSwitchCase="reviewService.leftPanel.group.id"></noc-review-groups>
@@ -100,7 +100,7 @@
       </div>
     </mat-drawer-content>
     <mat-drawer #rightDrawer class="noc-right-drawer" noctuaPerfectScrollbar mode="side" position="end">
-      <div [ngSwitch]="noctuaFormService.selectedRightPanel.id" class="h-100-p">
+      <div [ngSwitch]="noctuaFormService.selectedRightPanel?.id" class="h-100-p">
         <noc-cam-form [panelDrawer]="rightDrawer" *ngSwitchCase="noctuaFormService.panel.camForm.id">
         </noc-cam-form>
         <noc-annoton-form [panelDrawer]="rightDrawer" *ngSwitchCase="noctuaFormService.panel.annotonForm.id">

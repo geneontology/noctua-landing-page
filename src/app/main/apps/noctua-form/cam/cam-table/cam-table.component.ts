@@ -13,7 +13,7 @@ import { takeUntil, startWith } from 'rxjs/internal/operators';
 
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/distinctUntilChanged";
-import { forEach } from '@angular/router/src/utils/collection';
+
 
 import { NoctuaFormService } from './../../services/noctua-form.service';
 import { CamTableService } from './services/cam-table.service';
@@ -28,49 +28,49 @@ import {
   NoctuaAnnotonFormService,
   NoctuaLookupService,
   NoctuaAnnotonEntityService,
-  CamService
-} from 'noctua-form-base';
-
-import {
+  CamService,
   Cam,
   Annoton,
-  AnnotonNode
+  EntityDefinition,
+  AnnotonType
 } from 'noctua-form-base';
+import { NoctuaConfirmDialogService } from '@noctua/components/confirm-dialog/confirm-dialog.service';
+import { trigger, state, transition, style, animate } from '@angular/animations';
 
 @Component({
   selector: 'noc-cam-table',
   templateUrl: './cam-table.component.html',
   styleUrls: ['./cam-table.component.scss'],
-  animations: noctuaAnimations
+  animations: [
+    trigger('annotonExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0', display: 'none' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class CamTableComponent implements OnInit, OnDestroy {
-
+  AnnotonType = AnnotonType;
   searchCriteria: any = {};
-  searchFormData: any = []
+  searchFormData: any = [];
   searchForm: FormGroup;
-  camDisplayType = noctuaFormConfig.camDisplayType.options;
+  camDisplayTypeOptions = noctuaFormConfig.camDisplayType.options;
+  annotonTypeOptions = noctuaFormConfig.annotonType.options;
 
   @Input('cam')
   public cam: Cam;
 
-  @ViewChild(MatPaginator)
-  paginator: MatPaginator;
-
-  @ViewChild('filter')
-  filter: ElementRef;
-
-  @ViewChild(MatSort)
-  sort: MatSort;
 
   searchResults = [];
   modelId: string = '';
 
-  private unsubscribeAll: Subject<any>;
+  private _unsubscribeAll: Subject<any>;
 
   constructor(private route: ActivatedRoute,
     public camService: CamService,
     public noctuaFormService: NoctuaFormService,
     public noctuaFormConfigService: NoctuaFormConfigService,
+    private confirmDialogService: NoctuaConfirmDialogService,
     private noctuaSearchService: NoctuaSearchService,
     private noctuaAnnotonConnectorService: NoctuaAnnotonConnectorService,
     //  public noctuaFormService: NoctuaFormService,
@@ -82,28 +82,14 @@ export class CamTableComponent implements OnInit, OnDestroy {
   ) {
 
     this.searchFormData = this.noctuaFormConfigService.createReviewSearchFormData();
-    this.unsubscribeAll = new Subject();
+    this._unsubscribeAll = new Subject();
   }
 
   ngOnInit(): void {
-    this.cam.onGraphChanged.subscribe((annotons: Annoton[]) => {
-      if (annotons) {
-        this.cam.applyFilter();
-        //  let data = this.summaryGridService.getGrid(annotons);
-        // this.sparqlService.addCamChildren(cam, data);
-        //  this.dataSource = new CamsDataSource(this.sparqlService, this.paginator, this.sort);
-      }
-    });
+
   }
 
   addAnnoton() {
-    // let location = {
-    //   x: event.clientX,
-    //   y: event.clientY
-    //  }
-    // console.log(event.clientX + 'px');
-    // console.log(event.clientY + 'px');
-
     this.openForm(location);
   }
 
@@ -143,8 +129,26 @@ export class CamTableComponent implements OnInit, OnDestroy {
     this.noctuaFormService.openRightDrawer(this.noctuaFormService.panel.annotonForm)
   }
 
+  sortBy(sortCriteria) {
+    this.cam.sort = sortCriteria;
+  }
+
+  deleteAnnoton(annoton: Annoton) {
+    const self = this;
+
+    const success = () => {
+      this.camService.deleteAnnoton(annoton).then(() => {
+        self.noctuaFormDialogService.openSuccessfulSaveToast('Activity successfully deleted.', 'OK');
+      });
+    };
+
+    this.confirmDialogService.openConfirmDialog('Confirm Delete?',
+      'You are about to delete an activity.',
+      success);
+  }
+
   ngOnDestroy(): void {
-    this.unsubscribeAll.next();
-    this.unsubscribeAll.complete();
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
   }
 }

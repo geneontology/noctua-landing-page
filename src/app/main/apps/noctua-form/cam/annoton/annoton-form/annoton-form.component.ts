@@ -30,6 +30,8 @@ import {
   NoctuaAnnotonFormService,
   NoctuaFormConfigService,
   NoctuaLookupService,
+  AnnotonState,
+  AnnotonType,
 } from 'noctua-form-base';
 
 @Component({
@@ -39,19 +41,25 @@ import {
 })
 
 export class AnnotonFormComponent implements OnInit, OnDestroy {
+  AnnotonState = AnnotonState;
+  AnnotonType = AnnotonType;
 
   @Input('panelDrawer')
   panelDrawer: MatDrawer;
+
   cam: Cam;
   annotonFormGroup: FormGroup;
   annotonFormSub: Subscription;
 
+  molecularEntity: FormGroup;
+
   searchCriteria: any = {};
   annotonFormPresentation: any;
-  //annotonForm: FormGroup;
   evidenceFormArray: FormArray;
-  annotonFormData: any = []
-  // annoton: Annoton = new Annoton();
+  annotonFormData: any = [];
+  annoton: Annoton;
+  currentAnnoton: Annoton;
+  state: AnnotonState;
 
   private unsubscribeAll: Subject<any>;
 
@@ -70,6 +78,7 @@ export class AnnotonFormComponent implements OnInit, OnDestroy {
     private sparqlService: SparqlService
   ) {
     this.unsubscribeAll = new Subject();
+
     // this.annoton = self.noctuaAnnotonFormService.annoton;
     //  this.annotonFormPresentation = this.noctuaAnnotonFormService.annotonPresentation;
   }
@@ -77,76 +86,54 @@ export class AnnotonFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.annotonFormSub = this.noctuaAnnotonFormService.annotonFormGroup$
       .subscribe(annotonFormGroup => {
-        if (!annotonFormGroup) return;
+        if (!annotonFormGroup) {
+          return;
+        }
+
         this.annotonFormGroup = annotonFormGroup;
+        this.currentAnnoton = this.noctuaAnnotonFormService.currentAnnoton;
+        this.annoton = this.noctuaAnnotonFormService.annoton;
+        this.state = this.noctuaAnnotonFormService.state;
+        this.molecularEntity = <FormGroup>this.annotonFormGroup.get('molecularEntity');
       });
 
     this.camService.onCamChanged.subscribe((cam) => {
-      if (!cam) return;
+      if (!cam) {
+        return;
+      }
 
-      this.cam = cam
+      this.cam = cam;
       this.cam.onGraphChanged.subscribe((annotons) => {
       });
     });
   }
 
   checkErrors() {
-    let errors = this.noctuaAnnotonFormService.annoton.submitErrors;
-    this.noctuaFormDialogService.openAnnotonErrorsDialog(errors)
+    const errors = this.noctuaAnnotonFormService.annoton.submitErrors;
+    this.noctuaFormDialogService.openAnnotonErrorsDialog(errors);
   }
 
   save() {
     const self = this;
-    let infos;
 
-    self.noctuaAnnotonFormService.annotonFormToAnnoton();
+    self.noctuaAnnotonFormService.saveAnnoton().then((data) => {
+      self.noctuaFormDialogService.openSuccessfulSaveToast('Activity successfully created.', 'OK');
+      self.noctuaAnnotonFormService.clearForm();
+    });
+  }
 
-    let saveAnnoton = function () {
-      //self.annotonForm.linkFormNode(entity, selected.node);
-      let annoton = self.noctuaGraphService.adjustAnnoton(self.noctuaAnnotonFormService.annoton)
-      self.noctuaGraphService.saveAnnoton(self.cam, annoton).then((data) => {
-        //  localStorage.setItem('barista_token', value);  
-        self.noctuaFormDialogService.openSuccessfulSaveToast('Activity successfully created.', 'OK');
-        self.noctuaAnnotonFormService.clearForm();
-      });
-    }
-
-    infos = self.noctuaGraphService.annotonAdjustments(self.noctuaAnnotonFormService.annoton);
-    // self.graph.createSave(self.annotonForm.annoton);
-    //temporarily off
-    if (infos.length > 0) {
-      let data = {
-        annoton: self.noctuaAnnotonFormService.annoton,
-        infos: infos
-      };
-
-      // self.dialogService.openBeforeSaveDialog(null, data, saveAnnoton);
-      /// saveAnnoton();
-    } else {
-      saveAnnoton();
-    }
+  preview() {
+    this.noctuaAnnotonFormService.annoton.setPreview();
   }
 
   clear() {
     this.noctuaAnnotonFormService.clearForm();
   }
 
-  createExample(example) {
+  createExample() {
     const self = this;
 
-    self.noctuaAnnotonFormService.initializeFormData(example);
-  }
-
-  changeAnnotonTypeForm(annotonType) {
-    const self = this;
-
-    self.noctuaAnnotonFormService.setAnnotonType(self.noctuaAnnotonFormService.annoton, annotonType.name);
-  }
-
-  changeAnnotonModelTypeForm(annotonModelType) {
-    const self = this;
-
-    self.noctuaAnnotonFormService.setAnnotonModelType(self.noctuaAnnotonFormService.annoton, annotonModelType.name);
+    self.noctuaAnnotonFormService.initializeFormData();
   }
 
   termDisplayFn(term): string | undefined {
@@ -154,7 +141,7 @@ export class AnnotonFormComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    this.panelDrawer.close()
+    this.panelDrawer.close();
   }
 
   ngOnDestroy(): void {

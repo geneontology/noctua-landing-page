@@ -18,19 +18,10 @@ export class HomeComponent implements OnInit {
   constructor(private noctuaTranslationLoader: NoctuaTranslationLoaderService,
     private route: ActivatedRoute,
     private router: Router) {
-    this.noctuaTranslationLoader.loadTranslations(english);
-    this.searchForm = this.createAnswerForm();
   }
 
   ngOnInit() {
 
   }
 
-  createAnswerForm() {
-    return new FormGroup({
-      goterm: new FormControl(this.searchCriteria.goterm),
-      geneProduct: new FormControl(this.searchCriteria.geneProduct),
-      pmid: new FormControl(this.searchCriteria.pmid),
-    });
-  }
 }

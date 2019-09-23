@@ -18,7 +18,7 @@ import { ReviewOrganismsComponent } from './search/review-organisms/review-organ
 
 const routes = [
   {
-    path: '',
+    path: 'r',
     component: NoctuaReviewComponent
   }
 ];
@@ -31,14 +31,6 @@ const routes = [
     ContextMenuModule.forRoot(),
     NoctuaFormModule
   ],
-  providers: [
-    //NoctuaFormGridService,
-    //CamService,
-    //NodeService,
-    //CamDiagramService,
-    //CamTableService,
-    //NoctuaAnnotonConnectorService
-  ],
   declarations: [
     NoctuaReviewComponent,
     CamsTableComponent,
@@ -47,21 +39,14 @@ const routes = [
     ReviewContributorsComponent,
     ReviewGroupsComponent,
     ReviewOrganismsComponent
+  ],
+  exports: [
+    ReviewFilterComponent,
+    ReviewSearchComponent,
+    ReviewContributorsComponent,
+    ReviewGroupsComponent,
+    ReviewOrganismsComponent
   ]
-  /*
-  entryComponents: [
-    NoctuaFormComponent,
-    CamRowEditDialogComponent,
-    AddEvidenceDialogComponent,
-    AnnotonErrorsDialogComponent,
-    BeforeSaveDialogComponent,
-    CreateFromExistingDialogComponent,
-    LinkToExistingDialogComponent,
-    SelectEvidenceDialogComponent,
-    SearchDatabaseDialogComponent,
-    NodeComponent,
-    NodesContainerComponent
-  ]*/
 })
 
 export class NoctuaReviewModule {

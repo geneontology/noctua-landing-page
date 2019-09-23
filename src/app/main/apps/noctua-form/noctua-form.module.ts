@@ -15,9 +15,7 @@ import { AnnotonEntityFormComponent } from './cam/annoton/annoton-entity-form/an
 import { EntityFormComponent } from './cam/annoton/annoton-form/entity-form/entity-form.component';
 
 import { CamTableComponent } from './cam/cam-table/cam-table.component';
-
 import { CamFormComponent } from './cam/cam-form/cam-form.component';
-
 
 import { CamRowEditDialogComponent } from './dialogs/cam-row-edit/cam-row-edit.component';
 import { AddEvidenceDialogComponent } from './dialogs/add-evidence/add-evidence.component';
@@ -37,6 +35,13 @@ import { NodeService } from './cam/cam-diagram/nodes/services/node.service';
 import { AnnotonConnectorFormComponent } from './cam/annoton/annoton-connector-form/annoton-connector-form.component';
 import { AnnotonEntityTableComponent } from './cam/cam-table/annoton-entity-table/annoton-entity-table.component';
 import { AnnotonTableComponent } from './cam/cam-table/annoton-table/annoton-table.component';
+import { TripleTableComponent } from './cam/cam-table/triple-table/triple-table.component';
+import { EvidenceTableComponent } from './cam/cam-table/triple-table/evidence-table/evidence-table.component';
+import { GraphPreviewComponent } from './cam/cam-preview/graph-preview/graph-preview.component';
+import { NoctuaConfirmDialogModule } from '@noctua/components';
+import { CamPreviewComponent } from './cam/cam-preview/cam-preview.component';
+import { CamGraphComponent } from './cam/cam-preview/cam-graph/cam-graph.component';
+import { NoctuaEditorModule } from '@noctua.editor/noctua-editor.module';
 
 const routes = [
   {
@@ -52,6 +57,8 @@ const routes = [
     // NoctuaModule.forRoot(noctuaConfig),
     RouterModule.forChild(routes),
     ContextMenuModule.forRoot(),
+    NoctuaConfirmDialogModule,
+    NoctuaEditorModule,
   ],
   exports: [
     AnnotonFormComponent,
@@ -73,6 +80,8 @@ const routes = [
     AnnotonConnectorFormComponent,
     AnnotonEntityTableComponent,
     AnnotonTableComponent,
+    TripleTableComponent,
+    CamPreviewComponent
   ],
   providers: [
     NoctuaFormDialogService,
@@ -100,7 +109,12 @@ const routes = [
     NodesContainerComponent,
     AnnotonConnectorFormComponent,
     AnnotonEntityTableComponent,
+    TripleTableComponent,
     AnnotonTableComponent,
+    EvidenceTableComponent,
+    GraphPreviewComponent,
+    CamPreviewComponent,
+    CamGraphComponent,
   ],
   entryComponents: [
     CamRowEditDialogComponent,
@@ -110,9 +124,9 @@ const routes = [
     CreateFromExistingDialogComponent,
     LinkToExistingDialogComponent,
     SelectEvidenceDialogComponent,
-    SearchDatabaseDialogComponent,
-    NodeComponent,
-    NodesContainerComponent
+    SearchDatabaseDialogComponent
+    //  NodeComponent,
+    // NodesContainerComponent
   ]
 })
 

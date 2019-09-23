@@ -59,6 +59,21 @@
     <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
+          Title
+        </div>
+        <span fxFlex></span>
+      </div>
+      <div class="noc-section-body pt-8" fxLayout="column" fxLayoutAlign="start stretch">
+        <div class="ph-15 noc-annoton-group-row" fxLayout="column">
+          <mat-form-field appearance="outline" class="noc-sm">
+            <input type="text" matInput formControlName="title" placeholder="Title" />
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+    <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
+      <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+        <div class="noc-section-heading">
           Contributor (optional)
         </div>
         <span fxFlex></span>
@@ -103,7 +118,7 @@
         </div>
       </div>
     </div>
-    <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
+    <!--   <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
           Species
@@ -132,7 +147,7 @@
           </mat-form-field>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
   <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
     <button *ngIf="false" (click)='cancel()' type="button" mat-raised-button color="" class="mr-8">

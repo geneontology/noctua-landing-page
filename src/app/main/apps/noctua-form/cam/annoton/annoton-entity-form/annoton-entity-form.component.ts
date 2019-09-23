@@ -81,12 +81,12 @@ export class AnnotonEntityFormComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.annotonEntityFormSub = this.noctuaAnnotonEntityService.annotonEntityFormGroup$
+    this.annotonEntityFormSub = this.noctuaAnnotonEntityService.entityFormGroup$
       .subscribe(annotonEntityFormGroup => {
         if (!annotonEntityFormGroup) return;
         this.annotonEntityFormGroup = annotonEntityFormGroup;
         this.annoton = this.noctuaAnnotonEntityService.annoton;
-        this.termNode = this.noctuaAnnotonEntityService.termNode;
+        this.termNode = this.noctuaAnnotonEntityService.entity;
 
         console.log(this.termNode)
       });
@@ -97,7 +97,6 @@ export class AnnotonEntityFormComponent implements OnInit, OnDestroy {
       this.cam = cam
       this.cam.onGraphChanged.subscribe((annotons) => {
         //  let data = this.summaryGridService.getGrid(annotons);
-        //  this.sparqlService.addCamChildren(cam, data);
         //  this.dataSource = new CamsDataSource(this.sparqlService, this.paginator, this.sort);
       });
     });
@@ -122,23 +121,23 @@ export class AnnotonEntityFormComponent implements OnInit, OnDestroy {
     const self = this;
     self.noctuaAnnotonEntityService.annotonEntityFormToAnnoton();
 
-    this.noctuaGraphService.edit(this.camService.cam, self.noctuaAnnotonEntityService.termNode).then((data) => {
-      //  localStorage.setItem('barista_token', value);  
-      self.noctuaFormDialogService.openSuccessfulSaveToast('Activity successfully edited.', 'OK');
-    });
+    //this.noctuaGraphService.edit(this.camService.cam, self.noctuaAnnotonEntityService.termNode).then((data) => {
+    //  localStorage.setItem('barista_token', value);  
+    //    self.noctuaFormDialogService.openSuccessfulSaveToast('Activity successfully edited.', 'OK');
+    //  });
   }
 
   /*   openSummary() {
       let destCam = this.camForm.value;
-      this.cam.destNode.setTerm(destCam.term)
+      this.cam.destNode.term=new Entity(destCam.term)
   
       let evidenceArray: Evidence[] = destCam.evidenceFormArray.map((evidence) => {
         let result = new Evidence()
   
-        result.individualId = evidence.individualId;
+        result.uuid = evidence.uuid;
         result.setEvidence(evidence.evidence);
-        result.setReference(evidence.reference);
-        result.setWith(evidence.with);
+        result.reference=evidence.reference;
+        result.with=evidence.with;
   
         return result;
       });

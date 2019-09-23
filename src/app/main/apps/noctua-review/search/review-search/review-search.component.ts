@@ -10,7 +10,7 @@ import { noctuaAnimations } from '@noctua/animations';
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 
 import { takeUntil } from 'rxjs/internal/operators';
-import { forEach } from '@angular/router/src/utils/collection';
+
 
 import { ReviewService } from '../../services/review.service';
 
@@ -40,7 +40,6 @@ export class ReviewSearchComponent implements OnInit, OnDestroy {
   filteredGroups: Observable<any[]>;
   filteredContributors: Observable<any[]>;
 
-
   private unsubscribeAll: Subject<any>;
 
   constructor(private route: ActivatedRoute,
@@ -64,6 +63,7 @@ export class ReviewSearchComponent implements OnInit, OnDestroy {
 
   createAnswerForm() {
     return new FormGroup({
+      title: new FormControl(),
       gp: new FormControl(),
       goterm: new FormControl(),
       pmid: new FormControl(),
@@ -143,10 +143,10 @@ export class ReviewSearchComponent implements OnInit, OnDestroy {
     let searchCriteria = this.searchForm.value;
 
     this.noctuaSearchService.search(searchCriteria);
-    this.clear();
   }
 
   clear() {
+    this.searchForm.controls.title.setValue('');
     this.searchForm.controls.gp.setValue('');
     this.searchForm.controls.goterm.setValue('');
     this.searchForm.controls.pmid.setValue('');

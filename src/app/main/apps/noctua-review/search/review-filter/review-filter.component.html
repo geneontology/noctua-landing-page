@@ -89,7 +89,7 @@
         </div>
       </div>
     </div>
-    <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
+    <!--   <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
           Filter By Species
@@ -127,7 +127,7 @@
           </mat-form-field>
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
@@ -269,7 +269,16 @@
     </div>
   </div>
   <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
+    <label for="noc-upload-filter" fxLayout="row" fxLayoutAlign="start center" class="noc-file-upload">
+      <button mat-icon-button class="noc-file-button">
+        <mat-icon class="s-16 mr-4">cloud_upload</mat-icon>
+      </button>
+    </label>
+    <input type="file" id="noc-upload-filter" (change)="onFileChange($event)" class="noc-file-upload" />
     <span fxFlex></span>
+    <button (click)="downloadFilter()" type="button" mat-icon-button>
+      <mat-icon class="s-16 mr-4">cloud_download</mat-icon>
+    </button>
     <button (click)="clear()" type="button" mat-raised-button>Clear</button>
   </div>
 </form>

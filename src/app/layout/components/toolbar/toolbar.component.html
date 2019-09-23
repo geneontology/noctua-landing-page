@@ -1,6 +1,6 @@
 <mat-toolbar class="" fxLayout="row" fxLayoutAlign="start center">
   <mat-progress-bar *ngIf="showLoadingBar" class="loading-bar" color="accent" mode="indeterminate"></mat-progress-bar>
-  <div class="" fxLayout="row" fxLayoutAlign="start center">
+  <div class="noc-br pr-12 mr-12" fxLayout="row" fxLayoutAlign="start center">
     <div fxLayoutAlign="center center" class="noc-logo-filler">
       <button mat-icon-button target="_blank">
         <img src="assets/images/logos/go-logo.png">
@@ -9,6 +9,9 @@
     <div class="noc-logo" fxLayout="row" fxLayoutAlign="start">
       <a class="noc-main-logo" target="_blank">
         Noctua
+      </a>
+      <a class="noc-sub-logo" target="_blank">
+        Search
       </a>
     </div>
   </div>
@@ -20,14 +23,23 @@
       {{workbench.label}}
     </a>
   </mat-menu>
+  <!--   <div *ngIf="cam" class="noc-title mr-12" fxLayout="row" fxLayoutAlign="start center">
+    <div class="h-100-p mr-12" *ngIf="cam.title; else noCamTitle" fxLayout="row" fxLayoutAlign="start center">
+      <div class="noc-section-label noc-cam-title">
+        <div class="text-truncate" (click)="openCamForm()">
+          {{cam.title}}
+        </div>
+      </div>
+    </div>
+    <ng-template #noCamTitle>
+      <div class="h-100-p mr-12" fxLayout="row" fxLayoutAlign="start center">
+        <div class="noc-section-label" (click)="openCamForm(annoton)">
+          No Title Yet
+        </div>
+      </div>
+    </ng-template>
+  </div> -->
   <span fxFlex=""></span>
-  <!--
-  <div class="toolbar-separator"></div>
-  <div fxLayout="row" fxLayoutAlign="center center" fxFlex="100">
-    <noctua-search-bar fxFlex="60" class="noc-search-bar" (input)="search($event)"></noctua-search-bar>
-  </div>
-  <div class="toolbar-separator"></div>
--->
   <div *ngIf="!noctuaUserService.user" fxLayout="row" fxLayoutAlign="end center" fxFlex="250px">
     <a mat-button href="{{loginUrl}}">
       Login

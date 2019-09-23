@@ -40,7 +40,7 @@ export class ReviewService {
     }, species: {
       id: 5
     }
-  };
+  }
 
   selectedLeftPanel;
 

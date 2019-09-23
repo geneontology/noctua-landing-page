@@ -10,7 +10,6 @@ import { noctuaAnimations } from '@noctua/animations';
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 
 import { takeUntil } from 'rxjs/internal/operators';
-import { forEach } from '@angular/router/src/utils/collection';
 
 import { ReviewService } from '../../services/review.service';
 

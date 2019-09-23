@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NavigationEnd, NavigationStart, Router, ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -10,9 +10,13 @@ import {
     NoctuaFormConfigService,
     NoctuaGraphService,
     NoctuaAnnotonFormService,
+    AnnotonType,
 } from 'noctua-form-base';
 
 import { NoctuaConfigService } from '@noctua/services/config.service';
+import { NoctuaFormService } from 'app/main/apps/noctua-form/services/noctua-form.service';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { environment } from 'environments/environment';
 
 @Component({
@@ -21,85 +25,107 @@ import { environment } from 'environments/environment';
     styleUrls: ['./toolbar.component.scss']
 })
 
-export class NoctuaToolbarComponent implements OnInit {
+export class NoctuaToolbarComponent implements OnInit, OnDestroy {
+    AnnotonType = AnnotonType;
+
     public user: Contributor;
     public cam: Cam;
     userStatusOptions: any[];
-    languages: any;
-    selectedLanguage: any;
     showLoadingBar: boolean;
     horizontalNav: boolean;
     noNav: boolean;
     navigation: any;
-
-    loginUrl;
+    loginUrl = '';
 
     createNewMenu = [{
         label: 'Noctua Form',
         url: environment.workbenchUrl + 'noctua-form?',
     }, {
         label: 'Graph Editor',
-        url: environment.noctuaUrl + "/editor/graph/"
+        url: environment.noctuaUrl + '/editor/graph/'
     }, {
         label: 'Macromolecular Complex Creator',
         url: environment.workbenchUrl + 'mmcc?'
     }];
+
+    private _unsubscribeAll: Subject<any>;
 
     constructor(
         private router: Router,
         private route: ActivatedRoute,
         private camService: CamService,
         private noctuaConfig: NoctuaConfigService,
+        private noctuaGraphService: NoctuaGraphService,
         public noctuaUserService: NoctuaUserService,
         public noctuaAnnotonFormService: NoctuaAnnotonFormService,
-        //public noctuaFormService: NoctuaFormService,
-        private translate: TranslateService
+        public noctuaFormService: NoctuaFormService,
     ) {
-        console.log(window.location)
+        this._unsubscribeAll = new Subject();
         this.loginUrl = 'http://barista-dev.berkeleybop.org/login?return=' + window.location.origin;
-
         this.getUserInfo();
-        this.router.events.subscribe(
-            (event) => {
-                if (event instanceof NavigationStart) {
-                    this.showLoadingBar = true;
-                }
-                if (event instanceof NavigationEnd) {
-                    this.showLoadingBar = false;
-                }
-            });
+        this.router.events.pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(
+                (event) => {
+                    if (event instanceof NavigationStart) {
+                        this.showLoadingBar = true;
+                    }
+                    if (event instanceof NavigationEnd) {
+                        this.showLoadingBar = false;
+                    }
+                });
 
     }
 
     ngOnInit(): void {
-        this.camService.onCamChanged.subscribe((cam) => {
-            if (!cam) return;
+        this.camService.onCamChanged
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((cam) => {
+                if (!cam) {
+                    return;
+                }
 
-            this.cam = cam
-            this.cam.onGraphChanged.subscribe((annotons) => {
+                this.cam = cam;
             });
-        });
+    }
+
+    createModel() {
+        this.noctuaGraphService.createModel(this.cam);
     }
 
     getUserInfo() {
         const self = this;
 
-        this.noctuaUserService.onUserChanged.subscribe((response) => {
-            if (response) {
-                this.user = new Contributor()
-                this.user.name = response.nickname;
-                this.user.groups = response.groups;
-            }
-        });
+        self.noctuaUserService.onUserChanged.pipe(takeUntil(this._unsubscribeAll))
+            .subscribe((response) => {
+                if (response) {
+                    self.user = new Contributor()
+                    self.user.name = response.nickname;
+                    self.user.groups = response.groups;
+                }
+            });
     }
+
+
+
+    openCamForm() {
+        this.camService.initializeForm(this.cam);
+        this.noctuaFormService.openLeftDrawer(this.noctuaFormService.panel.camForm);
+    }
+
+    openAnnotonForm(annotonType: AnnotonType) {
+        this.noctuaAnnotonFormService.setAnnotonType(annotonType);
+        this.noctuaFormService.openLeftDrawer(this.noctuaFormService.panel.annotonForm);
+    }
+
+
 
 
     search(value): void {
         console.log(value);
     }
 
-    setLanguage(lang) {
-        this.selectedLanguage = lang;
-        this.translate.use(lang.id);
+    ngOnDestroy(): void {
+        this._unsubscribeAll.next();
+        this._unsubscribeAll.complete();
     }
 }

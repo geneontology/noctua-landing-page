@@ -125,7 +125,7 @@ export class CamDiagramService {
   openConnectorForm(sourceId, targetId) {
     const self = this;
 
-    self.noctuaAnnotonConnectorService.createConnection(sourceId, targetId);
+    self.noctuaAnnotonConnectorService.initializeForm(sourceId, targetId);
     self.noctuaFormService.openRightDrawer(self.noctuaFormService.panel.connectorForm);
   }
 

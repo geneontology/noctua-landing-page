@@ -12,7 +12,7 @@ import { takeUntil, startWith } from 'rxjs/internal/operators';
 
 import "rxjs/add/operator/debounceTime";
 import "rxjs/add/operator/distinctUntilChanged";
-import { forEach } from '@angular/router/src/utils/collection';
+
 
 
 import { NoctuaFormService } from './../../../services/noctua-form.service';
@@ -64,14 +64,6 @@ export class AnnotonEntityTableComponent implements OnInit, OnDestroy {
   // @Input('annotonNodes')
   //  public annotonNodes: AnnotonNode[]
 
-  @ViewChild(MatPaginator)
-  paginator: MatPaginator;
-
-  @ViewChild('filter')
-  filter: ElementRef;
-
-  @ViewChild(MatSort)
-  sort: MatSort;
 
   private unsubscribeAll: Subject<any>;
 
@@ -92,7 +84,12 @@ export class AnnotonEntityTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.loadCam();
+    this.cam.onGraphChanged.subscribe((annotons: Annoton[]) => {
+      if (annotons) {
+        this.cam.applyFilter();
+        this.loadCam();
+      }
+    });
   }
 
   loadCam() {
