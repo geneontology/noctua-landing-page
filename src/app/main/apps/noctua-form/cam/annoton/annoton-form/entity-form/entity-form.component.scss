@@ -5,6 +5,8 @@
 :host {
   width: 100%; // display: block;
 
+
+
   .noc-tree-input {
     $border-color: rgba(#000, 0.20);
     @include deep-width(20px);

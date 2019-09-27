@@ -140,7 +140,7 @@ export class ReviewSearchComponent implements OnInit, OnDestroy {
   }
 
   search() {
-    let searchCriteria = this.searchForm.value;
+    const searchCriteria = this.searchForm.value;
 
     this.noctuaSearchService.search(searchCriteria);
   }

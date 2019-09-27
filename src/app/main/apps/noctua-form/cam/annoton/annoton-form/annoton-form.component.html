@@ -81,11 +81,18 @@
            </div>
          </div>
          <div [formArrayName]="'fd'" *ngFor="let nodeGroup of annotonFormGroup.get('fd')?.controls; let i = index;"
-           class="mat-elevation-z1 noc-term-group mb-4 px-8 {{nodeGroup.get('name').value}}">
-           <div [formGroupName]="i" *ngFor="let entityForm of nodeGroup.get('entityGroup')?.controls" class="">
-             <noc-entity-form [entityFormGroup]="entityForm" fxLayout="row" fxLayoutAlign="start center"
-               class="w-100-p">
-             </noc-entity-form>
+           class="mat-elevation-z1 noc-term-group mb-4 px-8 {{nodeGroup.get('name').value}}" fxLayout="row"
+           fxLayoutAlign="start stretch">
+           <div *ngIf="nodeGroup.get('isComplement')?.value" class="noc-group-side-heading" fxLayout="column"
+             fxLayoutAlign="center center">
+             <div>IS NOT</div>
+           </div>
+           <div fxFlex="" class="">
+             <ng-container [formGroupName]="i" *ngFor="let entityForm of nodeGroup.get('entityGroup')?.controls">
+               <noc-entity-form [entityFormGroup]="entityForm" fxLayout="row" fxLayoutAlign="start center"
+                 class="w-100-p">
+               </noc-entity-form>
+             </ng-container>
            </div>
          </div>
        </div>

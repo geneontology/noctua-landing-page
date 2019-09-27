@@ -35,7 +35,8 @@ import {
 import {
   Cam,
   Annoton,
-  AnnotonNode
+  AnnotonNode,
+  InsertEntityDefinition
 } from 'noctua-form-base';
 
 import { SparqlService } from './../../../../../../../@noctua.sparql/services/sparql/sparql.service';
@@ -104,7 +105,6 @@ export class AnnotonTableComponent implements OnInit, OnDestroy {
 
   loadCam() {
     this.grid = this.annoton.grid;
-    this.addInsertMenuItems();
   }
 
   addEvidence(entity: AnnotonNode) {
@@ -177,15 +177,10 @@ export class AnnotonTableComponent implements OnInit, OnDestroy {
     }
   }
 
-  addInsertMenuItems() {
-    this.grid.map((entity) => {
-      entity.insertMenuItems = this.noctuaFormConfigService.getInsertEntityMenuItems(entity.node.type);
-    });
-  }
 
-  insertEntity(entity: AnnotonNode, nodeType: AnnotonNodeType) {
+  insertEntity(entity: AnnotonNode, nodeDescription: InsertEntityDefinition.InsertNodeDescription) {
     const self = this;
-    const insertedNode = this.noctuaFormConfigService.insertAnnotonNode(this.noctuaAnnotonFormService.annoton, entity, nodeType);
+    const insertedNode = this.noctuaFormConfigService.insertAnnotonNode(this.noctuaAnnotonFormService.annoton, entity, nodeDescription);
     this.noctuaAnnotonFormService.initializeForm();
 
 

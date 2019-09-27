@@ -105,6 +105,10 @@ export class CamTableComponent implements OnInit, OnDestroy {
     this.noctuaSearchService.search(searchCriteria);
   }
 
+  expandAll(expand: boolean) {
+    this.cam.expandAllAnnotons(expand);
+  }
+
   toggleExpand(annoton: Annoton) {
     annoton.expanded = !annoton.expanded;
   }

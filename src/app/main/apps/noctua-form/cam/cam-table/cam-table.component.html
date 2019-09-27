@@ -4,6 +4,17 @@
       ACTIVITIES
     </span>
     <span fxFlex></span>
+    <button mat-icon-button class="" fxFlex="40px" color="primary" [matMenuTriggerFor]="activityOptionMenu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #activityOptionMenu="matMenu" class="noc-dropdown-menu">
+      <button mat-menu-item class="" (click)="expandAll(true)">
+        Expand All
+      </button>
+      <button mat-menu-item class="" (click)="expandAll(false)">
+        Collapse All
+      </button>
+    </mat-menu>
   </div>
   <ng-container [ngSwitch]="cam?.displayType.name">
     <noc-annoton-entity-table *ngSwitchCase="camDisplayTypeOptions.entity.name" [cam]="cam" class="noc-cam-table-body"
@@ -28,6 +39,7 @@
           </div>
           <div class="noc-title mr-12">
             <div class="text-truncate">
+              <strong> {{annoton?.presentation.qualifier}} </strong>
               {{annoton?.presentation.title}}
             </div>
           </div>

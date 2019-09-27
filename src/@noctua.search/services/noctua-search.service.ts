@@ -8,7 +8,17 @@ import { map, filter, reduce, catchError, retry, tap, finalize } from 'rxjs/oper
 
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
-import { Cam, Contributor, Group, Organism, NoctuaFormConfigService, NoctuaUserService, Entity, AnnotonNode, CamRow } from 'noctua-form-base';
+import {
+    Cam,
+    Contributor,
+    Group,
+    Organism,
+    NoctuaFormConfigService,
+    NoctuaUserService,
+    Entity,
+    AnnotonNode,
+    CamRow
+} from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 
 
@@ -26,17 +36,16 @@ export class NoctuaSearchService {
     curieUtil: any;
     cams: any[] = [];
     searchCriteria: SearchCriteria;
-
     baristaApi = environment.globalBaristaLocation;
     separator = '@@';
-    loading: boolean = false;
+    loading = false;
     onCamsChanged: BehaviorSubject<any>;
     onCamChanged: BehaviorSubject<any>;
     onContributorFilterChanged: BehaviorSubject<any>;
-
-    searchSummary: any = {}
+    searchSummary: any = {};
 
     filterType = {
+        titles: 'titles',
         gps: 'gps',
         goterms: 'goterms',
         pmids: 'pmids',
@@ -44,7 +53,7 @@ export class NoctuaSearchService {
         groups: 'groups',
         organisms: 'organisms',
         states: 'states'
-    }
+    };
 
     constructor(private httpClient: HttpClient,
         public noctuaFormConfigService: NoctuaFormConfigService,
@@ -58,7 +67,9 @@ export class NoctuaSearchService {
         this.curieUtil = this.curieService.getCurieUtil();
 
         this.onSearcCriteriaChanged.subscribe((searchCriteria: SearchCriteria) => {
-            if (!searchCriteria) return;
+            if (!searchCriteria) {
+                return;
+            }
 
             this.getCams(searchCriteria).subscribe((response: any) => {
                 this.sparqlService.cams = this.cams = response;
@@ -70,6 +81,7 @@ export class NoctuaSearchService {
     search(searchCriteria) {
         this.searchCriteria = new SearchCriteria();
 
+        searchCriteria.title ? this.searchCriteria.titles.push(searchCriteria.title) : null;
         searchCriteria.contributor ? this.searchCriteria.contributors.push(searchCriteria.contributor) : null;
         searchCriteria.group ? this.searchCriteria.groups.push(searchCriteria.group) : null;
         searchCriteria.pmid ? this.searchCriteria.pmids.push(searchCriteria.pmid) : null;
@@ -112,6 +124,9 @@ export class NoctuaSearchService {
     uploadSearchConfig(searchCriteria) {
         this.searchCriteria = new SearchCriteria();
 
+        if (searchCriteria.titles) {
+            this.searchCriteria.titles = searchCriteria.titles;
+        }
         if (searchCriteria.contributors) {
             this.searchCriteria.contributors = searchCriteria.contributors;
         }
@@ -119,19 +134,19 @@ export class NoctuaSearchService {
             this.searchCriteria.groups = searchCriteria.groups;
         }
         if (searchCriteria.pmids) {
-            this.searchCriteria.pmids = searchCriteria.pmids
+            this.searchCriteria.pmids = searchCriteria.pmids;
         }
         if (searchCriteria.goterms) {
-            this.searchCriteria.goterms = searchCriteria.goterms
+            this.searchCriteria.goterms = searchCriteria.goterms;
         }
         if (searchCriteria.gps) {
-            this.searchCriteria.gps = searchCriteria.gps
+            this.searchCriteria.gps = searchCriteria.gps;
         }
         if (searchCriteria.organisms) {
-            this.searchCriteria.organisms = searchCriteria.organisms
+            this.searchCriteria.organisms = searchCriteria.organisms;
         }
         if (searchCriteria.states) {
-            this.searchCriteria.states = searchCriteria.states
+            this.searchCriteria.states = searchCriteria.states;
         }
 
         this.updateSearch();

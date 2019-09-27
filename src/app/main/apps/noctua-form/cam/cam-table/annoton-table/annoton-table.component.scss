@@ -27,6 +27,16 @@ $accent: map-get($theme, accent);
     }
   }
 
+  .noc-group-side-heading {
+    @include deep-width(25px);
+    @include deep-height(100%);
+    background-color: #DDD;
+    font-size: 8px;
+    font-weight: bold;
+    text-align: center;
+    word-break: normal;
+    overflow-wrap: anywhere;
+  }
 
 
   .mat-tab-group,

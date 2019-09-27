@@ -7,7 +7,6 @@ import { MatDialog, MatDialogRef, MatSnackBar } from '@angular/material';
 
 import 'rxjs/add/operator/map';
 import { NoctuaConfirmDialogComponent } from '@noctua/components/confirm-dialog/confirm-dialog.component';
-import { AnnotonEditorDialogComponent } from './../dialogs/annoton-editor/annoton-editor.component';
 
 @Injectable({
     providedIn: 'root'
@@ -41,17 +40,6 @@ export class NoctuaEditorDialogService {
                 if (response) {
                     success(response);
                 }
-            });
-    }
-
-    openAnnotonEditor(data: any): void {
-        this.dialogRef = this._matDialog.open(AnnotonEditorDialogComponent, {
-            panelClass: 'cam-row-edit-dialog',
-            data: data
-        });
-        this.dialogRef.afterClosed()
-            .subscribe(response => {
-
             });
     }
 

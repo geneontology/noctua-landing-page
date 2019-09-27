@@ -1,0 +1,18 @@
+<form [formGroup]="evidenceDBForm" novalidate class="pl-8 pr-8 w-100-p" fxLayout="row" fxLayoutAlign="start center">
+  <mat-form-field appearance="outline" fxFlex="100px" class="noc-sm  mr-12">
+    <mat-select placeholder="" formControlName="db">
+      <mat-option *ngFor="let evidenceDB of noctuaFormConfigService.evidenceDBs.options" [value]="evidenceDB">
+        {{evidenceDB.label}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" fxFlex="" class="noc-sm w-100-p">
+    <input matInput formControlName="accession" type="text" placeholder="Accession">
+  </mat-form-field>
+  <button mat-icon-button (click)="close()">
+    <mat-icon>cancel</mat-icon>
+  </button>
+  <button mat-icon-button (click)="save()">
+    <mat-icon>check_circle</mat-icon>
+  </button>
+</form>

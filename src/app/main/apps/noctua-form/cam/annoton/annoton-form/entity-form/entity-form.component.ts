@@ -33,9 +33,12 @@ import {
   Evidence,
   noctuaFormConfig,
   Entity,
-  EntityDefinition,
+  InsertEntityDefinition,
+  AnnotonError,
   AnnotonNodeType
 } from 'noctua-form-base';
+import { InlineReferenceService } from '@noctua.editor/inline-reference/inline-reference.service';
+
 
 @Component({
   selector: 'noc-entity-form',
@@ -63,21 +66,17 @@ export class EntityFormComponent implements OnInit, OnDestroy {
     private noctuaFormDialogService: NoctuaFormDialogService,
     private camService: CamService,
     private noctuaSearchService: NoctuaSearchService,
+    private inlineReferenceService: InlineReferenceService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaAnnotonFormService: NoctuaAnnotonFormService,
     private noctuaLookupService: NoctuaLookupService,
     private noctuaFormService: NoctuaFormService,
     private sparqlService: SparqlService, ) {
     this.unsubscribeAll = new Subject();
-
   }
 
   ngOnInit(): void {
-
     this.entity = this.noctuaAnnotonFormService.annoton.getNode(this.entityFormGroup.get('id').value);
-
-    this.evidenceDBForm = this._createEvidenceDBForm();
-    this.insertMenuItems = this.noctuaFormConfigService.getInsertEntityMenuItems(this.entity.type);
   }
 
   ngOnDestroy(): void {
@@ -100,9 +99,31 @@ export class EntityFormComponent implements OnInit, OnDestroy {
   }
 
   toggleIsComplement(entity: AnnotonNode) {
+    const self = this;
+    const errors = [];
+    let canToggle = true;
+
+    each(entity.nodeGroup.nodes, function (node: AnnotonNode) {
+      if (node.isExtension) {
+        canToggle = false;
+        const meta = {
+          aspect: node.label
+        };
+        const error = new AnnotonError('error',
+          1,
+          `Cannot add 'NOT Qualifier', Remove Extension'${node.label}'`, meta);
+        errors.push(error);
+      }
+    });
+
+    if (canToggle) {
+      entity.toggleIsComplement();
+      self.noctuaAnnotonFormService.initializeForm();
+    } else {
+      self.noctuaFormDialogService.openAnnotonErrorsDialog(errors);
+    }
 
   }
-
   openSearchDatabaseDialog(entity: AnnotonNode) {
     const self = this;
     const gpNode = this.noctuaAnnotonFormService.annoton.getGPNode();
@@ -141,8 +162,8 @@ export class EntityFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  insertEntity(nodeType: AnnotonNodeType) {
-    this.noctuaFormConfigService.insertAnnotonNode(this.noctuaAnnotonFormService.annoton, this.entity, nodeType);
+  insertEntity(nodeDescription: InsertEntityDefinition.InsertNodeDescription) {
+    this.noctuaFormConfigService.insertAnnotonNode(this.noctuaAnnotonFormService.annoton, this.entity, nodeDescription);
     this.noctuaAnnotonFormService.initializeForm();
   }
 
@@ -187,20 +208,16 @@ export class EntityFormComponent implements OnInit, OnDestroy {
     self.noctuaFormDialogService.openSelectEvidenceDialog(evidences, success);
   }
 
-  onSubmitEvidedenceDb(evidence: FormGroup, name: string) {
-    console.log(evidence);
-    console.log(this.evidenceDBForm.value);
+  openAddReference(event, evidence: FormGroup, name: string) {
+    const self = this;
 
-    const DB = this.evidenceDBForm.value.db;
-    const accession = this.evidenceDBForm.value.accession;
+    const data = {
+      formControl: evidence.controls[name] as FormControl,
+    };
+    this.inlineReferenceService.open(event.target, { data });
 
-    const control: FormControl = evidence.controls[name] as FormControl;
-    control.setValue(DB.name + ':' + accession);
   }
 
-  cancelEvidenceDb() {
-    this.evidenceDBForm.controls['accession'].setValue('');
-  }
 
   termDisplayFn(term): string | undefined {
     return term ? term.label : undefined;
@@ -208,12 +225,5 @@ export class EntityFormComponent implements OnInit, OnDestroy {
 
   evidenceDisplayFn(evidence): string | undefined {
     return evidence ? evidence.label : undefined;
-  }
-
-  private _createEvidenceDBForm() {
-    return new FormGroup({
-      db: new FormControl(this.noctuaFormConfigService.evidenceDBs.selected),
-      accession: new FormControl()
-    });
   }
 }

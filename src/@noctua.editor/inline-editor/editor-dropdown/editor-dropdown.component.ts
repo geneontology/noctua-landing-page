@@ -24,7 +24,8 @@ import {
   CamService,
   Entity,
   AnnotonNodeType,
-  noctuaFormConfig
+  noctuaFormConfig,
+  InsertEntityDefinition
 } from 'noctua-form-base';
 
 import { Cam } from 'noctua-form-base';
@@ -170,8 +171,8 @@ export class NoctuaEditorDropdownComponent implements OnInit, OnDestroy {
     }
   }
 
-  insertEntity(nodeType: AnnotonNodeType) {
-    this.noctuaFormConfigService.insertAnnotonNode(this.noctuaAnnotonFormService.annoton, this.entity, nodeType);
+  insertEntity(nodeDescription: InsertEntityDefinition.InsertNodeDescription) {
+    this.noctuaFormConfigService.insertAnnotonNode(this.noctuaAnnotonFormService.annoton, this.entity, nodeDescription);
     this.noctuaAnnotonFormService.initializeForm();
   }
 
