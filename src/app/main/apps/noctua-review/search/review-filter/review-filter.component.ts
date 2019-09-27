@@ -89,6 +89,7 @@ export class ReviewFilterComponent implements OnInit, OnDestroy {
       contributors: new FormControl(),
       groups: new FormControl(),
       organisms: new FormControl(),
+      titles: new FormControl(),
       states: new FormControl()
     });
   }

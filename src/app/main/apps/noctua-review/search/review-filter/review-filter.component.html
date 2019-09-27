@@ -232,6 +232,34 @@
         </div>
       </div>
     </div>
+
+
+
+    <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
+      <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
+        <div class="noc-section-heading">
+          Filter By Title
+        </div>
+        <span fxFlex></span>
+      </div>
+      <div class="noc-section-body p-0" fxLayout="column" fxLayoutAlign="start stretch">
+        <div class="noc-annoton-group-row" fxLayout="column">
+          <mat-form-field appearance="outline" class="noc-sm w-100-p">
+            <mat-chip-list #titleChipList>
+              <mat-chip *ngFor="let title of noctuaSearchService.searchCriteria.titles" [selectable]="true"
+                [removable]="true" (removed)="remove(title, noctuaSearchService.filterType.titles)">
+                {{title}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input formControlName="titles" placeholder="Add Title Filter" #titleInput
+                [matChipInputFor]="titleChipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="false"
+                (matChipInputTokenEnd)="add($event, noctuaSearchService.filterType.titles)">
+            </mat-chip-list>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
     <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
