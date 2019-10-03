@@ -1,27 +1,10 @@
-import { Component, Inject, OnInit, ElementRef, OnDestroy, ViewEncapsulation, ViewChild } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup, FormArray } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { MatPaginator, MatOption, MatSort } from '@angular/material';
-import { DataSource } from '@angular/cdk/collections';
-import { merge, Observable, BehaviorSubject, fromEvent, Subject } from 'rxjs';
-import { debounceTime, startWith, distinctUntilChanged, map } from 'rxjs/operators';
-
-import { noctuaAnimations } from '@noctua/animations';
-import { NoctuaUtils } from '@noctua/utils/noctua-utils';
-
-import { takeUntil } from 'rxjs/internal/operators';
-
-
-import { noctuaSearchService } from '../../services/search.service';
-
-import { NoctuaTranslationLoaderService } from '@noctua/services/translation-loader.service';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Observable, Subject } from 'rxjs';
+import { startWith, map } from 'rxjs/operators';
 import { NoctuaFormConfigService, NoctuaUserService } from 'noctua-form-base';
 import { NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
-
-import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
-import { NoctuaDataService } from '@noctua.common/services/noctua-data.service';
-
 
 @Component({
   selector: 'noc-search-form',
@@ -33,7 +16,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
   searchForm: FormGroup;
   selectedOrganism = {};
-  searchFormData: any = []
+  searchFormData: any = [];
   cams: any[] = [];
 
   filteredOrganisms: Observable<any[]>;
@@ -42,15 +25,10 @@ export class SearchFormComponent implements OnInit, OnDestroy {
 
   private unsubscribeAll: Subject<any>;
 
-  constructor(private route: ActivatedRoute,
-    public noctuaUserService: NoctuaUserService,
-    private noctuaSearchService: NoctuaSearchService,
+  constructor(public noctuaUserService: NoctuaUserService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     private noctuaLookupService: NoctuaLookupService,
-    private noctuaSearchService: NoctuaSearchService,
-    private sparqlService: SparqlService,
-    private noctuaDataService: NoctuaDataService,
-    private noctuaTranslationLoader: NoctuaTranslationLoaderService) {
+    private noctuaSearchService: NoctuaSearchService) {
     this.searchForm = this.createAnswerForm();
 
     this.unsubscribeAll = new Subject();

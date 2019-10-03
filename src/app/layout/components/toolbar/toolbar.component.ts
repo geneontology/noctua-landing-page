@@ -50,8 +50,7 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
         private camService: CamService,
         private noctuaGraphService: NoctuaGraphService,
         public noctuaUserService: NoctuaUserService,
-        public noctuaAnnotonFormService: NoctuaAnnotonFormService,
-        public noctuaFormService: NoctuaFormService,
+        public noctuaAnnotonFormService: NoctuaAnnotonFormService
     ) {
         this._unsubscribeAll = new Subject();
         this.loginUrl = 'http://barista-dev.berkeleybop.org/login?return=' + window.location.origin;

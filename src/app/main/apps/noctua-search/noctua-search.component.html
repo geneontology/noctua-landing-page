@@ -1,18 +1,18 @@
 <div class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start">
   <div class="noc-sidemenu" fxLayout="column" fxLayoutAlign="start center">
     <button mat-icon-button color="primary" class="noc-rounded-button"
-      (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.search)" matTooltip="Search" [matTooltipPosition]="'after'"
-      [matTooltipShowDelay]="1500">
+      (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.search)" matTooltip="Search"
+      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
       <mat-icon> search </mat-icon>
     </button>
     <button mat-icon-button color="primary" class="noc-rounded-button"
-      (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" matTooltip="Filter" [matTooltipPosition]="'after'"
-      [matTooltipShowDelay]="1500">
+      (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" matTooltip="Filter"
+      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
       <mat-icon> filter_list </mat-icon>
     </button>
     <button mat-icon-button color="primary" class="noc-rounded-button" (click)="
-      toggleLeftDrawer(noctuaSearchService.leftPanel.group)" matTooltip="Search by group" [matTooltipPosition]="'after'"
-      [matTooltipShowDelay]="1000">
+      toggleLeftDrawer(noctuaSearchService.leftPanel.group)" matTooltip="Search by group"
+      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
       <mat-icon> people_outline </mat-icon>
     </button>
     <button mat-icon-button color="primary" class="noc-rounded-button" (click)="
@@ -29,11 +29,11 @@
   <mat-drawer-container class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start" autosize>
     <mat-drawer #leftDrawer class="noc-left-drawer" mode="side" position="start">
       <div [ngSwitch]="noctuaSearchService.selectedLeftPanel?.id" class="h-100-p">
-        <noc-review-search *ngSwitchCase="noctuaSearchService.leftPanel.search.id"></noc-review-search>
-        <noc-review-filter *ngSwitchCase="noctuaSearchService.leftPanel.filter.id"></noc-review-filter>
-        <noc-review-groups *ngSwitchCase="noctuaSearchService.leftPanel.group.id"></noc-review-groups>
-        <noc-review-contributors *ngSwitchCase="noctuaSearchService.leftPanel.contributor.id"></noc-review-contributors>
-        <noc-review-organisms *ngSwitchCase="noctuaSearchService.leftPanel.species.id"></noc-review-organisms>
+        <noc-search-form *ngSwitchCase="noctuaSearchService.leftPanel.search.id"></noc-search-form>
+        <noc-search-filter *ngSwitchCase="noctuaSearchService.leftPanel.filter.id"></noc-search-filter>
+        <noc-search-groups *ngSwitchCase="noctuaSearchService.leftPanel.group.id"></noc-search-groups>
+        <noc-search-contributors *ngSwitchCase="noctuaSearchService.leftPanel.contributor.id"></noc-search-contributors>
+        <noc-search-organisms *ngSwitchCase="noctuaSearchService.leftPanel.species.id"></noc-search-organisms>
       </div>
     </mat-drawer>
     <mat-drawer-content class="noc-section-body w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start stretch">
