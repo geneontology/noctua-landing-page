@@ -65,6 +65,7 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     private sparqlService: SparqlService,
   ) {
 
+    console.log(window.location)
     this._unsubscribeAll = new Subject();
 
     this.route

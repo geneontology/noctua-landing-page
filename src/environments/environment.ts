@@ -14,8 +14,8 @@ export const environment = {
   globalMinervaDefinitionName: 'minerva_public_dev',
   globalBaristaLocation: 'http://barista-dev.berkeleybop.org',
   //Workbench
-  noctuaUrl: 'http://noctua-dev.berkeleybop.org/',
-  workbenchUrl: 'http://noctua-dev.berkeleybop.org//workbench/',
+  noctuaUrl: `${window.location.origin}`,
+  workbenchUrl: `${window.location.origin}/workbench/`, //'http://noctua-dev.berkeleybop.org/workbench/',
 
   locationStoreApi: 'https://6xq2j25tah.execute-api.us-east-1.amazonaws.com/dev',
   amigoTerm: 'http://amigo.geneontology.org/amigo/term/'
