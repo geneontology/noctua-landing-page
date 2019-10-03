@@ -42,52 +42,52 @@
         <div class="noc-cams-table-header w-100-p" fxLayout="row" fxLayoutAlign="start center">
           <small class="mr-12">Filtered By: </small>
           <mat-chip-list>
-            <mat-chip *ngIf="NoctuaSearchService.searchCriteria.titles.length>0"
+            <mat-chip *ngIf="noctuaSearchService.searchCriteria.titles.length>0"
               (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="NoctuaSearchService.removeFilterType(NoctuaSearchService.filterType.titles)">
-              <small>Title: </small> ({{ NoctuaSearchService.searchCriteria.titles.length}})
+              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.titles)">
+              <small>Title: </small> ({{ noctuaSearchService.searchCriteria.titles.length}})
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
-            <mat-chip *ngIf="NoctuaSearchService.searchCriteria.gps.length>0"
+            <mat-chip *ngIf="noctuaSearchService.searchCriteria.gps.length>0"
               (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="NoctuaSearchService.removeFilterType(NoctuaSearchService.filterType.gps)">
-              <small>GPs: </small> ({{ NoctuaSearchService.searchCriteria.gps.length}})
+              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.gps)">
+              <small>GPs: </small> ({{ noctuaSearchService.searchCriteria.gps.length}})
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
-            <mat-chip *ngIf="NoctuaSearchService.searchCriteria.goterms.length>0"
+            <mat-chip *ngIf="noctuaSearchService.searchCriteria.goterms.length>0"
               (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="NoctuaSearchService.removeFilterType(NoctuaSearchService.filterType.goterms)">
-              <small>GO Terms: </small> ({{ NoctuaSearchService.searchCriteria.goterms.length}})
+              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.goterms)">
+              <small>GO Terms: </small> ({{ noctuaSearchService.searchCriteria.goterms.length}})
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
-            <mat-chip *ngIf="NoctuaSearchService.searchCriteria.contributors.length>0"
+            <mat-chip *ngIf="noctuaSearchService.searchCriteria.contributors.length>0"
               (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="NoctuaSearchService.removeFilterType(NoctuaSearchService.filterType.contributors)">
-              <small>Contributors: </small> ({{ NoctuaSearchService.searchCriteria.contributors.length}})
+              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.contributors)">
+              <small>Contributors: </small> ({{ noctuaSearchService.searchCriteria.contributors.length}})
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
-            <mat-chip *ngIf="NoctuaSearchService.searchCriteria.groups.length>0"
+            <mat-chip *ngIf="noctuaSearchService.searchCriteria.groups.length>0"
               (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="NoctuaSearchService.removeFilterType(NoctuaSearchService.filterType.groups)">
-              <small>Groups: </small> ({{ NoctuaSearchService.searchCriteria.groups.length}})
+              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.groups)">
+              <small>Groups: </small> ({{ noctuaSearchService.searchCriteria.groups.length}})
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
-            <mat-chip *ngIf="NoctuaSearchService.searchCriteria.organisms.length>0"
+            <mat-chip *ngIf="noctuaSearchService.searchCriteria.organisms.length>0"
               (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="NoctuaSearchService.removeFilterType(NoctuaSearchService.filterType.organisms)">
-              <small>Species: </small> ({{ NoctuaSearchService.searchCriteria.organisms.length}})
+              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.organisms)">
+              <small>Species: </small> ({{ noctuaSearchService.searchCriteria.organisms.length}})
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
-            <mat-chip *ngIf="NoctuaSearchService.searchCriteria.pmids.length>0"
+            <mat-chip *ngIf="noctuaSearchService.searchCriteria.pmids.length>0"
               (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="NoctuaSearchService.removeFilterType(NoctuaSearchService.filterType.pmids)">
-              <small>PMIDs: </small> ({{ NoctuaSearchService.searchCriteria.pmids.length}})
+              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.pmids)">
+              <small>PMIDs: </small> ({{ noctuaSearchService.searchCriteria.pmids.length}})
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
-            <mat-chip *ngIf="NoctuaSearchService.searchCriteria.states.length>0"
+            <mat-chip *ngIf="noctuaSearchService.searchCriteria.states.length>0"
               (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="NoctuaSearchService.removeFilterType(NoctuaSearchService.filterType.states)">
-              <small>Model State: </small> ({{ NoctuaSearchService.searchCriteria.states.length}})
+              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.states)">
+              <small>Model State: </small> ({{ noctuaSearchService.searchCriteria.states.length}})
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
           </mat-chip-list>

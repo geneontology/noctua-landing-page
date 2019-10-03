@@ -33,5 +33,5 @@ import { SearchFilterComponent } from './components/search-filter/search-filter.
         SearchOrganismsComponent
     ]
 })
-export class NoctuaSearchBarModule {
+export class NoctuaSearchBaseModule {
 }

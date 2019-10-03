@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { NoctuaSharedModule } from '@noctua/shared.module';
 import { ContextMenuModule } from 'ngx-contextmenu';
-
-import { CamService } from 'noctua-form-base';
 import { CamsTableComponent } from './cams/cams-table/cams-table.component';
 import { NoctuaSearchComponent } from './noctua-search.component';
+import { NoctuaSearchBaseModule } from '@noctua.search/noctua-search.module';
 
 const routes = [
   {
@@ -20,7 +19,8 @@ const routes = [
     NoctuaSharedModule,
     CommonModule,
     RouterModule.forChild(routes),
-    ContextMenuModule.forRoot()
+    ContextMenuModule.forRoot(),
+    NoctuaSearchBaseModule
   ],
   declarations: [
     NoctuaSearchComponent,
