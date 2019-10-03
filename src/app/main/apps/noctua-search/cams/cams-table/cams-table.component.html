@@ -1,4 +1,4 @@
-<div *ngIf="noctuaSearchService.loading" class="noc-loading-container" fxLayout="column" fxLayoutAlign="center center">
+<div *ngIf="NoctuaSearchService.loading" class="noc-loading-container" fxLayout="column" fxLayoutAlign="center center">
   <mat-progress-spinner class="example-margin" [color]="loadingSpinner.color" [mode]="loadingSpinner.mode">
   </mat-progress-spinner>
 </div>
@@ -24,7 +24,7 @@
         </div>
         <div class="noc-model-state pr-12" fxFlex="110px" fxLayout="row" fxLayoutAlign="start center">
           <mat-chip *ngIf="cam.state" class="w-100-p"
-            (click)="noctuaSearchService.filter(noctuaSearchService.filterType.states, cam.state)">
+            (click)="NoctuaSearchService.filter(NoctuaSearchService.filterType.states, cam.state)">
             <mat-icon class="s-16">playlist_add_check</mat-icon> <span> {{cam.state.label }}</span>
           </mat-chip>
         </div>
@@ -34,7 +34,7 @@
         <div class="" fxFlex="">
           <mat-chip-list>
             <mat-chip *ngFor="let contributor of cam.contributors"
-              (click)="noctuaSearchService.filter(noctuaSearchService.filterType.contributors, contributor)">
+              (click)="NoctuaSearchService.filter(NoctuaSearchService.filterType.contributors, contributor)">
               <mat-icon class="s-12">person</mat-icon>
               <span>{{contributor.name}}</span>
             </mat-chip>

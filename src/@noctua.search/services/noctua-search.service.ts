@@ -3,10 +3,9 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import * as _ from 'lodash';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
-import { map, filter, reduce, catchError, retry, tap, finalize } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, tap, finalize } from 'rxjs/operators';
 
-import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import {
     Cam,
@@ -15,22 +14,49 @@ import {
     Organism,
     NoctuaFormConfigService,
     NoctuaUserService,
-    Entity,
-    AnnotonNode,
-    CamRow
+    Entity
 } from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 
 
 import { saveAs } from 'file-saver';
-import { each, forOwn } from 'lodash';
+import { forOwn } from 'lodash';
 import { CurieService } from '@noctua.curie/services/curie.service';
+import { MatDrawer } from '@angular/material';
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class NoctuaSearchService {
+
+    leftPanel = {
+        search: {
+            id: 1
+        }, filter: {
+            id: 2
+        }, group: {
+            id: 3
+        }, contributor: {
+            id: 4
+        }, species: {
+            id: 5
+        }
+    }
+
+    selectedLeftPanel;
+
+    onContributorsChanged: BehaviorSubject<any>;
+    onGroupsChanged: BehaviorSubject<any>;
+    onOrganismsChanged: BehaviorSubject<any>;
+
+    contributors: Contributor[] = [];
+    groups: Group[] = [];
+    organisms: Organism[] = [];
+    states: any[] = [];
+
+    private leftDrawer: MatDrawer;
+    private rightDrawer: MatDrawer;
     onSearcCriteriaChanged: BehaviorSubject<any>;
     baseUrl = environment.spaqrlApiUrl;
     curieUtil: any;
@@ -59,7 +85,13 @@ export class NoctuaSearchService {
         public noctuaFormConfigService: NoctuaFormConfigService,
         public noctuaUserService: NoctuaUserService,
         private sparqlService: SparqlService,
-        private curieService: CurieService) {
+        private curieService: CurieService, ) {
+        this.onContributorsChanged = new BehaviorSubject([]);
+        this.onGroupsChanged = new BehaviorSubject([]);
+        this.onOrganismsChanged = new BehaviorSubject([]);
+
+        this.selectedLeftPanel = this.leftPanel.search;
+        this.states = this.noctuaFormConfigService.modelState.options;
         this.searchCriteria = new SearchCriteria();
         this.onSearcCriteriaChanged = new BehaviorSubject(null);
         this.onCamsChanged = new BehaviorSubject({});
@@ -107,7 +139,7 @@ export class NoctuaSearchService {
         this.updateSearch();
     }
 
-    removeFilter(filterType, filter) {
+    removeFilter(filterType) {
         this.searchCriteria[filterType] = null;
     }
 
@@ -233,5 +265,62 @@ export class NoctuaSearchService {
         });
 
         return result;
+    }
+
+
+    selectLeftPanel(panel) {
+        this.selectedLeftPanel = panel;
+    }
+
+    public setLeftDrawer(leftDrawer: MatDrawer) {
+        this.leftDrawer = leftDrawer;
+    }
+
+    public openLeftDrawer() {
+        return this.leftDrawer.open();
+    }
+
+    public closeLeftDrawer() {
+        return this.leftDrawer.close();
+    }
+
+    public toggleLeftDrawer(panel) {
+        if (this.selectedLeftPanel.id === panel.id) {
+            this.leftDrawer.toggle();
+        } else {
+            this.selectLeftPanel(panel)
+            return this.openLeftDrawer();
+        }
+    }
+
+    public setRightDrawer(rightDrawer: MatDrawer) {
+        this.rightDrawer = rightDrawer;
+    }
+
+    public openRightDrawer() {
+        return this.rightDrawer.open();
+    }
+
+    public closeRightDrawer() {
+        return this.rightDrawer.close();
+    }
+
+    public groupContributors() {
+        return _.groupBy(this.contributors, function (contributor) {
+            return contributor.group;
+        });
+
+    }
+
+    public filterOrganisms(value: string): any[] {
+        const filterValue = value.toLowerCase();
+
+        return this.organisms.filter(organism => organism.taxonName.toLowerCase().indexOf(filterValue) === 0);
+    }
+
+    public filterStates(value: string): any[] {
+        const filterValue = value.toLowerCase();
+
+        return this.states.filter(state => state.name.toLowerCase().indexOf(filterValue) === 0);
     }
 }
