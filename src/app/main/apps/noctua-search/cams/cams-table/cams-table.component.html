@@ -47,16 +47,8 @@
               {{displayType.label}}
             </button>
           </mat-menu>
-          <button mat-icon-button (click)="openCamForm(cam)" class="">
-            <mat-icon class="">
-              info
-            </mat-icon>
-          </button>
         </div>
       </div>
-      <noc-cam-table [cam]="cam" *ngIf="cam.expanded" class="noc-cam-table-body" fxLayout="row"
-        fxLayoutAlign="start center">
-      </noc-cam-table>
     </div>
   </div>
 </div>

@@ -5,6 +5,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4203",
+    "clean": "rm -r workbenches/noctua-search/public",
     "build": "ng build --index src/inject.tmpl  --base-href  /workbench/noctua-search/ ",
     "start-hmr": "ng serve --configuration hmr -sm=false",
     "start-hmr-sourcemaps": "ng serve --hmr -e=hmr",
@@ -96,7 +97,7 @@
     "ngx-color-picker": "8.1.0",
     "ngx-contextmenu": "^5.1.1",
     "ngx-cookie-service": "2.2.0",
-    "noctua-form-base": "file:../noctua-form-base/dist/noctua-form-base-0.6.2.tgz",
+    "noctua-form-base": "^0.6.42",
     "noctua-sparql-query-builder": "0.0.41",
     "node-bourbon": "^4.2.8",
     "perfect-scrollbar": "1.4.0",
