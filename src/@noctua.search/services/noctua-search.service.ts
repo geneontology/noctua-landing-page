@@ -23,6 +23,7 @@ import { saveAs } from 'file-saver';
 import { forOwn } from 'lodash';
 import { CurieService } from '@noctua.curie/services/curie.service';
 import { MatDrawer } from '@angular/material';
+import { Router } from '@angular/router';
 
 
 @Injectable({
@@ -85,7 +86,8 @@ export class NoctuaSearchService {
         public noctuaFormConfigService: NoctuaFormConfigService,
         public noctuaUserService: NoctuaUserService,
         private sparqlService: SparqlService,
-        private curieService: CurieService, ) {
+        private curieService: CurieService,
+        private _router: Router) {
         this.onContributorsChanged = new BehaviorSubject([]);
         this.onGroupsChanged = new BehaviorSubject([]);
         this.onOrganismsChanged = new BehaviorSubject([]);
@@ -123,6 +125,31 @@ export class NoctuaSearchService {
         searchCriteria.state ? this.searchCriteria.states.push(searchCriteria.state) : null;
 
         this.updateSearch();
+    }
+
+    paramsToSearch(param) {
+        this.searchCriteria = new SearchCriteria();
+
+        param.title ? this.searchCriteria.titles.push(param.title) : null;
+        param.contributor ? this.searchCriteria.contributors.push(param.contributor) : null;
+        param.group ? this.searchCriteria.groups.push(param.group) : null;
+        param.pmid ? this.searchCriteria.pmids.push(param.pmid) : null;
+        param.goterm ? this.searchCriteria.goterms.push(
+            new Entity(param.goterm, '')) : null;
+        param.gp ? this.searchCriteria.gps.push(
+            new Entity(param.gp, '')) : null;
+        param.organism ? this.searchCriteria.organisms.push(param.organism) : null;
+        param.state ? this.searchCriteria.states.push(param.state) : null;
+
+        this.updateSearch();
+    }
+
+    searchToParam(searchCriteria) {
+        const query = searchCriteria.build();
+        const url = `${this.baristaApi}/search?${query}`;
+
+        return url;
+
     }
 
     updateSearch() {
@@ -186,9 +213,8 @@ export class NoctuaSearchService {
 
     getCams(searchCriteria: SearchCriteria): Observable<any> {
         const self = this;
-
-        let query = searchCriteria.build()
-        let url = `${this.baristaApi}/search?${query}`
+        const query = searchCriteria.build();
+        const url = `${this.baristaApi}/search?${query}`;
 
         self.loading = true;
 

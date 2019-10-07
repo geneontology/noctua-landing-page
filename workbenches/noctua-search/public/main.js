@@ -1420,6 +1420,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! file-saver */ "./node_modules/file-saver/dist/FileSaver.min.js");
 /* harmony import */ var file_saver__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(file_saver__WEBPACK_IMPORTED_MODULE_9__);
 /* harmony import */ var _noctua_curie_services_curie_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @noctua.curie/services/curie.service */ "./src/@noctua.curie/services/curie.service.ts");
+/* harmony import */ var _angular_router__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @angular/router */ "./node_modules/@angular/router/fesm5/router.js");
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1444,14 +1445,16 @@ var __importDefault = (undefined && undefined.__importDefault) || function (mod)
 
 
 
+
 var NoctuaSearchService = /** @class */ (function () {
-    function NoctuaSearchService(httpClient, noctuaFormConfigService, noctuaUserService, sparqlService, curieService) {
+    function NoctuaSearchService(httpClient, noctuaFormConfigService, noctuaUserService, sparqlService, curieService, _router) {
         var _this = this;
         this.httpClient = httpClient;
         this.noctuaFormConfigService = noctuaFormConfigService;
         this.noctuaUserService = noctuaUserService;
         this.sparqlService = sparqlService;
         this.curieService = curieService;
+        this._router = _router;
         this.leftPanel = {
             search: {
                 id: 1
@@ -1516,6 +1519,23 @@ var NoctuaSearchService = /** @class */ (function () {
         searchCriteria.organism ? this.searchCriteria.organisms.push(searchCriteria.organism) : null;
         searchCriteria.state ? this.searchCriteria.states.push(searchCriteria.state) : null;
         this.updateSearch();
+    };
+    NoctuaSearchService.prototype.paramsToSearch = function (param) {
+        this.searchCriteria = new _models_search_criteria__WEBPACK_IMPORTED_MODULE_8__["SearchCriteria"]();
+        param.title ? this.searchCriteria.titles.push(param.title) : null;
+        param.contributor ? this.searchCriteria.contributors.push(param.contributor) : null;
+        param.group ? this.searchCriteria.groups.push(param.group) : null;
+        param.pmid ? this.searchCriteria.pmids.push(param.pmid) : null;
+        param.goterm ? this.searchCriteria.goterms.push(new noctua_form_base__WEBPACK_IMPORTED_MODULE_7__["Entity"](param.goterm, '')) : null;
+        param.gp ? this.searchCriteria.gps.push(new noctua_form_base__WEBPACK_IMPORTED_MODULE_7__["Entity"](param.gp, '')) : null;
+        param.organism ? this.searchCriteria.organisms.push(param.organism) : null;
+        param.state ? this.searchCriteria.states.push(param.state) : null;
+        this.updateSearch();
+    };
+    NoctuaSearchService.prototype.searchToParam = function (searchCriteria) {
+        var query = searchCriteria.build();
+        var url = this.baristaApi + "/search?" + query;
+        return url;
     };
     NoctuaSearchService.prototype.updateSearch = function () {
         this.onSearcCriteriaChanged.next(this.searchCriteria);
@@ -1674,7 +1694,8 @@ var NoctuaSearchService = /** @class */ (function () {
         { type: noctua_form_base__WEBPACK_IMPORTED_MODULE_7__["NoctuaFormConfigService"] },
         { type: noctua_form_base__WEBPACK_IMPORTED_MODULE_7__["NoctuaUserService"] },
         { type: _noctua_sparql_services_sparql_sparql_service__WEBPACK_IMPORTED_MODULE_6__["SparqlService"] },
-        { type: _noctua_curie_services_curie_service__WEBPACK_IMPORTED_MODULE_10__["CurieService"] }
+        { type: _noctua_curie_services_curie_service__WEBPACK_IMPORTED_MODULE_10__["CurieService"] },
+        { type: _angular_router__WEBPACK_IMPORTED_MODULE_11__["Router"] }
     ]; };
     NoctuaSearchService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_1__["Injectable"])({
@@ -1684,7 +1705,8 @@ var NoctuaSearchService = /** @class */ (function () {
             noctua_form_base__WEBPACK_IMPORTED_MODULE_7__["NoctuaFormConfigService"],
             noctua_form_base__WEBPACK_IMPORTED_MODULE_7__["NoctuaUserService"],
             _noctua_sparql_services_sparql_sparql_service__WEBPACK_IMPORTED_MODULE_6__["SparqlService"],
-            _noctua_curie_services_curie_service__WEBPACK_IMPORTED_MODULE_10__["CurieService"]])
+            _noctua_curie_services_curie_service__WEBPACK_IMPORTED_MODULE_10__["CurieService"],
+            _angular_router__WEBPACK_IMPORTED_MODULE_11__["Router"]])
     ], NoctuaSearchService);
     return NoctuaSearchService;
 }());
@@ -1855,9 +1877,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var noctua_sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(noctua_sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_6__);
 /* harmony import */ var _noctua_curie_services_curie_service__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./../../../@noctua.curie/services/curie.service */ "./src/@noctua.curie/services/curie.service.ts");
 /* harmony import */ var noctua_form_base__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! noctua-form-base */ "./node_modules/noctua-form-base/fesm5/noctua-form-base.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
-/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_9__);
-/* harmony import */ var _sparql_minerva_service__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./sparql-minerva.service */ "./src/@noctua.sparql/services/sparql/sparql-minerva.service.ts");
+/* harmony import */ var _sparql_minerva_service__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./sparql-minerva.service */ "./src/@noctua.sparql/services/sparql/sparql-minerva.service.ts");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! lodash */ "./node_modules/lodash/lodash.js");
+/* harmony import */ var lodash__WEBPACK_IMPORTED_MODULE_10___default = /*#__PURE__*/__webpack_require__.n(lodash__WEBPACK_IMPORTED_MODULE_10__);
 var __decorate = (undefined && undefined.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -1881,27 +1903,53 @@ var __importDefault = (undefined && undefined.__importDefault) || function (mod)
 
 
 
-var each = __webpack_require__(/*! lodash/forEach */ "./node_modules/lodash/forEach.js");
-var forOwn = __webpack_require__(/*! lodash/forOwn */ "./node_modules/lodash/forOwn.js");
-var uuid = __webpack_require__(/*! uuid/v1 */ "./node_modules/uuid/v1.js");
+var amigo = __webpack_require__(/*! amigo2 */ "./node_modules/amigo2/amigo2.js");
 var SparqlService = /** @class */ (function () {
-    function SparqlService(noctuaFormConfigService, noctuaUserService, httpClient, noctuaGraphService, sparqlMinervaService, curieService) {
+    function SparqlService(noctuaFormConfigService, noctuaUserService, httpClient, sparqlMinervaService, curieService) {
         this.noctuaFormConfigService = noctuaFormConfigService;
         this.noctuaUserService = noctuaUserService;
         this.httpClient = httpClient;
-        this.noctuaGraphService = noctuaGraphService;
         this.sparqlMinervaService = sparqlMinervaService;
         this.curieService = curieService;
         this.minervaDefinitionName = _environments_environment__WEBPACK_IMPORTED_MODULE_0__["environment"].globalMinervaDefinitionName;
         this.separator = '@@';
         this.baseUrl = _environments_environment__WEBPACK_IMPORTED_MODULE_0__["environment"].spaqrlApiUrl;
+        this.wikidataSparqlUrl = _environments_environment__WEBPACK_IMPORTED_MODULE_0__["environment"].wikidataSparqlUrl;
         this.cams = [];
         this.loading = false;
+        this.linker = new amigo.linker();
         this.searchSummary = {};
         this.onCamsChanged = new rxjs__WEBPACK_IMPORTED_MODULE_3__["BehaviorSubject"]({});
         this.onCamChanged = new rxjs__WEBPACK_IMPORTED_MODULE_3__["BehaviorSubject"]({});
         this.curieUtil = this.curieService.getCurieUtil();
     }
+    SparqlService.prototype.getPubmedInfo = function (pmid) {
+        var _this = this;
+        var self = this;
+        var query = this.buildPubmedInfoQuery(pmid);
+        var url = this.wikidataSparqlUrl + "?query=" + encodeURIComponent(query) + "&formart=json";
+        // self.loading = true;
+        return this.httpClient
+            .get(url)
+            .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (res) { return res['results']; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (res) { return res['bindings']; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (val) { return console.dir(val); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["map"])(function (res) { return _this.addArticles(res, pmid); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (val) { return console.dir(val); }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["finalize"])(function () {
+            self.loading = false;
+        }));
+    };
+    SparqlService.prototype.addArticles = function (res, pmid) {
+        var self = this;
+        var result = [];
+        res.forEach(function (response) {
+            var article = new noctua_form_base__WEBPACK_IMPORTED_MODULE_8__["Article"]();
+            article.title = response.title.value;
+            article.author = response.author.value;
+            article.link = self.linker.url(noctua_form_base__WEBPACK_IMPORTED_MODULE_8__["noctuaFormConfig"].evidenceDB.options.pmid.name + ":" + pmid);
+            if (response.date) {
+                article.date = response.date.value;
+            }
+            result.push(article);
+        });
+        return result;
+    };
     SparqlService.prototype.getCams = function (searchCriteria) {
         var _this = this;
         var self = this;
@@ -1980,15 +2028,15 @@ var SparqlService = /** @class */ (function () {
             }
             if (response.groups && response.groups.value !== null) {
                 cam.groups = response.groups.value.split(self.separator).map(function (url) {
-                    var group = lodash__WEBPACK_IMPORTED_MODULE_9__["find"](self.noctuaUserService.groups, function (group) {
-                        return group.url === url;
+                    var group = Object(lodash__WEBPACK_IMPORTED_MODULE_10__["find"])(self.noctuaUserService.groups, function (inGroup) {
+                        return inGroup.url === url;
                     });
                     return group ? group : { url: url };
                 });
             }
             if (response.contributors && response.contributors.value !== "") {
                 cam.contributors = response.contributors.value.split(self.separator).map(function (orcid) {
-                    var contributor = lodash__WEBPACK_IMPORTED_MODULE_9__["find"](self.noctuaUserService.contributors, function (contributor) {
+                    var contributor = Object(lodash__WEBPACK_IMPORTED_MODULE_10__["find"])(self.noctuaUserService.contributors, function (contributor) {
                         return contributor.orcid === orcid;
                     });
                     return contributor ? contributor : { orcid: orcid };
@@ -2054,38 +2102,37 @@ var SparqlService = /** @class */ (function () {
         return result;
     };
     SparqlService.prototype.addGroupContributors = function (groups, contributors) {
-        var self = this;
-        each(groups, function (group) {
-            each(group.contributors, function (contributor) {
-                var srcContributor = lodash__WEBPACK_IMPORTED_MODULE_9__["find"](contributors, { orcid: contributor.orcid });
+        Object(lodash__WEBPACK_IMPORTED_MODULE_10__["each"])(groups, function (group) {
+            Object(lodash__WEBPACK_IMPORTED_MODULE_10__["each"])(group.contributors, function (contributor) {
+                var srcContributor = Object(lodash__WEBPACK_IMPORTED_MODULE_10__["find"])(contributors, { orcid: contributor.orcid });
                 contributor.name = srcContributor['name'];
                 contributor.cams = srcContributor['cams'];
             });
         });
     };
-    //BUILDER
+    // BUILDER
     SparqlService.prototype.buildCamsQuery = function (searchCriteria) {
         var _this = this;
         var query = new noctua_sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_6__["NoctuaQuery"]();
-        each(searchCriteria.goterms, function (goterm) {
+        Object(lodash__WEBPACK_IMPORTED_MODULE_10__["each"])(searchCriteria.goterms, function (goterm) {
             query.goterm(goterm.id);
         });
-        each(searchCriteria.groups, function (group) {
+        Object(lodash__WEBPACK_IMPORTED_MODULE_10__["each"])(searchCriteria.groups, function (group) {
             query.group(_this.getXSD(group.url));
         });
-        each(searchCriteria.contributors, function (contributor) {
+        Object(lodash__WEBPACK_IMPORTED_MODULE_10__["each"])(searchCriteria.contributors, function (contributor) {
             query.contributor(_this.getXSD(contributor.orcid));
         });
-        each(searchCriteria.gps, function (gp) {
+        Object(lodash__WEBPACK_IMPORTED_MODULE_10__["each"])(searchCriteria.gps, function (gp) {
             query.gp(_this.curieUtil.getIri(gp.id));
         });
-        each(searchCriteria.pmids, function (pmid) {
+        Object(lodash__WEBPACK_IMPORTED_MODULE_10__["each"])(searchCriteria.pmids, function (pmid) {
             query.pmid(pmid);
         });
-        each(searchCriteria.organisms, function (organism) {
+        Object(lodash__WEBPACK_IMPORTED_MODULE_10__["each"])(searchCriteria.organisms, function (organism) {
             query.taxon(organism.taxonIri);
         });
-        each(searchCriteria.states, function (state) {
+        Object(lodash__WEBPACK_IMPORTED_MODULE_10__["each"])(searchCriteria.states, function (state) {
             query.state(_this.getXSD(state.name));
         });
         query.limit(50);
@@ -2114,6 +2161,13 @@ var SparqlService = /** @class */ (function () {
         var query = "\n    PREFIX metago: <http://model.geneontology.org/>\n    PREFIX dc: <http://purl.org/dc/elements/1.1/>\n    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n    PREFIX has_affiliation: <http://purl.obolibrary.org/obo/ERO_0000066> \n    PREFIX hint: <http://www.bigdata.com/queryHints#>\n\n    SELECT  distinct ?name ?url         (GROUP_CONCAT(distinct ?orcidIRI;separator=\"@@\") AS ?orcids) \n                                        (COUNT(distinct ?orcidIRI) AS ?contributors)\n                                        (COUNT(distinct ?cam) AS ?cams)\n    WHERE    \n    {\n      ?cam metago:graphType metago:noctuaCam .\n      ?cam dc:contributor ?orcid .\n      BIND( IRI(?orcid) AS ?orcidIRI ).  \n      ?orcidIRI has_affiliation: ?url .\n      ?url rdfs:label ?name .     \n      hint:Prior hint:runLast true .\n    }\n    GROUP BY ?url ?name";
         return query;
     };
+    SparqlService.prototype.buildPubmedInfoQuery = function (pmid) {
+        var query = new sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["Query"]();
+        query.prefix(Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["prefix"])('wd', '<http://www.wikidata.org/entity/>'), Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["prefix"])('wdt', '<http://www.wikidata.org/prop/direct/>'))
+            .select('?rtcl ?title ?author ?journal ?date')
+            .where(Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["triple"])('?rtcl', 'wdt:P698', "\"" + pmid + "\""), Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["optional"])(Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["triple"])('?rtcl', 'wdt:P1476', '?title')), Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["optional"])(Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["triple"])('?rtcl', 'wdt:P2093', '?author')), Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["optional"])(Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["triple"])('?rtcl', 'wdt:P1433', '?journal')), Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["optional"])(Object(sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["triple"])('?rtcl', 'wdt:P577', '?date')));
+        return query.build();
+    };
     SparqlService.prototype.buildModelMetaQuery = function (modelId) {
         var query = new sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["Query"]();
         var graphQuery = new sparql_query_builder_dist__WEBPACK_IMPORTED_MODULE_5__["Query"]();
@@ -2138,8 +2192,7 @@ var SparqlService = /** @class */ (function () {
         { type: noctua_form_base__WEBPACK_IMPORTED_MODULE_8__["NoctuaFormConfigService"] },
         { type: noctua_form_base__WEBPACK_IMPORTED_MODULE_8__["NoctuaUserService"] },
         { type: _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"] },
-        { type: noctua_form_base__WEBPACK_IMPORTED_MODULE_8__["NoctuaGraphService"] },
-        { type: _sparql_minerva_service__WEBPACK_IMPORTED_MODULE_10__["SparqlMinervaService"] },
+        { type: _sparql_minerva_service__WEBPACK_IMPORTED_MODULE_9__["SparqlMinervaService"] },
         { type: _noctua_curie_services_curie_service__WEBPACK_IMPORTED_MODULE_7__["CurieService"] }
     ]; };
     SparqlService = __decorate([
@@ -2149,8 +2202,7 @@ var SparqlService = /** @class */ (function () {
         __metadata("design:paramtypes", [noctua_form_base__WEBPACK_IMPORTED_MODULE_8__["NoctuaFormConfigService"],
             noctua_form_base__WEBPACK_IMPORTED_MODULE_8__["NoctuaUserService"],
             _angular_common_http__WEBPACK_IMPORTED_MODULE_2__["HttpClient"],
-            noctua_form_base__WEBPACK_IMPORTED_MODULE_8__["NoctuaGraphService"],
-            _sparql_minerva_service__WEBPACK_IMPORTED_MODULE_10__["SparqlMinervaService"],
+            _sparql_minerva_service__WEBPACK_IMPORTED_MODULE_9__["SparqlMinervaService"],
             _noctua_curie_services_curie_service__WEBPACK_IMPORTED_MODULE_7__["CurieService"]])
     ], SparqlService);
     return SparqlService;
@@ -6633,6 +6685,7 @@ var NoctuaSearchComponent = /** @class */ (function () {
             .queryParams
             .subscribe(function (params) {
             _this.baristaToken = params['barista_token'] || null;
+            _this.noctuaSearchService.paramsToSearch(params);
             _this.noctuaUserService.baristaToken = _this.baristaToken;
             _this.getUserInfo();
             _this.loadCams();
@@ -7013,7 +7066,9 @@ var environment = {
     noctuaUrl: "" + window.location.origin,
     workbenchUrl: window.location.origin + "/workbench/",
     locationStoreApi: 'https://6xq2j25tah.execute-api.us-east-1.amazonaws.com/dev',
-    amigoTerm: 'http://amigo.geneontology.org/amigo/term/'
+    amigoTerm: 'http://amigo.geneontology.org/amigo/term/',
+    wikidataSparqlUrl: 'https://query.wikidata.org/sparql',
+    pubMed: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=json&id=22368089'
 };
 /*
  * In development mode, to ignore zone related error stack frames such as

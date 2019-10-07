@@ -2,9 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDrawer } from '@angular/material';
 import { Subject } from 'rxjs';
-
 import { noctuaAnimations } from './../../../../@noctua/animations';
-
 import {
   Cam,
   Contributor,
@@ -17,8 +15,6 @@ import { FormGroup } from '@angular/forms';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import { takeUntil } from 'rxjs/operators';
-
-
 
 @Component({
   selector: 'noc-noctua-search',
@@ -39,10 +35,10 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
   public cam: Cam;
   public user: Contributor;
   searchResults = [];
-  modelId: string = '';
-  baristaToken: string = '';
+  modelId = '';
+  baristaToken = '';
   searchCriteria: any = {};
-  searchFormData: any = []
+  searchFormData: any = [];
   searchForm: FormGroup;
   loadingSpinner: any = {
     color: 'primary',
@@ -72,6 +68,7 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
       .queryParams
       .subscribe(params => {
         this.baristaToken = params['barista_token'] || null;
+        this.noctuaSearchService.paramsToSearch(params);
         this.noctuaUserService.baristaToken = this.baristaToken;
         this.getUserInfo();
         this.loadCams();
@@ -120,8 +117,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
         this.noctuaSearchService.onGroupsChanged.next(response);
       });
 
-
-
     this.sparqlService.getAllOrganisms()
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((response: any) => {
@@ -148,7 +143,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
       .subscribe(groups => {
         this.noctuaUserService.groups = groups;
       });
-
   }
 
   toggleLeftDrawer(panel) {
@@ -188,10 +182,4 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.next();
     this._unsubscribeAll.complete();
   }
-
-
-
-
-
 }
-

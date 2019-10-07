@@ -18,7 +18,9 @@ export const environment = {
   workbenchUrl: `${window.location.origin}/workbench/`, //'http://noctua-dev.berkeleybop.org/workbench/',
 
   locationStoreApi: 'https://6xq2j25tah.execute-api.us-east-1.amazonaws.com/dev',
-  amigoTerm: 'http://amigo.geneontology.org/amigo/term/'
+  amigoTerm: 'http://amigo.geneontology.org/amigo/term/',
+  wikidataSparqlUrl: 'https://query.wikidata.org/sparql',
+  pubMed: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=json&id=22368089'
 };
 
 /*
