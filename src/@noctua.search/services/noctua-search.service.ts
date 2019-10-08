@@ -14,7 +14,9 @@ import {
     Organism,
     NoctuaFormConfigService,
     NoctuaUserService,
-    Entity
+    Entity,
+    Article,
+    noctuaFormConfig
 } from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 
@@ -25,11 +27,16 @@ import { CurieService } from '@noctua.curie/services/curie.service';
 import { MatDrawer } from '@angular/material';
 import { Router } from '@angular/router';
 
+declare const require: any;
+
+const amigo = require('amigo2');
+
 
 @Injectable({
     providedIn: 'root'
 })
 export class NoctuaSearchService {
+    linker = new amigo.linker();
 
     leftPanel = {
         search: {
@@ -142,14 +149,6 @@ export class NoctuaSearchService {
         param.state ? this.searchCriteria.states.push(param.state) : null;
 
         this.updateSearch();
-    }
-
-    searchToParam(searchCriteria) {
-        const query = searchCriteria.build();
-        const url = `${this.baristaApi}/search?${query}`;
-
-        return url;
-
     }
 
     updateSearch() {
@@ -291,6 +290,40 @@ export class NoctuaSearchService {
         });
 
         return result;
+    }
+
+    getPubmedInfo(pmid: string) {
+        const self = this;
+        const url = environment.pubMedSummaryApi + pmid;
+
+        return this.httpClient
+            .get(url)
+            .pipe(
+                map(res => res['result']),
+                map(res => res[pmid]),
+                tap(val => console.dir(val)),
+                map(res => this._addArticles(res, pmid)),
+                tap(val => console.dir(val)),
+            );
+    }
+
+    private _addArticles(res, pmid: string) {
+        const self = this;
+        if (!res) {
+            return;
+        }
+
+        const article = new Article();
+        article.title = res.title;
+        article.link = self.linker.url(`${noctuaFormConfig.evidenceDB.options.pmid.name}:${pmid}`);
+        article.date = res.pubdate;
+        if (res.authors && Array.isArray(res.authors)) {
+            article.author = res.authors.map(author => {
+                return author.name;
+            }).join(', ');
+        }
+
+        return article;
     }
 
 
