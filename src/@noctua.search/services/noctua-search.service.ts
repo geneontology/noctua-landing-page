@@ -14,7 +14,9 @@ import {
     Organism,
     NoctuaFormConfigService,
     NoctuaUserService,
-    Entity
+    Entity,
+    Article,
+    noctuaFormConfig
 } from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 
@@ -23,12 +25,18 @@ import { saveAs } from 'file-saver';
 import { forOwn } from 'lodash';
 import { CurieService } from '@noctua.curie/services/curie.service';
 import { MatDrawer } from '@angular/material';
+import { Router } from '@angular/router';
+
+declare const require: any;
+
+const amigo = require('amigo2');
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class NoctuaSearchService {
+    linker = new amigo.linker();
 
     leftPanel = {
         search: {
@@ -85,7 +93,8 @@ export class NoctuaSearchService {
         public noctuaFormConfigService: NoctuaFormConfigService,
         public noctuaUserService: NoctuaUserService,
         private sparqlService: SparqlService,
-        private curieService: CurieService, ) {
+        private curieService: CurieService,
+        private _router: Router) {
         this.onContributorsChanged = new BehaviorSubject([]);
         this.onGroupsChanged = new BehaviorSubject([]);
         this.onOrganismsChanged = new BehaviorSubject([]);
@@ -121,6 +130,23 @@ export class NoctuaSearchService {
         searchCriteria.gp ? this.searchCriteria.gps.push(searchCriteria.gp) : null;
         searchCriteria.organism ? this.searchCriteria.organisms.push(searchCriteria.organism) : null;
         searchCriteria.state ? this.searchCriteria.states.push(searchCriteria.state) : null;
+
+        this.updateSearch();
+    }
+
+    paramsToSearch(param) {
+        this.searchCriteria = new SearchCriteria();
+
+        param.title ? this.searchCriteria.titles.push(param.title) : null;
+        param.contributor ? this.searchCriteria.contributors.push(param.contributor) : null;
+        param.group ? this.searchCriteria.groups.push(param.group) : null;
+        param.pmid ? this.searchCriteria.pmids.push(param.pmid) : null;
+        param.goterm ? this.searchCriteria.goterms.push(
+            new Entity(param.goterm, '')) : null;
+        param.gp ? this.searchCriteria.gps.push(
+            new Entity(param.gp, '')) : null;
+        param.organism ? this.searchCriteria.organisms.push(param.organism) : null;
+        param.state ? this.searchCriteria.states.push(param.state) : null;
 
         this.updateSearch();
     }
@@ -186,9 +212,8 @@ export class NoctuaSearchService {
 
     getCams(searchCriteria: SearchCriteria): Observable<any> {
         const self = this;
-
-        let query = searchCriteria.build()
-        let url = `${this.baristaApi}/search?${query}`
+        const query = searchCriteria.build();
+        const url = `${this.baristaApi}/search?${query}`;
 
         self.loading = true;
 
@@ -265,6 +290,40 @@ export class NoctuaSearchService {
         });
 
         return result;
+    }
+
+    getPubmedInfo(pmid: string) {
+        const self = this;
+        const url = environment.pubMedSummaryApi + pmid;
+
+        return this.httpClient
+            .get(url)
+            .pipe(
+                map(res => res['result']),
+                map(res => res[pmid]),
+                tap(val => console.dir(val)),
+                map(res => this._addArticles(res, pmid)),
+                tap(val => console.dir(val)),
+            );
+    }
+
+    private _addArticles(res, pmid: string) {
+        const self = this;
+        if (!res) {
+            return;
+        }
+
+        const article = new Article();
+        article.title = res.title;
+        article.link = self.linker.url(`${noctuaFormConfig.evidenceDB.options.pmid.name}:${pmid}`);
+        article.date = res.pubdate;
+        if (res.authors && Array.isArray(res.authors)) {
+            article.author = res.authors.map(author => {
+                return author.name;
+            }).join(', ');
+        }
+
+        return article;
     }
 
 
