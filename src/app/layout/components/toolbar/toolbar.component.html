@@ -1,10 +1,10 @@
 <mat-toolbar class="" fxLayout="row" fxLayoutAlign="start center">
   <mat-progress-bar *ngIf="showLoadingBar" class="loading-bar" color="accent" mode="indeterminate"></mat-progress-bar>
-  <div class="noc-br" fxLayout="row" fxLayoutAlign="start center" fxFlex="220px">
-    <button mat-icon-button [matMenuTriggerFor]="changeView" class="">
+  <div class="noc-br h-100-p" fxLayout="row" fxLayoutAlign="start center" fxFlex="180px">
+    <!--    <button mat-icon-button [matMenuTriggerFor]="changeView" class="">
       <mat-icon>apps</mat-icon>
     </button>
-    <mat-menu #changeView="matMenu">
+   <mat-menu #changeView="matMenu">
       <button class="noc-create-button" (click)="createModel()" mat-menu-item>
         Create New Model
       </button>
@@ -12,21 +12,19 @@
         mat-menu-item>
         {{workbench.label}}
       </a>
-    </mat-menu>
-    <div fxLayoutAlign="center center" class="noc-logo-filler">
-      <a mat-icon-button href="http://geneontology.org/" target="_blank">
-        <img src="assets/images/logos/go-logo.png">
-      </a>
-    </div>
+    </mat-menu> -->
     <div class="noc-logo" fxLayout="row" fxLayoutAlign="start">
-      <a class="noc-main-logo" href="{{noctuaUrl}}" target="_blank">
-        Noctua
-      </a>
-      <a class="noc-sub-logo" href="{{noctuaFormUrl}}" target=" _blank">
-        Form
+      <a href="http://geneontology.org/" target="_blank">
+        <img src="/assets/images/go-logo.large.png">
       </a>
     </div>
   </div>
+  <a mat-button class="">
+    About
+  </a>
+  <a mat-button class="">
+    Help
+  </a>
   <div *ngIf="cam" class="noc-title mr-12" fxLayout="row" fxLayoutAlign="start center">
     <div class="h-100-p mr-12" *ngIf="cam.title; else noCamTitle" fxLayout="row" fxLayoutAlign="start center">
       <div class="noc-section-label noc-cam-title">
@@ -44,7 +42,16 @@
     </ng-template>
   </div>
   <span fxFlex=""></span>
-  <div *ngIf="noctuaUserService.user" fxLayout="row" fxLayoutAlign="end center" fxFlex="250px">
+  <a mat-icon-button href="https://github.com/geneontology" target="blank">
+    <mat-icon class="fa fa-github"></mat-icon>
+  </a>
+  <a mat-icon-button href="https://twitter.com/news4go" target="blank">
+    <mat-icon class="fa fa-twitter"></mat-icon>
+  </a>
+  <a mat-icon-button href="https://www.facebook.com/pages/Gene-Ontology/305908656519" target="blank">
+    <mat-icon class="fa fa-facebook"></mat-icon>
+  </a>
+  <div *ngIf="noctuaUserService.user" fxLayout="row" fxLayoutAlign="end center" fxFlex="">
     <button mat-button class="noc-name-button" [matMenuTriggerFor]="userMenu">
       <div fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-info" fxLayout="column" fxLayoutAlign="start start">
@@ -64,8 +71,8 @@
       </a>
     </mat-menu>
   </div>
-  <div *ngIf="!noctuaUserService.user" fxLayout="row" fxLayoutAlign="end center" fxFlex="150px">
-    <a mat-button href="{{loginUrl}}" class="green-300-bg">
+  <div *ngIf="!noctuaUserService.user" fxLayout="row" fxLayoutAlign="end center" fxFlex="100px">
+    <a mat-button href="{{loginUrl}}" class="green-300-bg w-100-p">
       Login
     </a>
   </div>
