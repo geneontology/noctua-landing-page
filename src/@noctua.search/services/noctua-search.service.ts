@@ -1,4 +1,4 @@
-import { environment } from 'environments/environment';
+import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
@@ -6,7 +6,6 @@ import * as _ from 'lodash';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { map, tap, finalize } from 'rxjs/operators';
 
-import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import {
     Cam,
     Contributor,
@@ -26,8 +25,7 @@ import { saveAs } from 'file-saver';
 import { forOwn } from 'lodash';
 import { CurieService } from '@noctua.curie/services/curie.service';
 import { MatDrawer } from '@angular/material';
-import { Router } from '@angular/router';
-import { CamPage } from '@noctua.search/models/cam-page';
+import { CamPage } from './../models/cam-page';
 
 declare const require: any;
 

@@ -5,7 +5,7 @@ import {
   NoctuaFormConfigService,
   NoctuaUserService
 } from 'noctua-form-base';
-import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
+import { NoctuaSearchService } from './../../services/noctua-search.service';
 
 @Component({
   selector: 'noc-search-contributors',

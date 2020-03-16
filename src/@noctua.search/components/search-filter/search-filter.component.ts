@@ -6,7 +6,7 @@ import { Observable, Subject } from 'rxjs';
 import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organism } from 'noctua-form-base';
 import { NoctuaLookupService } from 'noctua-form-base';
-import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
+import { NoctuaSearchService } from './../../services/noctua-search.service';
 
 @Component({
   selector: 'noc-search-filter',
