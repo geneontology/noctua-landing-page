@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
 import { Observable, Subject } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organism } from 'noctua-form-base';
 import { NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
@@ -63,7 +63,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       groups: new FormControl(),
       organisms: new FormControl(),
       titles: new FormControl(),
-      states: new FormControl()
+      states: new FormControl(),
+      dates: new FormControl()
     });
   }
 
@@ -71,25 +72,25 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   onValueChanges() {
     const self = this;
 
-    this.filterForm.get('goterms').valueChanges
-      .distinctUntilChanged()
-      .debounceTime(400)
-      .subscribe(data => {
-        let searchData = self.searchFormData['goterm'];
-        this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-          self.searchFormData['goterm'].searchResults = response
-        });
+    this.filterForm.get('goterms').valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(400)
+    ).subscribe(data => {
+      let searchData = self.searchFormData['goterm'];
+      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
+        self.searchFormData['goterm'].searchResults = response
       });
+    });
 
-    this.filterForm.get('gps').valueChanges
-      .distinctUntilChanged()
-      .debounceTime(400)
-      .subscribe(data => {
-        let searchData = self.searchFormData['gp'];
-        this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-          self.searchFormData['gp'].searchResults = response
-        })
+    this.filterForm.get('gps').valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(400)
+    ).subscribe(data => {
+      let searchData = self.searchFormData['gp'];
+      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
+        self.searchFormData['gp'].searchResults = response
       })
+    })
 
     this.filteredOrganisms = this.filterForm.controls.organisms.valueChanges
       .pipe(
@@ -124,11 +125,11 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   }
 
   termDisplayFn(term): string | undefined {
-    return term ? term.label : undefined;
+    return term && term.id ? `${term.label} (${term.id})` : undefined;
   }
 
   evidenceDisplayFn(evidence): string | undefined {
-    return evidence ? evidence.label : undefined;
+    return evidence && evidence.id ? `${evidence.label} (${evidence.id})` : undefined;
   }
 
   contributorDisplayFn(contributor: Contributor): string | undefined {

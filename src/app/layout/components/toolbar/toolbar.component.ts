@@ -1,15 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { NavigationEnd, NavigationStart, Router } from '@angular/router';
+import { NavigationEnd, NavigationStart, Router, ActivatedRoute } from '@angular/router';
+
 import {
     Cam,
     Contributor,
     CamService,
     NoctuaUserService,
+    NoctuaFormConfigService,
     NoctuaGraphService,
     NoctuaAnnotonFormService,
     AnnotonType,
 } from 'noctua-form-base';
 
+import { NoctuaConfigService } from '@noctua/services/config.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { environment } from 'environments/environment';
@@ -30,31 +33,42 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
     horizontalNav: boolean;
     noNav: boolean;
     navigation: any;
+    noctuaFormUrl = '';
     loginUrl = '';
-
-    createNewMenu = [{
-        label: 'Noctua Form',
-        url: environment.workbenchUrl + 'noctua-form?',
-    }, {
-        label: 'Graph Editor',
-        url: environment.noctuaUrl + '/editor/graph/'
-    }, {
-        label: 'Macromolecular Complex Creator',
-        url: environment.workbenchUrl + 'mmcc?'
-    }];
+    logoutUrl = '';
+    noctuaUrl = '';
 
     private _unsubscribeAll: Subject<any>;
 
     constructor(
         private router: Router,
+        private route: ActivatedRoute,
         private camService: CamService,
         private noctuaGraphService: NoctuaGraphService,
         public noctuaUserService: NoctuaUserService,
         public noctuaAnnotonFormService: NoctuaAnnotonFormService
     ) {
+        const self = this;
         this._unsubscribeAll = new Subject();
-        this.loginUrl = 'http://barista-dev.berkeleybop.org/login?return=' + window.location.origin;
         this.getUserInfo();
+
+        this.route
+            .queryParams
+            .pipe(takeUntil(this._unsubscribeAll))
+            .subscribe(params => {
+                const baristaToken = params['barista_token'] || null;
+                const modelId = params['model_id'] || null;
+                const noctuaFormReturnUrl = `${environment.workbenchUrl}noctua-form/?model_id=${modelId}`;
+                const baristaParams = { 'barista_token': baristaToken };
+                const modelIdParams = { 'model_id': modelId };
+
+                this.loginUrl = `${environment.globalBaristaLocation}/login?return=${noctuaFormReturnUrl}`;
+                this.logoutUrl = `${environment.globalBaristaLocation}/logout?return=${noctuaFormReturnUrl}`;
+                this.noctuaUrl = environment.noctuaUrl + '?' + (baristaToken ? self._parameterize(Object.assign({}, baristaParams)) : '');
+                this.noctuaFormUrl = environment.workbenchUrl + 'noctua-form?'
+                    + (baristaToken ? self._parameterize(Object.assign({}, modelIdParams, baristaParams)) : '');
+            });
+
         this.router.events.pipe(takeUntil(this._unsubscribeAll))
             .subscribe(
                 (event) => {
@@ -65,7 +79,6 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
                         this.showLoadingBar = false;
                     }
                 });
-
     }
 
     ngOnInit(): void {
@@ -87,22 +100,23 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
     getUserInfo() {
         const self = this;
 
-        self.noctuaUserService.onUserChanged.pipe(takeUntil(this._unsubscribeAll))
-            .subscribe((response) => {
-                if (response) {
-                    self.user = new Contributor()
-                    self.user.name = response.nickname;
-                    self.user.groups = response.groups;
+        self.noctuaUserService.onUserChanged.pipe(
+            takeUntil(this._unsubscribeAll))
+            .subscribe((user: Contributor) => {
+                if (user) {
+                    self.user = user;
                 }
             });
     }
 
-    search(value): void {
-        console.log(value);
-    }
+
 
     ngOnDestroy(): void {
         this._unsubscribeAll.next();
         this._unsubscribeAll.complete();
+    }
+
+    private _parameterize = (params) => {
+        return Object.keys(params).map(key => key + '=' + params[key]).join('&');
     }
 }

@@ -1,23 +1,25 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
-import { Subject } from 'rxjs';
+import { DataSource, CollectionViewer } from '@angular/cdk/collections';
+import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs';
+
 import { noctuaAnimations } from '@noctua/animations';
+
 import { takeUntil } from 'rxjs/internal/operators';
-import "rxjs/add/operator/debounceTime";
-import "rxjs/add/operator/distinctUntilChanged";
+
+
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 
 import {
-  NoctuaGraphService,
   NoctuaFormConfigService,
   CamService
 } from 'noctua-form-base';
 
-import {
-  Cam
-} from 'noctua-form-base';
+import { Cam } from 'noctua-form-base';
+import { SearchService } from 'app/main/apps/noctua-search/services/search.service';
+import { MatPaginator } from '@angular/material';
+import { CamPage } from '@noctua.search/models/cam-page';
 
 @Component({
   selector: 'noc-cams-table',
@@ -28,88 +30,77 @@ import {
 export class CamsTableComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any>;
 
+  @ViewChild(MatPaginator, { static: true })
+  paginator: MatPaginator;
+
+  displayedColumns = [
+    'title',
+    'state',
+    'date',
+    'contributor',
+    'edit',
+    'export'];
+
   searchCriteria: any = {};
   searchFormData: any = [];
   searchForm: FormGroup;
   loadingSpinner: any = {
     color: 'primary',
     mode: 'indeterminate'
-  }
+  };
 
   cams: any[] = [];
-  searchResults = [];
+  camPage: CamPage;
 
-  constructor(public noctuaFormConfigService: NoctuaFormConfigService,
+  constructor(
+    public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaSearchService: NoctuaSearchService,
-    private camService: CamService,
-    private noctuaGraphService: NoctuaGraphService,
+    public searchService: SearchService,
     public sparqlService: SparqlService) {
 
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
     this._unsubscribeAll = new Subject();
+    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
   }
 
   ngOnInit(): void {
 
-    this.sparqlService.onCamsChanged
+    console.log('pp')
+
+    this.noctuaSearchService.onCamsChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(cams => {
+        if (!cams) {
+          return;
+        }
         this.cams = cams;
-        this.loadCams();
+      });
+
+    this.noctuaSearchService.onCamsPageChanged
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((camPage: CamPage) => {
+        if (!camPage) {
+          return;
+        }
+        this.camPage = camPage;
       });
   }
 
   toggleLeftDrawer(panel) {
-    this.noctuaSearchService.toggleLeftDrawer(panel);
+    this.searchService.toggleLeftDrawer(panel);
   }
 
   search() {
-    let searchCriteria = this.searchForm.value;
-    console.dir(searchCriteria)
+    const searchCriteria = this.searchForm.value;
+    console.dir(searchCriteria);
     this.noctuaSearchService.search(searchCriteria);
   }
 
-  loadCams() {
-    this.cams = this.sparqlService.cams;
-  }
 
-  toggleExpand(cam: Cam) {
-    if (cam.expanded) {
-      cam.expanded = false;
-    } else {
-      cam.expanded = true;
-      this.changeCamDisplayView(cam, cam.displayType);
-    }
-  }
-
-  refresh() {
-
-  }
-
-  openCamForm(cam: Cam) {
-    this.sparqlService.getModelMeta(cam.id).subscribe((response: any) => {
-      if (response && response.length > 0) {
-        let responseCam = <Cam>response[0];
-        cam.contributors = responseCam.contributors;
-        cam.groups = responseCam.groups;
-        this.camService.onCamChanged.next(cam);
-      }
-    });
-    this.camService.initializeForm(cam);
-    // this.noctuaFormService.openRightDrawer(this.noctuaFormService.panel.camForm);
-  }
-
-  changeCamDisplayView(cam: Cam, displayType) {
-    cam.displayType = displayType;
-    this.noctuaGraphService.getGraphInfo(cam, cam.id);
-  }
-
-  selectCam(cam: Cam) {
-    this.sparqlService.onCamChanged.next(cam);
-  }
 
   ngOnDestroy(): void {
     this._unsubscribeAll.next();
     this._unsubscribeAll.complete();
   }
 }
+

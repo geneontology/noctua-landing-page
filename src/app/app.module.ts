@@ -3,7 +3,6 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
-import { TranslateModule } from '@ngx-translate/core';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import 'hammerjs';
 import { MatSidenavModule } from '@angular/material';
@@ -14,7 +13,6 @@ import { NoctuaSharedModule } from '@noctua/shared.module';
 import { noctuaConfig } from './noctua-config';
 import { AppComponent } from './app.component';
 import { LayoutModule } from 'app/layout/layout.module';
-
 import { PagesModule } from './main/pages/pages.module';
 import { AppsModule } from './main/apps/apps.module';
 
@@ -35,7 +33,6 @@ const appRoutes: Routes = [
         HttpClientModule,
         HttpClientJsonpModule,
         RouterModule.forRoot(appRoutes),
-        TranslateModule.forRoot(),
 
         // Noctua Main and Shared modules
         NoctuaModule.forRoot(noctuaConfig),

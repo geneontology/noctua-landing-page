@@ -8,6 +8,7 @@ import {
   Contributor,
   NoctuaUserService,
   NoctuaFormConfigService,
+  NoctuaGraphService,
   NoctuaAnnotonFormService
 } from 'noctua-form-base';
 
@@ -15,12 +16,13 @@ import { FormGroup } from '@angular/forms';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import { takeUntil } from 'rxjs/operators';
+import { SearchService } from '../noctua-search/services/search.service';
 
 @Component({
   selector: 'noc-noctua-search',
   templateUrl: './noctua-search.component.html',
   styleUrls: ['./noctua-search.component.scss'],
-  //encapsulation: ViewEncapsulation.None,
+  // encapsulation: ViewEncapsulation.None,
   animations: noctuaAnimations
 })
 export class NoctuaSearchComponent implements OnInit, OnDestroy {
@@ -31,9 +33,9 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
   @ViewChild('rightDrawer', { static: true })
   rightDrawer: MatDrawer;
 
-
   public cam: Cam;
   public user: Contributor;
+
   searchResults = [];
   modelId = '';
   baristaToken = '';
@@ -44,7 +46,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     color: 'primary',
     mode: 'indeterminate'
   };
-
   summary: any = {
     expanded: false,
     detail: {}
@@ -59,16 +60,15 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     public noctuaAnnotonFormService: NoctuaAnnotonFormService,
     public noctuaSearchService: NoctuaSearchService,
     private sparqlService: SparqlService,
+    public searchService: SearchService,
   ) {
 
-    console.log(window.location)
     this._unsubscribeAll = new Subject();
 
     this.route
       .queryParams
       .subscribe(params => {
         this.baristaToken = params['barista_token'] || null;
-        this.noctuaSearchService.paramsToSearch(params);
         this.noctuaUserService.baristaToken = this.baristaToken;
         this.getUserInfo();
         this.loadCams();
@@ -81,7 +81,7 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((response) => {
         if (response && response.nickname) {
-          this.user = new Contributor()
+          this.user = new Contributor();
           this.user.name = response.nickname;
           this.user.groups = response.groups;
           // user.manager.use_groups([self.userInfo.selectedGroup.id]);
@@ -92,39 +92,34 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.noctuaSearchService.setLeftDrawer(this.leftDrawer);
-    /*
-    this.sparqlService.getCamsByContributor('http://orcid.org/0000-0002-1706-4196').subscribe((response: any) => {
-      this.cams = this.sparqlService.cams = response;
-      this.sparqlService.onCamsChanged.next(this.cams);
-    });
-    */
+    this.searchService.setLeftDrawer(this.leftDrawer);
+    this.searchService.setRightDrawer(this.rightDrawer);
 
     this.rightDrawer.open();
 
     this.sparqlService.getAllContributors()
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((response: any) => {
-        this.noctuaSearchService.contributors = response;
-        this.noctuaSearchService.onContributorsChanged.next(response);
+        this.searchService.contributors = response;
+        this.searchService.onContributorsChanged.next(response);
         this.noctuaSearchService.updateSearch();
       });
 
     this.sparqlService.getAllGroups()
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((response: any) => {
-        this.noctuaSearchService.groups = response;
-        this.noctuaSearchService.onGroupsChanged.next(response);
+        this.searchService.groups = response;
+        this.searchService.onGroupsChanged.next(response);
       });
 
     this.sparqlService.getAllOrganisms()
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((response: any) => {
-        this.noctuaSearchService.organisms = response;
-        this.noctuaSearchService.onOrganismsChanged.next(response);
+        this.searchService.organisms = response;
+        this.searchService.onOrganismsChanged.next(response);
       });
 
-    this.sparqlService.onCamsChanged
+    this.noctuaSearchService.onCamsChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(cams => {
         this.cams = cams;
@@ -132,25 +127,26 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
         this.loadCams();
       });
 
-    this.noctuaSearchService.onContributorsChanged
+    this.searchService.onContributorsChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(contributors => {
         this.noctuaUserService.contributors = contributors;
       });
 
-    this.noctuaSearchService.onGroupsChanged
+    this.searchService.onGroupsChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(groups => {
         this.noctuaUserService.groups = groups;
       });
+
   }
 
   toggleLeftDrawer(panel) {
-    this.noctuaSearchService.toggleLeftDrawer(panel);
+    this.searchService.toggleLeftDrawer(panel);
   }
 
   search() {
-    let searchCriteria = this.searchForm.value;
+    const searchCriteria = this.searchForm.value;
     this.noctuaSearchService.search(searchCriteria);
   }
 
@@ -175,7 +171,7 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
   }
 
   selectCam(cam) {
-    this.sparqlService.onCamChanged.next(cam);
+    this.noctuaSearchService.onCamChanged.next(cam);
   }
 
   ngOnDestroy(): void {
@@ -183,3 +179,4 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.complete();
   }
 }
+

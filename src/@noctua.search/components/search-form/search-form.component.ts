@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { NoctuaFormConfigService, NoctuaUserService } from 'noctua-form-base';
 import { NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
@@ -54,25 +54,25 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   onValueChanges() {
     const self = this;
 
-    this.searchForm.get('goterm').valueChanges
-      .distinctUntilChanged()
-      .debounceTime(400)
-      .subscribe(data => {
-        let searchData = self.searchFormData['goterm'];
-        this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-          self.searchFormData['goterm'].searchResults = response
-        });
+    this.searchForm.get('goterm').valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(400)
+    ).subscribe(data => {
+      let searchData = self.searchFormData['goterm'];
+      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
+        self.searchFormData['goterm'].searchResults = response
       });
+    });
 
-    this.searchForm.get('gp').valueChanges
-      .distinctUntilChanged()
-      .debounceTime(400)
-      .subscribe(data => {
-        let searchData = self.searchFormData['gp'];
-        this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-          self.searchFormData['gp'].searchResults = response
-        })
+    this.searchForm.get('gp').valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(400)
+    ).subscribe(data => {
+      let searchData = self.searchFormData['gp'];
+      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
+        self.searchFormData['gp'].searchResults = response
       })
+    })
 
 
     this.filteredOrganisms = this.searchForm.controls.organism.valueChanges
@@ -98,11 +98,11 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   }
 
   termDisplayFn(term): string | undefined {
-    return term ? term.label : undefined;
+    return term && term.id ? `${term.label} (${term.id})` : undefined;
   }
 
   evidenceDisplayFn(evidence): string | undefined {
-    return evidence ? evidence.label : undefined;
+    return evidence && evidence.id ? `${evidence.label} (${evidence.id})` : undefined;
   }
 
   contributorDisplayFn(contributor): string | undefined {
