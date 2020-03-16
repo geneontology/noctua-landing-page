@@ -3,66 +3,127 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
 import * as _ from 'lodash';
-import { BehaviorSubject, Observable, Subscriber } from 'rxjs';
-import { map, filter, reduce, catchError, retry, tap, finalize } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { map, tap, finalize } from 'rxjs/operators';
 
-import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
-import { Cam, Contributor, Group, Organism, NoctuaFormConfigService, NoctuaUserService, Entity, AnnotonNode, CamRow } from 'noctua-form-base';
+import {
+    Cam,
+    Contributor,
+    Group,
+    Organism,
+    NoctuaFormConfigService,
+    NoctuaUserService,
+    Entity,
+    Article,
+    noctuaFormConfig,
+    //CamPage
+} from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 
 
 import { saveAs } from 'file-saver';
-import { each, forOwn } from 'lodash';
+import { forOwn } from 'lodash';
 import { CurieService } from '@noctua.curie/services/curie.service';
+import { MatDrawer } from '@angular/material';
+import { Router } from '@angular/router';
+import { CamPage } from '@noctua.search/models/cam-page';
+
+declare const require: any;
+
+const amigo = require('amigo2');
 
 
 @Injectable({
     providedIn: 'root'
 })
 export class NoctuaSearchService {
+    linker = new amigo.linker();
+
+    leftPanel = {
+        search: {
+            id: 1
+        }, filter: {
+            id: 2
+        }, group: {
+            id: 3
+        }, contributor: {
+            id: 4
+        }, species: {
+            id: 5
+        }
+    };
+
+    selectedLeftPanel;
+    onContributorsChanged: BehaviorSubject<any>;
+    onGroupsChanged: BehaviorSubject<any>;
+    onOrganismsChanged: BehaviorSubject<any>;
+    contributors: Contributor[] = [];
+    groups: Group[] = [];
+    organisms: Organism[] = [];
+    states: any[] = [];
+
     onSearcCriteriaChanged: BehaviorSubject<any>;
     baseUrl = environment.spaqrlApiUrl;
     curieUtil: any;
     cams: any[] = [];
+    camPage: CamPage;
     searchCriteria: SearchCriteria;
-
     baristaApi = environment.globalBaristaLocation;
     separator = '@@';
-    loading: boolean = false;
+    loading = false;
     onCamsChanged: BehaviorSubject<any>;
+    onCamsPageChanged: BehaviorSubject<any>;
     onCamChanged: BehaviorSubject<any>;
     onContributorFilterChanged: BehaviorSubject<any>;
-
-    searchSummary: any = {}
+    searchSummary: any = {};
 
     filterType = {
+        titles: 'titles',
         gps: 'gps',
         goterms: 'goterms',
         pmids: 'pmids',
         contributors: 'contributors',
         groups: 'groups',
         organisms: 'organisms',
-        states: 'states'
-    }
+        states: 'states',
+        dates: 'dates'
+    };
+
+    private leftDrawer: MatDrawer;
+    private rightDrawer: MatDrawer;
 
     constructor(private httpClient: HttpClient,
         public noctuaFormConfigService: NoctuaFormConfigService,
         public noctuaUserService: NoctuaUserService,
-        private sparqlService: SparqlService,
         private curieService: CurieService) {
+        this.onContributorsChanged = new BehaviorSubject([]);
+        this.onGroupsChanged = new BehaviorSubject([]);
+        this.onOrganismsChanged = new BehaviorSubject([]);
+        this.onCamsChanged = new BehaviorSubject([]);
+        this.onCamsPageChanged = new BehaviorSubject(null);
+        this.onCamChanged = new BehaviorSubject([]);
+
+        this.selectedLeftPanel = this.leftPanel.search;
+        this.states = this.noctuaFormConfigService.modelState.options;
         this.searchCriteria = new SearchCriteria();
         this.onSearcCriteriaChanged = new BehaviorSubject(null);
-        this.onCamsChanged = new BehaviorSubject({});
-        this.onCamChanged = new BehaviorSubject({});
         this.curieUtil = this.curieService.getCurieUtil();
 
         this.onSearcCriteriaChanged.subscribe((searchCriteria: SearchCriteria) => {
-            if (!searchCriteria) return;
+            if (!searchCriteria) {
+                return;
+            }
 
             this.getCams(searchCriteria).subscribe((response: any) => {
-                this.sparqlService.cams = this.cams = response;
-                this.sparqlService.onCamsChanged.next(this.cams);
+                this.cams = this.cams = response;
+                this.onCamsChanged.next(this.cams);
+            });
+
+            this.getCamsCount(searchCriteria).subscribe((response: any) => {
+                this.camPage = new CamPage();
+                this.camPage.total = response.n;
+                this.onCamsPageChanged.next(this.camPage);
             });
         });
     }
@@ -70,6 +131,7 @@ export class NoctuaSearchService {
     search(searchCriteria) {
         this.searchCriteria = new SearchCriteria();
 
+        searchCriteria.title ? this.searchCriteria.titles.push(searchCriteria.title) : null;
         searchCriteria.contributor ? this.searchCriteria.contributors.push(searchCriteria.contributor) : null;
         searchCriteria.group ? this.searchCriteria.groups.push(searchCriteria.group) : null;
         searchCriteria.pmid ? this.searchCriteria.pmids.push(searchCriteria.pmid) : null;
@@ -77,6 +139,26 @@ export class NoctuaSearchService {
         searchCriteria.gp ? this.searchCriteria.gps.push(searchCriteria.gp) : null;
         searchCriteria.organism ? this.searchCriteria.organisms.push(searchCriteria.organism) : null;
         searchCriteria.state ? this.searchCriteria.states.push(searchCriteria.state) : null;
+        searchCriteria.date ? this.searchCriteria.dates.push(searchCriteria.date) : null;
+
+        this.updateSearch();
+    }
+
+    paramsToSearch(param) {
+        this.searchCriteria = new SearchCriteria();
+
+        param.title ? this.searchCriteria.titles.push(param.title) : null;
+        param.contributor ? this.searchCriteria.contributors.push(param.contributor) : null;
+        param.group ? this.searchCriteria.groups.push(param.group) : null;
+        param.pmid ? this.searchCriteria.pmids.push(param.pmid) : null;
+        param.goterm ? this.searchCriteria.goterms.push(
+            new Entity(param.goterm, '')) : null;
+        param.gp ? this.searchCriteria.gps.push(
+            new Entity(param.gp, '')) : null;
+        param.organism ? this.searchCriteria.organisms.push(param.organism) : null;
+        param.state ? this.searchCriteria.states.push(param.state) : null;
+
+        param.date ? this.searchCriteria.dates.push(param.date) : null;
 
         this.updateSearch();
     }
@@ -95,7 +177,7 @@ export class NoctuaSearchService {
         this.updateSearch();
     }
 
-    removeFilter(filterType, filter) {
+    removeFilter(filterType) {
         this.searchCriteria[filterType] = null;
     }
 
@@ -112,6 +194,9 @@ export class NoctuaSearchService {
     uploadSearchConfig(searchCriteria) {
         this.searchCriteria = new SearchCriteria();
 
+        if (searchCriteria.titles) {
+            this.searchCriteria.titles = searchCriteria.titles;
+        }
         if (searchCriteria.contributors) {
             this.searchCriteria.contributors = searchCriteria.contributors;
         }
@@ -119,19 +204,23 @@ export class NoctuaSearchService {
             this.searchCriteria.groups = searchCriteria.groups;
         }
         if (searchCriteria.pmids) {
-            this.searchCriteria.pmids = searchCriteria.pmids
+            this.searchCriteria.pmids = searchCriteria.pmids;
         }
         if (searchCriteria.goterms) {
-            this.searchCriteria.goterms = searchCriteria.goterms
+            this.searchCriteria.goterms = searchCriteria.goterms;
         }
         if (searchCriteria.gps) {
-            this.searchCriteria.gps = searchCriteria.gps
+            this.searchCriteria.gps = searchCriteria.gps;
         }
         if (searchCriteria.organisms) {
-            this.searchCriteria.organisms = searchCriteria.organisms
+            this.searchCriteria.organisms = searchCriteria.organisms;
         }
         if (searchCriteria.states) {
-            this.searchCriteria.states = searchCriteria.states
+            this.searchCriteria.states = searchCriteria.states;
+        }
+
+        if (searchCriteria.dates) {
+            this.searchCriteria.dates = searchCriteria.dates;
         }
 
         this.updateSearch();
@@ -139,9 +228,8 @@ export class NoctuaSearchService {
 
     getCams(searchCriteria: SearchCriteria): Observable<any> {
         const self = this;
-
-        let query = searchCriteria.build()
-        let url = `${this.baristaApi}/search?${query}`
+        const query = searchCriteria.build();
+        const url = `${this.baristaApi}/search?${query}`;
 
         self.loading = true;
 
@@ -155,6 +243,16 @@ export class NoctuaSearchService {
                     self.loading = false;
                 })
             );
+    }
+
+    getCamsCount(searchCriteria: SearchCriteria): Observable<any> {
+        const self = this;
+        const query = searchCriteria.build();
+        const url = `${this.baristaApi}/search?${query}&count`;
+
+        return this.httpClient
+            .get(url)
+            .pipe();
     }
 
     addCam(res) {
@@ -218,5 +316,95 @@ export class NoctuaSearchService {
         });
 
         return result;
+    }
+
+    getPubmedInfo(pmid: string) {
+        const url = environment.pubMedSummaryApi + pmid;
+
+        return this.httpClient
+            .get(url)
+            .pipe(
+                map(res => res['result']),
+                map(res => res[pmid]),
+                tap(val => console.dir(val)),
+                map(res => this._addArticles(res, pmid)),
+                tap(val => console.dir(val)),
+            );
+    }
+
+    private _addArticles(res, pmid: string) {
+        const self = this;
+        if (!res) {
+            return;
+        }
+
+        const article = new Article();
+        article.title = res.title;
+        article.link = self.linker.url(`${noctuaFormConfig.evidenceDB.options.pmid.name}:${pmid}`);
+        article.date = res.pubdate;
+        if (res.authors && Array.isArray(res.authors)) {
+            article.author = res.authors.map(author => {
+                return author.name;
+            }).join(', ');
+        }
+
+        return article;
+    }
+
+
+    selectLeftPanel(panel) {
+        this.selectedLeftPanel = panel;
+    }
+
+    public setLeftDrawer(leftDrawer: MatDrawer) {
+        this.leftDrawer = leftDrawer;
+    }
+
+    public openLeftDrawer() {
+        return this.leftDrawer.open();
+    }
+
+    public closeLeftDrawer() {
+        return this.leftDrawer.close();
+    }
+
+    public toggleLeftDrawer(panel) {
+        if (this.selectedLeftPanel.id === panel.id) {
+            this.leftDrawer.toggle();
+        } else {
+            this.selectLeftPanel(panel)
+            return this.openLeftDrawer();
+        }
+    }
+
+    public setRightDrawer(rightDrawer: MatDrawer) {
+        this.rightDrawer = rightDrawer;
+    }
+
+    public openRightDrawer() {
+        return this.rightDrawer.open();
+    }
+
+    public closeRightDrawer() {
+        return this.rightDrawer.close();
+    }
+
+    public groupContributors() {
+        return _.groupBy(this.contributors, function (contributor) {
+            return contributor.group;
+        });
+
+    }
+
+    public filterOrganisms(value: string): any[] {
+        const filterValue = value.toLowerCase();
+
+        return this.organisms.filter(organism => organism.taxonName.toLowerCase().indexOf(filterValue) === 0);
+    }
+
+    public filterStates(value: string): any[] {
+        const filterValue = value.toLowerCase();
+
+        return this.states.filter(state => state.name.toLowerCase().indexOf(filterValue) === 0);
     }
 }
