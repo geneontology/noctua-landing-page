@@ -4,6 +4,7 @@
     <!--    <button mat-icon-button [matMenuTriggerFor]="changeView" class="">
       <mat-icon>apps</mat-icon>
     </button>
+
    <mat-menu #changeView="matMenu">
       <button class="noc-create-button" (click)="createModel()" mat-menu-item>
         Create New Model
@@ -52,6 +53,7 @@
     <mat-icon class="fa fa-facebook"></mat-icon>
   </a>
   <div *ngIf="noctuaUserService.user" fxLayout="row" fxLayoutAlign="end center" fxFlex="">
+
     <button mat-button class="noc-name-button" [matMenuTriggerFor]="userMenu">
       <div fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-info" fxLayout="column" fxLayoutAlign="start start">

@@ -1,6 +1,10 @@
 @import "src/@noctua/scss/noctua";
 @import "src/@noctua.common/scss/noctua.common";
 
+.noc-welcome {
+  padding: 10px;
+}
+
 .noc-left-drawer {
   @include deep-height(100%);
   @include deep-width(300px);

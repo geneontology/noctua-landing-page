@@ -44,6 +44,15 @@
       </div>
     </mat-drawer>
     <mat-drawer-content class="noc-section-body w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start stretch">
+      <div class="noc-welcome" fxLayout="column" fxLayoutAlign="start center">
+        <h2>
+          Welcome to Noctua
+        </h2>
+        Noctua is a web-based tool for collaborative editing of models of biological processes.
+
+        You must Login to create or edit models. Models may be viewed without login.
+      </div>
+
       <div class="noc-summary-bar" [ngClass]="{'noc-expanded': summary.expanded}" fxLayout="column"
         fxLayoutAlign="start stretch">
         <div class="noc-cams-table-header w-100-p" fxLayout="row" fxLayoutAlign="start center">
