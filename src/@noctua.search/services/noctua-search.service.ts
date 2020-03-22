@@ -16,7 +16,6 @@ import {
     Entity,
     Article,
     noctuaFormConfig,
-    // CamPage
 } from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 import { saveAs } from 'file-saver';
@@ -117,6 +116,11 @@ export class NoctuaSearchService {
         searchCriteria.state ? this.searchCriteria.states.push(searchCriteria.state) : null;
         searchCriteria.date ? this.searchCriteria.dates.push(searchCriteria.date) : null;
 
+        this.updateSearch();
+    }
+
+    getPage(pageNumber: number) {
+        this.searchCriteria.camPage.pageNumber = pageNumber;
         this.updateSearch();
     }
 

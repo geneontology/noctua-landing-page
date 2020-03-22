@@ -6,9 +6,7 @@ import { noctuaAnimations } from './../../../../@noctua/animations';
 import {
   Cam,
   Contributor,
-  NoctuaUserService,
-  NoctuaFormConfigService,
-  NoctuaAnnotonFormService
+  NoctuaUserService
 } from 'noctua-form-base';
 
 import { FormGroup } from '@angular/forms';
