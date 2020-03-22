@@ -19,6 +19,7 @@ import {
 import { Cam } from 'noctua-form-base';
 import { MatPaginator } from '@angular/material';
 import { CamPage } from '@noctua.search/models/cam-page';
+import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
 
 @Component({
   selector: 'noc-cams-table',
@@ -52,6 +53,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   camPage: CamPage;
 
   constructor(
+    public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaSearchService: NoctuaSearchService,
     public sparqlService: SparqlService) {
@@ -85,7 +87,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   }
 
   toggleLeftDrawer(panel) {
-    this.noctuaSearchService.toggleLeftDrawer(panel);
+    this.noctuaSearchMenuService.toggleLeftDrawer(panel);
   }
 
   search() {

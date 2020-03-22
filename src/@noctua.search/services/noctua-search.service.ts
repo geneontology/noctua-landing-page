@@ -16,15 +16,12 @@ import {
     Entity,
     Article,
     noctuaFormConfig,
-    //CamPage
+    // CamPage
 } from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
-
-
 import { saveAs } from 'file-saver';
 import { forOwn } from 'lodash';
 import { CurieService } from '@noctua.curie/services/curie.service';
-import { MatDrawer } from '@angular/material';
 import { CamPage } from './../models/cam-page';
 
 declare const require: any;
@@ -38,26 +35,6 @@ const amigo = require('amigo2');
 export class NoctuaSearchService {
     linker = new amigo.linker();
 
-    leftPanel = {
-        search: {
-            id: 1
-        }, filter: {
-            id: 2
-        }, relation: {
-            id: 3
-        }, group: {
-            id: 4
-        }, contributor: {
-            id: 5
-        }, species: {
-            id: 6
-        },
-        history: {
-            id: 7
-        }
-    };
-
-    selectedLeftPanel;
     onContributorsChanged: BehaviorSubject<any>;
     onGroupsChanged: BehaviorSubject<any>;
     onOrganismsChanged: BehaviorSubject<any>;
@@ -93,9 +70,6 @@ export class NoctuaSearchService {
         dates: 'dates'
     };
 
-    private leftDrawer: MatDrawer;
-    private rightDrawer: MatDrawer;
-
     constructor(private httpClient: HttpClient,
         public noctuaFormConfigService: NoctuaFormConfigService,
         public noctuaUserService: NoctuaUserService,
@@ -107,7 +81,6 @@ export class NoctuaSearchService {
         this.onCamsPageChanged = new BehaviorSubject(null);
         this.onCamChanged = new BehaviorSubject([]);
 
-        this.selectedLeftPanel = this.leftPanel.search;
         this.states = this.noctuaFormConfigService.modelState.options;
         this.searchCriteria = new SearchCriteria();
         this.onSearcCriteriaChanged = new BehaviorSubject(null);
@@ -190,8 +163,8 @@ export class NoctuaSearchService {
     }
 
     downloadSearchConfig() {
-        let blob = new Blob([JSON.stringify(this.searchCriteria, undefined, 2)], { type: "application/json" });
-        saveAs(blob, "search-filter.json");
+        const blob = new Blob([JSON.stringify(this.searchCriteria, undefined, 2)], { type: 'application/json' });
+        saveAs(blob, 'search-filter.json');
     }
 
     uploadSearchConfig(searchCriteria) {
@@ -260,34 +233,34 @@ export class NoctuaSearchService {
 
     addCam(res) {
         const self = this;
-        let result: Array<Cam> = [];
+        const result: Array<Cam> = [];
 
         res.models.forEach((response) => {
-            let modelId = response.id;
-            let cam = new Cam();
+            const modelId = response.id;
+            const cam = new Cam();
 
             cam.graph = null;
             cam.id = modelId;
             cam.state = self.noctuaFormConfigService.findModelState(response.state);
             cam.title = response.title;
-            cam.date = response.date
+            cam.date = response.date;
 
             cam.model = Object.assign({}, {
                 modelInfo: this.noctuaFormConfigService.getModelUrls(modelId)
             });
 
             cam.groups = <Group[]>response.groups.map(function (url) {
-                let group = _.find(self.noctuaUserService.groups, (group: Group) => {
-                    return group.url === url
-                })
+                const group = _.find(self.noctuaUserService.groups, (group: Group) => {
+                    return group.url === url;
+                });
 
                 return group ? group : { url: url };
             });
 
             cam.contributors = <Contributor[]>response.contributors.map((orcid) => {
-                let contributor = _.find(self.noctuaUserService.contributors, (contributor: Contributor) => {
-                    return contributor.orcid === orcid
-                })
+                const contributor = _.find(self.noctuaUserService.contributors, (contributor: Contributor) => {
+                    return contributor.orcid === orcid;
+                });
 
                 return contributor ? contributor : { orcid: orcid };
             });
@@ -307,10 +280,10 @@ export class NoctuaSearchService {
 
     addCamTerms(res) {
         const self = this;
-        let result: Array<Entity> = [];
+        const result: Array<Entity> = [];
 
         res.forEach((response) => {
-            let term = new Entity(
+            const term = new Entity(
                 self.curieUtil.getCurie(response.id.value),
                 response.label.value
             );
@@ -354,43 +327,6 @@ export class NoctuaSearchService {
         return article;
     }
 
-
-    selectLeftPanel(panel) {
-        this.selectedLeftPanel = panel;
-    }
-
-    public setLeftDrawer(leftDrawer: MatDrawer) {
-        this.leftDrawer = leftDrawer;
-    }
-
-    public openLeftDrawer() {
-        return this.leftDrawer.open();
-    }
-
-    public closeLeftDrawer() {
-        return this.leftDrawer.close();
-    }
-
-    public toggleLeftDrawer(panel) {
-        if (this.selectedLeftPanel.id === panel.id) {
-            this.leftDrawer.toggle();
-        } else {
-            this.selectLeftPanel(panel)
-            return this.openLeftDrawer();
-        }
-    }
-
-    public setRightDrawer(rightDrawer: MatDrawer) {
-        this.rightDrawer = rightDrawer;
-    }
-
-    public openRightDrawer() {
-        return this.rightDrawer.open();
-    }
-
-    public closeRightDrawer() {
-        return this.rightDrawer.close();
-    }
 
     public groupContributors() {
         return _.groupBy(this.contributors, function (contributor) {

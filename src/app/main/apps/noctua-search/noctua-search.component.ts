@@ -16,6 +16,7 @@ import { NoctuaSearchService } from '@noctua.search/services/noctua-search.servi
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import { takeUntil } from 'rxjs/operators';
 import { CamPage } from '@noctua.search/models/cam-page';
+import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
 
 @Component({
   selector: 'noc-noctua-search',
@@ -55,6 +56,7 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any>;
 
   constructor(private route: ActivatedRoute,
+    public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaUserService: NoctuaUserService,
     public noctuaSearchService: NoctuaSearchService,
     private sparqlService: SparqlService,
@@ -98,8 +100,8 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.noctuaSearchService.setLeftDrawer(this.leftDrawer);
-    this.noctuaSearchService.setRightDrawer(this.rightDrawer);
+    this.noctuaSearchMenuService.setLeftDrawer(this.leftDrawer);
+    this.noctuaSearchMenuService.setRightDrawer(this.rightDrawer);
 
     this.rightDrawer.open();
 
@@ -147,7 +149,7 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
   }
 
   toggleLeftDrawer(panel) {
-    this.noctuaSearchService.toggleLeftDrawer(panel);
+    this.noctuaSearchMenuService.toggleLeftDrawer(panel);
   }
 
   search() {

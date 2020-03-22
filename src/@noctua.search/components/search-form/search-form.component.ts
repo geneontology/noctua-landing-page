@@ -5,6 +5,7 @@ import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operato
 import { NoctuaFormConfigService, NoctuaUserService } from 'noctua-form-base';
 import { NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from './../..//services/noctua-search.service';
+import { NoctuaSearchMenuService } from '../../services/search-menu.service';
 
 @Component({
   selector: 'noc-search-form',
@@ -26,6 +27,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<any>;
 
   constructor(public noctuaUserService: NoctuaUserService,
+    public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     private noctuaLookupService: NoctuaLookupService,
     private noctuaSearchService: NoctuaSearchService) {
@@ -134,7 +136,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    this.noctuaSearchService.closeLeftDrawer();
+    this.noctuaSearchMenuService.closeLeftDrawer();
   }
 
   ngOnDestroy(): void {
