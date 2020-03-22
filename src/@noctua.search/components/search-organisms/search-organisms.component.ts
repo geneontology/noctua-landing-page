@@ -36,7 +36,7 @@ export class SearchOrganismsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
+    console.log(this.noctuaSearchService.organisms)
   }
 
   selectOrganism(organism) {

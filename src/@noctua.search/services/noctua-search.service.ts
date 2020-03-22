@@ -43,12 +43,17 @@ export class NoctuaSearchService {
             id: 1
         }, filter: {
             id: 2
-        }, group: {
+        }, relation: {
             id: 3
-        }, contributor: {
+        }, group: {
             id: 4
-        }, species: {
+        }, contributor: {
             id: 5
+        }, species: {
+            id: 6
+        },
+        history: {
+            id: 7
         }
     };
 
@@ -114,7 +119,7 @@ export class NoctuaSearchService {
             }
 
             this.getCams(searchCriteria).subscribe((response: any) => {
-                this.cams = this.cams = response;
+                this.cams = response;
                 this.onCamsChanged.next(this.cams);
             });
 

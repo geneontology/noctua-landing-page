@@ -17,7 +17,6 @@ import {
 } from 'noctua-form-base';
 
 import { Cam } from 'noctua-form-base';
-import { SearchService } from 'app/main/apps/noctua-search/services/search.service';
 import { MatPaginator } from '@angular/material';
 import { CamPage } from '@noctua.search/models/cam-page';
 
@@ -55,7 +54,6 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   constructor(
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaSearchService: NoctuaSearchService,
-    public searchService: SearchService,
     public sparqlService: SparqlService) {
 
     this._unsubscribeAll = new Subject();
@@ -87,7 +85,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   }
 
   toggleLeftDrawer(panel) {
-    this.searchService.toggleLeftDrawer(panel);
+    this.noctuaSearchService.toggleLeftDrawer(panel);
   }
 
   search() {

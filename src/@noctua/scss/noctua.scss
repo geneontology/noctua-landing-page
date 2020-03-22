@@ -87,11 +87,11 @@ textarea {
 
 .noc-paginator {
   overflow: hidden;
-  @include deep-height(40px);
-  background-color: #DDD;
+  @include deep-height(60px);
+  background-color: #F2F2F2;
 
   .mat-paginator-container {
-    @include deep-height(40px !important);
+    @include deep-height(60px !important);
   }
 }
 
