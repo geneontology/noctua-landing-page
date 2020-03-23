@@ -90,6 +90,7 @@ export class NoctuaSearchService {
                 return;
             }
 
+            window.scroll(0, 0);
             this.getCams(searchCriteria).subscribe((response: any) => {
                 this.cams = response;
                 this.onCamsChanged.next(this.cams);
@@ -106,7 +107,7 @@ export class NoctuaSearchService {
     search(searchCriteria) {
         this.searchCriteria = new SearchCriteria();
 
-        searchCriteria.title ? this.searchCriteria.titles.push(searchCriteria.title) : null;
+        searchCriteria.title ? this.searchCriteria.titles.push('*' + searchCriteria.title + '*') : null;
         searchCriteria.contributor ? this.searchCriteria.contributors.push(searchCriteria.contributor) : null;
         searchCriteria.group ? this.searchCriteria.groups.push(searchCriteria.group) : null;
         searchCriteria.pmid ? this.searchCriteria.pmids.push(searchCriteria.pmid) : null;
@@ -137,7 +138,6 @@ export class NoctuaSearchService {
             new Entity(param.gp, '')) : null;
         param.organism ? this.searchCriteria.organisms.push(param.organism) : null;
         param.state ? this.searchCriteria.states.push(param.state) : null;
-
         param.date ? this.searchCriteria.dates.push(param.date) : null;
 
         this.updateSearch();

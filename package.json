@@ -5,10 +5,8 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port 4203",
-    "clean": "rm -r workbenches/noctua-landing/public",
-    "build": "ng build --index src/inject.tmpl  --base-href  /workbench/noctua-form/ ",
-    "build-art": "ng build --index src/inject-art.tmpl --base-href  /workbench/noctua-annotation-reivew/",
-    "build-search": "ng build --index src/inject-search.tmpl  --base-href  /workbench/noctua-search/",
+    "clean": "rm -r workbenches/noctua-landing-page/public",
+    "build": "ng build --index src/inject.tmpl  --base-href  /workbench/noctua-landing-page/ ",
     "start-hmr": "ng serve --configuration hmr -sm=false",
     "start-hmr-sourcemaps": "ng serve --hmr -e=hmr",
     "build-dev": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng build --dev",
