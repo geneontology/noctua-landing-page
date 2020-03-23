@@ -90,7 +90,8 @@ export class NoctuaSearchService {
                 return;
             }
 
-            window.scroll(0, 0);
+
+
             this.getCams(searchCriteria).subscribe((response: any) => {
                 this.cams = response;
                 this.onCamsChanged.next(this.cams);
@@ -101,6 +102,9 @@ export class NoctuaSearchService {
                 this.camPage.total = response.n;
                 this.onCamsPageChanged.next(this.camPage);
             });
+
+            const element = document.querySelector('#noc-results');
+            element.scrollTop = 0;
         });
     }
 
