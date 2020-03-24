@@ -1,7 +1,9 @@
 import { Cam, Contributor, Group, Organism } from 'noctua-form-base';
 import { each } from 'lodash';
+import { CamPage } from './cam-page';
 
 export class SearchCriteria {
+    camPage: CamPage = new CamPage();
     titles: any[] = [];
     gps: any[] = [];
     goterms: any[] = [];
@@ -17,7 +19,9 @@ export class SearchCriteria {
 
     query() {
         const self = this;
-        let query = ['offset=0&limit=50'];
+        const query = ['offset=' + (self.camPage.pageNumber * self.camPage.size).toString()];
+
+        query.push('limit=' + self.camPage.size.toString());
 
         each(self.titles, (title) => {
             query.push(`title=${title}`);
@@ -60,7 +64,9 @@ export class SearchCriteria {
 
     queryEncoded() {
         const self = this;
-        const query = ['offset=0&limit=50'];
+        const query = ['offset=' + (self.camPage.pageNumber * self.camPage.size).toString()];
+
+        query.push('limit=' + self.camPage.size.toString());
 
         each(self.titles, (title) => {
             query.push(`title=${encodeURIComponent(title)}`);

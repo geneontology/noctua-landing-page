@@ -6,6 +6,7 @@ import {
   NoctuaUserService
 } from 'noctua-form-base';
 import { NoctuaSearchService } from './../..//services/noctua-search.service';
+import { NoctuaSearchMenuService } from '../../services/search-menu.service';
 
 @Component({
   selector: 'noc-search-organisms',
@@ -24,6 +25,7 @@ export class SearchOrganismsComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<any>;
 
   constructor(public noctuaUserService: NoctuaUserService,
+    public noctuaSearchMenuService: NoctuaSearchMenuService,
     private formBuilder: FormBuilder,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaSearchService: NoctuaSearchService) {
@@ -36,7 +38,7 @@ export class SearchOrganismsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
+    console.log(this.noctuaSearchService.organisms)
   }
 
   selectOrganism(organism) {
@@ -51,7 +53,7 @@ export class SearchOrganismsComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    this.noctuaSearchService.closeLeftDrawer();
+    this.noctuaSearchMenuService.closeLeftDrawer();
   }
 
   createSearchForm() {

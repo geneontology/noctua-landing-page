@@ -4,6 +4,7 @@ import { Observable, Subject } from 'rxjs';
 import { NoctuaFormConfigService, NoctuaUserService, NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from './../..//services/noctua-search.service';
 import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
+import { NoctuaSearchMenuService } from '../../services/search-menu.service';
 
 @Component({
   selector: 'noc-search-relation',
@@ -24,6 +25,7 @@ export class SearchRelationComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<any>;
 
   constructor(public noctuaUserService: NoctuaUserService,
+    public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     private noctuaLookupService: NoctuaLookupService,
     private noctuaSearchService: NoctuaSearchService) {
@@ -101,7 +103,7 @@ export class SearchRelationComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    this.noctuaSearchService.closeLeftDrawer();
+    this.noctuaSearchMenuService.closeLeftDrawer();
   }
 
   ngOnDestroy(): void {

@@ -6,6 +6,7 @@ import {
   NoctuaUserService
 } from 'noctua-form-base';
 import { NoctuaSearchService } from './../../services/noctua-search.service';
+import { NoctuaSearchMenuService } from '../../services/search-menu.service';
 
 @Component({
   selector: 'noc-search-contributors',
@@ -24,6 +25,7 @@ export class SearchContributorsComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<any>;
 
   constructor(public noctuaUserService: NoctuaUserService,
+    public noctuaSearchMenuService: NoctuaSearchMenuService,
     private noctuaSearchService: NoctuaSearchService,
     private formBuilder: FormBuilder,
     public noctuaFormConfigService: NoctuaFormConfigService, ) {
@@ -56,7 +58,7 @@ export class SearchContributorsComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    this.noctuaSearchService.closeLeftDrawer();
+    this.noctuaSearchMenuService.closeLeftDrawer();
   }
 
   createSearchForm() {

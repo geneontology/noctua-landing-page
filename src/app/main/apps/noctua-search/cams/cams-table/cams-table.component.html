@@ -2,8 +2,7 @@
   <mat-progress-spinner class="example-margin" [color]="loadingSpinner.color" [mode]="loadingSpinner.mode">
   </mat-progress-spinner>
 </div>
-<div class="noc-cams-table" class="noc-drawer-body" fxLayout="column" fxLayoutAlign="start stretch"
-  noctuaPerfectScrollbar>
+<div class="noc-cams-table noc-drawer-body" fxLayout="column" fxLayoutAlign="start stretch">
   <table fxFlex="1 1 auto" mat-table class="" [dataSource]="cams" [@animateStagger]="{value:'50'}">
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef fxFlex="250px" fxLayout="row" fxLayoutAlign="start center">
@@ -48,7 +47,7 @@
           <mat-icon class="">list_alt</mat-icon>
         </button>
         <button mat-icon-button (click)="openGraph(cam)" class="">
-          <mat-icon class="icon-rotate-graph">share</mat-icon>
+          <fa-icon [icon]="['fas', 'project-diagram']"></fa-icon>
         </button>
       </td>
     </ng-container>

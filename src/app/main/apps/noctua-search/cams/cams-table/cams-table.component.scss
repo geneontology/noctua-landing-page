@@ -102,16 +102,21 @@ $rotate-graph: 235deg;
     }
 
     .mat-header-row {
-
+      position: -webkit-sticky;
+      position: sticky;
+      top: 40px;
+      background-color: #FFF;
       @include deep-height(30px);
       border-bottom: $noc-primary-color-light solid 1px;
-
+      z-index: 10;
     }
 
     .mat-cell {
       min-width: 0;
       display: flex;
       align-items: center;
+      padding-top: 6px;
+      padding-bottom: 6px;
     }
 
     .mat-column-id {
@@ -124,6 +129,7 @@ $rotate-graph: 235deg;
 
     .noc-title {
       font-size: 12px;
+      padding-left: 10px;
     }
 
     .noc-model-state {

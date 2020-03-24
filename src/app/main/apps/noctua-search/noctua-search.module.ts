@@ -7,6 +7,7 @@ import { CamsTableComponent } from './cams/cams-table/cams-table.component';
 import { NoctuaSearchComponent } from './noctua-search.component';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { NoctuaSearchBaseModule } from '@noctua.search';
+import { NoctuaFooterModule } from 'app/layout/components/footer/footer.module';
 
 const routes = [
   {
@@ -23,6 +24,7 @@ const routes = [
     RouterModule.forChild(routes),
     ContextMenuModule.forRoot(),
     NoctuaSearchBaseModule,
+    NoctuaFooterModule
   ],
   declarations: [
     NoctuaSearchComponent,

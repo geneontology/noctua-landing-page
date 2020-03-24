@@ -15,6 +15,9 @@ import { AppComponent } from './app.component';
 import { LayoutModule } from 'app/layout/layout.module';
 import { PagesModule } from './main/pages/pages.module';
 import { AppsModule } from './main/apps/apps.module';
+import { faProjectDiagram } from '@fortawesome/free-solid-svg-icons';
+import { faGithub, faFacebook, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 
 const appRoutes: Routes = [
     {
@@ -52,4 +55,7 @@ const appRoutes: Routes = [
     ]
 })
 export class AppModule {
+    constructor(private library: FaIconLibrary) {
+        library.addIcons(faFacebook, faGithub, faTwitter, faProjectDiagram);
+    }
 }

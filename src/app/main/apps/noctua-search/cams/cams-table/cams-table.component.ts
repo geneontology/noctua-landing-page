@@ -13,13 +13,11 @@ import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 
 import {
   NoctuaFormConfigService,
-  CamService
 } from 'noctua-form-base';
 
-import { Cam } from 'noctua-form-base';
-import { SearchService } from 'app/main/apps/noctua-search/services/search.service';
 import { MatPaginator } from '@angular/material';
 import { CamPage } from '@noctua.search/models/cam-page';
+import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
 
 @Component({
   selector: 'noc-cams-table',
@@ -53,9 +51,9 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   camPage: CamPage;
 
   constructor(
+    public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaSearchService: NoctuaSearchService,
-    public searchService: SearchService,
     public sparqlService: SparqlService) {
 
     this._unsubscribeAll = new Subject();
@@ -64,9 +62,6 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
-    console.log('pp')
-
     this.noctuaSearchService.onCamsChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(cams => {
@@ -87,16 +82,19 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   }
 
   toggleLeftDrawer(panel) {
-    this.searchService.toggleLeftDrawer(panel);
+    this.noctuaSearchMenuService.toggleLeftDrawer(panel);
   }
 
   search() {
     const searchCriteria = this.searchForm.value;
-    console.dir(searchCriteria);
     this.noctuaSearchService.search(searchCriteria);
   }
 
-
+  setPage($event) {
+    if (this.camPage) {
+      this.noctuaSearchService.getPage($event.pageIndex);
+    }
+  }
 
   ngOnDestroy(): void {
     this._unsubscribeAll.next();
