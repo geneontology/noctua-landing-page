@@ -39,7 +39,7 @@
     text-align: center;
     margin-top: 0;
     margin-bottom: 16px;
-    color: white;
+    color: rgba(white, 0.9);
 
     @include media-breakpoint('xs') {
       font-size: 24px;
@@ -53,6 +53,7 @@
     letter-spacing: 0.03em;
     margin: 0;
     color: #ffffff;
+    line-height: 1.5;
 
     @include media-breakpoint('xs') {
       font-size: 14px;
