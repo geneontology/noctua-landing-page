@@ -60,6 +60,15 @@
         <h4 *ngIf="!noctuaUserService.user">
           You must Login to create or edit models. Models may be viewed without login.
         </h4>
+        <div *ngIf="noctuaUserService.user" class="noc-create h-100-p" fxLayout="row" fxLayoutAlign="start center">
+          <button mat-raised-button (click)="createModel()" color=""
+            class="noc-rounded-button mr-4 noc-half-button noc-r">
+            Create New Model in Form
+          </button>
+          <button mat-raised-button (click)="createModel()" color="" class="noc-rounded-button noc-half-button noc-l">
+            Create New Model in Graph Editor
+          </button>
+        </div>
       </div>
       <div class="noc-summary-bar" fxLayout="row" fxLayoutAlign="start center">
         <mat-chip class="mr-12" (click)="refresh()">

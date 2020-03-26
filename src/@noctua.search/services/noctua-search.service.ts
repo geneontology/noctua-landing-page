@@ -119,7 +119,9 @@ export class NoctuaSearchService {
         searchCriteria.gp ? this.searchCriteria.gps.push(searchCriteria.gp) : null;
         searchCriteria.organism ? this.searchCriteria.organisms.push(searchCriteria.organism) : null;
         searchCriteria.state ? this.searchCriteria.states.push(searchCriteria.state) : null;
-        searchCriteria.date ? this.searchCriteria.dates.push(searchCriteria.date) : null;
+        searchCriteria.exactdate ? this.searchCriteria.exactdates.push(searchCriteria.exactdate) : null;
+        searchCriteria.startdate ? this.searchCriteria.exactdates.push(searchCriteria.startdate) : null;
+        searchCriteria.enddate ? this.searchCriteria.exactdates.push(searchCriteria.enddate) : null;
 
         this.updateSearch();
     }
@@ -142,7 +144,9 @@ export class NoctuaSearchService {
             new Entity(param.gp, '')) : null;
         param.organism ? this.searchCriteria.organisms.push(param.organism) : null;
         param.state ? this.searchCriteria.states.push(param.state) : null;
-        param.date ? this.searchCriteria.dates.push(param.date) : null;
+        param.exactdate ? this.searchCriteria.exactdates.push(param.exactdate) : null;
+        param.startdate ? this.searchCriteria.exactdates.push(param.startdate) : null;
+        param.enddate ? this.searchCriteria.exactdates.push(param.enddate) : null;
 
         this.updateSearch();
     }
@@ -203,8 +207,16 @@ export class NoctuaSearchService {
             this.searchCriteria.states = searchCriteria.states;
         }
 
-        if (searchCriteria.dates) {
-            this.searchCriteria.dates = searchCriteria.dates;
+        if (searchCriteria.exactdates) {
+            this.searchCriteria.exactdates = searchCriteria.exactdates;
+        }
+
+        if (searchCriteria.startdates) {
+            this.searchCriteria.startdates = searchCriteria.startdates;
+        }
+
+        if (searchCriteria.enddates) {
+            this.searchCriteria.enddates = searchCriteria.enddates;
         }
 
         this.updateSearch();
@@ -353,5 +365,22 @@ export class NoctuaSearchService {
         const filterValue = value.toLowerCase();
 
         return this.states.filter(state => state.name.toLowerCase().indexOf(filterValue) === 0);
+    }
+
+    get dateSearchType() {
+        const options = [
+            {
+                name: 'daterange',
+                label: 'Date Range'
+            }, {
+                name: 'exactdate',
+                label: 'Exact Date'
+            },
+        ];
+
+        return {
+            options: options,
+            selected: options[0]
+        }
     }
 }

@@ -26,19 +26,13 @@ export class NoctuaSearchMenuService {
     };
 
     selectedLeftPanel;
-    baristaApi = environment.globalBaristaLocation;
-
 
     private leftDrawer: MatDrawer;
     private rightDrawer: MatDrawer;
 
     constructor() {
-
-        this.selectedLeftPanel = this.leftPanel.search;
-
+        this.selectedLeftPanel = this.leftPanel.filter;
     }
-
-
 
     selectLeftPanel(panel) {
         this.selectedLeftPanel = panel;
