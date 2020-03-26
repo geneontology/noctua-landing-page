@@ -33,7 +33,7 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
     horizontalNav: boolean;
     noNav: boolean;
     navigation: any;
-    noctuaFormUrl = '';
+    noctuaLandingPageUrl = '';
     loginUrl = '';
     logoutUrl = '';
     noctuaUrl = '';
@@ -57,19 +57,17 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(params => {
                 const baristaToken = params['barista_token'] || null;
-                const modelId = params['model_id'] || null;
-                const noctuaFormReturnUrl = `${environment.workbenchUrl}noctua-form/?model_id=${modelId}`;
+                const noctuaLandingPageReturnUrl = `${environment.workbenchUrl}noctua-landing-page`;
                 const baristaParams = { 'barista_token': baristaToken };
-                const modelIdParams = { 'model_id': modelId };
-                const returnUrlParams = { 'return': noctuaFormReturnUrl };
+                const returnUrlParams = { 'return': noctuaLandingPageReturnUrl };
 
                 this.loginUrl = environment.globalBaristaLocation + '/login?' +
                     self._parameterize(Object.assign({}, returnUrlParams));
                 this.logoutUrl = environment.globalBaristaLocation + '/logout?' +
                     self._parameterize(Object.assign({}, baristaParams, returnUrlParams));
                 this.noctuaUrl = environment.noctuaUrl + '?' + (baristaToken ? self._parameterize(Object.assign({}, baristaParams)) : '');
-                this.noctuaFormUrl = environment.workbenchUrl + 'noctua-form?'
-                    + (baristaToken ? self._parameterize(Object.assign({}, modelIdParams, baristaParams)) : '');
+                this.noctuaLandingPageUrl = environment.workbenchUrl + 'noctua-landing-page?'
+                    + (baristaToken ? self._parameterize(Object.assign({}, baristaParams)) : '');
             });
 
         this.router.events.pipe(takeUntil(this._unsubscribeAll))

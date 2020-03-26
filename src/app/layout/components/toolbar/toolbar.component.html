@@ -20,24 +20,6 @@
       </a>
     </div>
   </div>
-  <div *ngIf="noctuaUserService.user" class="noc-create noc-br h-100-p" fxLayout="row" fxLayoutAlign="start center">
-    <button mat-flat-button (click)="createModel()" color="primary"
-      class="noc-rounded-button noc-half-button noc-sm noc-r">
-      <mat-icon class=""> add </mat-icon> Create New Model
-    </button>
-    <button mat-flat-button fxFlex="35px" [matMenuTriggerFor]="createOptions" color="primary"
-      class="noc-rounded-button noc-half-button noc-sm noc-l mr-8 p-0">
-      <mat-icon class="">arrow_drop_down </mat-icon>
-    </button>
-    <mat-menu #createOptions="matMenu" xPosition="before">
-      <a mat-menu-item (click)="createModel()">
-        Noctua Form
-      </a>
-      <a mat-menu-item (click)="createModel()">
-        Graph Editor
-      </a>
-    </mat-menu>
-  </div>
   <a mat-button class="">
     About
   </a>

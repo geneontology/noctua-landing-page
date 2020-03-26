@@ -8,6 +8,7 @@ import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organis
 import { NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from './../../services/noctua-search.service';
 import { NoctuaSearchMenuService } from '../../services/search-menu.service';
+import { cloneDeep } from 'lodash';
 @Component({
   selector: 'noc-search-filter',
   templateUrl: './search-filter.component.html',
@@ -16,6 +17,7 @@ import { NoctuaSearchMenuService } from '../../services/search-menu.service';
 
 export class SearchFilterComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
+  dateSearchType = true;
   filterForm: FormGroup;
   selectedOrganism = {};
   searchFormData: any = [];
@@ -33,13 +35,15 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     private noctuaLookupService: NoctuaLookupService,
-    private noctuaSearchService: NoctuaSearchService) {
+    public noctuaSearchService: NoctuaSearchService) {
     this.filterForm = this.createAnswerForm();
+
+    console.log("pp", this.dateSearchType);
 
     this.unsubscribeAll = new Subject();
 
     this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
-    this.onValueChanges();
+    this._onValueChanges();
   }
 
   ngOnInit(): void {
@@ -65,64 +69,11 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       organisms: new FormControl(),
       titles: new FormControl(),
       states: new FormControl(),
-      dates: new FormControl()
+      dateSearchType: new FormControl(),
+      exactdates: new FormControl(),
+      startdates: new FormControl(),
+      enddates: new FormControl(),
     });
-  }
-
-
-  onValueChanges() {
-    const self = this;
-
-    this.filterForm.get('goterms').valueChanges.pipe(
-      distinctUntilChanged(),
-      debounceTime(400)
-    ).subscribe(data => {
-      let searchData = self.searchFormData['goterm'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['goterm'].searchResults = response
-      });
-    });
-
-    this.filterForm.get('gps').valueChanges.pipe(
-      distinctUntilChanged(),
-      debounceTime(400)
-    ).subscribe(data => {
-      let searchData = self.searchFormData['gp'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['gp'].searchResults = response
-      })
-    })
-
-    this.filteredOrganisms = this.filterForm.controls.organisms.valueChanges
-      .pipe(
-        startWith(''),
-        map(value => typeof value === 'string' ? value : value['short_name']),
-        map(organism => organism ? this.noctuaSearchService.filterOrganisms(organism) : this.noctuaSearchService.organisms.slice())
-      )
-
-    this.filteredContributors = this.filterForm.controls.contributors.valueChanges
-      .pipe(
-        startWith(''),
-        map(
-          value => typeof value === 'string' ? value : value['name']),
-        map(contributor => contributor ? this.noctuaUserService.filterContributors(contributor) : this.noctuaUserService.contributors.slice())
-      )
-
-    this.filteredGroups = this.filterForm.controls.groups.valueChanges
-      .pipe(
-        startWith(''),
-        map(
-          value => typeof value === 'string' ? value : value['name']),
-        map(group => group ? this.noctuaUserService.filterGroups(group) : this.noctuaUserService.groups.slice())
-      )
-
-    this.filteredStates = this.filterForm.controls.states.valueChanges
-      .pipe(
-        startWith(''),
-        map(
-          value => typeof value === 'string' ? value : value['name']),
-        map(state => state ? this.noctuaSearchService.filterStates(state) : this.noctuaSearchService.states.slice())
-      )
   }
 
   termDisplayFn(term): string | undefined {
@@ -194,6 +145,68 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   downloadFilter() {
     this.noctuaSearchService.downloadSearchConfig();
+  }
+
+  private _onValueChanges() {
+    const self = this;
+
+    this.filterForm.get('goterms').valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(400)
+    ).subscribe(data => {
+      let searchData = self.searchFormData['goterm'];
+      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
+        self.searchFormData['goterm'].searchResults = response
+      });
+    });
+
+    this.filterForm.get('gps').valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(400)
+    ).subscribe(data => {
+      let searchData = self.searchFormData['gp'];
+      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
+        self.searchFormData['gp'].searchResults = response
+      });
+    });
+
+    this.filteredOrganisms = this.filterForm.controls.organisms.valueChanges
+      .pipe(
+        startWith(''),
+        map(value => typeof value === 'string' ? value : value['short_name']),
+        map(organism => organism ? this.noctuaSearchService.filterOrganisms(organism) : this.noctuaSearchService.organisms.slice())
+      );
+
+    this.filteredContributors = this.filterForm.controls.contributors.valueChanges
+      .pipe(
+        startWith(''),
+        map(
+          value => typeof value === 'string' ? value : value['name']),
+        map(contributor => contributor ? this.noctuaUserService.filterContributors(contributor) : this.noctuaUserService.contributors.slice())
+      );
+
+    this.filteredGroups = this.filterForm.controls.groups.valueChanges
+      .pipe(
+        startWith(''),
+        map(
+          value => typeof value === 'string' ? value : value['name']),
+        map(group => group ? this.noctuaUserService.filterGroups(group) : this.noctuaUserService.groups.slice())
+      );
+
+    this.filterForm.get('dateSearchType').valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(400)
+    ).subscribe(value => {
+      this.dateSearchType = value;
+    });
+
+    this.filteredStates = this.filterForm.controls.states.valueChanges
+      .pipe(
+        startWith(''),
+        map(
+          value => typeof value === 'string' ? value : value['name']),
+        map(state => state ? this.noctuaSearchService.filterStates(state) : this.noctuaSearchService.states.slice())
+      );
   }
 
   onFileChange(event) {

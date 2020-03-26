@@ -12,12 +12,14 @@ export class SearchCriteria {
     groups: Group[] = [];
     organisms: Organism[] = [];
     states: any[] = [];
-    dates: any[] = [];
+    exactdates: any[] = [];
+    startdates: any[] = [];
+    enddates: any[] = [];
 
     constructor() {
     }
 
-    query() {
+    private query() {
         const self = this;
         const query = ['offset=' + (self.camPage.pageNumber * self.camPage.size).toString()];
 
@@ -47,8 +49,16 @@ export class SearchCriteria {
             query.push(`pmid=${pmid}`);
         });
 
-        each(self.dates, (date) => {
+        each(self.exactdates, (date) => {
             query.push(`date=${date}`);
+        });
+
+        each(self.startdates, (date) => {
+            query.push(`startdate=${date}`);
+        });
+
+        each(self.enddates, (date) => {
+            query.push(`enddate=${date}`);
         });
 
         each(self.organisms, (organism: Organism) => {
@@ -62,7 +72,7 @@ export class SearchCriteria {
         return query;
     }
 
-    queryEncoded() {
+    private queryEncoded() {
         const self = this;
         const query = ['offset=' + (self.camPage.pageNumber * self.camPage.size).toString()];
 
@@ -92,7 +102,7 @@ export class SearchCriteria {
             query.push(`pmid=${encodeURIComponent(pmid)}`);
         });
 
-        each(self.dates, (date) => {
+        each(self.exactdates, (date) => {
             query.push(`date=${encodeURIComponent(date)}`);
         });
 
@@ -111,7 +121,7 @@ export class SearchCriteria {
         return this.query().join('&');
     }
 
-    buildEncoded() {
+    private buildEncoded() {
         return this.queryEncoded().join('&');
     }
 }
