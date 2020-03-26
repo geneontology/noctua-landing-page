@@ -66,7 +66,9 @@ export class NoctuaSearchService {
         groups: 'groups',
         organisms: 'organisms',
         states: 'states',
-        dates: 'dates'
+        exactdates: 'exactdates',
+        startdates: 'startdates',
+        enddates: 'enddates',
     };
 
     constructor(private httpClient: HttpClient,

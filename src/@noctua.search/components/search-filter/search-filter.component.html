@@ -228,8 +228,8 @@
             <mat-datepicker-toggle matSuffix [for]="exactDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #exactDatePicker></mat-datepicker>
           </mat-form-field>
-          <div *ngIf="!dateSearchType" class="noc-sm w-100-p" fxLayout="row" fxLayoutAlign="start center">
-            <mat-form-field appearance="outline" class="noc-sm" fxFlex="50">
+          <div *ngIf="!dateSearchType" class="noc-sm w-100-p" fxLayout="column" fxLayoutAlign="start stretch">
+            <mat-form-field appearance="outline" class="noc-sm">
               <mat-label>Start Date</mat-label>
               <mat-chip-list #startDateChipList>
                 <mat-chip *ngFor="let date of noctuaSearchService.searchCriteria.startdates" [selectable]="true"
@@ -245,7 +245,7 @@
               <mat-datepicker-toggle matSuffix [for]="startDatePicker"></mat-datepicker-toggle>
               <mat-datepicker #startDatePicker></mat-datepicker>
             </mat-form-field>
-            <mat-form-field appearance="outline" class="noc-sm" fxFlex="50">
+            <mat-form-field appearance="outline" class="noc-sm">
               <mat-label>End Date</mat-label>
               <mat-chip-list #dateChipList>
                 <mat-chip *ngFor="let date of noctuaSearchService.searchCriteria.enddates" [selectable]="true"
