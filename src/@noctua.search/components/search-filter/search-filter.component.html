@@ -20,22 +20,21 @@
       <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
         <div class="noc-annoton-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
-            <mat-label>Filter by GO Term</mat-label>
-            <mat-chip-list #gotermChipList>
-              <mat-chip *ngFor="let goterm of noctuaSearchService.searchCriteria.goterms" [selectable]="true"
-                [removable]="true" (removed)="remove(goterm, noctuaSearchService.filterType.goterms)">
-                {{goterm.label}}
+            <mat-label>Filter by Term</mat-label>
+            <mat-chip-list #termChipList>
+              <mat-chip *ngFor="let term of noctuaSearchService.searchCriteria.terms" [selectable]="true"
+                [removable]="true" (removed)="remove(term, noctuaSearchService.filterType.terms)">
+                {{term.label}}
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
-              <input formControlName="goterms" placeholder="Add GO Term Filter" [matAutocomplete]="gotermAuto"
-                #gotermInput [matChipInputFor]="gotermChipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+              <input formControlName="terms" placeholder="Add Term Filter" [matAutocomplete]="termAuto" #termInput
+                [matChipInputFor]="termChipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 [matChipInputAddOnBlur]="false">
             </mat-chip-list>
-            <mat-autocomplete #gotermAuto="matAutocomplete"
-              (optionSelected)="selected($event, noctuaSearchService.filterType.goterms)" [displayWith]="termDisplayFn"
+            <mat-autocomplete #termAuto="matAutocomplete"
+              (optionSelected)="selected($event, noctuaSearchService.filterType.terms)" [displayWith]="termDisplayFn"
               class="noc-term-autocomplete">
-              <mat-option class="noc-term-autocomplete" *ngFor="let item of searchFormData['goterm']?.searchResults"
-                [value]="item">
+              <mat-option class="noc-term-autocomplete" *ngFor="let item of termNode.termLookup.results" [value]="item">
                 <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
                   <div class="noc-term-label">
                     {{ item.label }}
@@ -65,8 +64,7 @@
             <mat-autocomplete #gpAuto="matAutocomplete"
               (optionSelected)="selected($event, noctuaSearchService.filterType.gps)" [displayWith]="termDisplayFn"
               class="noc-term-autocomplete">
-              <mat-option class="noc-term-autocomplete" *ngFor="let item of searchFormData['gp']?.searchResults"
-                [value]="item">
+              <mat-option class="noc-term-autocomplete" *ngFor="let item of gpNode.termLookup.results" [value]="item">
                 <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
                   <div class="noc-term-label">
                     {{ item.label }}

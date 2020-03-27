@@ -4,7 +4,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
 import { Observable, Subject } from 'rxjs';
 import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
-import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organism } from 'noctua-form-base';
+import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organism, EntityDefinition, AnnotonNode, EntityLookup } from 'noctua-form-base';
 import { NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from './../../services/noctua-search.service';
 import { NoctuaSearchMenuService } from '../../services/search-menu.service';
@@ -29,6 +29,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   filteredContributors: Observable<any[]>;
   filteredStates: Observable<any[]>;
 
+  gpNode: AnnotonNode;
+  termNode: AnnotonNode;
+
   private unsubscribeAll: Subject<any>;
 
   constructor(public noctuaUserService: NoctuaUserService,
@@ -36,9 +39,18 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     public noctuaFormConfigService: NoctuaFormConfigService,
     private noctuaLookupService: NoctuaLookupService,
     public noctuaSearchService: NoctuaSearchService) {
-    this.filterForm = this.createAnswerForm();
 
-    console.log("pp", this.dateSearchType);
+    this.gpNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoMolecularEntity]);
+    this.termNode = EntityDefinition.generateBaseTerm([
+      EntityDefinition.GoMolecularFunction,
+      EntityDefinition.GoBiologicalProcess,
+      EntityDefinition.GoCellularComponent,
+      EntityDefinition.GoBiologicalPhase,
+      EntityDefinition.GoAnatomicalEntity,
+      EntityDefinition.GoCellTypeEntity
+    ]);
+
+    this.filterForm = this.createAnswerForm();
 
     this.unsubscribeAll = new Subject();
 
@@ -62,7 +74,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   createAnswerForm() {
     return new FormGroup({
       gps: new FormControl(),
-      goterms: new FormControl(),
+      terms: new FormControl(),
       pmids: new FormControl(),
       contributors: new FormControl(),
       groups: new FormControl(),
@@ -150,13 +162,14 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   private _onValueChanges() {
     const self = this;
 
-    this.filterForm.get('goterms').valueChanges.pipe(
+    this.filterForm.get('terms').valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
-      let searchData = self.searchFormData['goterm'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['goterm'].searchResults = response
+      const lookup: EntityLookup = self.termNode.termLookup;
+
+      self.noctuaLookupService.golrLookup(data, lookup.requestParams).subscribe(response => {
+        lookup.results = response;
       });
     });
 
@@ -164,9 +177,10 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
-      let searchData = self.searchFormData['gp'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['gp'].searchResults = response
+      const lookup: EntityLookup = self.gpNode.termLookup;
+
+      self.noctuaLookupService.golrLookup(data, lookup.requestParams).subscribe(response => {
+        lookup.results = response;
       });
     });
 

@@ -60,7 +60,7 @@ export class NoctuaSearchService {
     filterType = {
         titles: 'titles',
         gps: 'gps',
-        goterms: 'goterms',
+        terms: 'terms',
         pmids: 'pmids',
         contributors: 'contributors',
         groups: 'groups',
@@ -117,7 +117,7 @@ export class NoctuaSearchService {
         searchCriteria.contributor ? this.searchCriteria.contributors.push(searchCriteria.contributor) : null;
         searchCriteria.group ? this.searchCriteria.groups.push(searchCriteria.group) : null;
         searchCriteria.pmid ? this.searchCriteria.pmids.push(searchCriteria.pmid) : null;
-        searchCriteria.goterm ? this.searchCriteria.goterms.push(searchCriteria.goterm) : null;
+        searchCriteria.term ? this.searchCriteria.terms.push(searchCriteria.term) : null;
         searchCriteria.gp ? this.searchCriteria.gps.push(searchCriteria.gp) : null;
         searchCriteria.organism ? this.searchCriteria.organisms.push(searchCriteria.organism) : null;
         searchCriteria.state ? this.searchCriteria.states.push(searchCriteria.state) : null;
@@ -140,8 +140,8 @@ export class NoctuaSearchService {
         param.contributor ? this.searchCriteria.contributors.push(param.contributor) : null;
         param.group ? this.searchCriteria.groups.push(param.group) : null;
         param.pmid ? this.searchCriteria.pmids.push(param.pmid) : null;
-        param.goterm ? this.searchCriteria.goterms.push(
-            new Entity(param.goterm, '')) : null;
+        param.term ? this.searchCriteria.terms.push(
+            new Entity(param.term, '')) : null;
         param.gp ? this.searchCriteria.gps.push(
             new Entity(param.gp, '')) : null;
         param.organism ? this.searchCriteria.organisms.push(param.organism) : null;
@@ -196,8 +196,8 @@ export class NoctuaSearchService {
         if (searchCriteria.pmids) {
             this.searchCriteria.pmids = searchCriteria.pmids;
         }
-        if (searchCriteria.goterms) {
-            this.searchCriteria.goterms = searchCriteria.goterms;
+        if (searchCriteria.terms) {
+            this.searchCriteria.terms = searchCriteria.terms;
         }
         if (searchCriteria.gps) {
             this.searchCriteria.gps = searchCriteria.gps;

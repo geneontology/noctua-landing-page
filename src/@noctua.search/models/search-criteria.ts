@@ -6,7 +6,7 @@ export class SearchCriteria {
     camPage: CamPage = new CamPage();
     titles: any[] = [];
     gps: any[] = [];
-    goterms: any[] = [];
+    terms: any[] = [];
     pmids: any[] = [];
     contributors: Contributor[] = [];
     groups: Group[] = [];
@@ -29,8 +29,8 @@ export class SearchCriteria {
             query.push(`title=${title}`);
         });
 
-        each(self.goterms, (goterm) => {
-            query.push(`goterm=${goterm.id}`);
+        each(self.terms, (term) => {
+            query.push(`term=${term.id}`);
         });
 
         each(self.groups, (group: Group) => {
@@ -82,8 +82,8 @@ export class SearchCriteria {
             query.push(`title=${encodeURIComponent(title)}`);
         });
 
-        each(self.goterms, (goterm) => {
-            query.push(`goterm=${encodeURIComponent(goterm.id)}`);
+        each(self.terms, (term) => {
+            query.push(`term=${encodeURIComponent(term.id)}`);
         });
 
         each(self.groups, (group: Group) => {

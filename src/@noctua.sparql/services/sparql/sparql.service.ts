@@ -343,8 +343,8 @@ export class SparqlService {
   buildCamsQuery(searchCriteria: SearchCriteria) {
     const query = new NoctuaQuery();
 
-    each(searchCriteria.goterms, (goterm) => {
-      query.goterm(goterm.id)
+    each(searchCriteria.terms, (term) => {
+      query.goterm(term.id)
     });
 
     each(searchCriteria.groups, (group: Group) => {

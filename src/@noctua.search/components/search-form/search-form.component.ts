@@ -45,7 +45,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
     return new FormGroup({
       title: new FormControl(),
       gp: new FormControl(),
-      goterm: new FormControl(),
+      term: new FormControl(),
       pmid: new FormControl(),
       contributor: new FormControl(),
       group: new FormControl(),
@@ -56,13 +56,13 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   onValueChanges() {
     const self = this;
 
-    this.searchForm.get('goterm').valueChanges.pipe(
+    this.searchForm.get('term').valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
-      let searchData = self.searchFormData['goterm'];
+      let searchData = self.searchFormData['term'];
       this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['goterm'].searchResults = response
+        self.searchFormData['term'].searchResults = response
       });
     });
 
@@ -128,7 +128,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
   clear() {
     this.searchForm.controls.title.setValue('');
     this.searchForm.controls.gp.setValue('');
-    this.searchForm.controls.goterm.setValue('');
+    this.searchForm.controls.term.setValue('');
     this.searchForm.controls.pmid.setValue('');
     this.searchForm.controls.contributor.setValue('');
     this.searchForm.controls.group.setValue('');

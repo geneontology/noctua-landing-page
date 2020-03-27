@@ -88,10 +88,10 @@
             <small>GPs: </small> ({{ noctuaSearchService.searchCriteria.gps.length}})
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
-          <mat-chip *ngIf="noctuaSearchService.searchCriteria.goterms.length>0"
+          <mat-chip *ngIf="noctuaSearchService.searchCriteria.terms.length>0"
             (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-            (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.goterms)">
-            <small>GO Terms: </small> ({{ noctuaSearchService.searchCriteria.goterms.length}})
+            (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.terms)">
+            <small>GO Terms: </small> ({{ noctuaSearchService.searchCriteria.terms.length}})
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
           <mat-chip *ngIf="noctuaSearchService.searchCriteria.contributors.length>0"
