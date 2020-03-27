@@ -60,20 +60,14 @@ export class SearchFormComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
-      let searchData = self.searchFormData['term'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['term'].searchResults = response
-      });
+
     });
 
     this.searchForm.get('gp').valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
-      let searchData = self.searchFormData['gp'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['gp'].searchResults = response
-      })
+
     })
 
 
