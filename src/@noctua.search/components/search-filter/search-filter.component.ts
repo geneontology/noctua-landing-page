@@ -8,16 +8,45 @@ import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organis
 import { NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from './../../services/noctua-search.service';
 import { NoctuaSearchMenuService } from '../../services/search-menu.service';
-import { cloneDeep } from 'lodash';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+
+
+import * as _moment from 'moment';
+// tslint:disable-next-line:no-duplicate-imports
+import { default as _rollupMoment } from 'moment';
+
+const moment = _rollupMoment || _moment;
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'YYYY-MM-DD',
+  },
+  display: {
+    dateInput: 'YYYY-MM-DD',
+    monthYearLabel: 'MMMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 @Component({
   selector: 'noc-search-filter',
   templateUrl: './search-filter.component.html',
   styleUrls: ['./search-filter.component.scss'],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
 
 export class SearchFilterComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
-  dateSearchType = true;
+  dateSearchType = false;
   filterForm: FormGroup;
   selectedOrganism = {};
   searchFormData: any = [];
@@ -60,9 +89,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-
   }
-
 
   search() {
     let searchCriteria = this.filterForm.value;
