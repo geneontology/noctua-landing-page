@@ -1,7 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { DataSource, CollectionViewer } from '@angular/cdk/collections';
-import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 
 import { noctuaAnimations } from '@noctua/animations';
 

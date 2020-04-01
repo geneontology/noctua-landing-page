@@ -46,7 +46,7 @@ export const MY_FORMATS = {
 
 export class SearchFilterComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
-  dateSearchType = false;
+  isExactDate = true;
   filterForm: FormGroup;
   selectedOrganism = {};
   searchFormData: any = [];
@@ -78,11 +78,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       EntityDefinition.GoAnatomicalEntity,
       EntityDefinition.GoCellTypeEntity
     ]);
-
-    this.filterForm = this.createAnswerForm();
-
     this.unsubscribeAll = new Subject();
 
+    this.filterForm = this.createAnswerForm();
     this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
     this._onValueChanges();
   }
@@ -108,7 +106,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       organisms: new FormControl(),
       titles: new FormControl(),
       states: new FormControl(),
-      dateSearchType: new FormControl(),
+      isExactDate: new FormControl(),
       exactdates: new FormControl(),
       startdates: new FormControl(),
       enddates: new FormControl(),
@@ -234,11 +232,11 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         map(group => group ? this.noctuaUserService.filterGroups(group) : this.noctuaUserService.groups.slice())
       );
 
-    this.filterForm.get('dateSearchType').valueChanges.pipe(
+    this.filterForm.get('isExactDate').valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(value => {
-      this.dateSearchType = value;
+      this.isExactDate = value;
     });
 
     this.filteredStates = this.filterForm.controls.states.valueChanges

@@ -201,16 +201,16 @@
           Date
         </div>
         <span fxFlex></span>
-        <mat-radio-group fxFlex="200px" formControlName="dateSearchType" fxLayout="row" fxLayoutAlign="end center">
-          <mat-radio-button checked class="noc-radio-button-rounded noc-xs mr-8" [value]="true"> Date Range
+        <mat-radio-group fxFlex="200px" formControlName="isExactDate" fxLayout="row" fxLayoutAlign="end center">
+          <mat-radio-button checked class="noc-radio-button-rounded noc-xs mr-8" [value]="true">Exact Date
           </mat-radio-button>
-          <mat-radio-button class="noc-radio-button-rounded noc-xs mr-8" [value]="false"> Exact Date
+          <mat-radio-button class="noc-radio-button-rounded noc-xs mr-8" [value]="false"> Date Range
           </mat-radio-button>
         </mat-radio-group>
       </div>
       <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
         <div class="noc-annoton-group-row" fxLayout="column">
-          <mat-form-field *ngIf="dateSearchType" appearance="outline" class="noc-sm w-100-p">
+          <mat-form-field *ngIf="isExactDate" appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Exact Date</mat-label>
             <mat-chip-list #dateChipList>
               <mat-chip *ngFor="let date of noctuaSearchService.searchCriteria.exactdates" [selectable]="true"
@@ -226,7 +226,7 @@
             <mat-datepicker-toggle matSuffix [for]="exactDatePicker"></mat-datepicker-toggle>
             <mat-datepicker #exactDatePicker></mat-datepicker>
           </mat-form-field>
-          <div *ngIf="!dateSearchType" class="noc-sm w-100-p" fxLayout="column" fxLayoutAlign="start stretch">
+          <div *ngIf="!isExactDate" class="noc-sm w-100-p" fxLayout="column" fxLayoutAlign="start stretch">
             <mat-form-field appearance="outline" class="noc-sm">
               <mat-label>Start Date</mat-label>
               <mat-chip-list #startDateChipList>

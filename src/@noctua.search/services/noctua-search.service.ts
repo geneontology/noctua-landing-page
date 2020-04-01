@@ -92,8 +92,6 @@ export class NoctuaSearchService {
                 return;
             }
 
-
-
             this.getCams(searchCriteria).subscribe((response: any) => {
                 this.cams = response;
                 this.onCamsChanged.next(this.cams);
@@ -369,20 +367,5 @@ export class NoctuaSearchService {
         return this.states.filter(state => state.name.toLowerCase().indexOf(filterValue) === 0);
     }
 
-    get dateSearchType() {
-        const options = [
-            {
-                name: 'daterange',
-                label: 'Date Range'
-            }, {
-                name: 'exactdate',
-                label: 'Exact Date'
-            },
-        ];
 
-        return {
-            options: options,
-            selected: options[0]
-        }
-    }
 }

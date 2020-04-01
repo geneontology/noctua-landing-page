@@ -50,7 +50,7 @@ export class SearchCriteria {
         });
 
         each(self.exactdates, (date) => {
-            query.push(`date=${date}`);
+            query.push(`exactdate=${date}`);
         });
 
         each(self.startdates, (date) => {
@@ -58,7 +58,7 @@ export class SearchCriteria {
         });
 
         each(self.enddates, (date) => {
-            query.push(`enddate=${date}`);
+            query.push(`dateend=${date}`);
         });
 
         each(self.organisms, (organism: Organism) => {
