@@ -16,9 +16,8 @@ export class SearchHistoryComponent implements OnInit, OnDestroy {
 
   constructor(public noctuaUserService: NoctuaUserService,
     public noctuaSearchMenuService: NoctuaSearchMenuService,
-    private noctuaSearchService: NoctuaSearchService,
+    public noctuaSearchService: NoctuaSearchService,
     public noctuaFormConfigService: NoctuaFormConfigService) {
-    // this.groups = this.noctuaSearchService.groups;
     this.unsubscribeAll = new Subject();
   }
 
@@ -26,16 +25,9 @@ export class SearchHistoryComponent implements OnInit, OnDestroy {
     //this.searchForm = this.createSearchForm();
   }
 
-  selectGroup(group) {
-    this.searchCriteria.group = group;
-    this.noctuaSearchService.search(this.searchCriteria);
-  }
-
-
-  search() {
-    let searchCriteria
-
-    this.noctuaSearchService.search(searchCriteria);
+  selectSearch(search) {
+    this.searchCriteria = JSON.parse(search.searchCriteria);
+    this.noctuaSearchService.uploadSearchConfig(this.searchCriteria);
   }
 
   close() {

@@ -14,8 +14,6 @@ import {
     NoctuaFormConfigService,
     NoctuaUserService,
     Entity,
-    Article,
-    noctuaFormConfig,
 } from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 import { saveAs } from 'file-saver';
@@ -27,12 +25,16 @@ declare const require: any;
 
 const amigo = require('amigo2');
 
-
 @Injectable({
     providedIn: 'root'
 })
 export class NoctuaSearchService {
     linker = new amigo.linker();
+
+    history: {
+        name: String
+        searchCriteria: String
+    }[] = [];
 
     onContributorsChanged: BehaviorSubject<any>;
     onGroupsChanged: BehaviorSubject<any>;
@@ -105,6 +107,8 @@ export class NoctuaSearchService {
 
             const element = document.querySelector('#noc-results');
             element.scrollTop = 0;
+
+            this.saveHistory();
         });
     }
 
@@ -174,6 +178,18 @@ export class NoctuaSearchService {
         this.updateSearch();
     }
 
+    saveHistory() {
+        const searchCriteria = JSON.stringify(this.searchCriteria, undefined, 2);
+
+        this.history.push({
+            name: 'Search' + Math.random().toString(),
+            searchCriteria: searchCriteria
+        })
+
+        console.log(searchCriteria)
+
+    }
+
     downloadSearchConfig() {
         const blob = new Blob([JSON.stringify(this.searchCriteria, undefined, 2)], { type: 'application/json' });
         saveAs(blob, 'search-filter.json');
@@ -232,9 +248,7 @@ export class NoctuaSearchService {
         return this.httpClient
             .get(url)
             .pipe(
-                tap(val => console.dir(val)),
                 map(res => this.addCam(res)),
-                tap(val => console.dir(val)),
                 finalize(() => {
                     self.loading = false;
                 })
@@ -313,40 +327,6 @@ export class NoctuaSearchService {
 
         return result;
     }
-
-    getPubmedInfo(pmid: string) {
-        const url = environment.pubMedSummaryApi + pmid;
-
-        return this.httpClient
-            .get(url)
-            .pipe(
-                map(res => res['result']),
-                map(res => res[pmid]),
-                tap(val => console.dir(val)),
-                map(res => this._addArticles(res, pmid)),
-                tap(val => console.dir(val)),
-            );
-    }
-
-    private _addArticles(res, pmid: string) {
-        const self = this;
-        if (!res) {
-            return;
-        }
-
-        const article = new Article();
-        article.title = res.title;
-        article.link = self.linker.url(`${noctuaFormConfig.evidenceDB.options.pmid.name}:${pmid}`);
-        article.date = res.pubdate;
-        if (res.authors && Array.isArray(res.authors)) {
-            article.author = res.authors.map(author => {
-                return author.name;
-            }).join(', ');
-        }
-
-        return article;
-    }
-
 
     public groupContributors() {
         return _.groupBy(this.contributors, function (contributor) {
