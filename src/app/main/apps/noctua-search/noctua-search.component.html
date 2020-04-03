@@ -124,6 +124,13 @@
             <small>Model State: </small> ({{ noctuaSearchService.searchCriteria.states.length}})
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
+
+          <mat-chip *ngIf="noctuaSearchService.searchCriteria.exactdates.length>0"
+            (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
+            (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.exactdates)">
+            <small>Model Date: </small> ({{ noctuaSearchService.searchCriteria.exactdates.length}})
+            <mat-icon matChipRemove>cancel</mat-icon>
+          </mat-chip>
         </mat-chip-list>
         <span fxFlex=""></span>
       </div>

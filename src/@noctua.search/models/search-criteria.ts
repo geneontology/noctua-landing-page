@@ -54,7 +54,7 @@ export class SearchCriteria {
         });
 
         each(self.startdates, (date) => {
-            query.push(`startdate=${date}`);
+            query.push(`date=${date}`);
         });
 
         each(self.enddates, (date) => {
