@@ -81,7 +81,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.unsubscribeAll = new Subject();
 
     this.filterForm = this.createAnswerForm();
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
     this._onValueChanges();
   }
 

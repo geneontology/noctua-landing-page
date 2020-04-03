@@ -30,7 +30,7 @@ export class SearchContributorsComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     public noctuaFormConfigService: NoctuaFormConfigService, ) {
     // this.contributors = this.noctuaSearchService.contributors;
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
     this.unsubscribeAll = new Subject();
 
     this.groupsForm = this.formBuilder.group({

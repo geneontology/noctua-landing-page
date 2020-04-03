@@ -757,7 +757,7 @@
             this.searchCriteria = {};
             this.searchFormData = [];
             // this.contributors = this.noctuaSearchService.contributors;
-            this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
             this.unsubscribeAll = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
             this.groupsForm = this.formBuilder.group({
               groups: []
@@ -927,7 +927,7 @@
             ]);
             this.filterForm = this.createAnswerForm();
             this.unsubscribeAll = new rxjs__WEBPACK_IMPORTED_MODULE_3__["Subject"]();
-            this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
             this._onValueChanges();
           }
           SearchFilterComponent.prototype.ngOnInit = function () {};
@@ -1192,7 +1192,7 @@
             this.cams = [];
             this.searchForm = this.createAnswerForm();
             this.unsubscribeAll = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
-            this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
             this.onValueChanges();
           }
           SearchFormComponent.prototype.ngOnInit = function () {};
@@ -1383,7 +1383,7 @@
             this.searchCriteria = {};
             this.searchFormData = [];
             // this.groups = this.noctuaSearchService.groups;
-            this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
             this.unsubscribeAll = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
             this.groupsForm = this.formBuilder.group({
               groups: []
@@ -1658,7 +1658,7 @@
             this.searchCriteria = {};
             this.searchFormData = [];
             // this.organisms = this.noctuaSearchService.organisms;
-            this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
             this.unsubscribeAll = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
             this.groupsForm = this.formBuilder.group({
               groups: []
@@ -1811,7 +1811,7 @@
             this.cams = [];
             this.searchForm = this.createAnswerForm();
             this.unsubscribeAll = new rxjs__WEBPACK_IMPORTED_MODULE_2__["Subject"]();
-            this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
             this.onValueChanges();
           }
           SearchRelationComponent.prototype.ngOnInit = function () {};
@@ -8562,7 +8562,7 @@
             };
             this.cams = [];
             this._unsubscribeAll = new rxjs__WEBPACK_IMPORTED_MODULE_1__["Subject"]();
-            this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
           }
           CamsTableComponent.prototype.ngOnInit = function () {
             var _this = this;

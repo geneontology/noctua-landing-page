@@ -56,7 +56,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     public sparqlService: SparqlService) {
 
     this._unsubscribeAll = new Subject();
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
 
   }
 

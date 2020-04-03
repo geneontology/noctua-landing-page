@@ -35,7 +35,7 @@ export class SearchFormComponent implements OnInit, OnDestroy {
 
     this.unsubscribeAll = new Subject();
 
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
     this.onValueChanges();
   }
 
