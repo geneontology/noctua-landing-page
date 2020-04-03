@@ -1,7 +1,6 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
 import { Observable, Subject } from 'rxjs';
 import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
 import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organism, EntityDefinition, AnnotonNode, EntityLookup } from 'noctua-form-base';
@@ -81,7 +80,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     this.unsubscribeAll = new Subject();
 
     this.filterForm = this.createAnswerForm();
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
     this._onValueChanges();
   }
 

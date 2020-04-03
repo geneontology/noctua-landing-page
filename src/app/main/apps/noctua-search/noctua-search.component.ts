@@ -1,6 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MatDrawer } from '@angular/material';
 import { Subject } from 'rxjs';
 import { noctuaAnimations } from './../../../../@noctua/animations';
 import {
