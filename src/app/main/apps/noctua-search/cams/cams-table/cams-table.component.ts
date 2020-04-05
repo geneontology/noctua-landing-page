@@ -14,7 +14,7 @@ import {
   NoctuaFormConfigService,
 } from 'noctua-form-base';
 
-import { MatPaginator } from '@angular/material';
+import { MatPaginator } from '@angular/material/paginator';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
 
