@@ -46,16 +46,13 @@
     </mat-drawer>
     <mat-drawer-content id="noc-results" class="noc-section-body w-100-p h-100-p" noctuaPerfectScrollbar>
       <div class="header accent p-8 w-100-p" fxLayout="column" fxLayoutAlign="center center">
-        <mat-icon class="hero-icon">school</mat-icon>
         <h1 [@animate]="{value:'*',params:{delay:'100ms', y:'25px'}}">
           WELCOME TO NOCTUA
         </h1>
         <h3 [@animate]="{value:'*',params:{delay:'100ms', y:'25px'}}">
           Noctua is a web-based, collaborative Gene Ontology (GO) annotation tool developed by the GO Consortium.
           It can be used to create standard GO annotations as well as more expressive models of biological processes,
-          known as GO-CAMs (Gene Ontology Causal Activity Models). There are two types of user interface available in
-          Noctua: 1)
-          a form interface and 2) a graph interface.
+          known as GO-CAMs (Gene Ontology Causal Activity Models)
         </h3>
         <h4 *ngIf="!noctuaUserService.user">
           You must Login to create or edit models. Models may be viewed without login.
@@ -63,10 +60,10 @@
         <div *ngIf="noctuaUserService.user" class="noc-create h-100-p" fxLayout="row" fxLayoutAlign="start center">
           <button mat-raised-button (click)="createModel()" color=""
             class="noc-rounded-button mr-4 noc-half-button noc-r">
-            Create New Model in Form
+            CREATE MODEL IN FORM
           </button>
           <button mat-raised-button (click)="createModel()" color="" class="noc-rounded-button noc-half-button noc-l">
-            Create New Model in Graph Editor
+            CREATE MODEL IN GRAPH EDITOR
           </button>
         </div>
       </div>

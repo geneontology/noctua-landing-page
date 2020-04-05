@@ -6,19 +6,25 @@
 }
 
 .header {
+  padding-bottom: 10px;
+  background-image: linear-gradient(to right, #00174f, rgba(#00174f, 0.8), rgba(#00174f, 0.5)), url("/assets/images/gene.jpeg");
+  background-blend-mode: initial;
+  background-size: cover;
+  background-position: top;
+
+
   padding-top: 50px !important;
   position: relative;
-  background: #1A237E;
-  background: linear-gradient(to right, #0E2A3B 0%, #34306B 100%);
+  // background: #1A237E;
+  // background: linear-gradient(to right, #0E2A3B 0%, #34306B 100%);
   flex: 1 0 auto;
   height: 280px;
   max-height: 280px;
   text-align: center;
   overflow: hidden;
 
-  @include media-breakpoint('xs') {
-    height: 240px;
-    padding: 16px;
+  @include media-breakpoint('lt-md') {
+    height: 200px;
   }
 
 
@@ -42,7 +48,7 @@
     margin-bottom: 16px;
     color: rgba(white, 0.9);
 
-    @include media-breakpoint('xs') {
+    @include media-breakpoint('lt-md') {
       font-size: 24px;
     }
   }
@@ -56,7 +62,7 @@
     color: #ffffff;
     line-height: 1.5;
 
-    @include media-breakpoint('xs') {
+    @include media-breakpoint('lt-md') {
       font-size: 14px;
     }
   }
@@ -71,6 +77,7 @@
     color: rgba(#ffffff, 0.8);
   }
 }
+
 
 .noc-left-drawer {
   @include deep-height(100%);
@@ -112,6 +119,10 @@ $rotate-relation: 155deg;
 
   .noc-create {
     padding: 8px;
+
+    button {
+      color: #0000FF;
+    }
   }
 
   .noc-summary-bar {
