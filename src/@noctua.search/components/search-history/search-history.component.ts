@@ -30,7 +30,6 @@ export class SearchHistoryComponent implements OnInit, OnDestroy {
       .subscribe((searchHistory: SearchHistory[]) => {
         this.searchHistory = searchHistory;
       });
-
   }
 
   selectSearch(searchHistoryItem: SearchHistory) {

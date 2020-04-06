@@ -220,15 +220,12 @@ export class NoctuaSearchService {
         if (searchCriteria.states) {
             this.searchCriteria.states = searchCriteria.states;
         }
-
         if (searchCriteria.exactdates) {
             this.searchCriteria.exactdates = searchCriteria.exactdates;
         }
-
         if (searchCriteria.startdates) {
             this.searchCriteria.startdates = searchCriteria.startdates;
         }
-
         if (searchCriteria.enddates) {
             this.searchCriteria.enddates = searchCriteria.enddates;
         }
