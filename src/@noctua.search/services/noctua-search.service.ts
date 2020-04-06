@@ -17,9 +17,10 @@ import {
 } from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 import { saveAs } from 'file-saver';
-import { forOwn } from 'lodash';
+import { forOwn, each } from 'lodash';
 import { CurieService } from '@noctua.curie/services/curie.service';
 import { CamPage } from './../models/cam-page';
+import { SearchHistory } from './../models/search-history';
 
 declare const require: any;
 
@@ -31,10 +32,7 @@ const amigo = require('amigo2');
 export class NoctuaSearchService {
     linker = new amigo.linker();
 
-    history: {
-        name: String
-        searchCriteria: String
-    }[] = [];
+    searchHistory: SearchHistory[] = [];
 
     onContributorsChanged: BehaviorSubject<any>;
     onGroupsChanged: BehaviorSubject<any>;
@@ -44,7 +42,8 @@ export class NoctuaSearchService {
     organisms: Organism[] = [];
     states: any[] = [];
 
-    onSearcCriteriaChanged: BehaviorSubject<any>;
+    onSearchCriteriaChanged: BehaviorSubject<any>;
+    onSearchHistoryChanged: BehaviorSubject<any>;
     baseUrl = environment.spaqrlApiUrl;
     curieUtil: any;
     cams: any[] = [];
@@ -83,13 +82,14 @@ export class NoctuaSearchService {
         this.onCamsChanged = new BehaviorSubject([]);
         this.onCamsPageChanged = new BehaviorSubject(null);
         this.onCamChanged = new BehaviorSubject([]);
+        this.onSearchHistoryChanged = new BehaviorSubject(null);
 
         this.states = this.noctuaFormConfigService.modelState.options;
         this.searchCriteria = new SearchCriteria();
-        this.onSearcCriteriaChanged = new BehaviorSubject(null);
+        this.onSearchCriteriaChanged = new BehaviorSubject(null);
         this.curieUtil = this.curieService.getCurieUtil();
 
-        this.onSearcCriteriaChanged.subscribe((searchCriteria: SearchCriteria) => {
+        this.onSearchCriteriaChanged.subscribe((searchCriteria: SearchCriteria) => {
             if (!searchCriteria) {
                 return;
             }
@@ -107,8 +107,6 @@ export class NoctuaSearchService {
 
             const element = document.querySelector('#noc-results');
             element.scrollTop = 0;
-
-            this.saveHistory();
         });
     }
 
@@ -128,6 +126,7 @@ export class NoctuaSearchService {
         searchCriteria.enddate ? this.searchCriteria.exactdates.push(searchCriteria.enddate) : null;
 
         this.updateSearch();
+
     }
 
     getPage(pageNumber: number) {
@@ -155,8 +154,12 @@ export class NoctuaSearchService {
         this.updateSearch();
     }
 
-    updateSearch() {
-        this.onSearcCriteriaChanged.next(this.searchCriteria);
+    updateSearch(save: boolean = true) {
+        this.onSearchCriteriaChanged.next(this.searchCriteria);
+
+        if (save) {
+            this.saveHistory();
+        }
     }
 
     filter(filterType, filter) {
@@ -179,15 +182,10 @@ export class NoctuaSearchService {
     }
 
     saveHistory() {
-        const searchCriteria = JSON.stringify(this.searchCriteria, undefined, 2);
+        const searchHistoryItem = new SearchHistory(this.searchCriteria);
+        this.searchHistory.push(searchHistoryItem);
 
-        this.history.push({
-            name: 'Search' + Math.random().toString(),
-            searchCriteria: searchCriteria
-        })
-
-        console.log(searchCriteria)
-
+        this.onSearchHistoryChanged.next(this.searchHistory);
     }
 
     downloadSearchConfig() {

@@ -3,6 +3,8 @@ import { Subject } from 'rxjs';
 import { NoctuaFormConfigService, NoctuaUserService } from 'noctua-form-base';
 import { NoctuaSearchService } from './../..//services/noctua-search.service';
 import { NoctuaSearchMenuService } from '../../services/search-menu.service';
+import { takeUntil } from 'rxjs/operators';
+import { SearchHistory } from './../../models/search-history';
 
 @Component({
   selector: 'noc-search-history',
@@ -11,18 +13,24 @@ import { NoctuaSearchMenuService } from '../../services/search-menu.service';
 })
 export class SearchHistoryComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
+  searchHistory: SearchHistory[] = [];
 
-  private unsubscribeAll: Subject<any>;
+  private _unsubscribeAll: Subject<any>;
 
   constructor(public noctuaUserService: NoctuaUserService,
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaSearchService: NoctuaSearchService,
     public noctuaFormConfigService: NoctuaFormConfigService) {
-    this.unsubscribeAll = new Subject();
+    this._unsubscribeAll = new Subject();
   }
 
   ngOnInit(): void {
-    //this.searchForm = this.createSearchForm();
+    this.noctuaSearchService.onSearchHistoryChanged.pipe(
+      takeUntil(this._unsubscribeAll))
+      .subscribe((searchHistory: SearchHistory[]) => {
+        this.searchHistory = searchHistory;
+      });
+
   }
 
   selectSearch(search) {
@@ -35,7 +43,7 @@ export class SearchHistoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.unsubscribeAll.next();
-    this.unsubscribeAll.complete();
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
   }
 }
