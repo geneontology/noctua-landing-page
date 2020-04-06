@@ -8,21 +8,12 @@
       <mat-icon>close</mat-icon> Close
     </button>
   </div>
-  <form fxLayout="column" fxLayoutAlign="start stretch" class="mt-8 noc-search-form" noctuaPerfectScrollbar>
+  <form class="mt-8 noc-search-form" noctuaPerfectScrollbar>
     <div *ngFor="let item of searchHistory" (click)="selectSearch(item)" class="noc-group-row" fxLayout="row"
       fxLayoutAlign="start center">
-      <div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="center center">
-        <div *ngIf="item.name">
-          {{item.name}}
-        </div>
-        <div *ngIf="item.contributors">
-          {{item.titles}}
-        </div>
-        <div *ngIf="item.contributors">
-          {{item.contributors}}
-        </div>
-        <div *ngIf="item.groups">
-          {{item.groups}}
+      <div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start start">
+        <div *ngFor="let section of item.displaySections" class="noc-history-item">
+          <fa-icon *ngIf="section.icon" [icon]="['fas', section.icon]"></fa-icon> {{section.value}}
         </div>
       </div>
       <span fxFlex></span>

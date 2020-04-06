@@ -33,9 +33,9 @@ export class SearchHistoryComponent implements OnInit, OnDestroy {
 
   }
 
-  selectSearch(search) {
-    this.searchCriteria = JSON.parse(search.searchCriteria);
-    this.noctuaSearchService.uploadSearchConfig(this.searchCriteria);
+  selectSearch(searchHistoryItem: SearchHistory) {
+    this.noctuaSearchService.searchCriteria = searchHistoryItem.getSearchCriteria();
+    this.noctuaSearchService.updateSearch(false);
   }
 
   close() {

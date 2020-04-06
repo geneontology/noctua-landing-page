@@ -44,10 +44,10 @@
       <th mat-header-cell *matHeaderCellDef fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">Edit</th>
       <td mat-cell *matCellDef="let cam" fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">
         <button mat-icon-button (click)="openForm(cam)" class="">
-          <mat-icon class="">list_alt</mat-icon>
+          <fa-icon [icon]="['fas', 'list-alt']"></fa-icon>
         </button>
         <button mat-icon-button (click)="openGraph(cam)" class="">
-          <fa-icon [icon]="['fas', 'project-diagram']"></fa-icon>
+          <fa-icon [icon]="['fas', 'sitemap']"></fa-icon>
         </button>
       </td>
     </ng-container>

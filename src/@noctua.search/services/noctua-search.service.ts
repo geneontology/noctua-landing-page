@@ -183,7 +183,7 @@ export class NoctuaSearchService {
 
     saveHistory() {
         const searchHistoryItem = new SearchHistory(this.searchCriteria);
-        this.searchHistory.push(searchHistoryItem);
+        this.searchHistory.unshift(searchHistoryItem);
 
         this.onSearchHistoryChanged.next(this.searchHistory);
     }

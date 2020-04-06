@@ -4,19 +4,8 @@ import { CamPage } from './cam-page';
 import { SearchCriteria } from './search-criteria';
 
 export class SearchHistory {
-    titles: string;
-    gps: string;
-    terms: string;
-    pmids: string;
-    contributors: string;
-    groups: string;
-    organisms: string;
-    states: string;
-    exactdates: string;
-    startdates: string;
-    enddates: string;
 
-    name: string
+    displaySections: any = [];
     searchCriteriaString: string;
     //searchCriteriaRe: SearchCriteria,
 
@@ -25,74 +14,98 @@ export class SearchHistory {
         this.save(searchCriteria);
     }
 
-
     generateHistorySummary(searchCriteria: SearchCriteria) {
         const self = this;
         const threshold = 5;
         let count = 0;
 
         if (searchCriteria.contributors && searchCriteria.contributors.length > 0) {
-            self.contributors = searchCriteria.contributors.map((contributor: Contributor) => {
+            const contributors = searchCriteria.contributors.map((contributor: Contributor) => {
                 return contributor.name;
             }).join(', ');
+
+            self._addParam('Contributor(s)', contributors, 'user');
             count++;
         }
 
         if (searchCriteria.groups && searchCriteria.groups.length > 0) {
-            self.groups = searchCriteria.groups.map((group: Group) => {
+            const groups = searchCriteria.groups.map((group: Group) => {
                 return group.name;
             }).join(', ');
+
+            self._addParam('Group(s)', groups, 'users');
             count++;
         }
         if (searchCriteria.pmids && searchCriteria.pmids.length > 0) {
-            self.pmids = searchCriteria.pmids.join(', ');
+            const pmids = searchCriteria.pmids.join(', ');
+            self._addParam('Ref', pmids);
             count++;
         }
         if (searchCriteria.terms && searchCriteria.terms.length > 0) {
-            self.terms = searchCriteria.terms.map((term: Entity) => {
+            const terms = searchCriteria.terms.map((term: Entity) => {
                 return term.label;
             }).join(', ');
+            self._addParam('Term(s)', terms);
             count++;
         }
         if (searchCriteria.gps && searchCriteria.gps.length > 0) {
-            self.gps = searchCriteria.gps.map((gp: Entity) => {
+            const gps = searchCriteria.gps.map((gp: Entity) => {
                 return gp.label;
             }).join(', ');
+            self._addParam('GP(s)', gps);
             count++;
         }
         if (searchCriteria.organisms && searchCriteria.organisms.length > 0) {
-            self.organisms = searchCriteria.organisms.map((organism: Organism) => {
+            const organisms = searchCriteria.organisms.map((organism: Organism) => {
                 return organism.taxonName;
             }).join(', ');
+            self._addParam('Organism(s)', organisms, 'paw');
             count++;
         }
         if (searchCriteria.states && searchCriteria.states.length > 0) {
-            self.states = searchCriteria.states.join(', ');
+            const states = searchCriteria.states.map((state: any) => {
+                return state.label;
+            }).join(', ');
+            self._addParam('State(s)', states);
             count++;
         }
 
         if (searchCriteria.exactdates && searchCriteria.exactdates.length > 0) {
-            self.exactdates = searchCriteria.exactdates.join(', ');
+            const exactdates = searchCriteria.exactdates.join(', ');
+            self._addParam('Date', exactdates, 'calendar-day');
             count++;
         }
 
-        if (searchCriteria.startdates && searchCriteria.startdates.length > 0) {
-            self.startdates = searchCriteria.startdates.join(', ');
-            count++;
-        }
-
-        if (searchCriteria.enddates && searchCriteria.enddates.length > 0) {
-            self.enddates = searchCriteria.enddates.join(', ');
+        if (searchCriteria.startdates && searchCriteria.startdates.length > 0 &&
+            searchCriteria.enddates && searchCriteria.enddates.length > 0) {
+            const startdate = searchCriteria.startdates[0];
+            const enddate = searchCriteria.enddates[0]
+            const daterange = `${startdate} - ${enddate}`
+            self._addParam('Date Range', daterange, 'calendar-week');
             count++;
         }
 
         if (count === 0) {
-            self.name = 'Recent Searches'
+            self._addParam('Default Search', 'Recent Models', 'clock');
         }
     }
 
     save(searchCriteria: SearchCriteria) {
         this.searchCriteriaString = JSON.stringify(searchCriteria, undefined, 2);
         this.generateHistorySummary(searchCriteria)
+    }
+
+    getSearchCriteria(): SearchCriteria {
+        const searchCriteria = new SearchCriteria(JSON.parse(this.searchCriteriaString));
+
+        return searchCriteria;
+    }
+
+    private _addParam(name: string, value: string, icon?: string) {
+        this.displaySections.push({
+            name,
+            value,
+            icon,
+        });
     }
 }

@@ -16,7 +16,21 @@ export class SearchCriteria {
     startdates: any[] = [];
     enddates: any[] = [];
 
-    constructor() {
+    constructor(searchCriteria?: SearchCriteria) {
+        if (searchCriteria) {
+            this.camPage = searchCriteria.camPage || new CamPage()
+            this.titles = searchCriteria.titles || [];
+            this.contributors = searchCriteria.contributors || [];
+            this.groups = searchCriteria.groups || [];
+            this.pmids = searchCriteria.pmids || [];
+            this.terms = searchCriteria.terms || [];
+            this.gps = searchCriteria.gps || [];
+            this.organisms = searchCriteria.organisms || [];
+            this.states = searchCriteria.states || [];
+            this.exactdates = searchCriteria.exactdates || [];
+            this.startdates = searchCriteria.startdates || [];
+            this.enddates = searchCriteria.enddates || [];
+        }
     }
 
     private query() {

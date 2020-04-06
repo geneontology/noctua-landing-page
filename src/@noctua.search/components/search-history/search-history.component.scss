@@ -24,13 +24,26 @@
   }
 
   .noc-group-row {
-    padding: 0 10px;
-    @include deep-height(50px);
-    border-top: #CCC solid 1px;
+    margin-bottom: 12px;
+    padding: 10px 10px;
+    min-height: 40px;
+    max-height: 300px;
+    border: #CCC solid 1px;
     font-size: 12px;
+    @include mat-elevation(2);
 
     .noc-name {
       font-size: 14px;
+    }
+
+    .noc-history-item {
+      @include deep-height(20px);
+      @include deep-width(100%);
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
     }
 
     .noc-cams-number {

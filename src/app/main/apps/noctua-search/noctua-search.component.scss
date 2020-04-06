@@ -122,6 +122,7 @@ $rotate-relation: 155deg;
 
     button {
       color: #0000FF;
+      @include mat-elevation(4);
     }
   }
 
