@@ -129,8 +129,8 @@
         <div class="ph-15 noc-annoton-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm">
             <mat-label>Organisms</mat-label>
-            <input matInput formControlName="organism" placeholder="Species" [matAutocomplete]="speciesAuto" />
-            <mat-autocomplete #speciesAuto="matAutocomplete" [displayWith]="organismDisplayFn"
+            <input matInput formControlName="organism" placeholder="Species" [matAutocomplete]="organismAuto" />
+            <mat-autocomplete #organismAuto="matAutocomplete" [displayWith]="organismDisplayFn"
               class="noc-term-autocomplete">
               <mat-option *ngFor="let organism of filteredOrganisms | async" [value]="organism">
                 <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">

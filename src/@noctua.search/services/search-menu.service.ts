@@ -17,7 +17,7 @@ export class NoctuaSearchMenuService {
             id: 4
         }, contributor: {
             id: 5
-        }, species: {
+        }, organism: {
             id: 6
         },
         history: {

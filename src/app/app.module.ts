@@ -18,7 +18,7 @@ import {
     faSitemap,
     faPaw, faUser,
     faUsers, faListAlt,
-    faClock, faCalendarDay, faCalendarWeek
+    faClock, faCalendarDay, faCalendarWeek, faHistory, faSearch
 } from '@fortawesome/free-solid-svg-icons';
 import { faGithub, faFacebook, faTwitter } from '@fortawesome/free-brands-svg-icons';
 import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
@@ -63,15 +63,17 @@ export class AppModule {
         library.addIcons(
             faCalendarDay,
             faCalendarWeek,
+            faClock,
             faFacebook,
             faGithub,
+            faHistory,
             faListAlt,
             faPaw,
-            faUser,
-            faClock,
-            faUsers,
+            faSearch,
             faSitemap,
             faTwitter,
+            faUser,
+            faUsers,
         );
     }
 }

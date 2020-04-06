@@ -32,9 +32,11 @@
       <th mat-header-cell *matHeaderCellDef fxFlex="" fxLayout="row" fxLayoutAlign="start center">Contributors</th>
       <td mat-cell *matCellDef="let cam" fxFlex="" fxLayout="row" fxLayoutAlign="start center">
         <mat-chip-list>
-          <mat-chip *ngFor="let contributor of cam.contributors"
+          <mat-chip class="noc-user-chip" *ngFor="let contributor of cam.contributors"
             (click)="noctuaSearchService.filter(noctuaSearchService.filterType.contributors, contributor)">
-            <mat-icon class="s-12">person</mat-icon>
+            <span class="noc-icon">
+              <fa-icon [icon]="['fas', 'user']"></fa-icon>
+            </span>
             <span>{{contributor.name}}</span>
           </mat-chip>
         </mat-chip-list>

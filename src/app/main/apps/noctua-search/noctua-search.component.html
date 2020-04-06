@@ -1,34 +1,39 @@
 <div class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start">
   <div class="noc-sidemenu" fxLayout="column" fxLayoutAlign="start center">
-    <button mat-icon-button color="primary" class="noc-rounded-button"
+    <button mat-icon-button color="" class="noc-rounded-button"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel?.id === noctuaSearchMenuService.leftPanel.filter.id}"
       (click)="toggleLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" matTooltip="Filter"
       [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
-      <mat-icon> search </mat-icon>
+      <fa-icon [icon]="['fas', 'search']"></fa-icon>
     </button>
-    <button mat-icon-button color="primary" class="noc-rounded-button" (click)="
-      toggleLeftDrawer(noctuaSearchMenuService.leftPanel.group)" matTooltip="Browse by group"
-      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
-      <mat-icon> people_outline </mat-icon>
-    </button>
-    <button mat-icon-button color="primary" class="noc-rounded-button" (click)="
+    <button mat-icon-button color="" class="noc-rounded-button" (click)="
       toggleLeftDrawer(noctuaSearchMenuService.leftPanel.contributor)" matTooltip="Browse by contributor"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel?.id === noctuaSearchMenuService.leftPanel.contributor.id}"
       [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
-      <mat-icon>person_outline</mat-icon>
+      <fa-icon [icon]="['fas', 'user']"></fa-icon>
     </button>
-    <button mat-icon-button color="primary" class="noc-rounded-button" (click)="
-      toggleLeftDrawer(noctuaSearchMenuService.leftPanel.species)" matTooltip="Search by species"
-      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
-      <mat-icon> pets </mat-icon>
+    <button mat-icon-button color="" class="noc-rounded-button" (click)="
+      toggleLeftDrawer(noctuaSearchMenuService.leftPanel.group)"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel?.id === noctuaSearchMenuService.leftPanel.group.id}"
+      matTooltip="Browse by group" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
+      <fa-icon [icon]="['fas', 'users']"></fa-icon>
     </button>
-    <!-- <button mat-icon-button color="primary" class="noc-rounded-button"
+    <button mat-icon-button color="" class="noc-rounded-button" (click)="
+      toggleLeftDrawer(noctuaSearchMenuService.leftPanel.organism)"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel?.id === noctuaSearchMenuService.leftPanel.organism.id}"
+      matTooltip="Search by organism" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
+      <fa-icon [icon]="['fas', 'paw']"></fa-icon>
+    </button>
+    <!-- <button mat-icon-button color="" class="noc-rounded-button"
       (click)="toggleLeftDrawer(noctuaSearchMenuService.leftPanel.relation)" matTooltip="Relation Search"
       [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
       <mat-icon class="icon-rotate-relation"> linear_scale </mat-icon>
     </button> -->
-    <button mat-icon-button color="primary" class="noc-rounded-button"
-      (click)="toggleLeftDrawer(noctuaSearchMenuService.leftPanel.history)" matTooltip="History"
-      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
-      <mat-icon> history </mat-icon>
+    <button mat-icon-button color="" class="noc-rounded-button"
+      (click)="toggleLeftDrawer(noctuaSearchMenuService.leftPanel.history)"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel?.id === noctuaSearchMenuService.leftPanel.history.id}"
+      matTooltip="History" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+      <fa-icon [icon]="['fas', 'history']"></fa-icon>
     </button>
   </div>
   <mat-drawer-container class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start" autosize>
@@ -40,7 +45,7 @@
         <noc-search-groups *ngSwitchCase="noctuaSearchMenuService.leftPanel.group.id"></noc-search-groups>
         <noc-search-contributors *ngSwitchCase="noctuaSearchMenuService.leftPanel.contributor.id">
         </noc-search-contributors>
-        <noc-search-organisms *ngSwitchCase="noctuaSearchMenuService.leftPanel.species.id"></noc-search-organisms>
+        <noc-search-organisms *ngSwitchCase="noctuaSearchMenuService.leftPanel.organism.id"></noc-search-organisms>
         <noc-search-history *ngSwitchCase="noctuaSearchMenuService.leftPanel.history.id"></noc-search-history>
       </div>
     </mat-drawer>
