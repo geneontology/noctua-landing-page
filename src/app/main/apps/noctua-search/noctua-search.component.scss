@@ -171,7 +171,6 @@ $accent: map-get($theme, accent);
 
   .noc-sidemenu {
     padding: 0;
-    margin-right: 5px;
     @include deep-height(100%);
     @include deep-width(60px);
     // @include mat-elevation(2);
