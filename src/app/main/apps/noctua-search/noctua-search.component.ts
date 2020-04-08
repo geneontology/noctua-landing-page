@@ -143,7 +143,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
       .subscribe(groups => {
         this.noctuaUserService.groups = groups;
       });
-
   }
 
   toggleLeftDrawer(panel) {
@@ -184,4 +183,3 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.complete();
   }
 }
-

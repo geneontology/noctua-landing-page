@@ -327,7 +327,6 @@ export class NoctuaSearchService {
         return _.groupBy(this.contributors, function (contributor) {
             return contributor.group;
         });
-
     }
 
     public filterOrganisms(value: string): any[] {

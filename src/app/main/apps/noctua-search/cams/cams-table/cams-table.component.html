@@ -33,7 +33,7 @@
       <th mat-header-cell *matHeaderCellDef fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">Date</th>
       <td mat-cell *matCellDef="let cam" class="noc-date" fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">
         <mat-chip class="noc-table-chip noc-date-chip" fxLayout="row" fxLayoutAlign="start center"
-          (click)="noctuaSearchService.filter(noctuaSearchService.filterType.dates, date)"
+          (click)="noctuaSearchService.filter(noctuaSearchService.filterType.exactdates, cam.date)"
           matTooltip="Add date to exact date filter" [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
           <div class="noc-icon">
             <fa-icon [icon]="['fas', 'calendar-day']"></fa-icon>
@@ -42,7 +42,6 @@
             {{cam.date}}
           </div>
         </mat-chip>
-
       </td>
     </ng-container>
     <ng-container matColumnDef="contributor">
@@ -67,12 +66,12 @@
     <ng-container matColumnDef="edit">
       <th mat-header-cell *matHeaderCellDef fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">Open In</th>
       <td mat-cell *matCellDef="let cam" fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">
-        <button mat-icon-button (click)="openForm(cam)"
+        <a mat-icon-button [href]='cam?.model?.modelInfo?.noctuaFormUrl' target="_blank"
           class="noc-edit-button noc-rounded-button noc-sm  mr-4 noc-half-button noc-r" matTooltip="Noctua Form"
           [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
           <fa-icon [icon]="['fas', 'list-alt']"></fa-icon>
-        </button>
-        <button mat-icon-button (click)="openGraph(cam)"
+        </a>
+        <button mat-icon-button [href]='cam?.model?.modelInfo?.graphEditorUrl' target="_blank"
           class="noc-edit-button noc-rounded-button noc-sm noc-half-button noc-l" matTooltip="Graph Editor"
           [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
           <fa-icon [icon]="['fas', 'sitemap']"></fa-icon>
@@ -87,10 +86,10 @@
           EXPORT AS
         </button>
         <mat-menu #exportMenu="matMenu">
-          <a href="" target="_blank" mat-menu-item>
+          <a [href]='cam?.model?.modelInfo?.gpadUrl' target="_blank" mat-menu-item>
             GPAD
           </a>
-          <a href="" target="_blank" mat-menu-item>
+          <a [href]='cam?.model?.modelInfo?.owlUrl' target="_blank" mat-menu-item>
             OWL
           </a>
         </mat-menu>

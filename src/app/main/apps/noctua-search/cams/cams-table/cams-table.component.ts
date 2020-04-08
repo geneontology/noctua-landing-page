@@ -1,22 +1,18 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
-
 import { noctuaAnimations } from '@noctua/animations';
-
 import { takeUntil } from 'rxjs/internal/operators';
-
-
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
-import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 
 import {
-  NoctuaFormConfigService,
+  NoctuaFormConfigService, NoctuaUserService,
 } from 'noctua-form-base';
 
 import { MatPaginator } from '@angular/material/paginator';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
+
 
 @Component({
   selector: 'noc-cams-table',
@@ -52,12 +48,9 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   constructor(
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
-    public noctuaSearchService: NoctuaSearchService,
-    public sparqlService: SparqlService) {
-
+    public noctuaUserService: NoctuaUserService,
+    public noctuaSearchService: NoctuaSearchService) {
     this._unsubscribeAll = new Subject();
-
-
   }
 
   ngOnInit(): void {
@@ -67,7 +60,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
         if (!cams) {
           return;
         }
-        this.cams = cams;
+        this.cams = cams; console.log(this.cams)
       });
 
     this.noctuaSearchService.onCamsPageChanged
@@ -107,5 +100,6 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.next();
     this._unsubscribeAll.complete();
   }
+
 }
 

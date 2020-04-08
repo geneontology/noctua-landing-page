@@ -66,7 +66,7 @@ export class SearchHistory {
             const states = searchCriteria.states.map((state: any) => {
                 return state.label;
             }).join(', ');
-            self._addParam('State(s)', states);
+            self._addParam('State(s)', states, 'tasks');
             count++;
         }
 

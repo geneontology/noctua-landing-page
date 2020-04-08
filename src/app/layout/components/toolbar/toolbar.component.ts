@@ -60,6 +60,7 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
                 const noctuaLandingPageReturnUrl = `${environment.workbenchUrl}noctua-landing-page`;
                 const baristaParams = { 'barista_token': baristaToken };
                 const returnUrlParams = { 'return': noctuaLandingPageReturnUrl };
+                this.noctuaUserService.baristaToken = baristaToken;
 
                 this.loginUrl = environment.globalBaristaLocation + '/login?' +
                     self._parameterize(Object.assign({}, returnUrlParams));
