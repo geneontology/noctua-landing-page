@@ -19,8 +19,6 @@ $rotate-graph: 235deg;
     transform: rotate($rotate-graph);
   }
 
-
-
   .noc-search-table-header {
     position: absolute;
     top: 0;
@@ -71,13 +69,22 @@ $rotate-graph: 235deg;
       font-size: 10px;
 
       .noc-icon {
+        background-color: #d59f80;
         display: flex;
         align-items: center;
         justify-content: center;
         height: 25px;
         width: 25px;
         border-radius: 50%;
-        border: #BBB solid 1px;
+        color: #FFFFFF
+      }
+
+      .noc-chip-label {
+        padding: 0 8px 0 4px;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }
@@ -92,10 +99,17 @@ $rotate-graph: 235deg;
     width: 100%;
     @include deep-height(100%);
     padding-bottom: 300px;
+
     // position: relative;
     //  flex: 1 1 auto;
     //    border-bottom: 1px solid rgba(0, 0, 0, .12);
     //  overflow: auto;
+    .noc-edit-button {
+      background-color: #ffffff;
+      color: map-get($primary, default);
+      border: rgba(map-get($primary, default), 0.5) solid 1px;
+      @include mat-elevation(1)
+    }
 
     table {
       @include deep-width(100%);

@@ -73,7 +73,8 @@
         </div>
       </div>
       <div class="noc-summary-bar" fxLayout="row" fxLayoutAlign="start center">
-        <mat-chip class="mr-12" (click)="refresh()">
+        <mat-chip class="mr-12" (click)="refresh()" matTooltip="Refresh Search" [matTooltipPosition]="'after'"
+          [matTooltipShowDelay]="1000">
           <mat-icon>list</mat-icon>
           <small>Results: </small> ({{camPage?.total}})
           <button mat-icon-button (click)="refresh()" class="">
@@ -144,8 +145,7 @@
       </div>
     </mat-drawer-content>
     <mat-drawer #rightDrawer class="noc-right-drawer" noctuaPerfectScrollbar mode="side" position="end">
-      <div [ngSwitch]="noctuaSearchMenuService.selectedRightPanel?.id" class="h-100-p">
-      </div>
+
     </mat-drawer>
   </mat-drawer-container>
 </div>
