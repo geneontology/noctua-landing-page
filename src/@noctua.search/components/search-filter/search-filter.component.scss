@@ -50,6 +50,46 @@
     }
   }
 
+
+  mat-chip {
+    font-size: 12px;
+    font-weight: normal;
+    @include deep-height(25px);
+    max-width: 200px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .noc-chip-label {
+      padding: 0 8px 0 4px;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &.noc-form-chip {
+      padding: 0;
+      @include deep-height(20px);
+      font-size: 10px;
+
+      .noc-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+        color: #777;
+        font-size: 14px;
+
+      }
+
+      @include noc-chip-color(#bbc9cc);
+
+
+    }
+  }
+
   input[type="file"] {
     display: none;
   }
