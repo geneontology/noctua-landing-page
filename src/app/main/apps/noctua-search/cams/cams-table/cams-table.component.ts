@@ -89,6 +89,14 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     this.noctuaSearchService.search(searchCriteria);
   }
 
+  getStateClass(stateLabel) {
+    return {
+      'noc-development': stateLabel === 'development',
+      'noc-production': stateLabel === 'production',
+      'noc-review': stateLabel === 'review'
+    }
+  }
+
   setPage($event) {
     if (this.camPage) {
       this.noctuaSearchService.getPage($event.pageIndex);

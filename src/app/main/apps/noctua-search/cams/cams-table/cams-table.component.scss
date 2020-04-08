@@ -6,6 +6,17 @@ $accent: map-get($theme, accent);
 
 $rotate-graph: 235deg;
 
+@mixin noc-chip-color($color) {
+  border: $color solid 1px;
+  background-color: rgba($color, 0.2);
+
+  .noc-icon {
+    background-color: $color;
+    //color: darken($color, 20%);
+
+  }
+}
+
 :host {
   padding: 0px;
   width: 100%;
@@ -58,34 +69,58 @@ $rotate-graph: 235deg;
   mat-chip {
     font-size: 12px;
     font-weight: normal;
-    @include deep-height(30px);
+    @include deep-height(25px);
     max-width: 200px;
     text-overflow: ellipsis;
     white-space: nowrap;
 
-    &.noc-user-chip {
+    .noc-chip-label {
+      padding: 0 8px 0 4px;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &.noc-table-chip {
       padding: 0;
       @include deep-height(25px);
       font-size: 10px;
 
       .noc-icon {
-        background-color: #d59f80;
         display: flex;
         align-items: center;
         justify-content: center;
         height: 25px;
         width: 25px;
         border-radius: 50%;
-        color: #FFFFFF
+        color: #FFFFFF;
+
       }
 
-      .noc-chip-label {
-        padding: 0 8px 0 4px;
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+      @include noc-chip-color(#555);
+
+      &.noc-date-chip {
+        @include noc-chip-color(#16a9c7);
       }
+
+      &.noc-state-chip {
+        &.noc-development {
+          @include noc-chip-color(#eeaa66);
+          // border: #d59f80 solid 1px;/
+        }
+
+        &.noc-production {
+          @include noc-chip-color(#6fa885);
+          // border: #d59f80 solid 1px;/
+        }
+
+        &.noc-review {
+          @include noc-chip-color(#d59f80);
+          // border: #d59f80 solid 1px;/
+        }
+      }
+
     }
   }
 
