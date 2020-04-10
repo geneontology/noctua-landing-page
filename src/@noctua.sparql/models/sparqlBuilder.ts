@@ -50,7 +50,7 @@ export class SparqlBuilder {
     }
 
 
-    buildCamsByGoTermQuery(goterm) {
+    buildCamsByGoTermQuery(term) {
         var query = `
         PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
         PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
@@ -78,7 +78,7 @@ export class SparqlBuilder {
               optional {?model providedBy: ?providedBy } .
               ?entity rdf:type owl:NamedIndividual .
               ?entity rdf:type ?term .
-              FILTER(?term = ${goterm.id})
+              FILTER(?term = ${term.id})
             }
             VALUES ?aspect { BP: MF: CC: } .
             ?entity rdf:type ?aspect .

@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MatDrawer } from '@angular/material';
+import { MatDrawer } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
 import { noctuaAnimations } from './../../../../@noctua/animations';
 import {
@@ -143,11 +143,15 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
       .subscribe(groups => {
         this.noctuaUserService.groups = groups;
       });
-
   }
 
   toggleLeftDrawer(panel) {
     this.noctuaSearchMenuService.toggleLeftDrawer(panel);
+  }
+
+
+  createModel(type: 'graph-editor' | 'noctua-form') {
+    this.noctuaSearchMenuService.createModel(type);
   }
 
   search() {
@@ -184,4 +188,3 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.complete();
   }
 }
-

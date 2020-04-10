@@ -12,7 +12,6 @@ import {
     AnnotonType,
 } from 'noctua-form-base';
 
-import { NoctuaConfigService } from '@noctua/services/config.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { environment } from 'environments/environment';
@@ -44,6 +43,7 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
         private router: Router,
         private route: ActivatedRoute,
         private camService: CamService,
+        private noctuaFormConfigService: NoctuaFormConfigService,
         private noctuaGraphService: NoctuaGraphService,
         public noctuaUserService: NoctuaUserService,
         public noctuaAnnotonFormService: NoctuaAnnotonFormService
@@ -60,6 +60,8 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
                 const noctuaLandingPageReturnUrl = `${environment.workbenchUrl}noctua-landing-page`;
                 const baristaParams = { 'barista_token': baristaToken };
                 const returnUrlParams = { 'return': noctuaLandingPageReturnUrl };
+                this.noctuaUserService.baristaToken = baristaToken;
+                this.noctuaFormConfigService.baristaToken = baristaToken;
 
                 this.loginUrl = environment.globalBaristaLocation + '/login?' +
                     self._parameterize(Object.assign({}, returnUrlParams));
@@ -94,9 +96,6 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
             });
     }
 
-    createModel() {
-        this.noctuaGraphService.createModel(this.cam);
-    }
 
     getUserInfo() {
         const self = this;

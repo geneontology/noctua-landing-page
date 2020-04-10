@@ -19,8 +19,6 @@ $rotate-graph: 235deg;
     transform: rotate($rotate-graph);
   }
 
-
-
   .noc-search-table-header {
     position: absolute;
     top: 0;
@@ -60,10 +58,68 @@ $rotate-graph: 235deg;
   mat-chip {
     font-size: 12px;
     font-weight: normal;
-    @include deep-height(30px);
+    @include deep-height(25px);
     max-width: 200px;
     text-overflow: ellipsis;
     white-space: nowrap;
+
+    .noc-chip-label {
+      padding: 0 8px 0 4px;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &.noc-table-chip {
+      padding: 0;
+      @include deep-height(25px);
+      font-size: 10px;
+
+      .noc-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+        color: #777;
+        font-size: 14px;
+
+      }
+
+      @include noc-chip-color(#555);
+
+      &.noc-user-chip {
+        @include noc-chip-color(#bbc9cc);
+
+        .noc-icon {
+          color: #59939e
+        }
+      }
+
+      &.noc-date-chip {
+        @include noc-chip-color(#aee9f5);
+      }
+
+      &.noc-state-chip {
+        &.noc-development {
+          @include noc-chip-color(#f4c89c);
+          // border: #d59f80 solid 1px;/
+        }
+
+        &.noc-production {
+          @include noc-chip-color(#b6f1cc);
+          // border: #d59f80 solid 1px;/
+        }
+
+        &.noc-review {
+          @include noc-chip-color(#d8f6a3);
+          // border: #d59f80 solid 1px;/
+        }
+      }
+
+    }
   }
 
 
@@ -76,10 +132,17 @@ $rotate-graph: 235deg;
     width: 100%;
     @include deep-height(100%);
     padding-bottom: 300px;
+
     // position: relative;
     //  flex: 1 1 auto;
     //    border-bottom: 1px solid rgba(0, 0, 0, .12);
     //  overflow: auto;
+    .noc-edit-button {
+      background-color: #ffffff;
+      color: map-get($primary, default);
+      border: rgba(map-get($primary, default), 0.5) solid 1px;
+      @include mat-elevation(1)
+    }
 
     table {
       @include deep-width(100%);
@@ -97,7 +160,7 @@ $rotate-graph: 235deg;
       //color: #0F0; // map-get($primary, default);
       font-weight: bold;
       color: map-get($primary, default);
-      text-transform: uppercase;
+      //text-transform: uppercase;
       font-weight: bold;
     }
 
@@ -130,6 +193,7 @@ $rotate-graph: 235deg;
     .noc-title {
       font-size: 12px;
       padding-left: 10px;
+      padding-right: 10px;
     }
 
     .noc-model-state {
@@ -137,12 +201,8 @@ $rotate-graph: 235deg;
         @include deep-height(25px);
         font-size: 10px;
       }
-
     }
-
   }
-
-
 
   .noc-toolbar {
     padding: 0px 20px;

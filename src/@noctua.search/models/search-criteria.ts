@@ -6,7 +6,7 @@ export class SearchCriteria {
     camPage: CamPage = new CamPage();
     titles: any[] = [];
     gps: any[] = [];
-    goterms: any[] = [];
+    terms: any[] = [];
     pmids: any[] = [];
     contributors: Contributor[] = [];
     groups: Group[] = [];
@@ -16,7 +16,21 @@ export class SearchCriteria {
     startdates: any[] = [];
     enddates: any[] = [];
 
-    constructor() {
+    constructor(searchCriteria?: SearchCriteria) {
+        if (searchCriteria) {
+            this.camPage = searchCriteria.camPage || new CamPage()
+            this.titles = searchCriteria.titles || [];
+            this.contributors = searchCriteria.contributors || [];
+            this.groups = searchCriteria.groups || [];
+            this.pmids = searchCriteria.pmids || [];
+            this.terms = searchCriteria.terms || [];
+            this.gps = searchCriteria.gps || [];
+            this.organisms = searchCriteria.organisms || [];
+            this.states = searchCriteria.states || [];
+            this.exactdates = searchCriteria.exactdates || [];
+            this.startdates = searchCriteria.startdates || [];
+            this.enddates = searchCriteria.enddates || [];
+        }
     }
 
     private query() {
@@ -29,8 +43,8 @@ export class SearchCriteria {
             query.push(`title=${title}`);
         });
 
-        each(self.goterms, (goterm) => {
-            query.push(`goterm=${goterm.id}`);
+        each(self.terms, (term) => {
+            query.push(`term=${term.id}`);
         });
 
         each(self.groups, (group: Group) => {
@@ -50,15 +64,15 @@ export class SearchCriteria {
         });
 
         each(self.exactdates, (date) => {
-            query.push(`date=${date}`);
+            query.push(`exactdate=${date}`);
         });
 
         each(self.startdates, (date) => {
-            query.push(`startdate=${date}`);
+            query.push(`date=${date}`);
         });
 
         each(self.enddates, (date) => {
-            query.push(`enddate=${date}`);
+            query.push(`dateend=${date}`);
         });
 
         each(self.organisms, (organism: Organism) => {
@@ -82,8 +96,8 @@ export class SearchCriteria {
             query.push(`title=${encodeURIComponent(title)}`);
         });
 
-        each(self.goterms, (goterm) => {
-            query.push(`goterm=${encodeURIComponent(goterm.id)}`);
+        each(self.terms, (term) => {
+            query.push(`term=${encodeURIComponent(term.id)}`);
         });
 
         each(self.groups, (group: Group) => {

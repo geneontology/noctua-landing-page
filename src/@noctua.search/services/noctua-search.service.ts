@@ -14,25 +14,25 @@ import {
     NoctuaFormConfigService,
     NoctuaUserService,
     Entity,
-    Article,
-    noctuaFormConfig,
 } from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 import { saveAs } from 'file-saver';
-import { forOwn } from 'lodash';
+import { forOwn, each } from 'lodash';
 import { CurieService } from '@noctua.curie/services/curie.service';
 import { CamPage } from './../models/cam-page';
+import { SearchHistory } from './../models/search-history';
 
 declare const require: any;
 
 const amigo = require('amigo2');
-
 
 @Injectable({
     providedIn: 'root'
 })
 export class NoctuaSearchService {
     linker = new amigo.linker();
+
+    searchHistory: SearchHistory[] = [];
 
     onContributorsChanged: BehaviorSubject<any>;
     onGroupsChanged: BehaviorSubject<any>;
@@ -42,7 +42,8 @@ export class NoctuaSearchService {
     organisms: Organism[] = [];
     states: any[] = [];
 
-    onSearcCriteriaChanged: BehaviorSubject<any>;
+    onSearchCriteriaChanged: BehaviorSubject<any>;
+    onSearchHistoryChanged: BehaviorSubject<any>;
     baseUrl = environment.spaqrlApiUrl;
     curieUtil: any;
     cams: any[] = [];
@@ -60,7 +61,7 @@ export class NoctuaSearchService {
     filterType = {
         titles: 'titles',
         gps: 'gps',
-        goterms: 'goterms',
+        terms: 'terms',
         pmids: 'pmids',
         contributors: 'contributors',
         groups: 'groups',
@@ -81,18 +82,17 @@ export class NoctuaSearchService {
         this.onCamsChanged = new BehaviorSubject([]);
         this.onCamsPageChanged = new BehaviorSubject(null);
         this.onCamChanged = new BehaviorSubject([]);
+        this.onSearchHistoryChanged = new BehaviorSubject(null);
 
         this.states = this.noctuaFormConfigService.modelState.options;
         this.searchCriteria = new SearchCriteria();
-        this.onSearcCriteriaChanged = new BehaviorSubject(null);
+        this.onSearchCriteriaChanged = new BehaviorSubject(null);
         this.curieUtil = this.curieService.getCurieUtil();
 
-        this.onSearcCriteriaChanged.subscribe((searchCriteria: SearchCriteria) => {
+        this.onSearchCriteriaChanged.subscribe((searchCriteria: SearchCriteria) => {
             if (!searchCriteria) {
                 return;
             }
-
-
 
             this.getCams(searchCriteria).subscribe((response: any) => {
                 this.cams = response;
@@ -117,7 +117,7 @@ export class NoctuaSearchService {
         searchCriteria.contributor ? this.searchCriteria.contributors.push(searchCriteria.contributor) : null;
         searchCriteria.group ? this.searchCriteria.groups.push(searchCriteria.group) : null;
         searchCriteria.pmid ? this.searchCriteria.pmids.push(searchCriteria.pmid) : null;
-        searchCriteria.goterm ? this.searchCriteria.goterms.push(searchCriteria.goterm) : null;
+        searchCriteria.term ? this.searchCriteria.terms.push(searchCriteria.term) : null;
         searchCriteria.gp ? this.searchCriteria.gps.push(searchCriteria.gp) : null;
         searchCriteria.organism ? this.searchCriteria.organisms.push(searchCriteria.organism) : null;
         searchCriteria.state ? this.searchCriteria.states.push(searchCriteria.state) : null;
@@ -126,6 +126,7 @@ export class NoctuaSearchService {
         searchCriteria.enddate ? this.searchCriteria.exactdates.push(searchCriteria.enddate) : null;
 
         this.updateSearch();
+
     }
 
     getPage(pageNumber: number) {
@@ -140,8 +141,8 @@ export class NoctuaSearchService {
         param.contributor ? this.searchCriteria.contributors.push(param.contributor) : null;
         param.group ? this.searchCriteria.groups.push(param.group) : null;
         param.pmid ? this.searchCriteria.pmids.push(param.pmid) : null;
-        param.goterm ? this.searchCriteria.goterms.push(
-            new Entity(param.goterm, '')) : null;
+        param.term ? this.searchCriteria.terms.push(
+            new Entity(param.term, '')) : null;
         param.gp ? this.searchCriteria.gps.push(
             new Entity(param.gp, '')) : null;
         param.organism ? this.searchCriteria.organisms.push(param.organism) : null;
@@ -153,8 +154,12 @@ export class NoctuaSearchService {
         this.updateSearch();
     }
 
-    updateSearch() {
-        this.onSearcCriteriaChanged.next(this.searchCriteria);
+    updateSearch(save: boolean = true) {
+        this.onSearchCriteriaChanged.next(this.searchCriteria);
+
+        if (save) {
+            this.saveHistory();
+        }
     }
 
     filter(filterType, filter) {
@@ -174,6 +179,13 @@ export class NoctuaSearchService {
     clearSearchCriteria() {
         this.searchCriteria = new SearchCriteria();
         this.updateSearch();
+    }
+
+    saveHistory() {
+        const searchHistoryItem = new SearchHistory(this.searchCriteria);
+        this.searchHistory.unshift(searchHistoryItem);
+
+        this.onSearchHistoryChanged.next(this.searchHistory);
     }
 
     downloadSearchConfig() {
@@ -196,8 +208,8 @@ export class NoctuaSearchService {
         if (searchCriteria.pmids) {
             this.searchCriteria.pmids = searchCriteria.pmids;
         }
-        if (searchCriteria.goterms) {
-            this.searchCriteria.goterms = searchCriteria.goterms;
+        if (searchCriteria.terms) {
+            this.searchCriteria.terms = searchCriteria.terms;
         }
         if (searchCriteria.gps) {
             this.searchCriteria.gps = searchCriteria.gps;
@@ -208,15 +220,12 @@ export class NoctuaSearchService {
         if (searchCriteria.states) {
             this.searchCriteria.states = searchCriteria.states;
         }
-
         if (searchCriteria.exactdates) {
             this.searchCriteria.exactdates = searchCriteria.exactdates;
         }
-
         if (searchCriteria.startdates) {
             this.searchCriteria.startdates = searchCriteria.startdates;
         }
-
         if (searchCriteria.enddates) {
             this.searchCriteria.enddates = searchCriteria.enddates;
         }
@@ -234,9 +243,7 @@ export class NoctuaSearchService {
         return this.httpClient
             .get(url)
             .pipe(
-                tap(val => console.dir(val)),
                 map(res => this.addCam(res)),
-                tap(val => console.dir(val)),
                 finalize(() => {
                     self.loading = false;
                 })
@@ -316,45 +323,10 @@ export class NoctuaSearchService {
         return result;
     }
 
-    getPubmedInfo(pmid: string) {
-        const url = environment.pubMedSummaryApi + pmid;
-
-        return this.httpClient
-            .get(url)
-            .pipe(
-                map(res => res['result']),
-                map(res => res[pmid]),
-                tap(val => console.dir(val)),
-                map(res => this._addArticles(res, pmid)),
-                tap(val => console.dir(val)),
-            );
-    }
-
-    private _addArticles(res, pmid: string) {
-        const self = this;
-        if (!res) {
-            return;
-        }
-
-        const article = new Article();
-        article.title = res.title;
-        article.link = self.linker.url(`${noctuaFormConfig.evidenceDB.options.pmid.name}:${pmid}`);
-        article.date = res.pubdate;
-        if (res.authors && Array.isArray(res.authors)) {
-            article.author = res.authors.map(author => {
-                return author.name;
-            }).join(', ');
-        }
-
-        return article;
-    }
-
-
     public groupContributors() {
         return _.groupBy(this.contributors, function (contributor) {
             return contributor.group;
         });
-
     }
 
     public filterOrganisms(value: string): any[] {
@@ -369,20 +341,5 @@ export class NoctuaSearchService {
         return this.states.filter(state => state.name.toLowerCase().indexOf(filterValue) === 0);
     }
 
-    get dateSearchType() {
-        const options = [
-            {
-                name: 'daterange',
-                label: 'Date Range'
-            }, {
-                name: 'exactdate',
-                label: 'Exact Date'
-            },
-        ];
 
-        return {
-            options: options,
-            selected: options[0]
-        }
-    }
 }

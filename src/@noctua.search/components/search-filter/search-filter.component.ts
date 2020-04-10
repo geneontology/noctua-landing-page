@@ -1,23 +1,53 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatAutocompleteSelectedEvent, MatChipInputEvent } from '@angular/material';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable, Subject } from 'rxjs';
 import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
-import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organism } from 'noctua-form-base';
+import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organism, EntityDefinition, AnnotonNode, EntityLookup } from 'noctua-form-base';
 import { NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from './../../services/noctua-search.service';
 import { NoctuaSearchMenuService } from '../../services/search-menu.service';
-import { cloneDeep } from 'lodash';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+
+
+import * as _moment from 'moment';
+// tslint:disable-next-line:no-duplicate-imports
+import { default as _rollupMoment } from 'moment';
+
+const moment = _rollupMoment || _moment;
+
+export const MY_FORMATS = {
+  parse: {
+    dateInput: 'YYYY-MM-DD',
+  },
+  display: {
+    dateInput: 'YYYY-MM-DD',
+    monthYearLabel: 'MMMM YYYY',
+    dateA11yLabel: 'LL',
+    monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 @Component({
   selector: 'noc-search-filter',
   templateUrl: './search-filter.component.html',
   styleUrls: ['./search-filter.component.scss'],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: MomentDateAdapter,
+      deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+    },
+
+    { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
+  ],
 })
 
 export class SearchFilterComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
-  dateSearchType = true;
+  isExactDate = true;
   filterForm: FormGroup;
   selectedOrganism = {};
   searchFormData: any = [];
@@ -29,6 +59,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   filteredContributors: Observable<any[]>;
   filteredStates: Observable<any[]>;
 
+  gpNode: AnnotonNode;
+  termNode: AnnotonNode;
+
   private unsubscribeAll: Subject<any>;
 
   constructor(public noctuaUserService: NoctuaUserService,
@@ -36,21 +69,26 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     public noctuaFormConfigService: NoctuaFormConfigService,
     private noctuaLookupService: NoctuaLookupService,
     public noctuaSearchService: NoctuaSearchService) {
-    this.filterForm = this.createAnswerForm();
 
-    console.log("pp", this.dateSearchType);
-
+    this.gpNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoMolecularEntity]);
+    this.termNode = EntityDefinition.generateBaseTerm([
+      EntityDefinition.GoMolecularFunction,
+      EntityDefinition.GoBiologicalProcess,
+      EntityDefinition.GoCellularComponent,
+      EntityDefinition.GoBiologicalPhase,
+      EntityDefinition.GoAnatomicalEntity,
+      EntityDefinition.GoCellTypeEntity
+    ]);
     this.unsubscribeAll = new Subject();
 
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+    this.filterForm = this.createAnswerForm();
+
     this._onValueChanges();
   }
 
   ngOnInit(): void {
 
-
   }
-
 
   search() {
     let searchCriteria = this.filterForm.value;
@@ -62,14 +100,14 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   createAnswerForm() {
     return new FormGroup({
       gps: new FormControl(),
-      goterms: new FormControl(),
+      terms: new FormControl(),
       pmids: new FormControl(),
       contributors: new FormControl(),
       groups: new FormControl(),
       organisms: new FormControl(),
       titles: new FormControl(),
       states: new FormControl(),
-      dateSearchType: new FormControl(),
+      isExactDate: new FormControl(),
       exactdates: new FormControl(),
       startdates: new FormControl(),
       enddates: new FormControl(),
@@ -150,13 +188,14 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   private _onValueChanges() {
     const self = this;
 
-    this.filterForm.get('goterms').valueChanges.pipe(
+    this.filterForm.get('terms').valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
-      let searchData = self.searchFormData['goterm'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['goterm'].searchResults = response
+      const lookup: EntityLookup = self.termNode.termLookup;
+
+      self.noctuaLookupService.golrLookup(data, lookup.requestParams).subscribe(response => {
+        lookup.results = response;
       });
     });
 
@@ -164,9 +203,10 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
-      let searchData = self.searchFormData['gp'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['gp'].searchResults = response
+      const lookup: EntityLookup = self.gpNode.termLookup;
+
+      self.noctuaLookupService.golrLookup(data, lookup.requestParams).subscribe(response => {
+        lookup.results = response;
       });
     });
 
@@ -193,11 +233,11 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
         map(group => group ? this.noctuaUserService.filterGroups(group) : this.noctuaUserService.groups.slice())
       );
 
-    this.filterForm.get('dateSearchType').valueChanges.pipe(
+    this.filterForm.get('isExactDate').valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(value => {
-      this.dateSearchType = value;
+      this.isExactDate = value;
     });
 
     this.filteredStates = this.filterForm.controls.states.valueChanges

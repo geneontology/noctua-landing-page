@@ -30,7 +30,7 @@ export class SearchOrganismsComponent implements OnInit, OnDestroy {
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaSearchService: NoctuaSearchService) {
     // this.organisms = this.noctuaSearchService.organisms;
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
     this.unsubscribeAll = new Subject();
     this.groupsForm = this.formBuilder.group({
       groups: []

@@ -152,6 +152,10 @@ $accent: map-get($theme, accent);
     padding: 0 12px;
   }
 
+  .noc-login-button {
+    background-color: #52a16c;
+    color: #ffffff;
+  }
 
   .noc-create-button {
     background-color: rgba(map-get($primary, default), 0.7) !important;

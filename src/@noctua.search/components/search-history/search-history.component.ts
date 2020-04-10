@@ -3,6 +3,8 @@ import { Subject } from 'rxjs';
 import { NoctuaFormConfigService, NoctuaUserService } from 'noctua-form-base';
 import { NoctuaSearchService } from './../..//services/noctua-search.service';
 import { NoctuaSearchMenuService } from '../../services/search-menu.service';
+import { takeUntil } from 'rxjs/operators';
+import { SearchHistory } from './../../models/search-history';
 
 @Component({
   selector: 'noc-search-history',
@@ -11,31 +13,28 @@ import { NoctuaSearchMenuService } from '../../services/search-menu.service';
 })
 export class SearchHistoryComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
+  searchHistory: SearchHistory[] = [];
 
-  private unsubscribeAll: Subject<any>;
+  private _unsubscribeAll: Subject<any>;
 
   constructor(public noctuaUserService: NoctuaUserService,
     public noctuaSearchMenuService: NoctuaSearchMenuService,
-    private noctuaSearchService: NoctuaSearchService,
+    public noctuaSearchService: NoctuaSearchService,
     public noctuaFormConfigService: NoctuaFormConfigService) {
-    // this.groups = this.noctuaSearchService.groups;
-    this.unsubscribeAll = new Subject();
+    this._unsubscribeAll = new Subject();
   }
 
   ngOnInit(): void {
-    //this.searchForm = this.createSearchForm();
+    this.noctuaSearchService.onSearchHistoryChanged.pipe(
+      takeUntil(this._unsubscribeAll))
+      .subscribe((searchHistory: SearchHistory[]) => {
+        this.searchHistory = searchHistory;
+      });
   }
 
-  selectGroup(group) {
-    this.searchCriteria.group = group;
-    this.noctuaSearchService.search(this.searchCriteria);
-  }
-
-
-  search() {
-    let searchCriteria
-
-    this.noctuaSearchService.search(searchCriteria);
+  selectSearch(searchHistoryItem: SearchHistory) {
+    this.noctuaSearchService.searchCriteria = searchHistoryItem.getSearchCriteria();
+    this.noctuaSearchService.updateSearch(false);
   }
 
   close() {
@@ -43,7 +42,7 @@ export class SearchHistoryComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.unsubscribeAll.next();
-    this.unsubscribeAll.complete();
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
   }
 }

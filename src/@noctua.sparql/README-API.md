@@ -13,7 +13,7 @@ Add a search API to Minerva - drive front page and [Annotation Review Tool](http
 | Parameter                          | Format             | Comments                                                                                           |
 | ---------------------------------- | ------------------ | -------------------------------------------------------------------------------------------------- |
 | **gps** (optional)                 | list\<gp>          | A list of one or more gps in a model (AND operator)                                                |
-| **goterms**  (optional)            | list\<goterm>      | A list of one or more GO terms in a model (AND operator)                                           |
+| **terms**  (optional)              | list\<term>        | A list of one or more GO terms in a model (AND operator)                                           |
 | **pmids** (optional)               | list\<pmid>        | A list of one or more pmids in a model (AND operator)                                              |
 | **taxa** (optional)                | list\<taxon>       | A list of one or more taxon                                                                        |
 | Model Meta                         |
