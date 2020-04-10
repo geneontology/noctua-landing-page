@@ -63,11 +63,12 @@
           You must Login to create or edit models. Models may be viewed without login.
         </h4>
         <div *ngIf="noctuaUserService.user" class="noc-create h-100-p" fxLayout="row" fxLayoutAlign="start center">
-          <button mat-raised-button (click)="createModel()" color=""
+          <button mat-raised-button (click)="createModel('noctua-form')" color=""
             class="noc-rounded-button mr-4 noc-half-button noc-r">
             CREATE MODEL IN FORM
           </button>
-          <button mat-raised-button (click)="createModel()" color="" class="noc-rounded-button noc-half-button noc-l">
+          <button mat-raised-button (click)="createModel('graph-editor')" color=""
+            class="noc-rounded-button noc-half-button noc-l">
             CREATE MODEL IN GRAPH EDITOR
           </button>
         </div>

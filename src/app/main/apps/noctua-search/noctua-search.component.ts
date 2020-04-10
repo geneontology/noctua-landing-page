@@ -149,6 +149,11 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this.noctuaSearchMenuService.toggleLeftDrawer(panel);
   }
 
+
+  createModel(type: 'graph-editor' | 'noctua-form') {
+    this.noctuaSearchMenuService.createModel(type);
+  }
+
   search() {
     const searchCriteria = this.searchForm.value;
     this.noctuaSearchService.search(searchCriteria);

@@ -16,8 +16,9 @@
       <th mat-header-cell *matHeaderCellDef fxFlex="110px" fxLayout="row" fxLayoutAlign="start center">State</th>
       <td mat-cell *matCellDef="let cam" fxFlex="110px" class="noc-model-state pr-12" fxLayout="row"
         fxLayoutAlign="start center">
-        <mat-chip *ngIf="cam.state" class="noc-table-chip noc-state-chip" [ngClass]="getStateClass(cam.state.name)"
-          fxLayout="row" fxLayoutAlign="start center"
+        <mat-chip *ngIf="cam.state" class="noc-table-chip noc-state-chip" [ngClass]="{'noc-development': cam.state.name === 'development',
+        'noc-production': cam.state.name === 'production',
+        'noc-review': cam.state.name === 'review'}" fxLayout="row" fxLayoutAlign="start center"
           (click)="noctuaSearchService.filter(noctuaSearchService.filterType.states, cam.state)"
           matTooltip="Add state to Filters" [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
           <div class="noc-icon">
@@ -71,11 +72,11 @@
           [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
           <fa-icon [icon]="['fas', 'list-alt']"></fa-icon>
         </a>
-        <button mat-icon-button [href]='cam?.model?.modelInfo?.graphEditorUrl' target="_blank"
+        <a mat-icon-button [href]='cam?.model?.modelInfo?.graphEditorUrl' target="_blank"
           class="noc-edit-button noc-rounded-button noc-sm noc-half-button noc-l" matTooltip="Graph Editor"
           [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
           <fa-icon [icon]="['fas', 'sitemap']"></fa-icon>
-        </button>
+        </a>
       </td>
     </ng-container>
     <ng-container matColumnDef="export">
