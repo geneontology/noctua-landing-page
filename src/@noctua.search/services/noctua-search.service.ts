@@ -113,7 +113,7 @@ export class NoctuaSearchService {
     search(searchCriteria) {
         this.searchCriteria = new SearchCriteria();
 
-        searchCriteria.title ? this.searchCriteria.titles.push('*' + searchCriteria.title + '*') : null;
+        searchCriteria.title ? this.searchCriteria.titles.push(searchCriteria.title) : null;
         searchCriteria.contributor ? this.searchCriteria.contributors.push(searchCriteria.contributor) : null;
         searchCriteria.group ? this.searchCriteria.groups.push(searchCriteria.group) : null;
         searchCriteria.pmid ? this.searchCriteria.pmids.push(searchCriteria.pmid) : null;
