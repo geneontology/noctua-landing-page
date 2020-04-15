@@ -6,8 +6,6 @@ import {
     Contributor,
     CamService,
     NoctuaUserService,
-    NoctuaFormConfigService,
-    NoctuaGraphService,
     NoctuaAnnotonFormService,
     AnnotonType,
 } from 'noctua-form-base';
@@ -15,6 +13,7 @@ import {
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { environment } from 'environments/environment';
+import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 
 @Component({
     selector: 'noctua-toolbar',
@@ -32,7 +31,7 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
     horizontalNav: boolean;
     noNav: boolean;
     navigation: any;
-    noctuaLandingPageUrl = '';
+    noctuaFormUrl = '';
     loginUrl = '';
     logoutUrl = '';
     noctuaUrl = '';
@@ -43,10 +42,9 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
         private router: Router,
         private route: ActivatedRoute,
         private camService: CamService,
-        private noctuaFormConfigService: NoctuaFormConfigService,
-        private noctuaGraphService: NoctuaGraphService,
+        private noctuaCommonMenuService: NoctuaCommonMenuService,
         public noctuaUserService: NoctuaUserService,
-        public noctuaAnnotonFormService: NoctuaAnnotonFormService
+        public noctuaAnnotonFormService: NoctuaAnnotonFormService,
     ) {
         const self = this;
         this._unsubscribeAll = new Subject();
@@ -57,19 +55,19 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._unsubscribeAll))
             .subscribe(params => {
                 const baristaToken = params['barista_token'] || null;
-                const noctuaLandingPageReturnUrl = `${environment.workbenchUrl}noctua-landing-page`;
+                const modelId = params['model_id'] || null;
+                const returnUrl = `${environment.workbenchUrl}noctua-landing-page/?model_id=${modelId}`;
                 const baristaParams = { 'barista_token': baristaToken };
-                const returnUrlParams = { 'return': noctuaLandingPageReturnUrl };
-                this.noctuaUserService.baristaToken = baristaToken;
-                this.noctuaFormConfigService.baristaToken = baristaToken;
+                const modelIdParams = { 'model_id': modelId };
+                const returnUrlParams = { 'return': returnUrl };
 
                 this.loginUrl = environment.globalBaristaLocation + '/login?' +
                     self._parameterize(Object.assign({}, returnUrlParams));
                 this.logoutUrl = environment.globalBaristaLocation + '/logout?' +
                     self._parameterize(Object.assign({}, baristaParams, returnUrlParams));
                 this.noctuaUrl = environment.noctuaUrl + '?' + (baristaToken ? self._parameterize(Object.assign({}, baristaParams)) : '');
-                this.noctuaLandingPageUrl = environment.workbenchUrl + 'noctua-landing-page?'
-                    + (baristaToken ? self._parameterize(Object.assign({}, baristaParams)) : '');
+                this.noctuaFormUrl = environment.workbenchUrl + 'noctua-landing-page?'
+                    + (baristaToken ? self._parameterize(Object.assign({}, modelIdParams, baristaParams)) : '');
             });
 
         this.router.events.pipe(takeUntil(this._unsubscribeAll))
@@ -96,7 +94,6 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
             });
     }
 
-
     getUserInfo() {
         const self = this;
 
@@ -109,7 +106,9 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
             });
     }
 
-
+    openApps() {
+        this.noctuaCommonMenuService.openLeftSidenav();
+    }
 
     ngOnDestroy(): void {
         this._unsubscribeAll.next();

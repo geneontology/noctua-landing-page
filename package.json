@@ -55,7 +55,7 @@
     "ng-packagr": "^9.0.0",
     "ngx-build-plus": "^7.8.2",
     "ngx-cookie-service": "2.2.0",
-    "noctua-form-base": "0.7.62",
+    "noctua-form-base": "0.7.64",
     "noctua-sparql-query-builder": "0.0.41",
     "node-bourbon": "^4.2.8",
     "perfect-scrollbar": "1.4.0",

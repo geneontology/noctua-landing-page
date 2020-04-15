@@ -510,9 +510,6 @@ BSD-3-Clause
 bbop-rest-response
 BSD-3-Clause
 
-bbopx
-BSD
-
 class-expression
 BSD-3-Clause
 Copyright (c) 2015, Gene Ontology Consortium (http://geneontology.org)
@@ -1495,9 +1492,6 @@ SOFTWARE.
 
 noctua-form-base
 MIT
-
-noctua-sparql-query-builder
-ISC
 
 perfect-scrollbar
 MIT

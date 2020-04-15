@@ -15,6 +15,7 @@ import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import { takeUntil } from 'rxjs/operators';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
+import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 
 @Component({
   selector: 'noc-noctua-search',
@@ -54,6 +55,7 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any>;
 
   constructor(private route: ActivatedRoute,
+    public noctuaCommonMenuService: NoctuaCommonMenuService,
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaUserService: NoctuaUserService,
     public noctuaSearchService: NoctuaSearchService,
@@ -103,45 +105,11 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
 
     this.rightDrawer.open();
 
-    this.sparqlService.getAllContributors()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((response: any) => {
-        this.noctuaSearchService.contributors = response;
-        this.noctuaSearchService.onContributorsChanged.next(response);
-        this.noctuaSearchService.updateSearch();
-      });
-
-    this.sparqlService.getAllGroups()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((response: any) => {
-        this.noctuaSearchService.groups = response;
-        this.noctuaSearchService.onGroupsChanged.next(response);
-      });
-
-    this.sparqlService.getAllOrganisms()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((response: any) => {
-        this.noctuaSearchService.organisms = response;
-        this.noctuaSearchService.onOrganismsChanged.next(response);
-      });
-
     this.noctuaSearchService.onCamsChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(cams => {
         this.cams = cams;
         this.loadCams();
-      });
-
-    this.noctuaSearchService.onContributorsChanged
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(contributors => {
-        this.noctuaUserService.contributors = contributors;
-      });
-
-    this.noctuaSearchService.onGroupsChanged
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(groups => {
-        this.noctuaUserService.groups = groups;
       });
   }
 
@@ -149,9 +117,8 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this.noctuaSearchMenuService.toggleLeftDrawer(panel);
   }
 
-
   createModel(type: 'graph-editor' | 'noctua-form') {
-    this.noctuaSearchMenuService.createModel(type);
+    this.noctuaCommonMenuService.createModel(type);
   }
 
   search() {
