@@ -21,6 +21,7 @@ import { forOwn, each } from 'lodash';
 import { CurieService } from '@noctua.curie/services/curie.service';
 import { CamPage } from './../models/cam-page';
 import { SearchHistory } from './../models/search-history';
+import { NoctuaDataService } from '@noctua.common/services/noctua-data.service';
 
 declare const require: any;
 
@@ -33,10 +34,6 @@ export class NoctuaSearchService {
     linker = new amigo.linker();
 
     searchHistory: SearchHistory[] = [];
-
-    onContributorsChanged: BehaviorSubject<any>;
-    onGroupsChanged: BehaviorSubject<any>;
-    onOrganismsChanged: BehaviorSubject<any>;
     contributors: Contributor[] = [];
     groups: Group[] = [];
     organisms: Organism[] = [];
@@ -72,13 +69,12 @@ export class NoctuaSearchService {
         enddates: 'enddates',
     };
 
-    constructor(private httpClient: HttpClient,
+    constructor(
+        private httpClient: HttpClient,
+        private noctuaDataService: NoctuaDataService,
         public noctuaFormConfigService: NoctuaFormConfigService,
         public noctuaUserService: NoctuaUserService,
         private curieService: CurieService) {
-        this.onContributorsChanged = new BehaviorSubject([]);
-        this.onGroupsChanged = new BehaviorSubject([]);
-        this.onOrganismsChanged = new BehaviorSubject([]);
         this.onCamsChanged = new BehaviorSubject([]);
         this.onCamsPageChanged = new BehaviorSubject(null);
         this.onCamChanged = new BehaviorSubject([]);
@@ -88,6 +84,8 @@ export class NoctuaSearchService {
         this.searchCriteria = new SearchCriteria();
         this.onSearchCriteriaChanged = new BehaviorSubject(null);
         this.curieUtil = this.curieService.getCurieUtil();
+
+        this._getModelMetadata();
 
         this.onSearchCriteriaChanged.subscribe((searchCriteria: SearchCriteria) => {
             if (!searchCriteria) {
@@ -106,14 +104,42 @@ export class NoctuaSearchService {
             });
 
             const element = document.querySelector('#noc-results');
-            element.scrollTop = 0;
+
+            if (element) {
+                element.scrollTop = 0;
+            }
         });
+    }
+
+    // Get Users and Groups
+    private _getModelMetadata() {
+        const self = this;
+
+        self.noctuaDataService.loadContributors();
+        self.noctuaDataService.loadGroups();
+        self.noctuaDataService.loadOrganisms();
+
+        self.noctuaDataService.onContributorsChanged
+            .subscribe(contributors => {
+                this.noctuaUserService.contributors = contributors;
+                this.updateSearch();
+            });
+
+        self.noctuaDataService.onGroupsChanged
+            .subscribe(groups => {
+                this.noctuaUserService.groups = groups;
+            });
+
+        self.noctuaDataService.onOrganismsChanged
+            .subscribe(organisms => {
+                this.organisms = organisms;
+            });
     }
 
     search(searchCriteria) {
         this.searchCriteria = new SearchCriteria();
 
-        searchCriteria.title ? this.searchCriteria.titles.push('*' + searchCriteria.title + '*') : null;
+        searchCriteria.title ? this.searchCriteria.titles.push(searchCriteria.title) : null;
         searchCriteria.contributor ? this.searchCriteria.contributors.push(searchCriteria.contributor) : null;
         searchCriteria.group ? this.searchCriteria.groups.push(searchCriteria.group) : null;
         searchCriteria.pmid ? this.searchCriteria.pmids.push(searchCriteria.pmid) : null;

@@ -26,7 +26,8 @@ export class SearchFormComponent implements OnInit, OnDestroy {
 
   private unsubscribeAll: Subject<any>;
 
-  constructor(public noctuaUserService: NoctuaUserService,
+  constructor(
+    public noctuaUserService: NoctuaUserService,
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     private noctuaLookupService: NoctuaLookupService,

@@ -90,12 +90,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   }
 
-  search() {
-    let searchCriteria = this.filterForm.value;
 
-    console.dir(searchCriteria)
-    this.noctuaSearchService.search(searchCriteria);
-  }
 
   createAnswerForm() {
     return new FormGroup({

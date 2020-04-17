@@ -36,28 +36,6 @@ export class NoctuaSearchMenuService {
     constructor(private _noctuaGraphService: NoctuaGraphService) {
         const self = this;
         this.selectedLeftPanel = this.leftPanel.filter;
-
-        this._newModelBbopManager.register('rebuild', function (resp) { }, 10);
-    }
-
-    createModel(type: 'graph-editor' | 'noctua-form') {
-        const self = this;
-        this._newModelBbopManager.add_model().then((resp) => {
-            const modelId = resp.data().id;
-            let params = new HttpParams();
-            params = params.append('model_id', modelId);
-            params = params.append('barista_token', self._newModelBbopManager.user_token());
-            const paramsString = params.toString();
-
-            const graphEditorUrl = environment.noctuaUrl + '/editor/graph/' + modelId + '?' + paramsString;
-            const noctuaFormUrl = environment.workbenchUrl + 'noctua-form?' + paramsString;
-
-            if (type === 'graph-editor') {
-                window.open(graphEditorUrl, '_blank');
-            } else if (type === 'noctua-form') {
-                window.open(noctuaFormUrl, '_blank');
-            }
-        });
     }
 
     selectLeftPanel(panel) {
