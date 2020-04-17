@@ -6,12 +6,12 @@ import { noctuaAnimations } from './../../../../@noctua/animations';
 import {
   Cam,
   Contributor,
-  NoctuaUserService
+  NoctuaUserService,
+  NoctuaFormConfigService
 } from 'noctua-form-base';
 
 import { FormGroup } from '@angular/forms';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
-import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import { takeUntil } from 'rxjs/operators';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
@@ -54,12 +54,13 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
 
   private _unsubscribeAll: Subject<any>;
 
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
+    public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaCommonMenuService: NoctuaCommonMenuService,
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaUserService: NoctuaUserService,
-    public noctuaSearchService: NoctuaSearchService,
-    private sparqlService: SparqlService,
+    public noctuaSearchService: NoctuaSearchService
   ) {
 
     this._unsubscribeAll = new Subject();
@@ -70,6 +71,7 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
         this.baristaToken = params['barista_token'] || null;
         this.noctuaUserService.baristaToken = this.baristaToken;
         this.getUserInfo();
+        this.noctuaFormConfigService.setUniversalUrls();
       });
 
     this.noctuaSearchService.onCamsPageChanged
