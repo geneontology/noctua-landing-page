@@ -70,7 +70,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
         this.baristaToken = params['barista_token'] || null;
         this.noctuaUserService.baristaToken = this.baristaToken;
         this.getUserInfo();
-        this.loadCams();
       });
 
     this.noctuaSearchService.onCamsPageChanged
@@ -109,7 +108,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(cams => {
         this.cams = cams;
-        this.loadCams();
       });
   }
 
@@ -124,10 +122,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
   search() {
     const searchCriteria = this.searchForm.value;
     this.noctuaSearchService.search(searchCriteria);
-  }
-
-  loadCams() {
-    this.cams = this.sparqlService.cams;
   }
 
   toggleSummaryExpand() {

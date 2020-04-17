@@ -34,11 +34,10 @@ export class SearchOrganismsComponent implements OnInit, OnDestroy {
     this.unsubscribeAll = new Subject();
     this.groupsForm = this.formBuilder.group({
       groups: []
-    })
+    });
   }
 
   ngOnInit(): void {
-    console.log(this.noctuaSearchService.organisms)
   }
 
   selectOrganism(organism) {

@@ -110,6 +110,8 @@ $accent: map-get($theme, accent);
 
     button {
       color: map-get($accent, default);
+      width: 250px;
+      font-weight: 500;
       @include mat-elevation(4);
     }
   }

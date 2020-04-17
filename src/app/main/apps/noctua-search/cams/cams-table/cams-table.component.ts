@@ -60,7 +60,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
         if (!cams) {
           return;
         }
-        this.cams = cams; console.log(this.cams)
+        this.cams = cams;
       });
 
     this.noctuaSearchService.onCamsPageChanged

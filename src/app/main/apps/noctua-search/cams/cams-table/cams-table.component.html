@@ -58,7 +58,7 @@
               <fa-icon [icon]="['fas', 'user']"></fa-icon>
             </div>
             <div fxFlex="" class="noc-chip-label">
-              {{contributor.name}}
+              {{contributor.name ? contributor.name :contributor.orcid}}
             </div>
           </mat-chip>
         </mat-chip-list>

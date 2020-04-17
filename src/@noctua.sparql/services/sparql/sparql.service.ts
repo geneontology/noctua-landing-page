@@ -42,10 +42,7 @@ export class SparqlService {
   baseUrl = environment.spaqrlApiUrl;
   wikidataSparqlUrl = environment.wikidataSparqlUrl;
   curieUtil: any;
-  cams: any[] = [];
   loading: boolean = false;
-  //onCamsChanged: BehaviorSubject<any>;
-  //onCamChanged: BehaviorSubject<any>;
   onContributorFilterChanged: BehaviorSubject<any>;
   linker = new amigo.linker();
 
@@ -56,8 +53,6 @@ export class SparqlService {
     private httpClient: HttpClient,
     private sparqlMinervaService: SparqlMinervaService,
     private curieService: CurieService) {
-    // this.onCamsChanged = new BehaviorSubject({});
-    //  this.onCamChanged = new BehaviorSubject({});
     this.curieUtil = this.curieService.getCurieUtil();
   }
 
@@ -328,7 +323,7 @@ export class SparqlService {
         '?orcid ?name',
         '(GROUP_CONCAT(distinct ?organization;separator="@@") AS ?organizations)',
         '(GROUP_CONCAT(distinct ?affiliation;separator="@@") AS ?affiliations)',
-        '(COUNT(distinct ?cam) AS ?cams)'
+        '(GROUP_CONCAT(distinct ?cam ;separator="@@") AS ?cams)'
       )
       .where(
         triple('?cam', '<http://model.geneontology.org/graphType>', '<http://model.geneontology.org/noctuaCam>'),

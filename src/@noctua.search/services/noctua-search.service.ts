@@ -104,7 +104,10 @@ export class NoctuaSearchService {
             });
 
             const element = document.querySelector('#noc-results');
-            element.scrollTop = 0;
+
+            if (element) {
+                element.scrollTop = 0;
+            }
         });
     }
 
@@ -119,11 +122,17 @@ export class NoctuaSearchService {
         self.noctuaDataService.onContributorsChanged
             .subscribe(contributors => {
                 this.noctuaUserService.contributors = contributors;
+                this.updateSearch();
             });
 
         self.noctuaDataService.onGroupsChanged
             .subscribe(groups => {
                 this.noctuaUserService.groups = groups;
+            });
+
+        self.noctuaDataService.onOrganismsChanged
+            .subscribe(organisms => {
+                this.organisms = organisms;
             });
     }
 

@@ -2,8 +2,9 @@ import { environment } from 'environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { NoctuaUserService, Contributor, Group, Group } from 'noctua-form-base';
+import { NoctuaUserService, Contributor, Group } from 'noctua-form-base';
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
+import { differenceWith, sortBy } from 'lodash';
 
 
 @Injectable({
@@ -21,8 +22,9 @@ export class NoctuaDataService {
     this.onContributorsChanged = new BehaviorSubject([]);
     this.onGroupsChanged = new BehaviorSubject([]);
     this.onOrganismsChanged = new BehaviorSubject([]);
-  }
 
+    //this._getUsersDifference();
+  }
 
   getUsers(): Observable<any> {
     const self = this;
@@ -86,4 +88,24 @@ export class NoctuaDataService {
       });
   }
 
+  //for checking
+  private _getUsersDifference() {
+    this.onContributorsChanged
+      .subscribe((baristaUsers) => {
+        this.sparqlService.getAllContributors().subscribe((sparqlUsers) => {
+          const diff = differenceWith(sparqlUsers, baristaUsers, (sparqlUser: any, baristaUser: any) => {
+            return sparqlUser.orcid === baristaUser.orcid;
+          });
+
+          const diffSorted = sortBy(diff, 'name').map((user) => {
+            return {
+              orcid: user.orcid,
+              name: user.name
+            };
+          });
+
+          console.log(JSON.stringify(diffSorted, undefined, 2))
+        });
+      });
+  }
 }
