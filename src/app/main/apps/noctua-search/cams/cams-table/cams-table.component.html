@@ -101,7 +101,8 @@
   </table>
   <div class="w-100-p">
     <mat-paginator *ngIf="camPage" class="noc-paginator noc-drawer-footer" #paginator [length]="camPage.total"
-      [pageIndex]="camPage.pageNumber" [pageSize]="camPage.size" (page)="pageEvent = $event; setPage($event)">
+      [pageIndex]="camPage.pageNumber" [pageSize]="camPage.size" [pageSizeOptions]="camPage.pageSizeOptions"
+      (page)="pageEvent = $event; setPage($event)" [itemsPerPageLabel]="44">
     </mat-paginator>
   </div>
   <div *ngIf="cams?.length===0" class="noc-no-info">

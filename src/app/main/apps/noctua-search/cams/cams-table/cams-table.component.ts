@@ -9,16 +9,26 @@ import {
   NoctuaFormConfigService, NoctuaUserService,
 } from 'noctua-form-base';
 
-import { MatPaginator } from '@angular/material/paginator';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
 
+export function CustomPaginator() {
+  const customPaginatorIntl = new MatPaginatorIntl();
+
+  customPaginatorIntl.itemsPerPageLabel = 'CAMs per page:';
+
+  return customPaginatorIntl;
+}
 
 @Component({
   selector: 'noc-cams-table',
   templateUrl: './cams-table.component.html',
   styleUrls: ['./cams-table.component.scss'],
-  animations: noctuaAnimations
+  animations: noctuaAnimations,
+  providers: [
+    { provide: MatPaginatorIntl, useValue: CustomPaginator() }  // Here
+  ]
 })
 export class CamsTableComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any>;
