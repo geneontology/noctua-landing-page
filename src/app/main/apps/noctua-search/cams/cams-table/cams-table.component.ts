@@ -12,6 +12,7 @@ import {
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
+import { PaginationInstance } from 'ngx-pagination';
 
 export function CustomPaginator() {
   const customPaginatorIntl = new MatPaginatorIntl();
@@ -27,7 +28,7 @@ export function CustomPaginator() {
   styleUrls: ['./cams-table.component.scss'],
   animations: noctuaAnimations,
   providers: [
-    { provide: MatPaginatorIntl, useValue: CustomPaginator() }  // Here
+    { provide: MatPaginatorIntl, useValue: CustomPaginator() }
   ]
 })
 export class CamsTableComponent implements OnInit, OnDestroy {
@@ -54,6 +55,40 @@ export class CamsTableComponent implements OnInit, OnDestroy {
 
   cams: any[] = [];
   camPage: CamPage;
+
+
+
+
+  public filter: string = '';
+  public maxSize: number = 7;
+  public directionLinks: boolean = true;
+  public autoHide: boolean = false;
+  public responsive: boolean = false;
+  public config: PaginationInstance = {
+    id: 'advanced',
+    itemsPerPage: 10,
+    currentPage: 1
+  };
+  public labels: any = {
+    previousLabel: 'Previous',
+    nextLabel: 'Next',
+    screenReaderPaginationLabel: 'Pagination',
+    screenReaderPageLabel: 'page',
+    screenReaderCurrentLabel: `You're on page`
+  };
+  public eventLog: string[] = [];
+
+  private popped = [];
+
+  onPageChange(number: number) {
+    console.log(`pageChange(${number})`);
+    this.config.currentPage = number;
+  }
+
+  onPageBoundsCorrection(number: number) {
+    console.log(`pageBoundsCorrection(${number})`);
+    this.config.currentPage = number;
+  }
 
   constructor(
     public noctuaSearchMenuService: NoctuaSearchMenuService,
@@ -101,8 +136,9 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   }
 
   setPage($event) {
+    console.log($event)
     if (this.camPage) {
-      this.noctuaSearchService.getPage($event.pageIndex);
+      this.noctuaSearchService.getPage($event.pageIndex, $event.pageSize);
     }
   }
 
