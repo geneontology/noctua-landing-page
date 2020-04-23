@@ -138,7 +138,11 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   setPage($event) {
     console.log($event)
     if (this.camPage) {
-      this.noctuaSearchService.getPage($event.pageIndex, $event.pageSize);
+      let pageIndex = $event.pageIndex;
+      if (this.noctuaSearchService.searchCriteria.camPage.size > $event.pageSize) {
+        pageIndex = 0;
+      }
+      this.noctuaSearchService.getPage(pageIndex, $event.pageSize);
     }
   }
 
