@@ -1,10 +1,11 @@
 import { environment } from 'environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { NoctuaUserService, Contributor, Group } from 'noctua-form-base';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { NoctuaUserService, Contributor, Group, Organism } from 'noctua-form-base';
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import { differenceWith, sortBy } from 'lodash';
+import { map } from 'rxjs/operators';
 
 
 @Injectable({
@@ -12,6 +13,7 @@ import { differenceWith, sortBy } from 'lodash';
 })
 export class NoctuaDataService {
   baristaUrl = environment.globalBaristaLocation;
+  speciesApi = environment.speciesListApi;
   onContributorsChanged: BehaviorSubject<any>;
   onGroupsChanged: BehaviorSubject<any>;
   onOrganismsChanged: BehaviorSubject<any>;
@@ -23,7 +25,7 @@ export class NoctuaDataService {
     this.onGroupsChanged = new BehaviorSubject([]);
     this.onOrganismsChanged = new BehaviorSubject([]);
 
-    //this._getUsersDifference();
+    // this._getUsersDifference();
   }
 
   getUsers(): Observable<any> {
@@ -44,6 +46,19 @@ export class NoctuaDataService {
 
     return this.httpClient.get(`${self.baristaUrl}/groups`);
   }
+
+  getOrganisms(): Observable<any> {
+    const self = this;
+
+    // return this.httpClient.get(`${self.speciesApi}`);
+    const tempOrganisms = { 'taxa': [{ 'id': 'NCBITaxon:8364', 'label': 'Xenopus tropicalis' }, { 'id': 'NCBITaxon:7955', 'label': 'Danio rerio' }, { 'id': 'NCBITaxon:10090', 'label': 'Mus musculus' }, { 'id': 'NCBITaxon:8355', 'label': 'Xenopus laevis' }, { 'id': 'NCBITaxon:6239', 'label': 'Caenorhabditis elegans' }, { 'id': 'NCBITaxon:7227', 'label': 'Drosophila melanogaster' }, { 'id': 'NCBITaxon:44689', 'label': 'Dictyostelium discoideum' }, { 'id': 'NCBITaxon:3702', 'label': 'Arabidopsis thaliana' }, { 'id': 'NCBITaxon:9606', 'label': 'Homo sapiens' }, { 'id': 'NCBITaxon:4896', 'label': 'Schizosaccharomyces pombe' }, { 'id': 'NCBITaxon:10116', 'label': 'Rattus norvegicus' }, { 'id': 'NCBITaxon:559292', 'label': 'Saccharomyces cerevisiae S288C' }, { 'id': 'NCBITaxon:9823', 'label': 'Sus scrofa' }] };
+
+    // temp
+    return of(tempOrganisms).pipe(
+      map(res => res['taxa'])
+    );
+  }
+
 
   loadContributors() {
     this.getUsers()
@@ -71,9 +86,10 @@ export class NoctuaDataService {
         }
 
         const groups = response.map((item) => {
-          const group: any = {};
-          group.name = item.label;
-          group.url = item.id;
+          const group: any = {
+            name: item.label,
+            url: item.id
+          }
           return group;
         });
 
@@ -82,13 +98,25 @@ export class NoctuaDataService {
   }
 
   loadOrganisms() {
-    this.sparqlService.getAllOrganisms()
+    this.getOrganisms()
       .subscribe((response: any) => {
-        this.onOrganismsChanged.next(response);
+        if (!response) {
+          return;
+        }
+
+        const organisms = response.map((item) => {
+          const organism: Organism = {
+            taxonName: item.label,
+            taxonIri: item.id
+          };
+
+          return organism;
+        });
+        this.onOrganismsChanged.next(organisms);
       });
   }
 
-  //for checking
+  // for checking
   private _getUsersDifference() {
     this.onContributorsChanged
       .subscribe((baristaUsers) => {
@@ -104,7 +132,7 @@ export class NoctuaDataService {
             };
           });
 
-          console.log(JSON.stringify(diffSorted, undefined, 2))
+          console.log(JSON.stringify(diffSorted, undefined, 2));
         });
       });
   }

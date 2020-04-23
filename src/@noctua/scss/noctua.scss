@@ -99,6 +99,18 @@ textarea {
   @include deep-height(60px);
   background-color: #F2F2F2;
 
+  display: flex;
+  justify-content: left;
+  align-items: center;
+
+  .mat-paginator-page-size {
+    align-items: center;
+  }
+
+  .mat-paginator-page-size-select {
+    margin-top: -15px;
+  }
+
   .mat-paginator-container {
     @include deep-height(60px !important);
   }

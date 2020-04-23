@@ -155,8 +155,9 @@ export class NoctuaSearchService {
 
     }
 
-    getPage(pageNumber: number) {
+    getPage(pageNumber: number, pageSize: number) {
         this.searchCriteria.camPage.pageNumber = pageNumber;
+        this.searchCriteria.camPage.size = pageSize;
         this.updateSearch();
     }
 

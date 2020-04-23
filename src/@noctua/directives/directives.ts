@@ -1,14 +1,17 @@
 import { NgModule } from '@angular/core';
 
 import { NoctuaPerfectScrollbarDirective } from './noctua-perfect-scrollbar/noctua-perfect-scrollbar.directive';
+import { StylePaginatorDirective } from './noctua-paginator/noctua-paginator.directive';
 
 @NgModule({
     declarations: [
-        NoctuaPerfectScrollbarDirective
+        NoctuaPerfectScrollbarDirective,
+        StylePaginatorDirective
     ],
     imports: [],
     exports: [
-        NoctuaPerfectScrollbarDirective
+        NoctuaPerfectScrollbarDirective,
+        StylePaginatorDirective
     ]
 })
 export class NoctuaDirectivesModule {

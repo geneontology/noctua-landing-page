@@ -323,7 +323,7 @@ export class SparqlService {
         '?orcid ?name',
         '(GROUP_CONCAT(distinct ?organization;separator="@@") AS ?organizations)',
         '(GROUP_CONCAT(distinct ?affiliation;separator="@@") AS ?affiliations)',
-        '(GROUP_CONCAT(distinct ?cam ;separator="@@") AS ?cams)'
+        '(COUNT(distinct ?cam) AS ?cams)'
       )
       .where(
         triple('?cam', '<http://model.geneontology.org/graphType>', '<http://model.geneontology.org/noctuaCam>'),

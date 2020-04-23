@@ -135,6 +135,20 @@ export class SearchCriteria {
         return this.query().join('&');
     }
 
+    clearSearch() {
+        this.titles = [];
+        this.contributors = [];
+        this.groups = [];
+        this.pmids = [];
+        this.terms = [];
+        this.gps = [];
+        this.organisms = [];
+        this.states = [];
+        this.exactdates = [];
+        this.startdates = [];
+        this.enddates = [];
+    }
+
     private buildEncoded() {
         return this.queryEncoded().join('&');
     }
