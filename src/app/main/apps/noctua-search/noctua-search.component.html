@@ -73,17 +73,7 @@
           </button>
         </div>
       </div>
-      <div class="noc-summary-bar" fxLayout="row" fxLayoutAlign="start center">
-        <mat-chip class="mr-12" (click)="refresh()" matTooltip="Refresh Search" [matTooltipPosition]="'after'"
-          [matTooltipShowDelay]="1000">
-          <mat-icon>list</mat-icon>
-          <small>Results: </small> ({{camPage?.total}})
-          <button mat-icon-button (click)="refresh()" class="">
-            <mat-icon class="">
-              refresh
-            </mat-icon>
-          </button>
-        </mat-chip>
+      <div class="noc-summary-filter-bar" fxLayout="row" fxLayoutAlign="start center">
         <small class="mr-12">Filtered By: </small>
         <mat-chip-list>
           <mat-chip *ngIf="noctuaSearchService.searchCriteria.gps.length>0"
@@ -137,6 +127,29 @@
           </mat-chip>
         </mat-chip-list>
         <span fxFlex=""></span>
+        <button mat-stroked-button (click)="reset()" class="noc-rounded-button noc-sm" color="primary">
+          Reset
+        </button>
+      </div>
+      <div class="noc-summary-results-bar" fxLayout="row" fxLayoutAlign="start center">
+        <mat-chip class="mr-12" (click)="refresh()" matTooltip="Refresh Search" [matTooltipPosition]="'after'"
+          [matTooltipShowDelay]="1000">
+          <mat-icon>list</mat-icon>
+          <small>Results: </small> ({{camPage?.total}})
+          <button mat-icon-button (click)="refresh()" class="">
+            <mat-icon class="">
+              refresh
+            </mat-icon>
+          </button>
+        </mat-chip>
+        <!--   <div>GO CAMS per page </div>
+        <mat-form-field appearance="standard" class="ml-12 noc-pagesize-select">
+          <mat-select [(ngModel)]="selectedValue" name="pageSizeOptions">
+            <mat-option *ngFor="let option of camPage?.pageSizeOptions" [value]="option">
+              {{option}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field> -->
       </div>
       <div class="noc-table-container w-100-p">
         <noc-cams-table></noc-cams-table>

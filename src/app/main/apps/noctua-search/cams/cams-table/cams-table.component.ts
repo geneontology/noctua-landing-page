@@ -17,7 +17,7 @@ import { PaginationInstance } from 'ngx-pagination';
 export function CustomPaginator() {
   const customPaginatorIntl = new MatPaginatorIntl();
 
-  customPaginatorIntl.itemsPerPageLabel = 'CAMs per page:';
+  customPaginatorIntl.itemsPerPageLabel = 'GO CAMs per page:';
 
   return customPaginatorIntl;
 }
@@ -34,8 +34,8 @@ export function CustomPaginator() {
 export class CamsTableComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any>;
 
-  @ViewChild(MatPaginator, { static: true })
-  paginator: MatPaginator;
+  //@ViewChild(MatPaginator, { static: true })
+  // paginator: MatPaginator;
 
   displayedColumns = [
     'title',

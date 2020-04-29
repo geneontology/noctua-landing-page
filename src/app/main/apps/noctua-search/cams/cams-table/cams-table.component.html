@@ -100,7 +100,7 @@
     <tr mat-row *matRowDef="let cam; columns: displayedColumns;" class=""></tr>
   </table>
   <div class="w-100-p">
-    <mat-paginator *ngIf="camPage" class="noc-paginator" #paginator [length]="camPage.total"
+    <mat-paginator *ngIf="camPage" class="noc-paginator" #paginatorBottom [length]="camPage.total"
       [pageIndex]="camPage.pageNumber" [pageSize]="camPage.size" [pageSizeOptions]="camPage.pageSizeOptions"
       (page)="pageEvent = $event; setPage($event)" [showFirstLastButtons]="true">
     </mat-paginator>

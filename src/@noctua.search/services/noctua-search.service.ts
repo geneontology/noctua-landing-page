@@ -2,9 +2,8 @@ import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import * as _ from 'lodash';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { map, tap, finalize } from 'rxjs/operators';
+import { map, finalize } from 'rxjs/operators';
 
 import {
     Cam,
@@ -17,7 +16,7 @@ import {
 } from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 import { saveAs } from 'file-saver';
-import { forOwn, each } from 'lodash';
+import { forOwn, each, find, groupBy } from 'lodash';
 import { CurieService } from '@noctua.curie/services/curie.service';
 import { CamPage } from './../models/cam-page';
 import { SearchHistory } from './../models/search-history';
@@ -46,7 +45,7 @@ export class NoctuaSearchService {
     cams: any[] = [];
     camPage: CamPage;
     searchCriteria: SearchCriteria;
-    baristaApi = environment.globalBaristaLocation;
+    searchApi = environment.searchApi;
     separator = '@@';
     loading = false;
     onCamsChanged: BehaviorSubject<any>;
@@ -263,7 +262,7 @@ export class NoctuaSearchService {
     getCams(searchCriteria: SearchCriteria): Observable<any> {
         const self = this;
         const query = searchCriteria.build();
-        const url = `${this.baristaApi}/search?${query}`;
+        const url = `${this.searchApi}/models?${query}`;
 
         self.loading = true;
 
@@ -280,7 +279,7 @@ export class NoctuaSearchService {
     getCamsCount(searchCriteria: SearchCriteria): Observable<any> {
         const self = this;
         const query = searchCriteria.build();
-        const url = `${this.baristaApi}/search?${query}&count`;
+        const url = `${this.searchApi}/models?${query}&count`;
 
         return this.httpClient
             .get(url)
@@ -306,7 +305,7 @@ export class NoctuaSearchService {
             });
 
             cam.groups = <Group[]>response.groups.map(function (url) {
-                const group = _.find(self.noctuaUserService.groups, (group: Group) => {
+                const group = find(self.noctuaUserService.groups, (group: Group) => {
                     return group.url === url;
                 });
 
@@ -314,7 +313,7 @@ export class NoctuaSearchService {
             });
 
             cam.contributors = <Contributor[]>response.contributors.map((orcid) => {
-                const contributor = _.find(self.noctuaUserService.contributors, (contributor: Contributor) => {
+                const contributor = find(self.noctuaUserService.contributors, (contributor: Contributor) => {
                     return contributor.orcid === orcid;
                 });
 
@@ -351,7 +350,7 @@ export class NoctuaSearchService {
     }
 
     public groupContributors() {
-        return _.groupBy(this.contributors, function (contributor) {
+        return groupBy(this.contributors, function (contributor) {
             return contributor.group;
         });
     }

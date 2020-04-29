@@ -11,14 +11,6 @@ $rotate-graph: 235deg;
   width: 100%;
   background-color: #F7F7F7;
 
-  .icon-rotate-graph {
-    -webkit-transform: rotate($rotate-graph);
-    -moz-transform: rotate($rotate-graph);
-    -ms-transform: rotate($rotate-graph);
-    -o-transform: rotate($rotate-graph);
-    transform: rotate($rotate-graph);
-  }
-
   .noc-search-table-header {
     position: absolute;
     top: 0;
@@ -126,17 +118,10 @@ $rotate-graph: 235deg;
   .noc-cams-table {
     background-color: #F7F7F7;
     font-size: 12px;
-
-    //  @include mat-elevation(1);
-
     width: 100%;
     @include deep-height(100%);
     padding-bottom: 300px;
 
-    // position: relative;
-    //  flex: 1 1 auto;
-    //    border-bottom: 1px solid rgba(0, 0, 0, .12);
-    //  overflow: auto;
     .noc-edit-button {
       background-color: #ffffff;
       color: map-get($primary, default);
@@ -150,9 +135,7 @@ $rotate-graph: 235deg;
 
     tr.mat-row {
       height: auto;
-      // padding: 10px 5px;
     }
-
 
     .mat-header-cell {
       padding: 0 10px;
@@ -167,7 +150,7 @@ $rotate-graph: 235deg;
     .mat-header-row {
       position: -webkit-sticky;
       position: sticky;
-      top: 40px;
+      top: 80px;
       background-color: #FFF;
       @include deep-height(30px);
       border-bottom: $noc-primary-color-light solid 1px;
