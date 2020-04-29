@@ -154,6 +154,10 @@ $accent: map-get($theme, accent);
 
     @include mat-elevation(2);
 
+    .noc-pagesize-select {
+      width: 50px;
+    }
+
     mat-chip {
       font-size: 14px;
       font-weight: normal;
@@ -161,7 +165,6 @@ $accent: map-get($theme, accent);
     }
 
   }
-
 
   .noc-table-container {
     min-height: 500px;
