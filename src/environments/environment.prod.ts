@@ -26,6 +26,7 @@ export const environment = {
   globalBaristaLocation: baristaLocation,
   globalWorkbenchesModel: globalWorkbenchesModel,
   globalWorkbenchesUniversal: globalWorkbenchesUniversal,
+  searchApi: `${baristaLocation}/search/`,
 
   //Workbench
   noctuaUrl: `${window.location.origin}`,
@@ -35,8 +36,6 @@ export const environment = {
   wikidataSparqlUrl: 'https://query.wikidata.org/sparql',
   pubMedSummaryApi: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=json&id=',
 
-  //temp
-  speciesListApi: 'http://noctua-dev.berkeleybop.org:6800/taxa/'
 
 };
 

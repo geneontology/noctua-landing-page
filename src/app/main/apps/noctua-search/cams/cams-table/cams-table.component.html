@@ -3,6 +3,12 @@
   </mat-progress-spinner>
 </div>
 <div class="noc-cams-table noc-drawer-body" fxLayout="column" fxLayoutAlign="start stretch">
+  <div class="w-100-p">
+    <mat-paginator *ngIf="camPage" class="noc-paginator" #paginatorTop [length]="camPage.total"
+      [pageIndex]="camPage.pageNumber" [pageSize]="camPage.size" [pageSizeOptions]="camPage.pageSizeOptions"
+      (page)="pageEvent = $event; setPage($event)" [showFirstLastButtons]="true">
+    </mat-paginator>
+  </div>
   <table fxFlex="1 1 auto" mat-table class="" [dataSource]="cams" [@animateStagger]="{value:'50'}">
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef fxFlex="250px" fxLayout="row" fxLayoutAlign="start center">
@@ -100,7 +106,7 @@
     <tr mat-row *matRowDef="let cam; columns: displayedColumns;" class=""></tr>
   </table>
   <div class="w-100-p">
-    <mat-paginator *ngIf="camPage" class="noc-paginator" #paginator [length]="camPage.total"
+    <mat-paginator *ngIf="camPage" class="noc-paginator" #paginatorBottom [length]="camPage.total"
       [pageIndex]="camPage.pageNumber" [pageSize]="camPage.size" [pageSizeOptions]="camPage.pageSizeOptions"
       (page)="pageEvent = $event; setPage($event)" [showFirstLastButtons]="true">
     </mat-paginator>

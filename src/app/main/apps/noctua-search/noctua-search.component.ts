@@ -126,20 +126,12 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this.noctuaSearchService.search(searchCriteria);
   }
 
-  toggleSummaryExpand() {
-    this.summary.expanded = !this.summary.expanded;
-  }
-
-  toggleExpand(cam) {
-    if (cam.expanded) {
-      cam.expanded = false;
-    } else {
-      cam.expanded = true;
-    }
-  }
-
   refresh() {
     this.noctuaSearchService.updateSearch();
+  }
+
+  reset() {
+    this.noctuaSearchService.clearSearchCriteria();
   }
 
   selectCam(cam) {

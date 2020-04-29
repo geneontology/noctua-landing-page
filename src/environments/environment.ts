@@ -32,7 +32,7 @@ export const environment = {
   globalBaristaLocation: baristaLocation,
   globalWorkbenchesModel: globalWorkbenchesModel,
   globalWorkbenchesUniversal: globalWorkbenchesUniversal,
-
+  searchApi: `${baristaLocation}/search/`,
   //Workbench
   noctuaUrl: `${window.location.origin}`,
   workbenchUrl: `${window.location.origin}/workbench/`,
@@ -40,8 +40,7 @@ export const environment = {
   amigoTerm: 'http://amigo.geneontology.org/amigo/term/',
   wikidataSparqlUrl: 'https://query.wikidata.org/sparql',
   pubMedSummaryApi: 'https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&retmode=json&id=',
-  //temp
-  speciesListApi: 'http://noctua-dev.berkeleybop.org:6800/taxa/'
+
 };
 
 /*

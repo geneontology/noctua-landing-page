@@ -13,7 +13,7 @@ import { map } from 'rxjs/operators';
 })
 export class NoctuaDataService {
   baristaUrl = environment.globalBaristaLocation;
-  speciesApi = environment.speciesListApi;
+  searchApi = environment.searchApi;
   onContributorsChanged: BehaviorSubject<any>;
   onGroupsChanged: BehaviorSubject<any>;
   onOrganismsChanged: BehaviorSubject<any>;
@@ -50,12 +50,8 @@ export class NoctuaDataService {
   getOrganisms(): Observable<any> {
     const self = this;
 
-    // return this.httpClient.get(`${self.speciesApi}`);
-    const tempOrganisms = { 'taxa': [{ 'id': 'NCBITaxon:8364', 'label': 'Xenopus tropicalis' }, { 'id': 'NCBITaxon:7955', 'label': 'Danio rerio' }, { 'id': 'NCBITaxon:10090', 'label': 'Mus musculus' }, { 'id': 'NCBITaxon:8355', 'label': 'Xenopus laevis' }, { 'id': 'NCBITaxon:6239', 'label': 'Caenorhabditis elegans' }, { 'id': 'NCBITaxon:7227', 'label': 'Drosophila melanogaster' }, { 'id': 'NCBITaxon:44689', 'label': 'Dictyostelium discoideum' }, { 'id': 'NCBITaxon:3702', 'label': 'Arabidopsis thaliana' }, { 'id': 'NCBITaxon:9606', 'label': 'Homo sapiens' }, { 'id': 'NCBITaxon:4896', 'label': 'Schizosaccharomyces pombe' }, { 'id': 'NCBITaxon:10116', 'label': 'Rattus norvegicus' }, { 'id': 'NCBITaxon:559292', 'label': 'Saccharomyces cerevisiae S288C' }, { 'id': 'NCBITaxon:9823', 'label': 'Sus scrofa' }] };
-
-    // temp
-    return of(tempOrganisms).pipe(
-      map(res => res['taxa'])
+    return this.httpClient.get(`${self.searchApi}/taxa`).pipe(
+      map(res => res['taxa']),
     );
   }
 

@@ -116,7 +116,7 @@ $accent: map-get($theme, accent);
     }
   }
 
-  .noc-summary-bar {
+  .noc-summary-filter-bar {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
@@ -131,9 +131,28 @@ $accent: map-get($theme, accent);
 
     @include mat-elevation(2);
 
-    &.noc-expanded {
-      @include deep-height(150px);
+    mat-chip {
+      font-size: 14px;
+      font-weight: normal;
+      @include deep-height(30px);
     }
+
+  }
+
+  .noc-summary-results-bar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 41px;
+    margin-bottom: 4px;
+    padding: 0 10px;
+    @include deep-height(40px);
+    //  min-height: 40px; //min-height: 35px;
+    background-color: #FFF;
+    font-size: 16px;
+    overflow: hidden;
+    z-index: 10;
+
+    @include mat-elevation(2);
 
     mat-chip {
       font-size: 14px;
@@ -141,26 +160,6 @@ $accent: map-get($theme, accent);
       @include deep-height(30px);
     }
 
-    .noc-summary-bar-section {
-      .noc-section-label {
-        font-size: 12px;
-        color: #555;
-      }
-    }
-
-    .noc-title {
-      strong {
-        font-size: 12px;
-      }
-    }
-
-    .noc-title-truncate {
-      max-width: 200px
-    }
-
-    mat-icon-button {
-      border-radius: 0 !important;
-    }
   }
 
 
