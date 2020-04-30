@@ -142,14 +142,16 @@
             </mat-icon>
           </button>
         </mat-chip>
-        <!--   <div>GO CAMS per page </div>
-        <mat-form-field appearance="standard" class="ml-12 noc-pagesize-select">
-          <mat-select [(ngModel)]="selectedValue" name="pageSizeOptions">
-            <mat-option *ngFor="let option of camPage?.pageSizeOptions" [value]="option">
-              {{option}}
-            </mat-option>
-          </mat-select>
-        </mat-form-field> -->
+        <div>GO CAMS per page </div>
+        <button mat-stroked-button [matMenuTriggerFor]="pagesizeOptionsMenu" class="noc-rounded-button noc-sm"
+          color="primary">
+          {{ camPage?.size}}
+        </button>
+        <mat-menu #pagesizeOptionsMenu="matMenu">
+          <a *ngFor="let option of camPage?.pageSizeOptions" mat-menu-item>
+            {{option}}
+          </a>
+        </mat-menu>
       </div>
       <div class="noc-table-container w-100-p">
         <noc-cams-table></noc-cams-table>

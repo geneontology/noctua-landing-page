@@ -2,7 +2,7 @@ import { environment } from 'environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { NoctuaUserService, Contributor, Group, Organism } from 'noctua-form-base';
+import { NoctuaUserService, Contributor, Group, Organism, compareOrganism, compareGroup, compareContributor } from 'noctua-form-base';
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import { differenceWith, sortBy } from 'lodash';
 import { map } from 'rxjs/operators';
@@ -51,7 +51,7 @@ export class NoctuaDataService {
     const self = this;
 
     return this.httpClient.get(`${self.searchApi}/taxa`).pipe(
-      map(res => res['taxa']),
+      map(res => res['taxa'])
     );
   }
 
@@ -70,7 +70,7 @@ export class NoctuaDataService {
           return contributor;
         });
 
-        this.onContributorsChanged.next(contributors);
+        this.onContributorsChanged.next(contributors.sort(compareContributor));
       });
   }
 
@@ -89,7 +89,7 @@ export class NoctuaDataService {
           return group;
         });
 
-        this.onGroupsChanged.next(groups);
+        this.onGroupsChanged.next(groups.sort(compareGroup));
       });
   }
 
@@ -108,7 +108,8 @@ export class NoctuaDataService {
 
           return organism;
         });
-        this.onOrganismsChanged.next(organisms);
+
+        this.onOrganismsChanged.next(organisms.sort(compareOrganism));
       });
   }
 
