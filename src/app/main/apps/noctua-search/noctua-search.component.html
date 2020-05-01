@@ -128,30 +128,8 @@
         </mat-chip-list>
         <span fxFlex=""></span>
         <button mat-stroked-button (click)="reset()" class="noc-rounded-button noc-sm" color="primary">
-          Reset
+          Reset Filters
         </button>
-      </div>
-      <div class="noc-summary-results-bar" fxLayout="row" fxLayoutAlign="start center">
-        <mat-chip class="mr-12" (click)="refresh()" matTooltip="Refresh Search" [matTooltipPosition]="'after'"
-          [matTooltipShowDelay]="1000">
-          <mat-icon>list</mat-icon>
-          <small>Results: </small> ({{camPage?.total}})
-          <button mat-icon-button (click)="refresh()" class="">
-            <mat-icon class="">
-              refresh
-            </mat-icon>
-          </button>
-        </mat-chip>
-        <div>GO CAMS per page </div>
-        <button mat-stroked-button [matMenuTriggerFor]="pagesizeOptionsMenu" class="noc-rounded-button noc-sm"
-          color="primary">
-          {{ camPage?.size}}
-        </button>
-        <mat-menu #pagesizeOptionsMenu="matMenu">
-          <a *ngFor="let option of camPage?.pageSizeOptions" mat-menu-item>
-            {{option}}
-          </a>
-        </mat-menu>
       </div>
       <div class="noc-table-container w-100-p">
         <noc-cams-table></noc-cams-table>

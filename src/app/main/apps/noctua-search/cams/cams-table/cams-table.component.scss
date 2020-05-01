@@ -11,6 +11,33 @@ $rotate-graph: 235deg;
   width: 100%;
   background-color: #F7F7F7;
 
+  .noc-summary-results-bar {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 41px;
+    margin-bottom: 4px;
+    padding: 0 10px;
+    @include deep-height(40px);
+    //  min-height: 40px; //min-height: 35px;
+    background-color: #FFF;
+    font-size: 16px;
+    overflow: hidden;
+    z-index: 10;
+
+    @include mat-elevation(2);
+
+    .noc-pagesize-select {
+      width: 50px;
+    }
+
+    mat-chip {
+      font-size: 14px;
+      font-weight: normal;
+      @include deep-height(30px);
+    }
+
+  }
+
   .noc-search-table-header {
     position: absolute;
     top: 0;
@@ -114,7 +141,6 @@ $rotate-graph: 235deg;
     }
   }
 
-
   .noc-cams-table {
     background-color: #F7F7F7;
     font-size: 12px;
@@ -150,7 +176,7 @@ $rotate-graph: 235deg;
     .mat-header-row {
       position: -webkit-sticky;
       position: sticky;
-      top: 80px;
+      top: 82px;
       background-color: #FFF;
       @include deep-height(30px);
       border-bottom: $noc-primary-color-light solid 1px;

@@ -181,6 +181,7 @@ export class NoctuaSearchService {
     }
 
     updateSearch(save: boolean = true) {
+        this.searchCriteria.updateFiltersCount();
         this.onSearchCriteriaChanged.next(this.searchCriteria);
 
         if (save) {

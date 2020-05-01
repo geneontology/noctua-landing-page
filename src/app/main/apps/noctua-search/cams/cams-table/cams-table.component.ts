@@ -145,6 +145,13 @@ export class CamsTableComponent implements OnInit, OnDestroy {
       this.noctuaSearchService.getPage(pageIndex, $event.pageSize);
     }
   }
+  refresh() {
+    this.noctuaSearchService.updateSearch();
+  }
+
+  reset() {
+    this.noctuaSearchService.clearSearchCriteria();
+  }
 
   ngOnDestroy(): void {
     this._unsubscribeAll.next();

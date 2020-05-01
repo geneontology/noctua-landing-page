@@ -8,12 +8,12 @@ mat-radio-button {
     line-height: 30px;
     font-size: 12px;
     font-weight: normal;
-    border: rgba(map-get($accent, default), 0.7) solid 1px;
+    border: rgba(map-get($primary, default), 0.7) solid 1px;
     border-radius: 15px;
 
     &.mat-radio-checked {
-      background-color: rgba(map-get($accent, default), 0.2);
-      border-color: rgba(map-get($accent, default), 0.9);
+      background-color: rgba(map-get($primary, default), 0.2);
+      border-color: rgba(map-get($primary, default), 0.9);
     }
 
     .mat-radio-container,

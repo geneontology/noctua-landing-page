@@ -3,6 +3,37 @@
   </mat-progress-spinner>
 </div>
 <div class="noc-cams-table noc-drawer-body" fxLayout="column" fxLayoutAlign="start stretch">
+  <div class="noc-summary-results-bar" fxLayout="row" fxLayoutAlign="start center">
+    Results:
+    <div class="ml-8 mr-16" fxLayout="row" fxLayoutAlign="start center">
+      <button mat-stroked-button color="" class="noc-rounded-button mr-4 noc-half-button noc-sm noc-r">
+        {{camPage?.total}}
+      </button>
+      <button mat-stroked-button (click)="refresh()" class="noc-rounded-button noc-half-button noc-sm noc-l"
+        color="primary" matTooltip="Refresh Search" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
+        <mat-icon class="">
+          refresh
+        </mat-icon>
+      </button>
+    </div>
+    Filters:
+    <div class="ml-8" fxLayout="row" fxLayoutAlign="start center">
+      <button mat-stroked-button color="" class="noc-rounded-button mr-4 noc-half-button noc-sm noc-r">
+        {{noctuaSearchService?.searchCriteria?.filtersCount}}
+      </button>
+      <button mat-stroked-button (click)="reset()" class="noc-rounded-button noc-half-button noc-sm noc-l"
+        color="primary" matTooltip="Reset Filters" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
+        <mat-icon class="">
+          settings_backup_restore
+        </mat-icon>
+      </button>
+    </div>
+    <span fxFlex></span>
+    <mat-paginator *ngIf="camPage" class="noc-paginator" #paginatorBottom [length]="camPage.total"
+      [pageIndex]="camPage.pageNumber" [pageSize]="camPage.size" [pageSizeOptions]="camPage.pageSizeOptions"
+      (page)="pageEvent = $event; setPage($event)" [showFirstLastButtons]="true">
+    </mat-paginator>
+  </div>
   <table fxFlex="1 1 auto" mat-table class="" [dataSource]="cams" [@animateStagger]="{value:'50'}">
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef fxFlex="250px" fxLayout="row" fxLayoutAlign="start center">
@@ -99,12 +130,6 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let cam; columns: displayedColumns;" class=""></tr>
   </table>
-  <div class="w-100-p">
-    <mat-paginator *ngIf="camPage" class="noc-paginator" #paginatorBottom [length]="camPage.total"
-      [pageIndex]="camPage.pageNumber" [pageSize]="camPage.size" [pageSizeOptions]="camPage.pageSizeOptions"
-      (page)="pageEvent = $event; setPage($event)" [showFirstLastButtons]="true">
-    </mat-paginator>
-  </div>
   <div *ngIf="cams?.length===0" class="noc-no-info">
     no results yet.
   </div>

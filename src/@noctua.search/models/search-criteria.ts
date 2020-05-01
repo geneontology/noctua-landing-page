@@ -15,6 +15,7 @@ export class SearchCriteria {
     exactdates: any[] = [];
     startdates: any[] = [];
     enddates: any[] = [];
+    filtersCount = 0;
 
     constructor(searchCriteria?: SearchCriteria) {
         if (searchCriteria) {
@@ -31,6 +32,24 @@ export class SearchCriteria {
             this.startdates = searchCriteria.startdates || [];
             this.enddates = searchCriteria.enddates || [];
         }
+    }
+
+    updateFiltersCount() {
+        const self = this;
+
+        const filtersCount = self.titles.length +
+            self.gps.length +
+            self.terms.length +
+            self.pmids.length +
+            self.contributors.length +
+            self.groups.length +
+            self.organisms.length +
+            self.states.length +
+            self.exactdates.length +
+            self.startdates.length +
+            self.enddates.length;
+
+        self.filtersCount = filtersCount;
     }
 
     private query() {
