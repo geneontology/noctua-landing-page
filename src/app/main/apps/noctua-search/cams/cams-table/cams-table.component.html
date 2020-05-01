@@ -4,7 +4,7 @@
 </div>
 <div class="noc-cams-table noc-drawer-body" fxLayout="column" fxLayoutAlign="start stretch">
   <div class="noc-summary-results-bar" fxLayout="row" fxLayoutAlign="start center">
-    Results:
+    <small>Results:</small>
     <div class="ml-8 mr-16" fxLayout="row" fxLayoutAlign="start center">
       <button mat-stroked-button color="" class="noc-rounded-button mr-4 noc-half-button noc-sm noc-r">
         {{camPage?.total}}
@@ -16,7 +16,7 @@
         </mat-icon>
       </button>
     </div>
-    Filters:
+    <small>Filters:</small>
     <div class="ml-8" fxLayout="row" fxLayoutAlign="start center">
       <button mat-stroked-button color="" class="noc-rounded-button mr-4 noc-half-button noc-sm noc-r">
         {{noctuaSearchService?.searchCriteria?.filtersCount}}
@@ -62,7 +62,9 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="date">
-      <th mat-header-cell *matHeaderCellDef fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">Date</th>
+      <th mat-header-cell *matHeaderCellDef fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">
+        Date Modified
+      </th>
       <td mat-cell *matCellDef="let cam" class="noc-date" fxFlex="100px" fxLayout="row" fxLayoutAlign="start center">
         <mat-chip class="noc-table-chip noc-date-chip" fxLayout="row" fxLayoutAlign="start center"
           (click)="noctuaSearchService.filter(noctuaSearchService.filterType.exactdates, cam.date)"

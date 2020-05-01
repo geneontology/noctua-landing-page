@@ -14,7 +14,7 @@ $rotate-graph: 235deg;
   .noc-summary-results-bar {
     position: -webkit-sticky;
     position: sticky;
-    top: 41px;
+    top: 31px;
     margin-bottom: 4px;
     padding: 0 10px;
     @include deep-height(40px);
@@ -176,7 +176,7 @@ $rotate-graph: 235deg;
     .mat-header-row {
       position: -webkit-sticky;
       position: sticky;
-      top: 82px;
+      top: 72px;
       background-color: #FFF;
       @include deep-height(30px);
       border-bottom: $noc-primary-color-light solid 1px;
@@ -210,21 +210,6 @@ $rotate-graph: 235deg;
         @include deep-height(25px);
         font-size: 10px;
       }
-    }
-  }
-
-  .noc-toolbar {
-    padding: 0px 20px;
-    height: 40px;
-    width: 100%;
-    background-color: #F2F2F2;
-    border-bottom: #BBB solid 1px;
-
-    .noc-title {
-      line-height: 38px;
-      color: #555;
-      font-size: 14px;
-      font-weight: bold;
     }
   }
 

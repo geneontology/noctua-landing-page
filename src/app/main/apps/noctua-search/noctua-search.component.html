@@ -76,6 +76,9 @@
       <div class="noc-summary-filter-bar" fxLayout="row" fxLayoutAlign="start center">
         <small class="mr-12">Filtered By: </small>
         <mat-chip-list>
+          <mat-chip (click)="reset()" class="noc-clearall-chip">
+            Clear All
+          </mat-chip>
           <mat-chip *ngIf="noctuaSearchService.searchCriteria.gps.length>0"
             (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
             (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.gps)">
@@ -109,27 +112,22 @@
           <mat-chip *ngIf="noctuaSearchService.searchCriteria.pmids.length>0"
             (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
             (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.pmids)">
-            <small>PMIDs: </small> ({{ noctuaSearchService.searchCriteria.pmids.length}})
+            <small>References: </small> ({{ noctuaSearchService.searchCriteria.pmids.length}})
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
           <mat-chip *ngIf="noctuaSearchService.searchCriteria.states.length>0"
             (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
             (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.states)">
-            <small>Model State: </small> ({{ noctuaSearchService.searchCriteria.states.length}})
+            <small>Model States: </small> ({{ noctuaSearchService.searchCriteria.states.length}})
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
-
           <mat-chip *ngIf="noctuaSearchService.searchCriteria.exactdates.length>0"
             (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
             (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.exactdates)">
-            <small>Model Date: </small> ({{ noctuaSearchService.searchCriteria.exactdates.length}})
+            <small>Date Modified: </small> ({{ noctuaSearchService.searchCriteria.exactdates.length}})
             <mat-icon matChipRemove>cancel</mat-icon>
           </mat-chip>
         </mat-chip-list>
-        <span fxFlex=""></span>
-        <button mat-stroked-button (click)="reset()" class="noc-rounded-button noc-sm" color="primary">
-          Reset Filters
-        </button>
       </div>
       <div class="noc-table-container w-100-p">
         <noc-cams-table></noc-cams-table>
