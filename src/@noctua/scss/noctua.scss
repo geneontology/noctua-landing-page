@@ -27,6 +27,10 @@ $noc-secondary-color: #995014;
 
   .noc-icon {
     background-color: $color;
+
+    &.noc-transparent {
+      background-color: transparent;
+    }
   }
 }
 

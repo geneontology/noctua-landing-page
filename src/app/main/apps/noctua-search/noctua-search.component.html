@@ -76,7 +76,8 @@
       <div class="noc-summary-filter-bar" fxLayout="row" fxLayoutAlign="start center">
         <small class="mr-12">Filtered By: </small>
         <mat-chip-list>
-          <mat-chip (click)="reset()" class="noc-clearall-chip">
+          <mat-chip *ngIf="noctuaSearchService?.searchCriteria?.filtersCount>0" (click)="reset()"
+            class="noc-clearall-chip">
             Clear All
           </mat-chip>
           <mat-chip *ngIf="noctuaSearchService.searchCriteria.gps.length>0"

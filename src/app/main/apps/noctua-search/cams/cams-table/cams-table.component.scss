@@ -102,39 +102,42 @@ $rotate-graph: 235deg;
         height: 25px;
         width: 25px;
         border-radius: 50%;
-        color: #777;
+        color: #888;
         font-size: 14px;
 
       }
 
-      @include noc-chip-color(#555);
+      @include noc-chip-color(#CCC);
 
       &.noc-user-chip {
         @include noc-chip-color(#bbc9cc);
 
         .noc-icon {
-          color: #59939e
+          color: #59939e;
+
+          &.noc-icon-initials {
+            font-size: 10px;
+            color: #000000;
+          }
+
         }
       }
 
       &.noc-date-chip {
-        @include noc-chip-color(#aee9f5);
+        @include noc-chip-color(#bbc9cc);
       }
 
       &.noc-state-chip {
         &.noc-development {
           @include noc-chip-color(#f4c89c);
-          // border: #d59f80 solid 1px;/
         }
 
         &.noc-production {
           @include noc-chip-color(#b6f1cc);
-          // border: #d59f80 solid 1px;/
         }
 
         &.noc-review {
           @include noc-chip-color(#d8f6a3);
-          // border: #d59f80 solid 1px;/
         }
       }
 

@@ -6,6 +6,7 @@ import { NoctuaUserService, Contributor, Group, Organism, compareOrganism, compa
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import { differenceWith, sortBy } from 'lodash';
 import { map } from 'rxjs/operators';
+import { MatColors } from '@noctua/mat-colors';
 
 
 @Injectable({
@@ -57,6 +58,8 @@ export class NoctuaDataService {
 
 
   loadContributors() {
+    const self = this;
+
     this.getUsers()
       .subscribe((response) => {
         if (!response) {
@@ -64,9 +67,13 @@ export class NoctuaDataService {
         }
         const contributors = response.map((item) => {
           const contributor = new Contributor();
+
           contributor.name = item.nickname;
           contributor.orcid = item.uri;
           contributor.group = item.group;
+          contributor.initials = self.getInitials(item.nickname);
+          contributor.color = self.getColor(contributor.initials);
+
           return contributor;
         });
 
@@ -85,7 +92,8 @@ export class NoctuaDataService {
           const group: any = {
             name: item.label,
             url: item.id
-          }
+          };
+
           return group;
         });
 
@@ -132,5 +140,27 @@ export class NoctuaDataService {
           console.log(JSON.stringify(diffSorted, undefined, 2));
         });
       });
+  }
+
+  private getInitials(string) {
+    const names = string.split(' ');
+    let initials = names[0].substring(0, 1).toUpperCase();
+
+    if (names.length > 1) {
+      initials += names[names.length - 1].substring(0, 1).toUpperCase();
+    }
+
+    return initials;
+  }
+
+  private getColor(name: string) {
+    const colors = Object.keys(MatColors.all);
+    const index = (name.charCodeAt(0) - 65) % (colors.length - 5);
+    console.log(colors)
+    if (index && index > 0) {
+      return MatColors.getColor(colors[index])[100];
+    } else {
+      return '##bbc9cc';
+    }
   }
 }

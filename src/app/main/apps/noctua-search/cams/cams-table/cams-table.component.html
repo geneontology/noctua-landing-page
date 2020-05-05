@@ -85,10 +85,10 @@
           <mat-chip class="noc-table-chip noc-user-chip" fxLayout="row" fxLayoutAlign="start center"
             *ngFor="let contributor of cam.contributors"
             (click)="noctuaSearchService.filter(noctuaSearchService.filterType.contributors, contributor)"
-            matTooltip="Add {{contributor.name}} to Filters" [matTooltipPosition]="'below'"
-            [matTooltipShowDelay]="1000">
-            <div class="noc-icon">
-              <fa-icon [icon]="['fas', 'user']"></fa-icon>
+            matTooltip="Add {{contributor.name}} to Filters" [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000"
+            [style.borderColor]="contributor.color">
+            <div class="noc-icon noc-icon-initials" [style.backgroundColor]="contributor.color">
+              {{contributor.initials}}
             </div>
             <div fxFlex="" class="noc-chip-label">
               {{contributor.name ? contributor.name :contributor.orcid}}
