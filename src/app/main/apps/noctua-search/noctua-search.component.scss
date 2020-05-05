@@ -117,15 +117,27 @@ $accent: map-get($theme, accent);
 
     @include mat-elevation(2);
 
+    mat-chip-list {}
+
     mat-chip {
-      font-size: 14px;
+      margin-right: 8px;
       font-weight: normal;
+      font-size: 10px;
       @include deep-height(25px);
 
+      &.noc-filter-chip {
+        font-size: 10px;
+        @include noc-chip-color(#bbc9cc);
+
+        .noc-filter-number {
+          font-weight: bold;
+          color: map-get($primary, default);
+        }
+      }
+
       &.noc-clearall-chip {
-        @include mat-elevation(1);
-        @include noc-chip-color(rgb(231, 154, 154));
-        font-size: 12px;
+        @include noc-chip-color(#da7f7f);
+        font-size: 10px;
       }
     }
   }

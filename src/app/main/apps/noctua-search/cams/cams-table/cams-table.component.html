@@ -12,19 +12,7 @@
       <button mat-stroked-button (click)="refresh()" class="noc-rounded-button noc-half-button noc-sm noc-l"
         color="primary" matTooltip="Refresh Search" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
         <mat-icon class="">
-          refresh
-        </mat-icon>
-      </button>
-    </div>
-    <small>Filters:</small>
-    <div class="ml-8" fxLayout="row" fxLayoutAlign="start center">
-      <button mat-stroked-button color="" class="noc-rounded-button mr-4 noc-half-button noc-sm noc-r">
-        {{noctuaSearchService?.searchCriteria?.filtersCount}}
-      </button>
-      <button mat-stroked-button (click)="reset()" class="noc-rounded-button noc-half-button noc-sm noc-l"
-        color="primary" matTooltip="Reset Filters" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
-        <mat-icon class="">
-          settings_backup_restore
+          youtube_searched_for
         </mat-icon>
       </button>
     </div>
