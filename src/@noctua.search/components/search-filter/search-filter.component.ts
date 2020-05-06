@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -44,8 +44,10 @@ export const MY_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
 })
-
 export class SearchFilterComponent implements OnInit, OnDestroy {
+
+  @ViewChildren('searchInput')
+  searchInput: QueryList<ElementRef>;
   searchCriteria: any = {};
   isExactDate = true;
   filterForm: FormGroup;
@@ -80,17 +82,13 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       EntityDefinition.GoCellTypeEntity
     ]);
     this.unsubscribeAll = new Subject();
-
     this.filterForm = this.createAnswerForm();
-
     this._onValueChanges();
   }
 
   ngOnInit(): void {
 
   }
-
-
 
   createAnswerForm() {
     return new FormGroup({
@@ -139,6 +137,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   clear() {
     this.noctuaSearchService.clearSearchCriteria();
+    this.searchInput.forEach((item) => {
+      item.nativeElement.value = null;
+    });
   }
 
   ngOnDestroy(): void {
