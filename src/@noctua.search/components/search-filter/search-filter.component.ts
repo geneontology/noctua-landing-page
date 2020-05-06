@@ -1,5 +1,5 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChildren, QueryList, ElementRef } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
@@ -16,6 +16,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import * as _moment from 'moment';
 // tslint:disable-next-line:no-duplicate-imports
 import { default as _rollupMoment } from 'moment';
+import { InlineReferenceService } from '@noctua.editor/inline-reference/inline-reference.service';
 
 const moment = _rollupMoment || _moment;
 
@@ -44,8 +45,10 @@ export const MY_FORMATS = {
     { provide: MAT_DATE_FORMATS, useValue: MY_FORMATS },
   ],
 })
-
 export class SearchFilterComponent implements OnInit, OnDestroy {
+
+  @ViewChildren('searchInput')
+  searchInput: QueryList<ElementRef>;
   searchCriteria: any = {};
   isExactDate = true;
   filterForm: FormGroup;
@@ -64,11 +67,13 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   private unsubscribeAll: Subject<any>;
 
-  constructor(public noctuaUserService: NoctuaUserService,
-    public noctuaSearchMenuService: NoctuaSearchMenuService,
-    public noctuaFormConfigService: NoctuaFormConfigService,
-    private noctuaLookupService: NoctuaLookupService,
-    public noctuaSearchService: NoctuaSearchService) {
+  constructor
+    (public noctuaUserService: NoctuaUserService,
+      private inlineReferenceService: InlineReferenceService,
+      public noctuaSearchMenuService: NoctuaSearchMenuService,
+      public noctuaFormConfigService: NoctuaFormConfigService,
+      private noctuaLookupService: NoctuaLookupService,
+      public noctuaSearchService: NoctuaSearchService) {
 
     this.gpNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoMolecularEntity]);
     this.termNode = EntityDefinition.generateBaseTerm([
@@ -80,17 +85,13 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       EntityDefinition.GoCellTypeEntity
     ]);
     this.unsubscribeAll = new Subject();
-
     this.filterForm = this.createAnswerForm();
-
     this._onValueChanges();
   }
 
   ngOnInit(): void {
 
   }
-
-
 
   createAnswerForm() {
     return new FormGroup({
@@ -139,6 +140,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   clear() {
     this.noctuaSearchService.clearSearchCriteria();
+    this.searchInput.forEach((item) => {
+      item.nativeElement.value = null;
+    });
   }
 
   ngOnDestroy(): void {
@@ -153,6 +157,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     if ((value || '').trim()) {
       this.noctuaSearchService.searchCriteria[filterType].push(value.trim());
       this.noctuaSearchService.updateSearch();
+      this.searchInput.forEach((item) => {
+        item.nativeElement.value = null;
+      });
       this.filterForm.controls[filterType].setValue('');
     }
 
@@ -173,8 +180,23 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   selected(event: MatAutocompleteSelectedEvent, filterType): void {
     this.noctuaSearchService.searchCriteria[filterType].push(event.option.value);
     this.noctuaSearchService.updateSearch();
+
+    this.searchInput.forEach((item) => {
+      item.nativeElement.value = null;
+    });
+
     this.filterForm.controls[filterType].setValue('');
   }
+
+  openAddReference(event, name: string) {
+
+    const data = {
+      formControl: this.filterForm.controls[name] as FormControl,
+    };
+    this.inlineReferenceService.open(event.target, { data });
+
+  }
+
 
   downloadFilter() {
     this.noctuaSearchService.downloadSearchConfig();

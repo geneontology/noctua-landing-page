@@ -18,12 +18,8 @@ $accent: map-get($theme, accent);
     background-blend-mode: initial;
     background-size: cover;
     background-position: top;
-
-
     padding-top: 50px !important;
     position: relative;
-    // background: #1A237E;
-    // background: linear-gradient(to right, #0E2A3B 0%, #34306B 100%);
     flex: 1 0 auto;
     height: 280px;
     max-height: 280px;
@@ -32,16 +28,6 @@ $accent: map-get($theme, accent);
 
     @include media-breakpoint('lt-md') {
       height: 200px;
-    }
-
-    .hero-icon {
-      position: absolute;
-      top: -64px;
-      left: 0px;
-      opacity: 0.04;
-      font-size: 512px !important;
-      width: 512px !important;
-      height: 512px !important;
     }
 
     h1 {
@@ -122,7 +108,7 @@ $accent: map-get($theme, accent);
     top: 0;
     margin-bottom: 4px;
     padding: 0 10px;
-    @include deep-height(40px);
+    @include deep-height(30px);
     //  min-height: 40px; //min-height: 35px;
     background-color: #FFF;
     font-size: 16px;
@@ -131,39 +117,29 @@ $accent: map-get($theme, accent);
 
     @include mat-elevation(2);
 
-    mat-chip {
-      font-size: 14px;
-      font-weight: normal;
-      @include deep-height(30px);
-    }
-
-  }
-
-  .noc-summary-results-bar {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 41px;
-    margin-bottom: 4px;
-    padding: 0 10px;
-    @include deep-height(40px);
-    //  min-height: 40px; //min-height: 35px;
-    background-color: #FFF;
-    font-size: 16px;
-    overflow: hidden;
-    z-index: 10;
-
-    @include mat-elevation(2);
-
-    .noc-pagesize-select {
-      width: 50px;
-    }
+    mat-chip-list {}
 
     mat-chip {
-      font-size: 14px;
+      margin-right: 8px;
       font-weight: normal;
-      @include deep-height(30px);
-    }
+      font-size: 10px;
+      @include deep-height(25px);
 
+      &.noc-filter-chip {
+        font-size: 10px;
+        @include noc-chip-color(#bbc9cc);
+
+        .noc-filter-number {
+          font-weight: bold;
+          color: map-get($primary, default);
+        }
+      }
+
+      &.noc-clearall-chip {
+        @include noc-chip-color(#da7f7f);
+        font-size: 10px;
+      }
+    }
   }
 
   .noc-table-container {
@@ -191,80 +167,4 @@ $accent: map-get($theme, accent);
     }
   }
 
-  .noc-cam-table-heading {
-    @include deep-height(40px);
-    background-color: #FFF;
-    // @include mat-elevation(2);
-    border-bottom: #EEE solid 1px;
-  }
-
-  .noc-form-container {
-    background-color: #EEE;
-    padding: 20px 10px;
-  }
-
-  .noc-toolbar {
-    padding: 0px 20px;
-    height: 40px;
-    width: 100%;
-    background-color: #F2F2F2;
-    border-bottom: #BBB solid 1px;
-
-    .noc-title {
-      line-height: 38px;
-      color: #555;
-      font-size: 14px;
-      font-weight: bold;
-    }
-  }
-
-  .cams-table {
-    width: 100%;
-    @include deep-height(100%);
-    padding-bottom: 300px;
-    // position: relative;
-    //  flex: 1 1 auto;
-    //    border-bottom: 1px solid rgba(0, 0, 0, .12);
-    //  overflow: auto;
-
-    .noc-cams-table-header {
-      padding: 0;
-      margin-bottom: 5px;
-      @include deep-height(50px);
-      position: sticky;
-      position: -webkit-sticky;
-      top: 0;
-      z-index: 1000;
-      background-color: #FFF;
-      @include mat-elevation(1);
-      //  background-color: $noc-primary-color-light;
-      // font-size: 3px !important;
-    }
-
-    .cam {
-      position: relative;
-      cursor: pointer;
-      min-height: 40px;
-      font-size: 12px;
-    }
-
-    .mat-cell {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-    }
-
-    .mat-column-id {
-      flex: 0 1 84px;
-    }
-
-    .mat-column-buttons {
-      flex: 0 1 80px;
-    }
-
-    /* .mat-header-cell {
-      display:flex;
-      justify-content:flex-end;
-     } */
-  }
 }

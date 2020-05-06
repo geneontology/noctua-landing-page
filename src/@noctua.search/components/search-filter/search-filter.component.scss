@@ -16,6 +16,16 @@
     //  white-space: nowrap;
   }
 
+  .noc-evidence-db-trigger {
+    @include deep-height(20px);
+    @include deep-width(20px);
+    line-height: 20px;
+
+    mat-icon {
+      @include noc-icon-size(18px);
+    }
+  }
+
   .noc-filter-form {
     padding-bottom: 200px;
 

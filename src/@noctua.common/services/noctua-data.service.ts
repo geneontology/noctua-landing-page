@@ -2,10 +2,11 @@ import { environment } from 'environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable, of } from 'rxjs';
-import { NoctuaUserService, Contributor, Group, Organism } from 'noctua-form-base';
+import { NoctuaUserService, Contributor, Group, Organism, compareOrganism, compareGroup, compareContributor } from 'noctua-form-base';
 import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import { differenceWith, sortBy } from 'lodash';
 import { map } from 'rxjs/operators';
+import { MatColors } from '@noctua/mat-colors';
 
 
 @Injectable({
@@ -51,12 +52,14 @@ export class NoctuaDataService {
     const self = this;
 
     return this.httpClient.get(`${self.searchApi}/taxa`).pipe(
-      map(res => res['taxa']),
+      map(res => res['taxa'])
     );
   }
 
 
   loadContributors() {
+    const self = this;
+
     this.getUsers()
       .subscribe((response) => {
         if (!response) {
@@ -64,13 +67,17 @@ export class NoctuaDataService {
         }
         const contributors = response.map((item) => {
           const contributor = new Contributor();
+
           contributor.name = item.nickname;
           contributor.orcid = item.uri;
           contributor.group = item.group;
+          contributor.initials = self.getInitials(item.nickname);
+          contributor.color = self.getColor(contributor.initials);
+
           return contributor;
         });
 
-        this.onContributorsChanged.next(contributors);
+        this.onContributorsChanged.next(contributors.sort(compareContributor));
       });
   }
 
@@ -85,11 +92,12 @@ export class NoctuaDataService {
           const group: any = {
             name: item.label,
             url: item.id
-          }
+          };
+
           return group;
         });
 
-        this.onGroupsChanged.next(groups);
+        this.onGroupsChanged.next(groups.sort(compareGroup));
       });
   }
 
@@ -108,7 +116,8 @@ export class NoctuaDataService {
 
           return organism;
         });
-        this.onOrganismsChanged.next(organisms);
+
+        this.onOrganismsChanged.next(organisms.sort(compareOrganism));
       });
   }
 
@@ -131,5 +140,27 @@ export class NoctuaDataService {
           console.log(JSON.stringify(diffSorted, undefined, 2));
         });
       });
+  }
+
+  private getInitials(string) {
+    const names = string.split(' ');
+    let initials = names[0].substring(0, 1).toUpperCase();
+
+    if (names.length > 1) {
+      initials += names[names.length - 1].substring(0, 1).toUpperCase();
+    }
+
+    return initials;
+  }
+
+  private getColor(name: string) {
+    const colors = Object.keys(MatColors.all);
+    const index = (name.charCodeAt(0) - 65) % (colors.length - 5);
+    //console.log(colors)
+    if (index && index > 0) {
+      return MatColors.getColor(colors[index])[100];
+    } else {
+      return '##bbc9cc';
+    }
   }
 }

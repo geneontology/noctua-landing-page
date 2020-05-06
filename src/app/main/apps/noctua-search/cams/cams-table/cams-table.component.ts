@@ -56,40 +56,6 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   cams: any[] = [];
   camPage: CamPage;
 
-
-
-
-  public filter: string = '';
-  public maxSize: number = 7;
-  public directionLinks: boolean = true;
-  public autoHide: boolean = false;
-  public responsive: boolean = false;
-  public config: PaginationInstance = {
-    id: 'advanced',
-    itemsPerPage: 10,
-    currentPage: 1
-  };
-  public labels: any = {
-    previousLabel: 'Previous',
-    nextLabel: 'Next',
-    screenReaderPaginationLabel: 'Pagination',
-    screenReaderPageLabel: 'page',
-    screenReaderCurrentLabel: `You're on page`
-  };
-  public eventLog: string[] = [];
-
-  private popped = [];
-
-  onPageChange(number: number) {
-    console.log(`pageChange(${number})`);
-    this.config.currentPage = number;
-  }
-
-  onPageBoundsCorrection(number: number) {
-    console.log(`pageBoundsCorrection(${number})`);
-    this.config.currentPage = number;
-  }
-
   constructor(
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
@@ -144,6 +110,13 @@ export class CamsTableComponent implements OnInit, OnDestroy {
       }
       this.noctuaSearchService.getPage(pageIndex, $event.pageSize);
     }
+  }
+  refresh() {
+    this.noctuaSearchService.updateSearch();
+  }
+
+  reset() {
+    this.noctuaSearchService.clearSearchCriteria();
   }
 
   ngOnDestroy(): void {

@@ -27,6 +27,10 @@ $noc-secondary-color: #995014;
 
   .noc-icon {
     background-color: $color;
+
+    &.noc-transparent {
+      background-color: transparent;
+    }
   }
 }
 
@@ -96,8 +100,7 @@ textarea {
 
 .noc-paginator {
   overflow: hidden;
-  @include deep-height(60px);
-  background-color: #F2F2F2;
+  @include deep-height(50px);
 
   display: flex;
   justify-content: left;
@@ -112,7 +115,7 @@ textarea {
   }
 
   .mat-paginator-container {
-    @include deep-height(60px !important);
+    @include deep-height(50px !important);
   }
 }
 
