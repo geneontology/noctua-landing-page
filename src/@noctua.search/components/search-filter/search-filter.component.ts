@@ -154,6 +154,9 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     if ((value || '').trim()) {
       this.noctuaSearchService.searchCriteria[filterType].push(value.trim());
       this.noctuaSearchService.updateSearch();
+      this.searchInput.forEach((item) => {
+        item.nativeElement.value = null;
+      });
       this.filterForm.controls[filterType].setValue('');
     }
 
@@ -174,6 +177,11 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   selected(event: MatAutocompleteSelectedEvent, filterType): void {
     this.noctuaSearchService.searchCriteria[filterType].push(event.option.value);
     this.noctuaSearchService.updateSearch();
+
+    this.searchInput.forEach((item) => {
+      item.nativeElement.value = null;
+    });
+
     this.filterForm.controls[filterType].setValue('');
   }
 

@@ -31,9 +31,8 @@
                 </div>
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
-
               <input #searchInput formControlName="terms" placeholder="Add Term Filter" [matAutocomplete]="termAuto"
-                #termInput [matChipInputFor]="termChipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputFor]="termChipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 [matChipInputAddOnBlur]="false">
             </mat-chip-list>
             <mat-autocomplete #termAuto="matAutocomplete"
