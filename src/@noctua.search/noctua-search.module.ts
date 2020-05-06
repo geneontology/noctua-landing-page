@@ -11,6 +11,7 @@ import { SearchFormComponent } from './components/search-form/search-form.compon
 import { SearchFilterComponent } from './components/search-filter/search-filter.component';
 import { SearchRelationComponent } from './components/search-relation/search-relation.component';
 import { SearchHistoryComponent } from './components/search-history/search-history.component';
+import { NoctuaEditorModule } from '@noctua.editor';
 
 @NgModule({
     declarations: [
@@ -27,7 +28,8 @@ import { SearchHistoryComponent } from './components/search-history/search-histo
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
-        NoctuaSharedModule
+        NoctuaSharedModule,
+        NoctuaEditorModule
     ],
     exports: [
         SearchFilterComponent,

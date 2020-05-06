@@ -16,6 +16,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import * as _moment from 'moment';
 // tslint:disable-next-line:no-duplicate-imports
 import { default as _rollupMoment } from 'moment';
+import { InlineReferenceService } from '@noctua.editor/inline-reference/inline-reference.service';
 
 const moment = _rollupMoment || _moment;
 
@@ -66,11 +67,13 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   private unsubscribeAll: Subject<any>;
 
-  constructor(public noctuaUserService: NoctuaUserService,
-    public noctuaSearchMenuService: NoctuaSearchMenuService,
-    public noctuaFormConfigService: NoctuaFormConfigService,
-    private noctuaLookupService: NoctuaLookupService,
-    public noctuaSearchService: NoctuaSearchService) {
+  constructor
+    (public noctuaUserService: NoctuaUserService,
+      private inlineReferenceService: InlineReferenceService,
+      public noctuaSearchMenuService: NoctuaSearchMenuService,
+      public noctuaFormConfigService: NoctuaFormConfigService,
+      private noctuaLookupService: NoctuaLookupService,
+      public noctuaSearchService: NoctuaSearchService) {
 
     this.gpNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoMolecularEntity]);
     this.termNode = EntityDefinition.generateBaseTerm([
@@ -184,6 +187,16 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
     this.filterForm.controls[filterType].setValue('');
   }
+
+  openAddReference(event, name: string) {
+
+    const data = {
+      formControl: this.filterForm.controls[name] as FormControl,
+    };
+    this.inlineReferenceService.open(event.target, { data });
+
+  }
+
 
   downloadFilter() {
     this.noctuaSearchService.downloadSearchConfig();

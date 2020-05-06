@@ -103,6 +103,10 @@
                 [matChipInputFor]="pmidChipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                 [matChipInputAddOnBlur]="false"
                 (matChipInputTokenEnd)="add($event, noctuaSearchService.filterType.pmids)">
+              <button mat-icon-button matSuffix (click)="openAddReference($event, 'pmids')"
+                class="noc-evidence-db-trigger">
+                <mat-icon>playlist_add</mat-icon>
+              </button>
             </mat-chip-list>
           </mat-form-field>
         </div>
