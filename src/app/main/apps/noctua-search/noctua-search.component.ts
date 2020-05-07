@@ -62,7 +62,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     public noctuaUserService: NoctuaUserService,
     public noctuaSearchService: NoctuaSearchService
   ) {
-
     this._unsubscribeAll = new Subject();
 
     this.route
@@ -111,6 +110,11 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
       .subscribe(cams => {
         this.cams = cams;
       });
+  }
+
+  openLeftDrawer(panel) {
+    this.noctuaSearchMenuService.selectLeftPanel(panel);
+    this.noctuaSearchMenuService.openLeftDrawer();
   }
 
   toggleLeftDrawer(panel) {

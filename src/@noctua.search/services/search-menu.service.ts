@@ -58,7 +58,7 @@ export class NoctuaSearchMenuService {
         if (this.selectedLeftPanel.id === panel.id) {
             this.leftDrawer.toggle();
         } else {
-            this.selectLeftPanel(panel)
+            this.selectLeftPanel(panel);
             return this.openLeftDrawer();
         }
     }

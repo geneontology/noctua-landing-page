@@ -80,51 +80,51 @@
           Clear All
         </mat-chip>
         <mat-chip *ngIf="noctuaSearchService.searchCriteria.gps.length>0" class="noc-filter-chip"
-          (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
+          (click)="openLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" [removable]="true"
           (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.gps)">
           GPs: <span> ({{ noctuaSearchService.searchCriteria.gps.length}})</span>
           <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
         <mat-chip *ngIf="noctuaSearchService.searchCriteria.terms.length>0" class="noc-filter-chip"
-          (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
+          (click)="openLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" [removable]="true"
           (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.terms)">
           GO Terms: <span class="noc-filter-number"> ({{ noctuaSearchService.searchCriteria.terms.length}})</span>
           <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
         <mat-chip *ngIf="noctuaSearchService.searchCriteria.contributors.length>0" class="noc-filter-chip"
-          (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
+          (click)="openLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" [removable]="true"
           (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.contributors)">
           Contributors: <span class="noc-filter-number">
             ({{ noctuaSearchService.searchCriteria.contributors.length}})</span>
           <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
         <mat-chip *ngIf="noctuaSearchService.searchCriteria.groups.length>0" class="noc-filter-chip"
-          (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
+          (click)="openLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" [removable]="true"
           (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.groups)">
           Groups: <span class="noc-filter-number"> ({{ noctuaSearchService.searchCriteria.groups.length}})</span>
           <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
         <mat-chip *ngIf="noctuaSearchService.searchCriteria.organisms.length>0" class="noc-filter-chip"
-          (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
+          (click)="openLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" [removable]="true"
           (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.organisms)">
           Species: <span class="noc-filter-number"> ({{ noctuaSearchService.searchCriteria.organisms.length}})</span>
           <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
         <mat-chip *ngIf="noctuaSearchService.searchCriteria.pmids.length>0" class="noc-filter-chip"
-          (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
+          (click)="openLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" [removable]="true"
           (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.pmids)">
           References: <span class="noc-filter-number"> ({{ noctuaSearchService.searchCriteria.pmids.length}})</span>
           <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
         <mat-chip *ngIf="noctuaSearchService.searchCriteria.states.length>0" class="noc-filter-chip"
-          (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
+          (click)="openLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" [removable]="true"
           (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.states)">
           Model States: <span class="noc-filter-number">
             ({{ noctuaSearchService.searchCriteria.states.length}})</span>
           <mat-icon matChipRemove>cancel</mat-icon>
         </mat-chip>
         <mat-chip *ngIf="noctuaSearchService.searchCriteria.exactdates.length>0" class="noc-filter-chip"
-          (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
+          (click)="openLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" [removable]="true"
           (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.exactdates)">
           Date Modified: <span class="noc-filter-number">
             ({{ noctuaSearchService.searchCriteria.exactdates.length}})</span>
