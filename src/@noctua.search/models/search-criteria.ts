@@ -19,7 +19,7 @@ export class SearchCriteria {
 
     constructor(searchCriteria?: SearchCriteria) {
         if (searchCriteria) {
-            this.camPage = searchCriteria.camPage || new CamPage()
+            this.camPage = searchCriteria.camPage || new CamPage();
             this.titles = searchCriteria.titles || [];
             this.contributors = searchCriteria.contributors || [];
             this.groups = searchCriteria.groups || [];
@@ -37,7 +37,7 @@ export class SearchCriteria {
     updateFiltersCount() {
         const self = this;
 
-        const filtersCount = self.titles.length +
+        self.filtersCount = self.titles.length +
             self.gps.length +
             self.terms.length +
             self.pmids.length +
@@ -48,8 +48,6 @@ export class SearchCriteria {
             self.exactdates.length +
             self.startdates.length +
             self.enddates.length;
-
-        self.filtersCount = filtersCount;
     }
 
     private query() {

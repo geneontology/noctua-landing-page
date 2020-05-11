@@ -8,7 +8,7 @@
       <mat-icon>close</mat-icon> CLOSE
     </button>
   </div>
-  <form class="mt-8 noc-search-form" noctuaPerfectScrollbar>
+  <div class="noc-drawer-body" noctuaPerfectScrollbar>
     <div *ngFor="let item of searchHistory" (click)="selectSearch(item)" class="noc-group-row" fxLayout="row"
       fxLayoutAlign="start center">
       <div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start start">
@@ -21,5 +21,9 @@
         chevron_right
       </mat-icon>
     </div>
-  </form>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
+    <span fxFlex=""></span>
+    <button (click)="clear()" type="button" mat-raised-button>Clear Search</button>
+  </div>
 </div>

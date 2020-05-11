@@ -37,6 +37,10 @@ export class SearchHistoryComponent implements OnInit, OnDestroy {
     this.noctuaSearchService.updateSearch(false);
   }
 
+  clear() {
+    this.noctuaSearchService.clearHistory();
+  }
+
   close() {
     this.noctuaSearchMenuService.closeLeftDrawer();
   }
