@@ -215,6 +215,11 @@ export class NoctuaSearchService {
         this.onSearchHistoryChanged.next(this.searchHistory);
     }
 
+    clearHistory() {
+        this.searchHistory = [];
+        this.onSearchHistoryChanged.next(this.searchHistory);
+    }
+
     downloadSearchConfig() {
         const blob = new Blob([JSON.stringify(this.searchCriteria, undefined, 2)], { type: 'application/json' });
         saveAs(blob, 'search-filter.json');
