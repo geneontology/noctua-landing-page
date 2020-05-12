@@ -100,6 +100,7 @@ export class SearchCriteria {
             query.push(`state=${state.name}`);
         });
 
+        query.push('expand');
         return query;
     }
 
