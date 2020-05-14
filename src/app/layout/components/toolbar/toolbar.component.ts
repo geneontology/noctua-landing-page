@@ -56,7 +56,7 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
             .subscribe(params => {
                 const baristaToken = params['barista_token'] || null;
                 const modelId = params['model_id'] || null;
-                const returnUrl = `${environment.workbenchUrl}noctua-landing-page/?model_id=${modelId}`;
+                const returnUrl = `${environment.noctuaUrl}${window.location.pathname}`;
                 const baristaParams = { 'barista_token': baristaToken };
                 const modelIdParams = { 'model_id': modelId };
                 const returnUrlParams = { 'return': returnUrl };
