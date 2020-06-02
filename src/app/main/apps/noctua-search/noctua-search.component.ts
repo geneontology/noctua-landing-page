@@ -69,7 +69,7 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
       .subscribe(params => {
         this.baristaToken = params['barista_token'] || null;
         this.noctuaUserService.baristaToken = this.baristaToken;
-        this.getUserInfo();
+        this.noctuaUserService.getUser();
         this.noctuaFormConfigService.setUniversalUrls();
       });
 
@@ -80,22 +80,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
           return;
         }
         this.camPage = camPage;
-      });
-  }
-
-  getUserInfo() {
-
-    this.noctuaUserService.getUser()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((response) => {
-        if (response && response.nickname) {
-          this.user = new Contributor();
-          this.user.name = response.nickname;
-          this.user.groups = response.groups;
-          // user.manager.use_groups([self.userInfo.selectedGroup.id]);
-          this.noctuaUserService.user = this.user;
-          this.noctuaUserService.onUserChanged.next(this.user);
-        }
       });
   }
 
