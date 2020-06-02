@@ -311,28 +311,21 @@ export class NoctuaSearchService {
             });
 
             cam.groups = <Group[]>response.groups.map(function (url) {
-                const group = find(self.noctuaUserService.groups, (group: Group) => {
-                    return group.url === url;
+                const group = find(self.noctuaUserService.groups, (inGroup: Group) => {
+                    return inGroup.url === url;
                 });
 
                 return group ? group : { url: url };
             });
 
             cam.contributors = <Contributor[]>response.contributors.map((orcid) => {
-                const contributor = find(self.noctuaUserService.contributors, (contributor: Contributor) => {
-                    return contributor.orcid === orcid;
+                const contributor = find(self.noctuaUserService.contributors, (inContributor: Contributor) => {
+                    return inContributor.orcid === orcid;
                 });
 
                 return contributor ? contributor : { orcid: orcid };
             });
 
-            forOwn(response.query_match, (individuals) => {
-                cam.filter.uuids.push(...individuals.map((iri) => {
-                    return self.curieUtil.getCurie(iri);
-                }));
-            });
-
-            cam.configureDisplayType();
             result.push(cam);
         });
 

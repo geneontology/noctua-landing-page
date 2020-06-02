@@ -14,7 +14,8 @@ const globalWorkbenchesModel = typeof global_workbenches_model !== 'undefined' ?
 const globalWorkbenchesUniversal = typeof global_workbenches_universal !== 'undefined' ? global_workbenches_universal : [];
 
 export const environment = {
-  production: false,
+  production: true,
+  searchApi: `${baristaLocation}/search/`,
   spaqrlApiUrl: 'http://rdf-internal.berkeleybop.io/blazegraph/sparql',
   // spaqrlApiUrl: 'http://rdf.geneontology.org/blazegraph/sparql',
   // gorestApiUrl: 'https://api.geneontology.cloud/'
@@ -26,7 +27,6 @@ export const environment = {
   globalBaristaLocation: baristaLocation,
   globalWorkbenchesModel: globalWorkbenchesModel,
   globalWorkbenchesUniversal: globalWorkbenchesUniversal,
-  searchApi: `${baristaLocation}/search/`,
 
   //Workbench
   noctuaUrl: `${window.location.origin}`,
