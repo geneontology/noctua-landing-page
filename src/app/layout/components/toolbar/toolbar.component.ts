@@ -8,6 +8,7 @@ import {
     NoctuaUserService,
     NoctuaAnnotonFormService,
     AnnotonType,
+    NoctuaFormConfigService,
 } from 'noctua-form-base';
 
 import { Subject } from 'rxjs';
@@ -24,7 +25,6 @@ import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-m
 export class NoctuaToolbarComponent implements OnInit, OnDestroy {
     AnnotonType = AnnotonType;
 
-    public user: Contributor;
     public cam: Cam;
     userStatusOptions: any[];
     showLoadingBar: boolean;
@@ -42,33 +42,13 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
         private router: Router,
         private route: ActivatedRoute,
         private camService: CamService,
+        public noctuaConfigService: NoctuaFormConfigService,
         private noctuaCommonMenuService: NoctuaCommonMenuService,
         public noctuaUserService: NoctuaUserService,
         public noctuaAnnotonFormService: NoctuaAnnotonFormService,
     ) {
         const self = this;
         this._unsubscribeAll = new Subject();
-        this.getUserInfo();
-
-        this.route
-            .queryParams
-            .pipe(takeUntil(this._unsubscribeAll))
-            .subscribe(params => {
-                const baristaToken = params['barista_token'] || null;
-                const modelId = params['model_id'] || null;
-                const returnUrl = `${environment.noctuaUrl}${window.location.pathname}`;
-                const baristaParams = { 'barista_token': baristaToken };
-                const modelIdParams = { 'model_id': modelId };
-                const returnUrlParams = { 'return': returnUrl };
-
-                this.loginUrl = environment.globalBaristaLocation + '/login?' +
-                    self._parameterize(Object.assign({}, returnUrlParams));
-                this.logoutUrl = environment.globalBaristaLocation + '/logout?' +
-                    self._parameterize(Object.assign({}, baristaParams, returnUrlParams));
-                this.noctuaUrl = environment.noctuaUrl + '?' + (baristaToken ? self._parameterize(Object.assign({}, baristaParams)) : '');
-                this.noctuaFormUrl = environment.workbenchUrl + 'noctua-landing-page?'
-                    + (baristaToken ? self._parameterize(Object.assign({}, modelIdParams, baristaParams)) : '');
-            });
 
         this.router.events.pipe(takeUntil(this._unsubscribeAll))
             .subscribe(
@@ -94,18 +74,6 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
             });
     }
 
-    getUserInfo() {
-        const self = this;
-
-        self.noctuaUserService.onUserChanged.pipe(
-            takeUntil(this._unsubscribeAll))
-            .subscribe((user: Contributor) => {
-                if (user) {
-                    self.user = user;
-                }
-            });
-    }
-
     openApps() {
         this.noctuaCommonMenuService.openLeftSidenav();
     }
@@ -115,7 +83,4 @@ export class NoctuaToolbarComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
-    private _parameterize = (params) => {
-        return Object.keys(params).map(key => key + '=' + params[key]).join('&');
-    }
 }
