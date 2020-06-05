@@ -12,7 +12,7 @@
       [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
       <mat-icon class="">apps</mat-icon>
     </button>
-    <a class="noc-main-logo" href="{{noctuaUrl}}" target="_blank">
+    <a class="noc-main-logo" href="{{noctuaConfigService.noctuaUrl}}" target="_blank">
       Noctua
     </a>
   </div>
@@ -64,12 +64,12 @@
         </div>
       </button>
       <mat-menu #userMenu="matMenu" class="">
-        <a mat-button href="{{logoutUrl}}" class="red-500-fg w-100-p">
+        <a mat-button href="{{noctuaConfigService.logoutUrl}}" class="red-500-fg w-100-p">
           Logout
         </a>
       </mat-menu>
       <div *ngIf="!noctuaUserService.user">
-        <a mat-button href="{{loginUrl}}" class="noc-login-button">
+        <a mat-button href="{{noctuaConfigService.loginUrl}}" class="noc-login-button">
           Login
         </a>
       </div>

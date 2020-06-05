@@ -38,7 +38,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
 
   searchResults = [];
   modelId = '';
-  baristaToken = '';
   searchCriteria: any = {};
   searchFormData: any = [];
   searchForm: FormGroup;
@@ -67,10 +66,8 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this.route
       .queryParams
       .subscribe(params => {
-        this.baristaToken = params['barista_token'] || null;
-        this.noctuaUserService.baristaToken = this.baristaToken;
-        this.noctuaUserService.getUser();
-        this.noctuaFormConfigService.setUniversalUrls();
+        const baristaToken = params['barista_token'] || null;
+        this.noctuaUserService.getUser(baristaToken);
       });
 
     this.noctuaSearchService.onCamsPageChanged
@@ -88,6 +85,13 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this.noctuaSearchMenuService.setRightDrawer(this.rightDrawer);
 
     this.rightDrawer.open();
+
+    this.noctuaUserService.onUserChanged.pipe(
+      takeUntil(this._unsubscribeAll))
+      .subscribe((user: Contributor) => {
+        this.noctuaFormConfigService.setupUrls();
+        this.noctuaFormConfigService.setUniversalUrls();
+      });
 
     this.noctuaSearchService.onCamsChanged
       .pipe(takeUntil(this._unsubscribeAll))
