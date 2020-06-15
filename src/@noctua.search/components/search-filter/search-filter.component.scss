@@ -16,7 +16,19 @@
     //  white-space: nowrap;
   }
 
+  .noc-evidence-db-trigger {
+    @include deep-height(20px);
+    @include deep-width(20px);
+    line-height: 20px;
+
+    mat-icon {
+      @include noc-icon-size(18px);
+    }
+  }
+
   .noc-filter-form {
+    padding-bottom: 200px;
+
     .noc-form-section {
       width: 100%;
       background-color: #FFF;
@@ -39,12 +51,52 @@
       }
 
       .noc-section-body {
-        padding: 16px 5px 0 5px;
+        padding: 16px 8px 0 8px;
 
         .noc-annoton-group-row {
           margin-bottom: 8px;
         }
       }
+    }
+  }
+
+
+  mat-chip {
+    font-size: 12px;
+    font-weight: normal;
+    @include deep-height(25px);
+    max-width: 200px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    .noc-chip-label {
+      padding: 0 8px 0 4px;
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    &.noc-form-chip {
+      padding: 0;
+      @include deep-height(20px);
+      font-size: 10px;
+
+      .noc-icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 25px;
+        width: 25px;
+        border-radius: 50%;
+        color: #777;
+        font-size: 14px;
+
+      }
+
+      @include noc-chip-color(#bbc9cc);
+
+
     }
   }
 

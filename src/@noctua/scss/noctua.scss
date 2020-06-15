@@ -21,6 +21,19 @@ $noc-secondary-color: #995014;
   @include deep-height($number);
 }
 
+@mixin noc-chip-color($color) {
+  border: $color solid 1px;
+  background-color: rgba($color, 0.2);
+
+  .noc-icon {
+    background-color: $color;
+
+    &.noc-transparent {
+      background-color: transparent;
+    }
+  }
+}
+
 mat-chip {
   &.noc-chip-sm {
     @include deep-height(25px);
@@ -87,11 +100,22 @@ textarea {
 
 .noc-paginator {
   overflow: hidden;
-  @include deep-height(60px);
-  background-color: #F2F2F2;
+  @include deep-height(50px);
+
+  display: flex;
+  justify-content: left;
+  align-items: center;
+
+  .mat-paginator-page-size {
+    align-items: center;
+  }
+
+  .mat-paginator-page-size-select {
+    margin-top: -15px;
+  }
 
   .mat-paginator-container {
-    @include deep-height(60px !important);
+    @include deep-height(50px !important);
   }
 }
 

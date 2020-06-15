@@ -1,94 +1,87 @@
 @import "src/@noctua/scss/noctua";
 @import "src/@noctua.common/scss/noctua.common";
-
-.noc-welcome {
-  padding: 10px;
-}
-
-.header {
-  position: relative;
-  background: #1A237E;
-  background: linear-gradient(to right, #0E2A3B 0%, #34306B 100%);
-  flex: 1 0 auto;
-  height: 280px;
-  max-height: 280px;
-  text-align: center;
-  overflow: hidden;
-
-  @include media-breakpoint('xs') {
-    height: 240px;
-    padding: 16px;
-  }
-
-
-
-  .hero-icon {
-    position: absolute;
-    top: -64px;
-    left: 0px;
-    opacity: 0.04;
-    font-size: 512px !important;
-    width: 512px !important;
-    height: 512px !important;
-  }
-
-  h1 {
-    font-size: 40px;
-    font-weight: 300;
-    letter-spacing: 0.01em;
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 16px;
-    color: white;
-
-    @include media-breakpoint('xs') {
-      font-size: 24px;
-    }
-  }
-
-  h3 {
-    max-width: 80%;
-    text-align: center;
-    font-weight: 300;
-    letter-spacing: 0.03em;
-    margin: 0;
-    color: rgba(#ffffff, 0.9);
-
-    @include media-breakpoint('xs') {
-      font-size: 14px;
-    }
-  }
-}
-
-.noc-left-drawer {
-  @include deep-height(100%);
-  @include deep-width(300px);
-  background-color: #FFF;
-  border-right: #BBB solid 1px;
-  @include mat-elevation(4);
-}
-
-.noc-right-drawer {
-  @include deep-height(100%);
-  background-color: #FFF;
-  border-left: #BBB solid 1px;
-}
-
-
-$rotate-relation: 155deg;
-
-.icon-rotate-relation {
-  -webkit-transform: rotate($rotate-relation);
-  -moz-transform: rotate($rotate-relation);
-  -ms-transform: rotate($rotate-relation);
-  -o-transform: rotate($rotate-relation);
-  transform: rotate($rotate-relation);
-}
+$primary: map-get($theme, primary);
+$accent: map-get($theme, accent);
 
 :host {
   padding: 0px;
   width: 100%;
   background-color: #FFF;
+
+  .noc-welcome {
+    padding: 10px;
+  }
+
+  .header {
+    padding-bottom: 10px;
+    background-image: linear-gradient(to right, #00174f, rgba(#00174f, 0.8), rgba(#00174f, 0.5)), url("~assets/images/gene.jpeg");
+    background-blend-mode: initial;
+    background-size: cover;
+    background-position: top;
+    padding-top: 50px !important;
+    position: relative;
+    flex: 1 0 auto;
+    height: 280px;
+    max-height: 280px;
+    text-align: center;
+    overflow: hidden;
+
+    @include media-breakpoint('lt-md') {
+      height: 200px;
+    }
+
+    h1 {
+      font-size: 40px;
+      font-weight: 300;
+      letter-spacing: 0.01em;
+      text-align: center;
+      margin-top: 0;
+      margin-bottom: 16px;
+      color: rgba(white, 0.9);
+
+      @include media-breakpoint('lt-md') {
+        font-size: 24px;
+      }
+    }
+
+    h3 {
+      max-width: 80%;
+      text-align: center;
+      font-weight: 300;
+      letter-spacing: 0.03em;
+      margin: 0;
+      color: #ffffff;
+      line-height: 1.5;
+
+      @include media-breakpoint('lt-md') {
+        font-size: 14px;
+      }
+    }
+
+    h4 {
+      padding-top: 10px;
+      max-width: 80%;
+      text-align: center;
+      font-weight: 300;
+      font-size: 12px;
+      margin: 0;
+      color: rgba(#ffffff, 0.8);
+    }
+  }
+
+  .noc-left-drawer {
+    @include deep-height(100%);
+    @include deep-width(300px);
+    background-color: #FFF;
+    border-right: #BBB solid 1px;
+    @include mat-elevation(4);
+  }
+
+  .noc-right-drawer {
+    @include deep-height(100%);
+    background-color: #FFF;
+    border-left: #BBB solid 1px;
+  }
 
   .mat-drawer-content {
     width: 100%;
@@ -100,15 +93,22 @@ $rotate-relation: 155deg;
 
   .noc-create {
     padding: 8px;
+
+    button {
+      color: map-get($accent, default);
+      width: 250px;
+      font-weight: 500;
+      @include mat-elevation(4);
+    }
   }
 
-  .noc-summary-bar {
+  .noc-summary-filter-bar {
     position: -webkit-sticky;
     position: sticky;
     top: 0;
     margin-bottom: 4px;
     padding: 0 10px;
-    @include deep-height(40px);
+    @include deep-height(30px);
     //  min-height: 40px; //min-height: 35px;
     background-color: #FFF;
     font-size: 16px;
@@ -117,38 +117,30 @@ $rotate-relation: 155deg;
 
     @include mat-elevation(2);
 
-    &.noc-expanded {
-      @include deep-height(150px);
-    }
+    mat-chip-list {}
 
     mat-chip {
-      font-size: 14px;
+      margin-right: 8px;
       font-weight: normal;
-      @include deep-height(30px);
-    }
+      font-size: 10px;
+      @include deep-height(25px);
 
-    .noc-summary-bar-section {
-      .noc-section-label {
-        font-size: 12px;
-        color: #555;
+      &.noc-filter-chip {
+        font-size: 10px;
+        @include noc-chip-color(#bbc9cc);
+
+        .noc-filter-number {
+          font-weight: bold;
+          color: map-get($primary, default);
+        }
       }
-    }
 
-    .noc-title {
-      strong {
-        font-size: 12px;
+      &.noc-clearall-chip {
+        @include noc-chip-color(#da7f7f);
+        font-size: 10px;
       }
-    }
-
-    .noc-title-truncate {
-      max-width: 200px
-    }
-
-    mat-icon-button {
-      border-radius: 0 !important;
     }
   }
-
 
   .noc-table-container {
     min-height: 500px;
@@ -156,102 +148,23 @@ $rotate-relation: 155deg;
 
   .noc-sidemenu {
     padding: 0;
-    margin-right: 5px;
     @include deep-height(100%);
     @include deep-width(60px);
-    @include mat-elevation(2);
+    // @include mat-elevation(2);
     border-right: #999 solid 1px;
 
     button {
       @include deep-width(60px);
       @include deep-height(60px);
 
-      mat-icon {
-        @include noc-icon-size(28px);
-      }
+      font-size: 20px;
+      color: rgba(map-get($primary, default), 0.5);
 
       &.noc-active {
-        mat-icon {
-          color: $noc-primary-color-light;
-        }
+        font-size: 28px;
+        color: map-get($primary, default)
       }
     }
   }
 
-  .noc-cam-table-heading {
-    @include deep-height(40px);
-    background-color: #FFF;
-    // @include mat-elevation(2);
-    border-bottom: #EEE solid 1px;
-  }
-
-  .noc-form-container {
-    background-color: #EEE;
-    padding: 20px 10px;
-  }
-
-  .noc-toolbar {
-    padding: 0px 20px;
-    height: 40px;
-    width: 100%;
-    background-color: #F2F2F2;
-    border-bottom: #BBB solid 1px;
-
-    .noc-title {
-      line-height: 38px;
-      color: #555;
-      font-size: 14px;
-      font-weight: bold;
-    }
-  }
-
-  .cams-table {
-    width: 100%;
-    @include deep-height(100%);
-    padding-bottom: 300px;
-    // position: relative;
-    //  flex: 1 1 auto;
-    //    border-bottom: 1px solid rgba(0, 0, 0, .12);
-    //  overflow: auto;
-
-    .noc-cams-table-header {
-      padding: 0;
-      margin-bottom: 5px;
-      @include deep-height(50px);
-      position: sticky;
-      position: -webkit-sticky;
-      top: 0;
-      z-index: 1000;
-      background-color: #FFF;
-      @include mat-elevation(1);
-      //  background-color: $noc-primary-color-light;
-      // font-size: 3px !important;
-    }
-
-    .cam {
-      position: relative;
-      cursor: pointer;
-      min-height: 40px;
-      font-size: 12px;
-    }
-
-    .mat-cell {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-    }
-
-    .mat-column-id {
-      flex: 0 1 84px;
-    }
-
-    .mat-column-buttons {
-      flex: 0 1 80px;
-    }
-
-    /* .mat-header-cell {
-      display:flex;
-      justify-content:flex-end;
-     } */
-  }
 }

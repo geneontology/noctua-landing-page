@@ -18,9 +18,6 @@ export class SearchContributorsComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
   searchForm: FormGroup;
   groupsForm: FormGroup;
-  searchFormData: any = []
-  // groups: any[] = [];
-  // contributors: any[] = [];
 
   private unsubscribeAll: Subject<any>;
 
@@ -30,7 +27,7 @@ export class SearchContributorsComponent implements OnInit, OnDestroy {
     private formBuilder: FormBuilder,
     public noctuaFormConfigService: NoctuaFormConfigService, ) {
     // this.contributors = this.noctuaSearchService.contributors;
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
     this.unsubscribeAll = new Subject();
 
     this.groupsForm = this.formBuilder.group({
@@ -40,20 +37,17 @@ export class SearchContributorsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
 
-
-    //this.searchForm = this.createSearchForm();
   }
 
   selectContributor(contributor) {
     this.searchCriteria.contributor = contributor;
-    this.noctuaSearchService.search(this.searchCriteria)
+    this.noctuaSearchService.search(this.searchCriteria);
   }
 
 
   search() {
     let searchCriteria = this.searchForm.value;
 
-    console.dir(searchCriteria)
     this.noctuaSearchService.search(searchCriteria);
   }
 

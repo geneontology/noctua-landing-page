@@ -42,6 +42,22 @@ $accent: map-get($theme, accent);
       }
     }
 
+    .noc-apps-button {
+      margin-right: 12px;
+      //background-color: #aaeaf6;
+      border-radius: 0 !important;
+      @include deep-height(50px);
+      @include deep-width(50px);
+      line-height: 55px;
+      color: map-get($primary, default);
+
+      mat-icon {
+        @include noc-icon-size(30px);
+      }
+
+    }
+
+
     .noc-cam-title {
       max-width: 400px !important;
     }
@@ -75,6 +91,7 @@ $accent: map-get($theme, accent);
   }
 
 
+
   //  @include mat-elevation(1);
   .noc-title {
     padding: 0 10px;
@@ -95,7 +112,6 @@ $accent: map-get($theme, accent);
       font-size: 12px;
     }
   }
-
 
   .noc-name-button {
     @include deep-height(40px);
@@ -148,7 +164,14 @@ $accent: map-get($theme, accent);
     }
   }
 
+  .noc-create {
+    padding: 0 12px;
+  }
 
+  .noc-login-button {
+    background-color: #52a16c;
+    color: #ffffff;
+  }
 
   .noc-create-button {
     background-color: rgba(map-get($primary, default), 0.7) !important;

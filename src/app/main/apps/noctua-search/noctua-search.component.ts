@@ -1,22 +1,21 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MatDrawer } from '@angular/material';
+import { MatDrawer } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
 import { noctuaAnimations } from './../../../../@noctua/animations';
 import {
   Cam,
   Contributor,
   NoctuaUserService,
-  NoctuaFormConfigService,
-  NoctuaAnnotonFormService
+  NoctuaFormConfigService
 } from 'noctua-form-base';
 
 import { FormGroup } from '@angular/forms';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
-import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 import { takeUntil } from 'rxjs/operators';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
+import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 
 @Component({
   selector: 'noc-noctua-search',
@@ -39,7 +38,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
 
   searchResults = [];
   modelId = '';
-  baristaToken = '';
   searchCriteria: any = {};
   searchFormData: any = [];
   searchForm: FormGroup;
@@ -55,22 +53,21 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
 
   private _unsubscribeAll: Subject<any>;
 
-  constructor(private route: ActivatedRoute,
+  constructor(
+    private route: ActivatedRoute,
+    public noctuaFormConfigService: NoctuaFormConfigService,
+    public noctuaCommonMenuService: NoctuaCommonMenuService,
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaUserService: NoctuaUserService,
-    public noctuaSearchService: NoctuaSearchService,
-    private sparqlService: SparqlService,
+    public noctuaSearchService: NoctuaSearchService
   ) {
-
     this._unsubscribeAll = new Subject();
 
     this.route
       .queryParams
       .subscribe(params => {
-        this.baristaToken = params['barista_token'] || null;
-        this.noctuaUserService.baristaToken = this.baristaToken;
-        this.getUserInfo();
-        this.loadCams();
+        const baristaToken = params['barista_token'] || null;
+        this.noctuaUserService.getUser(baristaToken);
       });
 
     this.noctuaSearchService.onCamsPageChanged
@@ -83,73 +80,37 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
       });
   }
 
-  getUserInfo() {
-
-    this.noctuaUserService.getUser()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((response) => {
-        if (response && response.nickname) {
-          this.user = new Contributor();
-          this.user.name = response.nickname;
-          this.user.groups = response.groups;
-          // user.manager.use_groups([self.userInfo.selectedGroup.id]);
-          this.noctuaUserService.user = this.user;
-          this.noctuaUserService.onUserChanged.next(this.user);
-        }
-      });
-  }
-
   ngOnInit(): void {
     this.noctuaSearchMenuService.setLeftDrawer(this.leftDrawer);
     this.noctuaSearchMenuService.setRightDrawer(this.rightDrawer);
 
     this.rightDrawer.open();
 
-    this.sparqlService.getAllContributors()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((response: any) => {
-        this.noctuaSearchService.contributors = response;
-        this.noctuaSearchService.onContributorsChanged.next(response);
-        this.noctuaSearchService.updateSearch();
-      });
-
-    this.sparqlService.getAllGroups()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((response: any) => {
-        this.noctuaSearchService.groups = response;
-        this.noctuaSearchService.onGroupsChanged.next(response);
-      });
-
-    this.sparqlService.getAllOrganisms()
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((response: any) => {
-        this.noctuaSearchService.organisms = response;
-        this.noctuaSearchService.onOrganismsChanged.next(response);
+    this.noctuaUserService.onUserChanged.pipe(
+      takeUntil(this._unsubscribeAll))
+      .subscribe((user: Contributor) => {
+        this.noctuaFormConfigService.setupUrls();
+        this.noctuaFormConfigService.setUniversalUrls();
       });
 
     this.noctuaSearchService.onCamsChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(cams => {
         this.cams = cams;
-        this.loadCams();
       });
+  }
 
-    this.noctuaSearchService.onContributorsChanged
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(contributors => {
-        this.noctuaUserService.contributors = contributors;
-      });
-
-    this.noctuaSearchService.onGroupsChanged
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe(groups => {
-        this.noctuaUserService.groups = groups;
-      });
-
+  openLeftDrawer(panel) {
+    this.noctuaSearchMenuService.selectLeftPanel(panel);
+    this.noctuaSearchMenuService.openLeftDrawer();
   }
 
   toggleLeftDrawer(panel) {
     this.noctuaSearchMenuService.toggleLeftDrawer(panel);
+  }
+
+  createModel(type: 'graph-editor' | 'noctua-form') {
+    this.noctuaCommonMenuService.createModel(type);
   }
 
   search() {
@@ -157,24 +118,12 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this.noctuaSearchService.search(searchCriteria);
   }
 
-  loadCams() {
-    this.cams = this.sparqlService.cams;
-  }
-
-  toggleSummaryExpand() {
-    this.summary.expanded = !this.summary.expanded;
-  }
-
-  toggleExpand(cam) {
-    if (cam.expanded) {
-      cam.expanded = false;
-    } else {
-      cam.expanded = true;
-    }
-  }
-
   refresh() {
     this.noctuaSearchService.updateSearch();
+  }
+
+  reset() {
+    this.noctuaSearchService.clearSearchCriteria();
   }
 
   selectCam(cam) {
@@ -186,4 +135,3 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.complete();
   }
 }
-

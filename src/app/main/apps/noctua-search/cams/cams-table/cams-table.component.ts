@@ -1,37 +1,41 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { DataSource, CollectionViewer } from '@angular/cdk/collections';
-import { Observable, BehaviorSubject, Subject, Subscription } from 'rxjs';
-
+import { Subject } from 'rxjs';
 import { noctuaAnimations } from '@noctua/animations';
-
 import { takeUntil } from 'rxjs/internal/operators';
-
-
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
-import { SparqlService } from '@noctua.sparql/services/sparql/sparql.service';
 
 import {
-  NoctuaFormConfigService,
-  CamService
+  NoctuaFormConfigService, NoctuaUserService,
 } from 'noctua-form-base';
 
-import { Cam } from 'noctua-form-base';
-import { MatPaginator } from '@angular/material';
+import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
+import { PaginationInstance } from 'ngx-pagination';
+
+export function CustomPaginator() {
+  const customPaginatorIntl = new MatPaginatorIntl();
+
+  customPaginatorIntl.itemsPerPageLabel = 'GO CAMs per page:';
+
+  return customPaginatorIntl;
+}
 
 @Component({
   selector: 'noc-cams-table',
   templateUrl: './cams-table.component.html',
   styleUrls: ['./cams-table.component.scss'],
-  animations: noctuaAnimations
+  animations: noctuaAnimations,
+  providers: [
+    { provide: MatPaginatorIntl, useValue: CustomPaginator() }
+  ]
 })
 export class CamsTableComponent implements OnInit, OnDestroy {
   private _unsubscribeAll: Subject<any>;
 
-  @ViewChild(MatPaginator, { static: true })
-  paginator: MatPaginator;
+  //@ViewChild(MatPaginator, { static: true })
+  // paginator: MatPaginator;
 
   displayedColumns = [
     'title',
@@ -55,18 +59,12 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   constructor(
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
-    public noctuaSearchService: NoctuaSearchService,
-    public sparqlService: SparqlService) {
-
+    public noctuaUserService: NoctuaUserService,
+    public noctuaSearchService: NoctuaSearchService) {
     this._unsubscribeAll = new Subject();
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
-
   }
 
   ngOnInit(): void {
-
-    console.log('pp')
-
     this.noctuaSearchService.onCamsChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(cams => {
@@ -92,15 +90,39 @@ export class CamsTableComponent implements OnInit, OnDestroy {
 
   search() {
     const searchCriteria = this.searchForm.value;
-    console.dir(searchCriteria);
     this.noctuaSearchService.search(searchCriteria);
   }
 
+  getStateClass(stateLabel) {
+    return {
+      'noc-development': stateLabel === 'development',
+      'noc-production': stateLabel === 'production',
+      'noc-review': stateLabel === 'review'
+    }
+  }
 
+  setPage($event) {
+    console.log($event)
+    if (this.camPage) {
+      let pageIndex = $event.pageIndex;
+      if (this.noctuaSearchService.searchCriteria.camPage.size > $event.pageSize) {
+        pageIndex = 0;
+      }
+      this.noctuaSearchService.getPage(pageIndex, $event.pageSize);
+    }
+  }
+  refresh() {
+    this.noctuaSearchService.updateSearch();
+  }
+
+  reset() {
+    this.noctuaSearchService.clearSearchCriteria();
+  }
 
   ngOnDestroy(): void {
     this._unsubscribeAll.next();
     this._unsubscribeAll.complete();
   }
+
 }
 

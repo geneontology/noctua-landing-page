@@ -1,11 +1,14 @@
 import { environment } from './../../environments/environment';
 import { Injectable } from '@angular/core';
-import { MatDrawer } from '@angular/material';
+import { MatDrawer } from '@angular/material/sidenav';
+import { NoctuaGraphService } from 'noctua-form-base';
+import { HttpParams } from '@angular/common/http';
 
 @Injectable({
     providedIn: 'root'
 })
 export class NoctuaSearchMenuService {
+    private _newModelBbopManager = this._noctuaGraphService.registerManager();;
     leftPanel = {
         search: {
             id: 1
@@ -17,7 +20,7 @@ export class NoctuaSearchMenuService {
             id: 4
         }, contributor: {
             id: 5
-        }, species: {
+        }, organism: {
             id: 6
         },
         history: {
@@ -26,19 +29,14 @@ export class NoctuaSearchMenuService {
     };
 
     selectedLeftPanel;
-    baristaApi = environment.globalBaristaLocation;
-
 
     private leftDrawer: MatDrawer;
     private rightDrawer: MatDrawer;
 
-    constructor() {
-
-        this.selectedLeftPanel = this.leftPanel.search;
-
+    constructor(private _noctuaGraphService: NoctuaGraphService) {
+        const self = this;
+        this.selectedLeftPanel = this.leftPanel.filter;
     }
-
-
 
     selectLeftPanel(panel) {
         this.selectedLeftPanel = panel;
@@ -60,7 +58,7 @@ export class NoctuaSearchMenuService {
         if (this.selectedLeftPanel.id === panel.id) {
             this.leftDrawer.toggle();
         } else {
-            this.selectLeftPanel(panel)
+            this.selectLeftPanel(panel);
             return this.openLeftDrawer();
         }
     }

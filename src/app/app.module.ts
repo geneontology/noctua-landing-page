@@ -4,8 +4,7 @@ import { HttpClientModule, HttpClientJsonpModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { ContextMenuModule } from 'ngx-contextmenu';
-import 'hammerjs';
-import { MatSidenavModule } from '@angular/material';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { NoctuaModule } from '@noctua/noctua.module';
 import { NoctuaProgressBarModule } from '@noctua/components';
 
@@ -15,6 +14,14 @@ import { AppComponent } from './app.component';
 import { LayoutModule } from 'app/layout/layout.module';
 import { PagesModule } from './main/pages/pages.module';
 import { AppsModule } from './main/apps/apps.module';
+import {
+    faSitemap,
+    faPaw, faUser,
+    faUsers, faListAlt,
+    faClock, faCalendarDay, faCalendarWeek, faHistory, faSearch, faTasks, faPlus
+} from '@fortawesome/free-solid-svg-icons';
+import { faGithub, faFacebook, faTwitter } from '@fortawesome/free-brands-svg-icons';
+import { FaIconLibrary } from '@fortawesome/angular-fontawesome';
 
 const appRoutes: Routes = [
     {
@@ -52,4 +59,23 @@ const appRoutes: Routes = [
     ]
 })
 export class AppModule {
+    constructor(private library: FaIconLibrary) {
+        library.addIcons(
+            faCalendarDay,
+            faCalendarWeek,
+            faClock,
+            faFacebook,
+            faGithub,
+            faHistory,
+            faListAlt,
+            faPaw,
+            faPlus,
+            faSearch,
+            faSitemap,
+            faTasks,
+            faTwitter,
+            faUser,
+            faUsers,
+        );
+    }
 }
