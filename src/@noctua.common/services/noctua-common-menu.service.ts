@@ -24,11 +24,13 @@ export class NoctuaCommonMenuService {
     _newModelBbopManager.add_model().then((resp) => {
       const modelId = resp.data().id;
       let params = new HttpParams();
-      params = params.append('model_id', modelId);
       params = params.append('barista_token', _newModelBbopManager.user_token());
+
+      const graphEditorUrl = environment.noctuaUrl + '/editor/graph/' + modelId + '?' + params.toString();
+
+      params = params.append('model_id', modelId);
       const paramsString = params.toString();
 
-      const graphEditorUrl = environment.noctuaUrl + '/editor/graph/' + modelId + '?' + paramsString;
       const noctuaFormUrl = environment.workbenchUrl + 'noctua-form?' + paramsString;
 
       if (type === 'graph-editor') {
