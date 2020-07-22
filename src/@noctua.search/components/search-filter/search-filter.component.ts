@@ -95,6 +95,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
 
   createAnswerForm() {
     return new FormGroup({
+      ids: new FormControl(),
       gps: new FormControl(),
       terms: new FormControl(),
       pmids: new FormControl(),

@@ -5,6 +5,7 @@ import { CamPage } from './cam-page';
 export class SearchCriteria {
     camPage: CamPage = new CamPage();
     titles: any[] = [];
+    ids: any[] = [];
     gps: any[] = [];
     terms: any[] = [];
     pmids: any[] = [];
@@ -25,6 +26,7 @@ export class SearchCriteria {
             this.groups = searchCriteria.groups || [];
             this.pmids = searchCriteria.pmids || [];
             this.terms = searchCriteria.terms || [];
+            this.ids = searchCriteria.ids || [];
             this.gps = searchCriteria.gps || [];
             this.organisms = searchCriteria.organisms || [];
             this.states = searchCriteria.states || [];
@@ -38,6 +40,7 @@ export class SearchCriteria {
         const self = this;
 
         self.filtersCount = self.titles.length +
+            self.ids.length +
             self.gps.length +
             self.terms.length +
             self.pmids.length +
@@ -70,6 +73,10 @@ export class SearchCriteria {
 
         each(self.contributors, (contributor: Contributor) => {
             query.push(`contributor=${contributor.orcid}`);
+        });
+
+        each(self.ids, (id) => {
+            query.push(`id=${id}`);
         });
 
         each(self.gps, (gp) => {
@@ -124,6 +131,10 @@ export class SearchCriteria {
 
         each(self.contributors, (contributor: Contributor) => {
             query.push(`contributor=${encodeURIComponent(contributor.orcid)}`);
+        });
+
+        each(self.ids, (id) => {
+            query.push(`id=${encodeURIComponent(id)}`);
         });
 
         each(self.gps, (gp) => {

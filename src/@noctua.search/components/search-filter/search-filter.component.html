@@ -318,6 +318,26 @@
       <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
         <div class="noc-annoton-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
+            <mat-label>Filter by Model Ids</mat-label>
+            <mat-chip-list #idChipList>
+              <mat-chip class="noc-form-chip" *ngFor="let id of noctuaSearchService.searchCriteria.ids"
+                [selectable]="true" [removable]="true" (removed)="remove(id, noctuaSearchService.filterType.ids)"
+                fxLayout="row" fxLayoutAlign="start center" matTooltip="Keyword: {{id}}" [matTooltipPosition]="'below'"
+                [matTooltipShowDelay]="1000">
+                <div fxFlex="" class="noc-chip-label">
+                  {{id}}
+                </div>
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input #searchInput formControlName="ids" placeholder="Add Model Id Filter" #idInput
+                [matChipInputFor]="idChipList" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                [matChipInputAddOnBlur]="false"
+                (matChipInputTokenEnd)="add($event, noctuaSearchService.filterType.ids)">
+            </mat-chip-list>
+          </mat-form-field>
+        </div>
+        <div class="noc-annoton-group-row" fxLayout="column">
+          <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Title</mat-label>
             <mat-chip-list #titleChipList>
               <mat-chip class="noc-form-chip" *ngFor="let title of noctuaSearchService.searchCriteria.titles"
