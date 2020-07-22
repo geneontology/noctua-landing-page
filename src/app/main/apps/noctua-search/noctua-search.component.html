@@ -79,6 +79,12 @@
           class="noc-clearall-chip">
           Clear All
         </mat-chip>
+        <mat-chip *ngIf="noctuaSearchService.searchCriteria.ids.length>0" class="noc-filter-chip"
+          (click)="openLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" [removable]="true"
+          (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.ids)">
+          Model IDs: <span> ({{ noctuaSearchService.searchCriteria.ids.length}})</span>
+          <mat-icon matChipRemove>cancel</mat-icon>
+        </mat-chip>
         <mat-chip *ngIf="noctuaSearchService.searchCriteria.gps.length>0" class="noc-filter-chip"
           (click)="openLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" [removable]="true"
           (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.gps)">
