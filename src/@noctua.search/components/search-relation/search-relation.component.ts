@@ -27,13 +27,12 @@ export class SearchRelationComponent implements OnInit, OnDestroy {
   constructor(public noctuaUserService: NoctuaUserService,
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
-    private noctuaLookupService: NoctuaLookupService,
     private noctuaSearchService: NoctuaSearchService) {
     this.searchForm = this.createAnswerForm();
 
     this.unsubscribeAll = new Subject();
 
-    this.searchFormData = this.noctuaFormConfigService.createSearchFormData();
+
     this.onValueChanges();
   }
 
@@ -54,30 +53,21 @@ export class SearchRelationComponent implements OnInit, OnDestroy {
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
-      let searchData = self.searchFormData['subject'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['subject'].searchResults = response;
-      });
+
     });
 
     this.searchForm.get('object').valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
-      let searchData = self.searchFormData['object'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['object'].searchResults = response;
-      });
+
     });
 
     this.searchForm.get('predicate').valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
-      let searchData = self.searchFormData['predicate'];
-      this.noctuaLookupService.golrTermLookup(data, searchData.id).subscribe(response => {
-        self.searchFormData['predicate'].searchResults = response;
-      });
+
     });
   }
 

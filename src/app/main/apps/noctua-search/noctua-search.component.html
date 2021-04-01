@@ -1,153 +1,144 @@
 <div class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start">
+
   <div class="noc-sidemenu" fxLayout="column" fxLayoutAlign="start center">
-    <button mat-icon-button color="primary" class="noc-rounded-button"
-      (click)="toggleLeftDrawer(noctuaSearchMenuService.leftPanel.filter)" matTooltip="Filter"
-      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
-      <mat-icon> search </mat-icon>
+    <button mat-icon-button color="" class="noc-rounded-button"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel === LeftPanel.filter}"
+      (click)="toggleLeftDrawer(LeftPanel.filter)" matTooltip="Filter" [matTooltipPosition]="'after'"
+      [matTooltipShowDelay]="1500">
+      <fa-icon [icon]="['fas', 'search']"></fa-icon>
     </button>
-    <button mat-icon-button color="primary" class="noc-rounded-button" (click)="
-      toggleLeftDrawer(noctuaSearchMenuService.leftPanel.group)" matTooltip="Browse by group"
-      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
-      <mat-icon> people_outline </mat-icon>
-    </button>
-    <button mat-icon-button color="primary" class="noc-rounded-button" (click)="
-      toggleLeftDrawer(noctuaSearchMenuService.leftPanel.contributor)" matTooltip="Browse by contributor"
-      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
-      <mat-icon>person_outline</mat-icon>
-    </button>
-    <button mat-icon-button color="primary" class="noc-rounded-button" (click)="
-      toggleLeftDrawer(noctuaSearchMenuService.leftPanel.species)" matTooltip="Search by species"
-      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
-      <mat-icon> pets </mat-icon>
-    </button>
-    <!-- <button mat-icon-button color="primary" class="noc-rounded-button"
-      (click)="toggleLeftDrawer(noctuaSearchMenuService.leftPanel.relation)" matTooltip="Relation Search"
-      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+    <!--  <button mat-icon-button color="" class="noc-rounded-button" (click)="toggleLeftDrawer(LeftPanel.relation)"
+      matTooltip="Relation Search" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
       <mat-icon class="icon-rotate-relation"> linear_scale </mat-icon>
     </button> -->
-    <button mat-icon-button color="primary" class="noc-rounded-button"
-      (click)="toggleLeftDrawer(noctuaSearchMenuService.leftPanel.history)" matTooltip="History"
+    <button mat-icon-button color="" class="noc-rounded-button" (click)="
+      toggleLeftDrawer(LeftPanel.contributor)" matTooltip="Browse by contributor"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel === LeftPanel.contributor}"
+      [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
+      <fa-icon [icon]="['fas', 'user']"></fa-icon>
+    </button>
+    <button mat-icon-button color="" class="noc-rounded-button" (click)="
+      toggleLeftDrawer(LeftPanel.group)"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel === LeftPanel.group}"
+      matTooltip="Browse by group" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
+      <fa-icon [icon]="['fas', 'users']"></fa-icon>
+    </button>
+    <button mat-icon-button color="" class="noc-rounded-button" (click)="
+      toggleLeftDrawer(LeftPanel.organism)"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel === LeftPanel.organism}"
+      matTooltip="Search by organism" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1000">
+      <fa-icon [icon]="['fas', 'paw']"></fa-icon>
+    </button>
+    <button mat-icon-button color="" class="noc-rounded-button" (click)="toggleLeftDrawer(LeftPanel.history)"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel === LeftPanel.history}" matTooltip="History"
       [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
-      <mat-icon> history </mat-icon>
+      <fa-icon [icon]="['fas', 'history']"></fa-icon>
+    </button>
+    <button mat-icon-button color="" class="noc-rounded-button" (click)="openBasketPanel()"
+      [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel === LeftPanel.artBasket}"
+      matTooltip="Art Basket" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+      <div *ngIf="artBasket?.cams.length > 0" class="noc-badge">
+        {{artBasket?.cams.length}}
+      </div>
+      <fa-icon [icon]="['fas', 'shopping-basket']"></fa-icon>
     </button>
   </div>
-  <mat-drawer-container class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start" autosize>
+  <mat-drawer-container class="h-100-p" fxFlex="" fxLayout="row" fxLayoutAlign="start start" [hasBackdrop]="false"
+    autosize>
     <mat-drawer #leftDrawer class="noc-left-drawer" mode="side" position="start" opened>
-      <div class="noc-create" fxLayout="column" fxLayoutAlign="start center">
-        <div class="" fxLayout="row" fxLayoutAlign="center center">
-          <button mat-flat-button (click)="openAnnotonForm(AnnotonType.default)" color="primary"
-            class="noc-rounded-button noc-half-button noc-sm noc-r">
-            <mat-icon class=""> add </mat-icon> Create New Model
-          </button>
-          <button mat-flat-button fxFlex="35px" [matMenuTriggerFor]="createOptions" color="primary"
-            class="noc-rounded-button noc-half-button noc-sm noc-l mr-8 p-0">
-            <mat-icon class="">arrow_drop_down </mat-icon>
-          </button>
-          <mat-menu #createOptions="matMenu" xPosition="before">
-            <a mat-menu-item>
-              Noctua Form
-            </a>
-            <a mat-menu-item>
-              Graph Editor
-            </a>
-          </mat-menu>
-        </div>
-      </div>
-      <div [ngSwitch]="noctuaSearchMenuService.selectedLeftPanel?.id" class="h-100-p">
-        <noc-search-form *ngSwitchCase="noctuaSearchMenuService.leftPanel.search.id"></noc-search-form>
-        <noc-search-filter *ngSwitchCase="noctuaSearchMenuService.leftPanel.filter.id"></noc-search-filter>
-        <noc-search-relation *ngSwitchCase="noctuaSearchMenuService.leftPanel.relation.id"></noc-search-relation>
-        <noc-search-groups *ngSwitchCase="noctuaSearchMenuService.leftPanel.group.id"></noc-search-groups>
-        <noc-search-contributors *ngSwitchCase="noctuaSearchMenuService.leftPanel.contributor.id">
+      <div [ngSwitch]="noctuaSearchMenuService.selectedLeftPanel" class="h-100-p">
+        <noc-search-filter *ngSwitchCase="LeftPanel.filter"></noc-search-filter>
+        <noc-search-relation *ngSwitchCase="LeftPanel.relation"></noc-search-relation>
+        <noc-search-groups *ngSwitchCase="LeftPanel.group"></noc-search-groups>
+        <noc-search-contributors *ngSwitchCase="LeftPanel.contributor">
         </noc-search-contributors>
-        <noc-search-organisms *ngSwitchCase="noctuaSearchMenuService.leftPanel.species.id"></noc-search-organisms>
-        <noc-search-history *ngSwitchCase="noctuaSearchMenuService.leftPanel.history.id"></noc-search-history>
+        <noc-search-organisms *ngSwitchCase="LeftPanel.organism"></noc-search-organisms>
+        <noc-search-history *ngSwitchCase="LeftPanel.history"></noc-search-history>
+        <noc-art-basket [hidden]="noctuaSearchMenuService.selectedLeftPanel !== LeftPanel.artBasket"></noc-art-basket>
       </div>
     </mat-drawer>
-    <mat-drawer-content class="noc-section-body w-100-p h-100-p" noctuaPerfectScrollbar>
+    <mat-drawer-content #scrollbarRef id="noc-results" class="noc-section-body w-100-p" class="w-100-p"
+      [perfectScrollbar]="config">
+
       <div class="header accent p-8 w-100-p" fxLayout="column" fxLayoutAlign="center center">
-        <mat-icon class="hero-icon">school</mat-icon>
         <h1 [@animate]="{value:'*',params:{delay:'100ms', y:'25px'}}">
           WELCOME TO NOCTUA
         </h1>
         <h3 [@animate]="{value:'*',params:{delay:'100ms', y:'25px'}}">
           Noctua is a web-based, collaborative Gene Ontology (GO) annotation tool developed by the GO Consortium.
           It can be used to create standard GO annotations as well as more expressive models of biological processes,
-          known as GO-CAMs (Gene Ontology Causal Activity Models). There are two types of user interface available in
-          Noctua: 1)
-          a form interface and 2) a graph interface.
-        </h3> You must Login to create or edit models. Models may be viewed without login.
-      </div>
-      <div class="noc-summary-bar" [ngClass]="{'noc-expanded': summary.expanded}" fxLayout="column"
-        fxLayoutAlign="start stretch">
-        <div class="noc-cams-table-header w-100-p" fxLayout="row" fxLayoutAlign="start center">
-          <mat-chip class="mr-12" (click)="refresh()">
-            <mat-icon>list</mat-icon>
-            <small>Results: </small> ({{camPage?.total}})
-            <button mat-icon-button (click)="refresh()" class="">
-              <mat-icon class="">
-                refresh
-              </mat-icon>
-            </button>
-          </mat-chip>
-          <small class="mr-12">Filtered By: </small>
-          <mat-chip-list>
-            <mat-chip *ngIf="noctuaSearchService.searchCriteria.gps.length>0"
-              (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.gps)">
-              <small>GPs: </small> ({{ noctuaSearchService.searchCriteria.gps.length}})
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <mat-chip *ngIf="noctuaSearchService.searchCriteria.goterms.length>0"
-              (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.goterms)">
-              <small>GO Terms: </small> ({{ noctuaSearchService.searchCriteria.goterms.length}})
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <mat-chip *ngIf="noctuaSearchService.searchCriteria.contributors.length>0"
-              (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.contributors)">
-              <small>Contributors: </small> ({{ noctuaSearchService.searchCriteria.contributors.length}})
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <mat-chip *ngIf="noctuaSearchService.searchCriteria.groups.length>0"
-              (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.groups)">
-              <small>Groups: </small> ({{ noctuaSearchService.searchCriteria.groups.length}})
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <mat-chip *ngIf="noctuaSearchService.searchCriteria.organisms.length>0"
-              (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.organisms)">
-              <small>Species: </small> ({{ noctuaSearchService.searchCriteria.organisms.length}})
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <mat-chip *ngIf="noctuaSearchService.searchCriteria.pmids.length>0"
-              (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.pmids)">
-              <small>PMIDs: </small> ({{ noctuaSearchService.searchCriteria.pmids.length}})
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <mat-chip *ngIf="noctuaSearchService.searchCriteria.states.length>0"
-              (click)="toggleLeftDrawer(noctuaSearchService.leftPanel.filter)" [removable]="true"
-              (removed)="noctuaSearchService.removeFilterType(noctuaSearchService.filterType.states)">
-              <small>Model State: </small> ({{ noctuaSearchService.searchCriteria.states.length}})
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-          </mat-chip-list>
-          <span fxFlex=""></span>
+          known as GO-CAMs (Gene Ontology Causal Activity Models)
+        </h3>
+
+        <h4 *ngIf="!noctuaUserService.user" class="">
+          You must
+          <a mat-button href="{{noctuaFormConfigService.loginUrl}}" class="noc-login-button">
+            Login
+          </a>
+          to create or edit models. Models may be viewed without login.
+        </h4>
+        <div *ngIf="noctuaUserService.user" class="noc-create" fxLayout="row" fxLayoutAlign="start center">
+          <button mat-raised-button (click)="createModel('noctua-form')" color=""
+            class="noc-rounded-button mr-4 noc-half-button noc-r">
+            CREATE MODEL IN FORM
+          </button>
+          <button mat-raised-button (click)="createModel('graph-editor')" color=""
+            class="noc-rounded-button mr-4 noc-half-button noc-m">
+            CREATE MODEL IN GRAPH EDITOR
+          </button>
+          <button mat-raised-button (click)="toggleReviewMode()" color=""
+            class="noc-rounded-button noc-half-button noc-l noc-review-mode-button"
+            [ngClass]="{'noc-selected': noctuaSearchMenuService.reviewMode !== ReviewMode.off}" fxLayout="row"
+            fxLayoutAlign="start center">
+            <div class="noc-title">
+              ANNOTATION REVIEW
+            </div>
+          </button>
         </div>
       </div>
-      <div class="noc-table-container w-100-p">
-        <noc-cams-table></noc-cams-table>
+      <div *ngIf="noctuaSearchMenuService.reviewMode !== ReviewMode.off" class="noc-art-info" fxLayout="row"
+        fxLayoutAlign="center center">
+        <div class="noc-art-tabs" fxLayout="row" fxLayoutAlign="center center">
+          <div class="noc-line noc-visited" fxFlex>
+          </div>
+          <button mat-stroked-button (click)="selectMiddlePanel(MiddlePanel.cams)" matBadge="{{artBasket?.cams.length}}"
+            matBadgePosition="after" matBadgeColor="warn" class="" color="" [ngClass]="{'noc-active': noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.cams,
+            'noc-visited': noctuaSearchMenuService.reviewLevel>0}">
+            <div class="noc-title">Search</div><br>
+            <div class="noc-description">Add/remove to review</div>
+          </button>
+          <div class="noc-line" fxFlex="80px" [ngClass]="{'noc-visited': noctuaSearchMenuService.reviewLevel>0}">
+          </div>
+          <button mat-stroked-button (click)="selectMiddlePanel(MiddlePanel.camsReview)" [ngClass]="{'noc-active': noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.camsReview,
+            'noc-visited': noctuaSearchMenuService.reviewLevel>1}" class="" color="">
+            <div class="noc-title">Review</div> <br>
+            <div class="noc-description">Edit models</div>
+          </button>
+          <div class="noc-line" fxFlex="80px" [ngClass]="{'noc-visited': noctuaSearchMenuService.reviewLevel>1}">
+          </div>
+          <button mat-stroked-button (click)="selectMiddlePanel(MiddlePanel.reviewChanges)" class="" color="" [ngClass]="{'noc-active': noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.reviewChanges,
+            'noc-visited': noctuaSearchMenuService.reviewLevel>2}">
+            <div class="noc-title">Checkout</div> <br>
+            <div class="noc-description">Review and submit changes</div>
+          </button>
+          <div class="noc-line" fxFlex [ngClass]="{'noc-visited': noctuaSearchMenuService.reviewLevel>2}">
+          </div>
+        </div>
+      </div>
+      <div class="noc-middle-panel w-100-p">
+        <noc-cams-table class="w-100-p" [hidden]="noctuaSearchMenuService.selectedMiddlePanel !== MiddlePanel.cams"
+          [isReviewMode]="noctuaSearchMenuService.isReviewMode">
+        </noc-cams-table>
+        <noc-cams-review [hidden]="noctuaSearchMenuService.selectedMiddlePanel !== MiddlePanel.camsReview">
+        </noc-cams-review>
+        <noc-cams-review-changes [hidden]="noctuaSearchMenuService.selectedMiddlePanel !== MiddlePanel.reviewChanges">
+        </noc-cams-review-changes>
       </div>
       <div class="w-100-p">
         <app-footer></app-footer>
       </div>
     </mat-drawer-content>
-    <mat-drawer #rightDrawer class="noc-right-drawer" noctuaPerfectScrollbar mode="side" position="end">
-      <div [ngSwitch]="noctuaSearchMenuService.selectedRightPanel?.id" class="h-100-p">
-      </div>
+    <mat-drawer #rightDrawer class="noc-right-drawer" mode="over" position="end">
     </mat-drawer>
   </mat-drawer-container>
 </div>

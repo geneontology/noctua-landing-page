@@ -11,6 +11,12 @@ import { SearchFormComponent } from './components/search-form/search-form.compon
 import { SearchFilterComponent } from './components/search-filter/search-filter.component';
 import { SearchRelationComponent } from './components/search-relation/search-relation.component';
 import { SearchHistoryComponent } from './components/search-history/search-history.component';
+import { NoctuaEditorModule } from '@noctua.editor';
+import { ArtBasketComponent } from './components/art-basket/art-basket.component';
+import { ReviewFormComponent } from './components/review-form/review-form.component';
+import { CamsReplaceConfirmDialogComponent } from './components/dialogs/cams-replace-confirm/cams-replace-confirm.component';
+import { CamsReviewChangesDialogComponent } from './components/dialogs/cams-review-changes/cams-review-changes.component';
+import { CamsUnsavedDialogComponent } from './components/dialogs/cams-unsaved/cams-unsaved.component';
 
 @NgModule({
     declarations: [
@@ -20,14 +26,20 @@ import { SearchHistoryComponent } from './components/search-history/search-histo
         SearchGroupsComponent,
         SearchOrganismsComponent,
         SearchRelationComponent,
-        SearchHistoryComponent
+        SearchHistoryComponent,
+        ArtBasketComponent,
+        ReviewFormComponent,
+        CamsReplaceConfirmDialogComponent,
+        CamsReviewChangesDialogComponent,
+        CamsUnsavedDialogComponent,
     ],
     imports: [
         CommonModule,
         RouterModule,
         FormsModule,
         ReactiveFormsModule,
-        NoctuaSharedModule
+        NoctuaSharedModule,
+        NoctuaEditorModule
     ],
     exports: [
         SearchFilterComponent,
@@ -36,7 +48,12 @@ import { SearchHistoryComponent } from './components/search-history/search-histo
         SearchGroupsComponent,
         SearchOrganismsComponent,
         SearchRelationComponent,
-        SearchHistoryComponent
+        SearchHistoryComponent,
+        ArtBasketComponent,
+        ReviewFormComponent,
+        CamsReplaceConfirmDialogComponent,
+        CamsReviewChangesDialogComponent,
+        CamsUnsavedDialogComponent,
     ]
 })
 export class NoctuaSearchBaseModule {

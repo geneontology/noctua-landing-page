@@ -27,6 +27,11 @@ $accent: map-get($theme, accent);
     color: inherit;
     position: relative;
 
+    &.noc-beta {
+      background-color: #fad38a;
+    }
+
+
     mat-toolbar-row {
       @include deep-height(40px);
 
@@ -41,6 +46,61 @@ $accent: map-get($theme, accent);
         }
       }
     }
+
+    &.noc-beta {
+      background-color: #fad38a;
+    }
+
+    .noc-beta-logo {
+      @include deep-height(100%);
+      line-height: 20px;
+
+      .noc-title {
+        font-size: 20px;
+        font-weight: bold;
+
+        a {
+          text-decoration: none;
+          color: #555;
+        }
+      }
+
+      .noc-description {
+        font-size: 10px;
+        font-style: italic;
+      }
+    }
+
+    mat-toolbar-row {
+      @include deep-height(40px);
+
+      &.noc-subtoolbar {
+        button {
+          margin-right: 8px;
+          height: 30px;
+          line-height: 30px;
+          padding-left: 8px;
+          padding-right: 8px;
+          font-size: 12px;
+        }
+      }
+    }
+
+    .noc-apps-button {
+      margin-right: 12px;
+      //background-color: #aaeaf6;
+      border-radius: 0 !important;
+      @include deep-height(50px);
+      @include deep-width(50px);
+      line-height: 55px;
+      color: map-get($primary, default);
+
+      mat-icon {
+        @include noc-icon-size(30px);
+      }
+
+    }
+
 
     .noc-cam-title {
       max-width: 400px !important;
@@ -71,28 +131,6 @@ $accent: map-get($theme, accent);
       left: 0;
       right: 0;
       width: 100%;
-    }
-  }
-
-
-  //  @include mat-elevation(1);
-  .noc-title {
-    padding: 0 10px;
-    @include deep-height(50px);
-    //min-height: 35px;
-    background-color: #FFF;
-    font-size: 12px;
-
-    .noc-action-button {
-      padding: 0 5px;
-      @include deep-height(20px);
-      line-height: 20px;
-      font-size: 10px;
-      border-radius: 10px;
-    }
-
-    strong {
-      font-size: 12px;
     }
   }
 
@@ -148,7 +186,14 @@ $accent: map-get($theme, accent);
     }
   }
 
+  .noc-create {
+    padding: 0 12px;
+  }
 
+  .noc-login-button {
+    background-color: #52a16c;
+    color: #ffffff;
+  }
 
   .noc-create-button {
     background-color: rgba(map-get($primary, default), 0.7) !important;

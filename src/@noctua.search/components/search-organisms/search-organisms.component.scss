@@ -6,10 +6,15 @@
   background-color: white;
   @include mat-elevation(4);
 
+  .noc-drawer {
+    @include deep-width(300px);
+  }
+
   .noc-organism-row {
     padding: 8px 10px;
-    //min-height: 50px;
+    min-height: 50px;
     border-top: #CCC solid 1px;
+    @include mat-elevation(1);
     font-size: 12px;
 
     .noc-name {

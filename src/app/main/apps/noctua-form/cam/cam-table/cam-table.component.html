@@ -1,0 +1,102 @@
+<div class="w-100-p p-0 noc-cam-table">
+  <div class="noc-summary-bar" fxLayout="row" fxLayoutAlign="start center">
+    <span class='noc-title mr-12'>
+      <span *ngIf="!cam.loading?.status">
+        ACTIVITIES
+      </span>
+      <span *ngIf="cam.loading?.status" class="noc-cam-progress-message">
+        {{cam.loading?.message}}
+      </span>
+      <span *ngIf="cam.rebuildRule?.signal !== CamRebuildSignal.NONE" class="noc-cam-rebuild">
+        {{cam.rebuildRule?.message}}
+        <button mat-button (click)="reload(cam)" class="" color="primary">
+          Reload
+        </button>
+      </span>
+    </span>
+    <div *ngIf="cam.violations?.length>0" class="noc-error" fxLayout="row" fxLayoutAlign="start center">
+      <mat-chip class="noc-error-chip" fxLayout="row" fxLayoutAlign="start center" (click)="displayCamErrors()">
+        <div class="noc-icon">
+          <fa-icon [icon]="['fas', 'exclamation-triangle']"></fa-icon>
+        </div>
+        <div fxFlex="" class="noc-chip-label">
+          {{cam.violations?.length}} Errors Found
+        </div>
+      </mat-chip>
+    </div>
+    <span fxFlex></span>
+    <!-- <button mat-button class="" color="primary" (click)="resetModel(cam)">
+      Reset Me
+    </button>
+    <button mat-button class="" color="primary" (click)="storedModel(cam)">
+      Stored
+    </button> -->
+    <button mat-icon-button class="" fxFlex="40px" color="primary" [matMenuTriggerFor]="activityOptionMenu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #activityOptionMenu="matMenu" class="noc-dropdown-menu">
+      <button mat-menu-item class="" (click)="expandAll(true)">
+        Expand All
+      </button>
+      <button mat-menu-item class="" (click)="expandAll(false)">
+        Collapse All
+      </button>
+    </mat-menu>
+  </div>
+  <div class="w-100-p noc-cam-table-body">
+    <div *ngIf="cam?.loading.status" class="noc-loading-container" fxLayout="column" fxLayoutAlign="center center">
+      <mat-progress-spinner class="example-margin" [color]="loadingSpinner.color" [mode]="loadingSpinner.mode">
+      </mat-progress-spinner>
+      <h3>
+        {{cam?.loading.message}}
+      </h3>
+    </div>
+    <div *ngIf="options.treeTable" class="noctua-form-table noc-activity-header w-100-p" fxLayout="row"
+      fxLayoutAlign="start center">
+      <div *ngIf="!options.treeTable" class="noc-cell noc-relationship-cell">
+        Relationship
+      </div>
+      <div class="noc-cell noc-term-cell" fxFlex="">
+        Term
+      </div>
+      <div *ngIf="!options.treeTable" class="noc-cell noc-aspect-cell">
+        Asp
+      </div>
+      <div class="noc-cell noc-extension-cell">
+        Ext
+      </div>
+      <div class="noc-evidence-cell" fxLayout="row" fxLayoutAlign="start center">
+        <div class="noc-cell noc-evidence-code-cell" fxFlex="">
+          Evidence
+        </div>
+        <div class="noc-cell noc-reference-cell">
+          Reference
+        </div>
+        <div class="noc-cell noc-with-cell">
+          With
+        </div>
+        <div class="noc-cell noc-group-cell">
+          Assigned By
+        </div>
+        <div class="noc-cell noc-contributor-cell">
+          Contributor
+        </div>
+      </div>
+      <div class="noc-cell noc-action-cell">
+
+      </div>
+    </div>
+
+
+    <div *ngFor="let activity of cam.activities" [attr.id]="activity.displayId" class="w-100-p"
+      [ngClass]="{'noc-selected': activity.displayId===camsService.currentMatch?.activityDisplayId}">
+
+      <noc-activity-table *ngIf="!options.treeTable" [options]="options" [cam]="cam" [activity]="activity"
+        class="noc-activities-table-body" fxLayout="row" fxLayoutAlign="start center">
+      </noc-activity-table>
+      <noc-activity-tree *ngIf="options.treeTable" [options]="options" [cam]="cam" [activity]="activity" class=""
+        fxLayout="row" fxLayoutAlign="start center">
+      </noc-activity-tree>
+    </div>
+  </div>
+</div>
