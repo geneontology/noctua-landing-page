@@ -65,7 +65,7 @@ export class SearchCriteria {
         }
 
         each(self.titles, (title) => {
-            query.push(`title=*${title}*`);
+            query.push(`title=${title}`);
         });
 
         each(self.terms, (term) => {

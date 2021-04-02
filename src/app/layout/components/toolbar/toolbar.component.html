@@ -1,4 +1,4 @@
-<mat-toolbar class="" fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'noc-beta': isBeta || isDev}">
+<mat-toolbar class="" fxLayout="row" fxLayoutAlign="start center" [ngClass]="{'noc-dev': isDev, 'noc-beta': isBeta }">
   <mat-progress-bar *ngIf="showLoadingBar" class="loading-bar" color="accent" mode="indeterminate"></mat-progress-bar>
   <div class="noc-br h-100-p" fxLayout="row" fxLayoutAlign="start center" fxFlex="200px">
     <div class="noc-logo pl-8" fxLayout="row" fxLayoutAlign="start">

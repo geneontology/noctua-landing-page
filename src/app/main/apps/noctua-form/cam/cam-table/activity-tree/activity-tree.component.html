@@ -12,9 +12,9 @@
     </div>
     <div class="noc-title mr-12" fxLayout="row" fxLayoutAlign="start center">
       <div class="noc-gp" *ngIf="gpNode" fxLayout="column" fxLayoutAlign="center start">
-        <p class="text-truncate">
+        <span class="text-truncate">
           {{gpNode.term?.label}}
-        </p>
+        </span>
         <a class="text-truncate" (click)="$event.stopPropagation()" href="{{gpNode.term?.url}}" target="_blank">
           {{ gpNode.term?.id }}
         </a>

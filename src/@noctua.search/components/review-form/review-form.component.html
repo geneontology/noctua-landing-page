@@ -9,17 +9,6 @@
         </mat-option>
       </mat-select>
     </mat-form-field>
-    <!--  <div class="px-8 noc-group-row" fxLayout="row" fxLayoutAlign="start center">
-      <div fxFlex="180px">
-        <p> Category </p>
-      </div>
-      <mat-radio-group fxFlex="" formControlName="category" fxLayout="row" fxLayoutAlign="start center">
-        <mat-radio-button *ngFor="let category of categories.options" [value]="category"
-          class="noc-radio-button-rounded mb-8" [checked]="category.name === 'name'">
-          {{category.label}}
-        </mat-radio-button>
-      </mat-radio-group>
-    </div> -->
     <div class="noc-activity-group-row mb-4 w-100-p" fxLayout="column" fxLayoutAlign="start stretch">
       <mat-form-field *ngIf="selectedCategory?.name === ArtReplaceCategory.term" appearance="outline"
         class="noc-sm noc-review-input">

@@ -60,7 +60,6 @@ export class NoctuaSearchService {
     filterType = {
         ids: 'ids',
         titles: 'titles',
-        ids: 'ids',
         gps: 'gps',
         terms: 'terms',
         pmids: 'pmids',
@@ -154,31 +153,6 @@ export class NoctuaSearchService {
         })
     }
 
-    // Get Users and Groups
-    private _getModelMetadata() {
-        const self = this;
-
-        self.noctuaDataService.loadContributors();
-        self.noctuaDataService.loadGroups();
-        self.noctuaDataService.loadOrganisms();
-
-        self.noctuaDataService.onContributorsChanged
-            .subscribe(contributors => {
-                this.noctuaUserService.contributors = contributors;
-                this.updateSearch();
-            });
-
-        self.noctuaDataService.onGroupsChanged
-            .subscribe(groups => {
-                this.noctuaUserService.groups = groups;
-            });
-
-        self.noctuaDataService.onOrganismsChanged
-            .subscribe(organisms => {
-                this.organisms = organisms;
-            });
-    }
-
     search(searchCriteria) {
         this.searchCriteria = new SearchCriteria();
 
@@ -195,13 +169,6 @@ export class NoctuaSearchService {
         searchCriteria.startdate ? this.searchCriteria.exactdates.push(searchCriteria.startdate) : null;
         searchCriteria.enddate ? this.searchCriteria.exactdates.push(searchCriteria.enddate) : null;
 
-        this.updateSearch();
-
-    }
-
-    getPage(pageNumber: number, pageSize: number) {
-        this.searchCriteria.camPage.pageNumber = pageNumber;
-        this.searchCriteria.camPage.size = pageSize;
         this.updateSearch();
 
     }

@@ -13,8 +13,6 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgScrollbarModule } from 'ngx-scrollbar';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-
 @NgModule({
     imports: [
         CommonModule,

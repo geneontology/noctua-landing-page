@@ -22,15 +22,18 @@ $accent: map-get($theme, accent);
 
   .mat-toolbar {
     padding: 0 10px 0 5px;
-    background-color: #FFF;
+    background-color: #fff;
     @include deep-height(50px);
     color: inherit;
     position: relative;
 
-    &.noc-beta {
+    &.noc-dev {
       background-color: #fad38a;
     }
 
+    &.noc-beta {
+      background-color: #edc6f8;
+    }
 
     mat-toolbar-row {
       @include deep-height(40px);
@@ -45,10 +48,6 @@ $accent: map-get($theme, accent);
           font-size: 12px;
         }
       }
-    }
-
-    &.noc-beta {
-      background-color: #fad38a;
     }
 
     .noc-beta-logo {
@@ -98,9 +97,7 @@ $accent: map-get($theme, accent);
       mat-icon {
         @include noc-icon-size(30px);
       }
-
     }
-
 
     .noc-cam-title {
       max-width: 400px !important;
@@ -122,7 +119,7 @@ $accent: map-get($theme, accent);
     }
 
     .noc-title-truncate {
-      max-width: 200px
+      max-width: 200px;
     }
 
     .loading-bar {
@@ -133,7 +130,6 @@ $accent: map-get($theme, accent);
       width: 100%;
     }
   }
-
 
   .noc-name-button {
     @include deep-height(40px);
