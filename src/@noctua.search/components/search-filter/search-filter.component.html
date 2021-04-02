@@ -1,5 +1,5 @@
 <form fxLayout="column" fxLayoutAlign="start stretch" name="filterForm" [formGroup]="filterForm"
-  class="noc-drawer w-100-p h-100-p">
+  class="noc-drawer h-100-p">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Filter By</span>
@@ -18,7 +18,7 @@
         <span fxFlex></span>
       </div>
       <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
-        <div class="noc-annoton-group-row" fxLayout="column">
+        <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Term</mat-label>
             <mat-chip-list #termChipList>
@@ -52,7 +52,7 @@
             </mat-autocomplete>
           </mat-form-field>
         </div>
-        <div class="noc-annoton-group-row" fxLayout="column">
+        <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Gene Product</mat-label>
             <mat-chip-list #gpChipList>
@@ -86,7 +86,7 @@
             </mat-autocomplete>
           </mat-form-field>
         </div>
-        <div class="noc-annoton-group-row" fxLayout="column">
+        <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Reference</mat-label>
             <mat-chip-list #pmidChipList>
@@ -108,6 +108,40 @@
                 <mat-icon>playlist_add</mat-icon>
               </button>
             </mat-chip-list>
+          </mat-form-field>
+        </div>
+        <div class="noc-activity-group-row" fxLayout="column">
+          <mat-form-field appearance="outline" class="noc-sm w-100-p">
+            <mat-chip-list #organismChipList>
+              <mat-chip class="noc-form-chip" *ngFor="let organism of noctuaSearchService.searchCriteria.organisms"
+                [selectable]="true" [removable]="true"
+                (removed)="remove(organism, noctuaSearchService.filterType.organisms)" fxLayout="row"
+                fxLayoutAlign="start center" matTooltip="Species: {{organism.taxonName}} ({{organism.taxonIri}})"
+                [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
+                <div fxFlex="" class="noc-chip-label">
+                  {{organism.taxonName}}
+                </div>
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input #searchInput formControlName="organisms" placeholder="Add Organism Filter"
+                [matAutocomplete]="organismAuto" #organismInput [matChipInputFor]="organismChipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="false">
+            </mat-chip-list>
+            <mat-autocomplete #organismAuto="matAutocomplete"
+              (optionSelected)="selected($event, noctuaSearchService.filterType.organisms)"
+              [displayWith]="organismDisplayFn" class="noc-term-autocomplete">
+              <mat-option class="noc-term-autocomplete" *ngFor="let item of filteredOrganisms | async" [value]="item">
+                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+                  <div class="noc-term-label">
+                    {{ item.taxonName }}
+                  </div>
+                  <span fxFlex></span>
+                  <div class="noc-term-id">
+                    {{ item.taxonId }}
+                  </div>
+                </div>
+              </mat-option>
+            </mat-autocomplete>
           </mat-form-field>
         </div>
         <div class="noc-annoton-group-row" fxLayout="column">
@@ -154,7 +188,7 @@
         <span fxFlex></span>
       </div>
       <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
-        <div class="noc-annoton-group-row" fxLayout="column">
+        <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Contributor</mat-label>
             <mat-chip-list #contributorChipList>
@@ -191,7 +225,7 @@
             </mat-autocomplete>
           </mat-form-field>
         </div>
-        <div class="noc-annoton-group-row" fxLayout="column">
+        <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Group</mat-label>
             <mat-chip-list #groupChipList>
@@ -242,7 +276,7 @@
         </mat-radio-group>
       </div>
       <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
-        <div class="noc-annoton-group-row" fxLayout="column">
+        <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field *ngIf="isExactDate" appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Exact Date</mat-label>
             <mat-chip-list #dateChipList>
@@ -316,7 +350,7 @@
         <span fxFlex></span>
       </div>
       <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
-        <div class="noc-annoton-group-row" fxLayout="column">
+        <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Model Ids</mat-label>
             <mat-chip-list #idChipList>
@@ -336,7 +370,7 @@
             </mat-chip-list>
           </mat-form-field>
         </div>
-        <div class="noc-annoton-group-row" fxLayout="column">
+        <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Title</mat-label>
             <mat-chip-list #titleChipList>
@@ -356,7 +390,7 @@
             </mat-chip-list>
           </mat-form-field>
         </div>
-        <div class="noc-annoton-state-row" fxLayout="column">
+        <div class="noc-activity-state-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by State</mat-label>
             <mat-chip-list #stateChipList>

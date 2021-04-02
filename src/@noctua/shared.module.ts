@@ -9,6 +9,9 @@ import { NoctuaDirectivesModule } from './directives/directives';
 import { NoctuaPipesModule } from './pipes/pipes.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NgScrollbarModule } from 'ngx-scrollbar';
+import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
@@ -22,6 +25,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         NoctuaDirectivesModule,
         NoctuaPipesModule,
         DragDropModule,
+        NgScrollbarModule,
+        PerfectScrollbarModule,
         NgxGraphModule,
         FontAwesomeModule
     ],
@@ -34,6 +39,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         NoctuaDirectivesModule,
         NoctuaPipesModule,
         DragDropModule,
+        NgScrollbarModule,
+        PerfectScrollbarModule,
         NgxGraphModule,
         FontAwesomeModule
     ]

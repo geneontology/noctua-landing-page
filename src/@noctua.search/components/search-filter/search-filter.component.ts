@@ -5,7 +5,7 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { Observable, Subject } from 'rxjs';
 import { startWith, map, distinctUntilChanged, debounceTime } from 'rxjs/operators';
-import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organism, EntityDefinition, AnnotonNode, EntityLookup } from 'noctua-form-base';
+import { NoctuaFormConfigService, NoctuaUserService, Group, Contributor, Organism, EntityDefinition, ActivityNode, EntityLookup } from 'noctua-form-base';
 import { NoctuaLookupService } from 'noctua-form-base';
 import { NoctuaSearchService } from './../../services/noctua-search.service';
 import { NoctuaSearchMenuService } from '../../services/search-menu.service';
@@ -62,18 +62,18 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   filteredContributors: Observable<any[]>;
   filteredStates: Observable<any[]>;
 
-  gpNode: AnnotonNode;
-  termNode: AnnotonNode;
+  gpNode: ActivityNode;
+  termNode: ActivityNode;
 
   private unsubscribeAll: Subject<any>;
 
-  constructor
-    (public noctuaUserService: NoctuaUserService,
-      private inlineReferenceService: InlineReferenceService,
-      public noctuaSearchMenuService: NoctuaSearchMenuService,
-      public noctuaFormConfigService: NoctuaFormConfigService,
-      private noctuaLookupService: NoctuaLookupService,
-      public noctuaSearchService: NoctuaSearchService) {
+  constructor(
+    public noctuaUserService: NoctuaUserService,
+    private inlineReferenceService: InlineReferenceService,
+    public noctuaSearchMenuService: NoctuaSearchMenuService,
+    public noctuaFormConfigService: NoctuaFormConfigService,
+    private noctuaLookupService: NoctuaLookupService,
+    public noctuaSearchService: NoctuaSearchService) {
 
     this.gpNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoMolecularEntity]);
     this.termNode = EntityDefinition.generateBaseTerm([
@@ -206,13 +206,15 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   private _onValueChanges() {
     const self = this;
 
+    const lookupFunc = self.noctuaLookupService.lookupFunc()
+
     this.filterForm.get('terms').valueChanges.pipe(
       distinctUntilChanged(),
       debounceTime(400)
     ).subscribe(data => {
       const lookup: EntityLookup = self.termNode.termLookup;
 
-      self.noctuaLookupService.golrLookup(data, lookup.requestParams).subscribe(response => {
+      lookupFunc.termLookup(data, lookup.requestParams).subscribe(response => {
         lookup.results = response;
       });
     });
@@ -223,7 +225,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     ).subscribe(data => {
       const lookup: EntityLookup = self.gpNode.termLookup;
 
-      self.noctuaLookupService.golrLookup(data, lookup.requestParams).subscribe(response => {
+      lookupFunc.termLookup(data, lookup.requestParams).subscribe(response => {
         lookup.results = response;
       });
     });
@@ -270,9 +272,6 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   onFileChange(event) {
     const self = this;
     let reader = new FileReader();
-
-
-    //console.log(event, control)
 
     if (event.target.files && event.target.files.length) {
       const [file] = event.target.files;

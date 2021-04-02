@@ -16,6 +16,7 @@ export class SearchCriteria {
     exactdates: any[] = [];
     startdates: any[] = [];
     enddates: any[] = [];
+    expand = true;
     filtersCount = 0;
 
     constructor(searchCriteria?: SearchCriteria) {
@@ -33,6 +34,7 @@ export class SearchCriteria {
             this.exactdates = searchCriteria.exactdates || [];
             this.startdates = searchCriteria.startdates || [];
             this.enddates = searchCriteria.enddates || [];
+            this.expand = searchCriteria.expand;
         }
     }
 
@@ -53,11 +55,14 @@ export class SearchCriteria {
             self.enddates.length;
     }
 
-    private query() {
+    private query(pagination: boolean = true) {
         const self = this;
-        const query = ['offset=' + (self.camPage.pageNumber * self.camPage.size).toString()];
+        const query = [];
 
-        query.push('limit=' + self.camPage.size.toString());
+        if (pagination) {
+            query.push(`offset=${(self.camPage.pageNumber * self.camPage.size).toString()}`);
+            query.push(`limit=${self.camPage.size.toString()}`);
+        }
 
         each(self.titles, (title) => {
             query.push(`title=*${title}*`);
@@ -107,61 +112,17 @@ export class SearchCriteria {
             query.push(`state=${state.name}`);
         });
 
-        query.push('expand');
-        return query;
-    }
+        if (self.expand) {
+            query.push('expand');
+        }
 
-    private queryEncoded() {
-        const self = this;
-        const query = ['offset=' + (self.camPage.pageNumber * self.camPage.size).toString()];
-
-        query.push('limit=' + self.camPage.size.toString());
-
-        each(self.titles, (title) => {
-            query.push(`title=${encodeURIComponent(title)}`);
-        });
-
-        each(self.terms, (term) => {
-            query.push(`term=${encodeURIComponent(term.id)}`);
-        });
-
-        each(self.groups, (group: Group) => {
-            query.push(`group=${encodeURIComponent(group.url)}`);
-        });
-
-        each(self.contributors, (contributor: Contributor) => {
-            query.push(`contributor=${encodeURIComponent(contributor.orcid)}`);
-        });
-
-        each(self.ids, (id) => {
-            query.push(`id=${encodeURIComponent(id)}`);
-        });
-
-        each(self.gps, (gp) => {
-            query.push(`gp=${encodeURIComponent(gp.id)}`);
-        });
-
-        each(self.pmids, (pmid) => {
-            query.push(`pmid=${encodeURIComponent(pmid)}`);
-        });
-
-        each(self.exactdates, (date) => {
-            query.push(`date=${encodeURIComponent(date)}`);
-        });
-
-        each(self.organisms, (organism: Organism) => {
-            query.push(`taxon=${encodeURIComponent(organism.taxonIri)}`);
-        });
-
-        each(self.states, (state: any) => {
-            query.push(`state=${encodeURIComponent(state.name)}`);
-        });
+        query.push('debug')
 
         return query;
     }
 
-    build() {
-        return this.query().join('&');
+    build(pagination: boolean = true) {
+        return this.query(pagination).join('&');
     }
 
     clearSearch() {
@@ -178,7 +139,5 @@ export class SearchCriteria {
         this.enddates = [];
     }
 
-    private buildEncoded() {
-        return this.queryEncoded().join('&');
-    }
+
 }
