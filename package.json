@@ -36,6 +36,7 @@
     "@angular/platform-browser": "11.2.3",
     "@angular/platform-browser-dynamic": "11.2.3",
     "@angular/router": "11.2.3",
+    "@circlon/angular-tree-component": "^11.0.4",
     "@dagrejs/graphlib": "^2.1.4",
     "@fortawesome/angular-fontawesome": "^0.8.2",
     "@fortawesome/fontawesome-free": "^5.15.2",

@@ -17,15 +17,15 @@
         'noc-highlight-modified': gpNode.term?.modified,
         'noc-highlight-match-current': gpNode.term?.uuid===camsService.currentMatch?.uuid}" fxLayout="column"
           fxLayoutAlign="center start">
-          <p class="noc-old-term text-truncate" *ngIf="gpNode.term?.modified && gpNode.term?.termHistory?.length>0">
+          <span class="noc-old-term text-truncate" *ngIf="gpNode.term?.modified && gpNode.term?.termHistory?.length>0">
             {{gpNode.term?.termHistory[0]?.label}}
             <a (click)="$event.stopPropagation()" href="{{gpNode.term?.termHistory[0]?.url}}" target="_blank">
               {{ gpNode.term?.termHistory[0]?.id }}
             </a>
-          </p>
-          <p class="text-truncate">
+          </span>
+          <span class="text-truncate">
             {{gpNode.term?.label}}
-          </p>
+          </span>
           <a class="text-truncate" (click)="$event.stopPropagation()" href="{{gpNode.term?.url}}" target="_blank">
             {{ gpNode.term?.id }}
           </a>
@@ -121,10 +121,10 @@
       <ng-container matColumnDef="relationship">
         <td class="noc-relationship-cell" mat-cell *matCellDef="let entity"
           [ngStyle]="{'padding-left':(entity.treeLevel-1) * 10+'px'}">
-          <p class="">
+          <span class="">
             <strong> {{entity.qualifier}} </strong>
             {{entity.predicate?.edge?.label}}
-          </p>
+          </span>
           <noctua-inline-editor *ngIf="noctuaUserService.user && entity.relationEditable && !options.reviewMode"
             [cam]="cam" [activity]='activity' [entity]="entity" [category]="EditorCategory.relationship"
             class="noc-edit-button">
@@ -133,12 +133,12 @@
       </ng-container>
       <ng-container matColumnDef="aspect">
         <td class="noc-aspect-cell" mat-cell *matCellDef="let entity">
-          <p class="">{{entity.aspect}}</p>
+          <span class="">{{entity.aspect}}</span>
         </td>
       </ng-container>
       <ng-container matColumnDef="extension">
         <td class="noc-extension-cell" mat-cell *matCellDef="let entity">
-          <p *ngIf="entity.isExtension" class="">Yes</p>
+          <span *ngIf="entity.isExtension" class="">Yes</span>
         </td>
       </ng-container>
       <ng-container matColumnDef="term">
@@ -146,18 +146,18 @@
           fxLayoutAlign="start stretch" [attr.id]="entity.term?.displayId" [ngClass]="{'noc-highlight-match': entity.term?.highlight,
             'noc-highlight-modified': entity.term?.modified,
             'noc-highlight-match-current': entity.term?.uuid===camsService.currentMatch?.uuid}">
-          <p class="noc-old-term" *ngIf="entity.term?.modified && entity.term?.termHistory?.length>0">
+          <span class="noc-old-term" *ngIf="entity.term?.modified && entity.term?.termHistory?.length>0">
             {{entity.term?.termHistory[0]?.label}}
             <a (click)="$event.stopPropagation()" href="{{entity.term?.termHistory[0]?.url}}" target="_blank">
               {{ entity.term?.termHistory[0]?.id }}
             </a>
-          </p>
-          <p class="">
+          </span>
+          <span class="">
             {{entity.term?.label}} <br>
             <a (click)="$event.stopPropagation()" href="{{entity.term?.url}}" target="_blank">
               {{ entity.term?.id }}
             </a>
-          </p>
+          </span>
           <noctua-inline-editor *ngIf="noctuaUserService.user && entity.term && options.editableTerms" [cam]="cam"
             [activity]='activity' [entity]="entity" [category]="EditorCategory.term" class="noc-edit-button">
           </noctua-inline-editor>

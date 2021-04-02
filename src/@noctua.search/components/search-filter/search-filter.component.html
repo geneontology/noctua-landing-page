@@ -144,40 +144,6 @@
             </mat-autocomplete>
           </mat-form-field>
         </div>
-        <div class="noc-annoton-group-row" fxLayout="column">
-          <mat-form-field appearance="outline" class="noc-sm w-100-p">
-            <mat-chip-list #organismChipList>
-              <mat-chip class="noc-form-chip" *ngFor="let organism of noctuaSearchService.searchCriteria.organisms"
-                [selectable]="true" [removable]="true"
-                (removed)="remove(organism, noctuaSearchService.filterType.organisms)" fxLayout="row"
-                fxLayoutAlign="start center" matTooltip="Species: {{organism.taxonName}} ({{organism.taxonIri}})"
-                [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
-                <div fxFlex="" class="noc-chip-label">
-                  {{organism.taxonName}}
-                </div>
-                <mat-icon matChipRemove>cancel</mat-icon>
-              </mat-chip>
-              <input #searchInput formControlName="organisms" placeholder="Add Organism Filter"
-                [matAutocomplete]="organismAuto" #organismInput [matChipInputFor]="organismChipList"
-                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="false">
-            </mat-chip-list>
-            <mat-autocomplete #organismAuto="matAutocomplete"
-              (optionSelected)="selected($event, noctuaSearchService.filterType.organisms)"
-              [displayWith]="organismDisplayFn" class="noc-term-autocomplete">
-              <mat-option class="noc-term-autocomplete" *ngFor="let item of filteredOrganisms | async" [value]="item">
-                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
-                  <div class="noc-term-label">
-                    {{ item.taxonName }}
-                  </div>
-                  <span fxFlex></span>
-                  <div class="noc-term-id">
-                    {{ item.taxonId }}
-                  </div>
-                </div>
-              </mat-option>
-            </mat-autocomplete>
-          </mat-form-field>
-        </div>
       </div>
     </div>
     <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">

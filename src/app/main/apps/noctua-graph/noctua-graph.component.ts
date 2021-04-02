@@ -66,7 +66,7 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   cams: any[] = [];
 
   tableOptions = {
-    treeTable: true,
+    treeTable: false,
     editableTerms: true,
     editableEvidence: true,
     editableReference: true,
