@@ -73,25 +73,6 @@ $accent: map-get($theme, accent);
     tr.mat-footer-row,
     tr.mat-row {
       height: auto;
-
-      &.noc-row-term {
-        &::before {
-          position: absolute;
-          left: 0px;
-          width: 20px;
-          height: 2px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: white;
-          background-color: $noc-tree-line-color;
-          content: "";
-        }
-      }
-    }
-
-    tr.mat-header-row,
-    tr.mat-row {
-      //padding-left: 15px;
     }
 
     .mat-header-cell {

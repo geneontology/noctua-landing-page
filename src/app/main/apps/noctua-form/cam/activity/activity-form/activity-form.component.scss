@@ -12,15 +12,15 @@ $accent: map-get($theme, accent);
 
   .noc-group-side-heading {
     @include deep-width(50px);
-    background-color: #DDD;
+    background-color: #ddd;
     font-size: 10px;
     text-align: center;
   }
 
   .noc-header {
     @include deep-height(40px);
-    background-color: #EEE;
-    border-bottom: #CCC solid 1px;
+    background-color: #eee;
+    border-bottom: #ccc solid 1px;
 
     mat-icon-button {
       @include deep-height(40px);
@@ -74,19 +74,19 @@ $accent: map-get($theme, accent);
     .noc-term-group {
       // padding-bottom: 20px;
       //  border-bottom: #CCC solid 1px;
-      background-color: #FFF;
-      border-left: #FFF solid 5px;
+      background-color: #fff;
+      border-left: #fff solid 5px;
 
       &.mf {
-        border-left-color: rgba(#cdf1d2, 0.8);
+        border-left-color: rgba($noc-mf, 0.8);
       }
 
       &.bp {
-        border-left-color: rgba(#f4c89c, 0.8);
+        border-left-color: rgba($noc-bp, 0.8);
       }
 
       &.cc {
-        border-left-color: rgba(#d3b5f5, 0.8);
+        border-left-color: rgba($noc-cc, 0.8);
       }
 
       .noc-group-heading {
@@ -109,13 +109,13 @@ $accent: map-get($theme, accent);
 
       .noc-action-button {
         margin: 8px 0 0 0;
-        background-color: #FAFAFA;
+        background-color: #fafafa;
         width: 35px;
         height: 35px;
 
         mat-icon {
           @include noc-icon-size(14px);
-          color: #AAA;
+          color: #aaa;
           line-height: 18px;
         }
 
@@ -129,7 +129,6 @@ $accent: map-get($theme, accent);
       }
     }
 
-
     .noc-tree-input {
       $border-color: rgba(#000, 0.12);
       @include deep-width(20px);
@@ -141,7 +140,7 @@ $accent: map-get($theme, accent);
     }
 
     md-input-container {
-      margin: 0; //border-bottom: #555 solid 1px; 
+      margin: 0; //border-bottom: #555 solid 1px;
       padding-top: 20px;
       padding-bottom: 8px;
 
@@ -161,11 +160,10 @@ $accent: map-get($theme, accent);
       }
     }
 
-
     .noc-submit-row {
       margin: 10px 0;
       padding: 10px 0;
-      background-color: #FFF;
+      background-color: #fff;
     }
   }
 }

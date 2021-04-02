@@ -81,6 +81,7 @@ $accent: map-get($theme, accent);
   }
   .noc-activity-header {
     padding-left: 40px;
+    padding-right: 10px;
     position: relative;
     margin-bottom: 1px;
     @include deep-width(100%);

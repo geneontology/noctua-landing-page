@@ -42,16 +42,6 @@ export class ActivityTableComponent implements OnInit, OnDestroy {
   ActivityType = ActivityType;
   camDisplayTypeOptions = noctuaFormConfig.camDisplayType.options;
   activityTypeOptions = noctuaFormConfig.activityType.options;
-  dataSource: MatTableDataSource<ActivityNode>;
-  displayedColumns = [
-    'relationship',
-    'aspect',
-    'term',
-    'extension',
-    'evidence',
-    'actions'];
-
-  grid: any[] = [];
 
   @Input('cam')
   cam: Cam
@@ -65,6 +55,7 @@ export class ActivityTableComponent implements OnInit, OnDestroy {
   optionsDisplay: any = {}
 
   gpNode: ActivityNode;
+  nodes: ActivityNode[] = [];
   editableTerms = false;
   currentMenuEvent: any = {};
 
@@ -81,11 +72,11 @@ export class ActivityTableComponent implements OnInit, OnDestroy {
     public noctuaActivityFormService: NoctuaActivityFormService,
     private inlineEditorService: InlineEditorService) {
 
-    this.dataSource = new MatTableDataSource<ActivityNode>();
     this.unsubscribeAll = new Subject();
   }
 
   ngOnInit(): void {
+    const self = this;
 
     if (this.options?.editableTerms) {
       this.editableTerms = this.options.editableTerms
@@ -93,13 +84,11 @@ export class ActivityTableComponent implements OnInit, OnDestroy {
     this.gpNode = this.activity.getGPNode();
 
     this.optionsDisplay = { ...this.options, hideHeader: true };
-    this.dataSource.data = this.activity.nodes;
-    this.dataSource.filterPredicate = function customFilter(data, filter: string): boolean {
-      return (data.id !== filter);
-    }
-
-    this.dataSource.filter = this.gpNode?.id;
+    this.nodes = this.activity.nodes.filter((node) => {
+      return (node.id !== self.gpNode?.id);
+    });
   }
+
 
   toggleExpand(activity: Activity) {
     activity.expanded = !activity.expanded;

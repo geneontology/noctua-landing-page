@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { TreeModule } from '@circlon/angular-tree-component';
 import { NoctuaFormComponent } from './noctua-form.component';
 import { NoctuaSharedModule } from './../../../../@noctua/shared.module';
 import { NoctuaFormDialogService } from './services/dialog.service';
@@ -67,6 +68,7 @@ const routes = [
 @NgModule({
   imports: [
     NoctuaSharedModule,
+    TreeModule,
     CommonModule,
     // NoctuaModule.forRoot(noctuaConfig),
     RouterModule.forChild(routes),

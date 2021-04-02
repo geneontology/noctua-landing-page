@@ -46,7 +46,7 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="with">
-      <td class="noc-with-cell" mat-cell *matCellDef="let evidence; let i = index;" xLayout="column"
+      <td class="noc-with-cell" mat-cell *matCellDef="let evidence; let i = index;" fxLayout="column"
         fxLayoutAlign="start stretch" [ngClass]="{'noc-highlight-modified': evidence.withEntity?.modified}">
         <p class="noc-old-term" *ngIf="evidence.withEntity?.modified && evidence.withEntity?.termHistory?.length>0">
           <a (click)="$event.stopPropagation()" href="{{evidence.withEntity?.termHistory[0]?.url}}" target="_blank">
@@ -65,8 +65,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="assignedBy">
-      <td class="noc-group-cell" mat-cell *matCellDef="let evidence; let i = index;" fxLayout="row"
-        fxLayoutAlign="start center">
+      <td class="noc-group-cell" mat-cell *matCellDef="let evidence; let i = index;" fxLayout="column"
+        fxLayoutAlign="start stretch">
         <p class="">
           <span *ngFor="let group of evidence.groups; let i=index; let isLast=last">
             <a (click)="$event.stopPropagation()" href="{{group.url}}" target="_blank">
@@ -78,8 +78,8 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="contributor">
-      <td class="noc-contributor-cell" mat-cell *matCellDef="let evidence; let i = index;" fxLayout="row"
-        fxLayoutAlign="start center">
+      <td class="noc-contributor-cell" mat-cell *matCellDef="let evidence; let i = index;" fxLayout="column"
+        fxLayoutAlign="start stretch">
         <p class="">
           <span *ngFor="let contributor of evidence.contributors; let i=index; let isLast=last">
             <a (click)="$event.stopPropagation()" href="{{contributor.urcid}}" target="_blank">

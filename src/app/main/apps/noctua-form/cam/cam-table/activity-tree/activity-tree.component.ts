@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
 
 import { noctuaAnimations } from './../../../../../../../@noctua/animations';
@@ -15,7 +15,8 @@ import {
   NoctuaUserService,
   NoctuaFormMenuService,
   CamsService,
-  ActivityType
+  ActivityType,
+  ActivityTreeNode
 } from 'noctua-form-base';
 
 import {
@@ -46,14 +47,13 @@ export class ActivityTreeComponent implements OnInit, OnDestroy {
   camDisplayTypeOptions = noctuaFormConfig.camDisplayType.options;
   activityTypeOptions = noctuaFormConfig.activityType.options;
   dataSource: MatTableDataSource<ActivityNode>;
-  displayedColumns = [
-    'term',
-    'aspect',
-    'extension',
-    'evidence',
-    'actions'];
 
-  grid: any[] = [];
+
+
+
+  treeNodes: ActivityTreeNode[] = [];
+
+  @ViewChild('tree') tree;
 
   @Input('cam')
   cam: Cam
@@ -71,6 +71,17 @@ export class ActivityTreeComponent implements OnInit, OnDestroy {
   currentMenuEvent: any = {};
   treeControl = new FlatTreeControl<ActivityNode>(
     node => node.treeLevel, node => node.expandable);
+
+  treeOptions = {
+    allowDrag: false,
+    allowDrop: false,
+    // levelPadding: 15,
+    getNodeClone: (node) => ({
+      ...node.data,
+      //id: uuid.v4(),
+      name: `Copy of ${node.data.name}`
+    })
+  };
 
   private unsubscribeAll: Subject<any>;
 
@@ -103,6 +114,8 @@ export class ActivityTreeComponent implements OnInit, OnDestroy {
       return (data.id !== filter);
     }
 
+    this.treeNodes = this.activity.buildTrees();
+
     this.dataSource.filter = this.gpNode?.id;
   }
 
@@ -111,30 +124,12 @@ export class ActivityTreeComponent implements OnInit, OnDestroy {
     this.unsubscribeAll.complete();
   }
 
+  onTreeLoad() {
+    this.tree.treeModel.expandAll();
+  }
+
   hasChild = (_: number, node: ActivityNode) => node.expandable;
 
-  getParentNode(node: ActivityNode) {
-    const nodeIndex = this.dataSource.data.indexOf(node);
-
-    for (let i = nodeIndex - 1; i >= 0; i--) {
-      if (this.dataSource.data[i].treeLevel === node.treeLevel - 1) {
-        return this.dataSource.data[i];
-      }
-    }
-
-    return null;
-  }
-
-  shouldRender(node: ActivityNode) {
-    let parent = this.getParentNode(node);
-    while (parent) {
-      if (!parent.expanded) {
-        return false;
-      }
-      parent = this.getParentNode(parent);
-    }
-    return true;
-  }
 
   toggleExpand(activity: Activity) {
     activity.expanded = !activity.expanded;

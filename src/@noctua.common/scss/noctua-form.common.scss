@@ -42,8 +42,7 @@ $noc-breakpoints: (
     @include deep-width(600px);
 
     @include noc-media-breakpoint("noc-lg") {
-      @include deep-width(500px);
-      // background-color: aquamarine !important;
+      @include deep-width(450px);
     }
   }
 
@@ -52,16 +51,28 @@ $noc-breakpoints: (
 
   .noc-reference-cell {
     @include deep-width(100px);
+    @include noc-media-breakpoint("noc-lg") {
+      @include deep-width(80px);
+    }
   }
 
   .noc-with-cell {
     @include deep-width(100px);
+    @include noc-media-breakpoint("noc-lg") {
+      @include deep-width(80px);
+    }
   }
   .noc-group-cell {
     @include deep-width(100px);
+    @include noc-media-breakpoint("noc-lg") {
+      @include deep-width(80px);
+    }
   }
   .noc-contributor-cell {
     @include deep-width(100px);
+    @include noc-media-breakpoint("noc-lg") {
+      @include deep-width(80px);
+    }
   }
   .noc-action-cell {
     padding: 0;

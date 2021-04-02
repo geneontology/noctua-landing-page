@@ -11,15 +11,23 @@ $accent: map-get($theme, accent);
 
   mat-chip {
     &.default {
-      border: #cdf1d2 solid 2px;
+      border: $noc-mf solid 2px;
     }
 
     &.bpOnly {
-      border: #f8c6e5 solid 2px;
+      border: $noc-bp solid 2px;
     }
 
     &.ccOnly {
-      border: #d3b5f5 solid 2px;
+      border: $noc-cc solid 2px;
+    }
+
+    &.noc-extension {
+      border: #b261fd solid 1px;
+      @include deep-height(20px);
+      font-size: 8px;
+      padding: 2px;
+      text-align: center;
     }
 
     &.noc-error-chip {
@@ -91,65 +99,6 @@ $accent: map-get($theme, accent);
     //  flex: 1 1 auto;
     border-bottom: 1px solid #ccc;
 
-    table {
-      // width: 800px;
-      overflow: auto;
-    }
-
-    tr.mat-footer-row,
-    tr.mat-row {
-      height: auto;
-
-      &.noc-row-term {
-        &::before {
-          position: absolute;
-          left: 0px;
-          width: 20px;
-          height: 2px;
-          top: 50%;
-          transform: translateY(-50%);
-          color: white;
-          background-color: $noc-tree-line-color;
-          content: "";
-        }
-      }
-    }
-
-    tr.mat-header-row,
-    tr.mat-row {
-      padding-left: 15px;
-    }
-
-    .noc-column-flex {
-      min-width: 150px !important;
-    }
-
-    .mat-header-cell {
-      padding: 0 10px;
-      font-size: 10px !important;
-      //color: #0F0; // map-get($primary, default);
-      font-weight: bold;
-      color: map-get($primary, default);
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-
-    .mat-header-row {
-      @include deep-height(30px);
-      border-bottom: $noc-primary-color-light solid 1px;
-    }
-
-    .noc-paginator {
-      @include deep-height(0);
-    }
-
-    .activity {
-      position: relative;
-      cursor: pointer;
-      min-height: 40px;
-      font-size: 12px;
-    }
-
     .noc-entity-cell {
       display: flex;
       align-items: center;
@@ -162,6 +111,31 @@ $accent: map-get($theme, accent);
       position: relative;
       overflow-wrap: break-word;
 
+      &.noc-aspect-cell {
+        padding-top: 10px;
+        mat-chip {
+          text-align: center;
+          @include deep-height(20px);
+          font-size: 10px;
+          font-weight: bold;
+          padding: 2px;
+          &.F {
+            border: $noc-mf solid 1px;
+            color: darken($noc-mf, 10%);
+          }
+
+          &.P {
+            border: $noc-bp solid 1px;
+            color: darken($noc-bp, 10%);
+          }
+
+          &.C {
+            border: $noc-cc solid 1px;
+            color: darken($noc-cc, 10%);
+          }
+        }
+      }
+
       &.noc-relationship-cell {
         font-size: 10px;
       }
@@ -169,6 +143,9 @@ $accent: map-get($theme, accent);
       &.noc-extension-cell {
         padding-top: 10px;
         font-size: 10px;
+        .noc-extension {
+          //border
+        }
       }
 
       .noc-edit-button {

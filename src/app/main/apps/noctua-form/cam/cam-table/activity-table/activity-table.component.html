@@ -113,7 +113,7 @@
       </div>
     </div>
 
-    <noc-activity-tree-node *ngFor="let node of dataSource.data" [options]="options" [cam]="cam" [activity]="activity"
+    <noc-activity-tree-node *ngFor="let node of nodes" [options]="options" [cam]="cam" [activity]="activity"
       [entity]="node" class="w-100-p">
     </noc-activity-tree-node>
     <!--     <table mat-table fxLayout="row" fxLayoutAlign="start start" class="w-100-p" [dataSource]="dataSource"

@@ -32,18 +32,21 @@
         [activity]='activity' [entity]="entity" [category]="EditorCategory.term" class="noc-edit-button">
       </noctua-inline-editor>
     </div>
-    <div *ngIf="!options.treeTable" class="noc-aspect-cell noc-entity-cell" fxLayout="column"
-      fxLayoutAlign="start stretch">
-      <p class="">{{entity.aspect}}</p>
+    <div class="noc-aspect-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
+      <mat-chip *ngIf="entity.aspect" class="noc-chip-xs noc-aspect {{entity.aspect}}" fxLayout="column"
+        fxLayoutAlign="center center">
+        <span>{{entity.aspect}}</span>
+      </mat-chip>
     </div>
-    <div class="noc-extension-cell noc-entity-cell " fxLayout="column" fxLayoutAlign="start stretch">
-      <p *ngIf="entity.isExtension" class="">Yes</p>
+    <div class="noc-extension-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
+      <mat-chip *ngIf="entity.isExtension" class="noc-chip-xs noc-extension">
+        <span>ext.</span>
+      </mat-chip>
     </div>
-    <div class="noc-evidence-cell" fxLayout="column" fxLayoutAlign="start stretch">
-      <div fxFlex="" class="p-0">
-        <noc-evidence-table class="w-100-p" [options]="optionsDisplay" [cam]="cam" [entity]="entity">
-        </noc-evidence-table>
-      </div>
+    <div class="noc-evidence-cell p-0" fxLayout="column" fxLayoutAlign="start stretch">
+      <noc-evidence-table *ngIf="!entity.skipEvidence" class="w-100-p" [options]="optionsDisplay" [cam]="cam"
+        [entity]="entity">
+      </noc-evidence-table>
     </div>
     <div class="noc-cell noc-action-cell" fxLayout="column" fxLayoutAlign="start center">
       <button mat-icon-button *ngIf="noctuaUserService.user" (click)="updateCurrentMenuEvent($event)"
@@ -64,7 +67,7 @@
         </button>
       </mat-menu>
       <mat-menu #evidenceMenu="matMenu">
-        <button mat-menu-item (click)="addEvidence(entity, entity.predicate?.evidenceIndex)" class="">
+        <button mat-menu-item (click)="addEvidence(entity)" class="">
           Add Evidence
         </button>
         <!--   <button (click)="removeEvidence(entity,i)" mat-menu-item>

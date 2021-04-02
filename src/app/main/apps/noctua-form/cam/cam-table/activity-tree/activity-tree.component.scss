@@ -9,9 +9,42 @@ $accent: map-get($theme, accent);
   padding: 0px;
   width: 100%;
 
+  .noc-gp {
+    width: 350px;
+    line-height: 12px;
+    @include deep-height(55px);
+    // display: inline-block !important;
+    padding: 4px 8px;
+    font-size: 12px !important;
+    color: #000;
+    border-right: $noc-primary-color-light solid 1px;
+    position: relative;
+    overflow-wrap: break-word;
+
+    p {
+      padding: 0;
+      margin: 0;
+    }
+
+    a {
+      font-size: 10px !important;
+    }
+  }
   .noc-tree-node {
     font-size: 12px;
     color: #000;
+
+    .noc-node-expander-button {
+      @include deep-width(20px);
+      @include deep-height(20px);
+      line-height: 14px;
+      background-color: #ffffff;
+    }
+
+    .noc-expander-placeholder {
+      @include deep-width(20px);
+      @include deep-height(20px);
+    }
 
     .noc-icon-button {
       @include deep-height(25px);
@@ -117,7 +150,7 @@ $accent: map-get($theme, accent);
     border-bottom: $noc-primary-color-light solid 1px;
 
     .noc-header-cell {
-      padding: 0 10px;
+      padding: 0 5px;
       font-size: 10px;
       color: map-get($primary, default);
       text-transform: uppercase;
@@ -167,6 +200,7 @@ $accent: map-get($theme, accent);
 
     .noc-display-number {
       background-color: #fff;
+      font-size: 8px;
       z-index: 2;
     }
 
@@ -179,69 +213,6 @@ $accent: map-get($theme, accent);
       color: white;
       background-color: $noc-tree-line-color;
       content: "";
-    }
-
-    &::after {
-      position: absolute;
-      top: 0;
-      left: 37px;
-      bottom: 0;
-      width: 2px;
-      color: white;
-      background-color: $noc-tree-line-color;
-      content: "";
-      z-index: 1;
-    }
-  }
-
-  .noc-gp {
-    width: 350px;
-    line-height: 12px;
-    @include deep-height(55px);
-    // display: inline-block !important;
-    padding: 4px 8px;
-    font-size: 12px !important;
-    color: #000;
-    border-right: $noc-primary-color-light solid 1px;
-    position: relative;
-    overflow-wrap: break-word;
-
-    p {
-      padding: 0;
-      margin: 0;
-    }
-
-    a {
-      font-size: 10px !important;
-    }
-
-    &.noc-highlight-match {
-      background-color: #fffcd8;
-    }
-
-    &.noc-highlight-modified {
-      background-color: #fdd661;
-    }
-
-    &.noc-highlight-modified-user {
-      background-color: #f3ccbb;
-    }
-
-    &.noc-highlight-match-current {
-      border: #ac6219 solid 3px;
-    }
-
-    .noc-old-term {
-      color: #777;
-      font-size: 10px;
-      padding-bottom: 4px;
-      text-decoration: line-through rgba(#ec6868, 0.5);
-    }
-
-    .noc-edit-button {
-      position: absolute;
-      bottom: 0;
-      right: 0;
     }
   }
 
@@ -261,6 +232,9 @@ $accent: map-get($theme, accent);
   }
 
   .noc-tree-container {
+    position: relative;
+    padding-left: 45px;
+    padding-right: 10px;
     .noc-cell-label {
       @include deep-width(100%);
       @include deep-height(20px);
@@ -270,100 +244,23 @@ $accent: map-get($theme, accent);
       border-bottom: $noc-primary-color-light solid 1px;
     }
 
-    tr.mat-footer-row,
-    tr.mat-row {
-      height: auto;
-    }
+    .noc-tree {
+      @include deep-width(100%);
+      @include deep-height(100%);
 
-    tr.mat-header-row,
-    tr.mat-row {
-      padding-left: 15px;
-    }
+      .node-content-wrapper {
+        padding: 0 !important;
+      }
 
-    .noc-column-flex {
-      min-width: 150px !important;
-    }
-
-    .mat-header-cell {
-      padding: 0 10px;
-      font-size: 10px !important;
-      //color: #0F0; // map-get($primary, default);
-      font-weight: bold;
-      color: map-get($primary, default);
-      text-transform: uppercase;
-      font-weight: bold;
-    }
-
-    .mat-header-row {
-      @include deep-height(30px);
-      border-bottom: $noc-primary-color-light solid 1px;
-    }
-
-    .noc-paginator {
-      @include deep-height(0);
-    }
-
-    .activity {
-      position: relative;
-      cursor: pointer;
-      min-height: 40px;
-      font-size: 12px;
-    }
-
-    .mat-cell {
-      min-width: 0;
-      display: flex;
-      align-items: center;
-
-      //display: inline-block !important;
-      //padding: 0 30px 0 10px;
-      font-size: 12px !important;
-      color: #000;
-      border-right: #aaa solid 1px;
-      position: relative;
-      overflow-wrap: break-word;
-
-      .noc-edit-button {
+      &::before {
+        content: "";
         position: absolute;
-        bottom: 0;
-        right: 0;
-      }
-
-      &.noc-highlight-match {
-        background-color: #fffcd8;
-      }
-
-      &.noc-highlight-modified {
-        background-color: #fdd661;
-      }
-
-      &.noc-highlight-modified-user {
-        background-color: #f3ccbb;
-      }
-
-      &.noc-highlight-match-current {
-        border: #ac6219 solid 5px;
-      }
-
-      .noc-old-term {
-        color: #777;
-        font-size: 10px;
-        text-decoration: line-through rgba(#ec6868, 0.5);
+        border-left: 1px solid $noc-tree-line-color;
+        height: 100%;
+        top: 0;
+        left: 55px;
       }
     }
-
-    .mat-column-id {
-      flex: 0 1 84px;
-    }
-
-    .mat-column-buttons {
-      flex: 0 1 80px;
-    }
-
-    /* .mat-header-cell {
-      display:flex;
-      justify-content:flex-end;
-     } */
 
     &.noc-selected {
       background-color: rgba($noc-highlight-model-color, 0.3);

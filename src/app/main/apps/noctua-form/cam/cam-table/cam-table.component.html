@@ -59,7 +59,7 @@
       <div class="noc-cell noc-term-cell" fxFlex="">
         Term
       </div>
-      <div *ngIf="!options.treeTable" class="noc-cell noc-aspect-cell">
+      <div class="noc-cell noc-aspect-cell">
         Asp
       </div>
       <div class="noc-cell noc-extension-cell">
@@ -94,8 +94,8 @@
       <noc-activity-table *ngIf="!options.treeTable" [options]="options" [cam]="cam" [activity]="activity"
         class="noc-activities-table-body" fxLayout="row" fxLayoutAlign="start center">
       </noc-activity-table>
-      <noc-activity-tree *ngIf="options.treeTable" [options]="options" [cam]="cam" [activity]="activity" class=""
-        fxLayout="row" fxLayoutAlign="start center">
+      <noc-activity-tree *ngIf="options.treeTable" [options]="options" [cam]="cam" [activity]="activity"
+        class="noc-activities-table-body" fxLayout="row" fxLayoutAlign="start center">
       </noc-activity-tree>
     </div>
   </div>
