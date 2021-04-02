@@ -6,6 +6,10 @@
   background-color: white;
   @include mat-elevation(4);
 
+  .noc-drawer {
+    @include deep-width(300px);
+  }
+
   .noc-header {
     @include deep-height(30px);
     background-color: #EEE;
@@ -31,6 +35,7 @@
     padding: 0 10px;
     @include deep-height(50px);
     border-top: #CCC solid 1px;
+    @include mat-elevation(1);
     font-size: 12px;
 
     .noc-name {

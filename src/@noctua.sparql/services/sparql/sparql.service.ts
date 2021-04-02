@@ -219,13 +219,6 @@ export class SparqlService {
         });
       }
 
-      if (response.entities && response.entities.value !== "") {
-        cam.filter.uuids.push(...response.entities.value.split(self.separator).map((iri) => {
-          return self.curieUtil.getCurie(iri);
-        }));
-      }
-
-      cam.configureDisplayType();
       result.push(cam);
     });
 

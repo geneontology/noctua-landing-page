@@ -23,13 +23,6 @@ export class AppComponent implements OnInit, OnDestroy {
     @HostListener('window:focus', ['$event'])
     onFocus(event: FocusEvent): void {
         this.noctuaUserService.getUser();
-        console.log('I am focused', event);
-    }
-
-    @HostListener('window:blur', ['$event'])
-    onBlur(event: FocusEvent): void {
-        this.noctuaUserService.getUser();
-        console.log('I am blurred', event)
     }
 
     constructor(
@@ -41,8 +34,6 @@ export class AppComponent implements OnInit, OnDestroy {
         private platform: Platform,
         @Inject(DOCUMENT) private document: any
     ) {
-
-
         if (this.platform.ANDROID || this.platform.IOS) {
             this.document.body.className += ' is-mobile';
         }

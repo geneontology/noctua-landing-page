@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Subject } from 'rxjs';
@@ -7,15 +7,24 @@ import {
   Cam,
   Contributor,
   NoctuaUserService,
-  NoctuaFormConfigService
+  NoctuaFormConfigService,
+  CamService,
+  CamsService
 } from 'noctua-form-base';
 
 import { FormGroup } from '@angular/forms';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
-import { takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
+import { ReviewMode } from '@noctua.search/models/review-mode';
+import { LeftPanel, MiddlePanel, RightPanel } from '@noctua.search/models/menu-panels';
+import { ArtBasket } from '@noctua.search/models/art-basket';
+import { NoctuaReviewSearchService } from '@noctua.search/services/noctua-review-search.service';
+import { NoctuaPerfectScrollbarDirective } from '@noctua/directives/noctua-perfect-scrollbar/noctua-perfect-scrollbar.directive';
+import { NgScrollbar } from 'ngx-scrollbar';
+import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
 
 @Component({
   selector: 'noc-noctua-search',
@@ -24,13 +33,36 @@ import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-m
   // encapsulation: ViewEncapsulation.None,
   animations: noctuaAnimations
 })
-export class NoctuaSearchComponent implements OnInit, OnDestroy {
+export class NoctuaSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('leftDrawer', { static: true })
   leftDrawer: MatDrawer;
 
   @ViewChild('rightDrawer', { static: true })
   rightDrawer: MatDrawer;
+
+  @ViewChildren(NoctuaPerfectScrollbarDirective)
+  private _noctuaPerfectScrollbarDirectives: QueryList<NoctuaPerfectScrollbarDirective>;
+
+  @ViewChild(PerfectScrollbarDirective, { static: false })
+  scrollbarRef?: PerfectScrollbarDirective;
+
+  // @ViewChild(NgScrollbar) scrollbarRef: NgScrollbar;
+
+  loadingSpinner: any = {
+    color: 'primary',
+    mode: 'indeterminate'
+  };
+
+  config = {
+    suppressScrollX: true
+  }
+
+  ReviewMode = ReviewMode;
+  LeftPanel = LeftPanel;
+  MiddlePanel = MiddlePanel;
+  RightPanel = RightPanel;
+  artBasket: ArtBasket = new ArtBasket();
 
   camPage: CamPage;
   public cam: Cam;
@@ -41,25 +73,21 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
   searchFormData: any = [];
   searchForm: FormGroup;
-  loadingSpinner: any = {
-    color: 'primary',
-    mode: 'indeterminate'
-  };
-  summary: any = {
-    expanded: false,
-    detail: {}
-  };
+
   cams: any[] = [];
 
   private _unsubscribeAll: Subject<any>;
 
   constructor(
     private route: ActivatedRoute,
+    private camService: CamService,
+    public camsService: CamsService,
+    public noctuaReviewSearchService: NoctuaReviewSearchService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaCommonMenuService: NoctuaCommonMenuService,
     public noctuaSearchMenuService: NoctuaSearchMenuService,
     public noctuaUserService: NoctuaUserService,
-    public noctuaSearchService: NoctuaSearchService
+    public noctuaSearchService: NoctuaSearchService,
   ) {
     this._unsubscribeAll = new Subject();
 
@@ -78,6 +106,20 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
         }
         this.camPage = camPage;
       });
+
+    this.noctuaUserService.onUserChanged.pipe(
+      distinctUntilChanged(this.noctuaUserService.distinctUser),
+      takeUntil(this._unsubscribeAll))
+      .subscribe((user: Contributor) => {
+        if (user === undefined) {
+          return;
+        }
+        this.noctuaFormConfigService.setupUrls();
+        this.noctuaFormConfigService.setUniversalUrls();
+        this.noctuaSearchService.setup();
+        this.noctuaReviewSearchService.setup();
+        this.camsService.setup();
+      });
   }
 
   ngOnInit(): void {
@@ -86,23 +128,53 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
 
     this.rightDrawer.open();
 
-    this.noctuaUserService.onUserChanged.pipe(
-      takeUntil(this._unsubscribeAll))
-      .subscribe((user: Contributor) => {
-        this.noctuaFormConfigService.setupUrls();
-        this.noctuaFormConfigService.setUniversalUrls();
-      });
-
     this.noctuaSearchService.onCamsChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(cams => {
         this.cams = cams;
       });
+
+    this.noctuaReviewSearchService.onArtBasketChanged.pipe(
+      takeUntil(this._unsubscribeAll))
+      .subscribe((artBasket: ArtBasket) => {
+        if (artBasket) {
+          this.artBasket = artBasket;
+        }
+      });
+  }
+
+
+  ngAfterViewInit(): void {
+    this.noctuaSearchMenuService.resultsViewScrollbar = this.scrollbarRef;
   }
 
   openLeftDrawer(panel) {
     this.noctuaSearchMenuService.selectLeftPanel(panel);
     this.noctuaSearchMenuService.openLeftDrawer();
+  }
+
+  selectMiddlePanel(panel) {
+    const self = this;
+    this.noctuaSearchMenuService.selectMiddlePanel(panel);
+
+    switch (panel) {
+      case MiddlePanel.cams:
+        this.noctuaSearchMenuService.selectLeftPanel(LeftPanel.filter);
+        break;
+      case MiddlePanel.camsReview:
+        self.camsService.reviewChanges();
+        this.noctuaSearchMenuService.selectLeftPanel(LeftPanel.artBasket);
+        break;
+      case MiddlePanel.reviewChanges:
+        self.camsService.reviewChanges();
+        this.noctuaSearchMenuService.selectLeftPanel(LeftPanel.artBasket);
+        break;
+    }
+  }
+
+  openRightDrawer(panel) {
+    this.noctuaSearchMenuService.selectRightPanel(panel);
+    this.noctuaSearchMenuService.openRightDrawer();
   }
 
   toggleLeftDrawer(panel) {
@@ -111,6 +183,26 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
 
   createModel(type: 'graph-editor' | 'noctua-form') {
     this.noctuaCommonMenuService.createModel(type);
+  }
+
+  openBasketPanel() {
+    this.openLeftDrawer(LeftPanel.artBasket);
+    this.noctuaSearchMenuService.selectMiddlePanel(MiddlePanel.camsReview);
+    this.noctuaSearchMenuService.reviewMode = ReviewMode.on;
+    this.noctuaSearchMenuService.isReviewMode = true;
+  }
+
+  toggleReviewMode() {
+    if (this.noctuaSearchMenuService.reviewMode === ReviewMode.off) {
+      this.noctuaSearchMenuService.reviewMode = ReviewMode.on;
+      this.noctuaSearchMenuService.isReviewMode = true;
+      // this.noctuaSearchMenuService.closeLeftDrawer();
+    } else if (this.noctuaSearchMenuService.reviewMode === ReviewMode.on) {
+      this.noctuaSearchMenuService.reviewMode = ReviewMode.off;
+      this.noctuaSearchMenuService.selectMiddlePanel(MiddlePanel.cams);
+      this.noctuaSearchMenuService.selectLeftPanel(LeftPanel.filter);
+      this.noctuaSearchMenuService.isReviewMode = false;
+    }
   }
 
   search() {
@@ -124,10 +216,6 @@ export class NoctuaSearchComponent implements OnInit, OnDestroy {
 
   reset() {
     this.noctuaSearchService.clearSearchCriteria();
-  }
-
-  selectCam(cam) {
-    this.noctuaSearchService.onCamChanged.next(cam);
   }
 
   ngOnDestroy(): void {
