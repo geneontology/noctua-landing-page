@@ -3,10 +3,8 @@ import { Injectable } from '@angular/core';
 import { HttpParams } from '@angular/common/http';
 import { MatDrawer, MatSidenav } from '@angular/material/sidenav';
 import { NoctuaGraphService, NoctuaUserService } from 'noctua-form-base';
-import { NoctuaPerfectScrollbarDirective } from '@noctua/directives/noctua-perfect-scrollbar/noctua-perfect-scrollbar.directive';
 import { LeftPanel, MiddlePanel, RightPanel } from './../models/menu-panels';
-
-
+import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +13,7 @@ export class NoctuaCommonMenuService {
   selectedLeftPanel;
   selectedMiddlePanel;
   selectedRightPanel;
-  resultsViewScrollbar: NoctuaPerfectScrollbarDirective;
+  resultsViewScrollbar: PerfectScrollbarDirective;
 
   private _leftDrawer: MatDrawer;
   private _rightDrawer: MatDrawer;

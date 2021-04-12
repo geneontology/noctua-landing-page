@@ -48,9 +48,6 @@ export class ActivityTreeComponent implements OnInit, OnDestroy {
   activityTypeOptions = noctuaFormConfig.activityType.options;
   dataSource: MatTableDataSource<ActivityNode>;
 
-
-
-
   treeNodes: ActivityTreeNode[] = [];
 
   @ViewChild('tree') tree;

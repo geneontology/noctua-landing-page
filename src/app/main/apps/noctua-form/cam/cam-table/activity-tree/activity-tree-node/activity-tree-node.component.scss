@@ -31,15 +31,15 @@ $accent: map-get($theme, accent);
     }
 
     &.noc-error-chip {
-      font-size: 12px;
+      font-size: 10px;
       font-weight: normal;
-      @include deep-height(30px);
+      @include deep-height(25px);
       text-overflow: ellipsis;
       white-space: nowrap;
       padding: 0;
 
       .noc-chip-label {
-        padding: 0 12px 0 12px;
+        padding: 0 8px 0 8px;
         display: block;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -61,8 +61,8 @@ $accent: map-get($theme, accent);
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 30px;
-        width: 30px;
+        height: 25px;
+        width: 25px;
         border-radius: 50%;
         color: #777;
         font-size: 14px;
@@ -135,7 +135,7 @@ $accent: map-get($theme, accent);
         }
       }
 
-      &.noc-relationship-cell {
+      &.noc-relation-cell {
         font-size: 10px;
       }
 

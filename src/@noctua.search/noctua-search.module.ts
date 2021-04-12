@@ -14,7 +14,6 @@ import { SearchHistoryComponent } from './components/search-history/search-histo
 import { NoctuaEditorModule } from '@noctua.editor';
 import { ArtBasketComponent } from './components/art-basket/art-basket.component';
 import { ReviewFormComponent } from './components/review-form/review-form.component';
-import { CamsReplaceConfirmDialogComponent } from './components/dialogs/cams-replace-confirm/cams-replace-confirm.component';
 import { CamsReviewChangesDialogComponent } from './components/dialogs/cams-review-changes/cams-review-changes.component';
 import { CamsUnsavedDialogComponent } from './components/dialogs/cams-unsaved/cams-unsaved.component';
 
@@ -29,7 +28,6 @@ import { CamsUnsavedDialogComponent } from './components/dialogs/cams-unsaved/ca
         SearchHistoryComponent,
         ArtBasketComponent,
         ReviewFormComponent,
-        CamsReplaceConfirmDialogComponent,
         CamsReviewChangesDialogComponent,
         CamsUnsavedDialogComponent,
     ],
@@ -51,7 +49,6 @@ import { CamsUnsavedDialogComponent } from './components/dialogs/cams-unsaved/ca
         SearchHistoryComponent,
         ArtBasketComponent,
         ReviewFormComponent,
-        CamsReplaceConfirmDialogComponent,
         CamsReviewChangesDialogComponent,
         CamsUnsavedDialogComponent,
     ]

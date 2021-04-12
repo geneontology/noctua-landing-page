@@ -31,6 +31,8 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   @Input('panelDrawer')
   panelDrawer: MatDrawer;
 
+  @Input() public closeDialog: () => void;
+
   cam: Cam;
   activityFormGroup: FormGroup;
   activityFormSub: Subscription;
@@ -71,20 +73,6 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
         this.state = this.noctuaActivityFormService.state;
         this.molecularEntity = <FormGroup>this.activityFormGroup.get('molecularEntity');
       });
-
-    this.camService.onCamChanged
-      .pipe(takeUntil(this._unsubscribeAll))
-      .subscribe((cam) => {
-        if (!cam) {
-          return;
-        }
-
-        this.cam = cam;
-        this.cam.onGraphChanged
-          .pipe(takeUntil(this._unsubscribeAll))
-          .subscribe(() => {
-          });
-      });
   }
 
   checkErrors() {
@@ -98,6 +86,9 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
     self.noctuaActivityFormService.saveActivity().then(() => {
       self.noctuaFormDialogService.openSuccessfulSaveToast('Activity successfully created.', 'OK');
       self.noctuaActivityFormService.clearForm();
+      if (this.closeDialog) {
+        this.closeDialog();
+      }
     });
   }
 
@@ -120,7 +111,14 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   }
 
   close() {
-    this.panelDrawer.close();
+
+    if (this.panelDrawer) {
+      this.panelDrawer.close();
+    }
+    if (this.closeDialog) {
+      this.closeDialog();
+    }
+
   }
 
   ngOnDestroy(): void {

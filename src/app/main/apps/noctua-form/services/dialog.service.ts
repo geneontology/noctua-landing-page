@@ -13,7 +13,7 @@ import { SelectEvidenceDialogComponent } from './../dialogs/select-evidence/sele
 import { SearchDatabaseDialogComponent } from './../dialogs/search-database/search-database.component';
 
 import {
-    Evidence, ActivityNode, Activity
+    Evidence, ActivityNode, Activity, FormType
 } from 'noctua-form-base';
 
 import 'rxjs/add/operator/map';
@@ -64,11 +64,11 @@ export class NoctuaFormDialogService {
     }
 
 
-    openCreateActivityDialog(activity: Activity): void {
+    openCreateActivityDialog(formType: FormType): void {
         this.dialogRef = this._matDialog.open(CreateActivityDialogComponent, {
-            panelClass: 'activity-errors-dialog',
+            panelClass: 'noc-activity-create-dialog',
             data: {
-                activity
+                formType
             }
         });
         this.dialogRef.afterClosed()

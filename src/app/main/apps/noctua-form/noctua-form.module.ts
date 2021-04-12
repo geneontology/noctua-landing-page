@@ -57,6 +57,7 @@ import { EvidenceTableComponent } from './cam/cam-table/activity-table/evidence-
 import { ActivityTreeComponent } from './cam/cam-table/activity-tree/activity-tree.component';
 import { ActivityTreeNodeComponent } from './cam/cam-table/activity-tree/activity-tree-node/activity-tree-node.component';
 import { CreateActivityDialogComponent } from './dialogs/create-activity/create-activity.component';
+import { ActivityTreeTableComponent } from './cam/cam-table/activity-tree-table/activity-tree-table.component';
 
 const routes = [
   {
@@ -119,6 +120,7 @@ const routes = [
     ActivityConnectorFormComponent,
     ActivityTableComponent,
     ActivityTreeComponent,
+    ActivityTreeTableComponent,
     TripleTableComponent,
     ActivityTreeNodeComponent,
     CamPreviewComponent
@@ -152,6 +154,7 @@ const routes = [
     TripleTableComponent,
     ActivityTableComponent,
     ActivityTreeComponent,
+    ActivityTreeTableComponent,
     EvidenceTableComponent,
     GraphPreviewComponent,
     CamPreviewComponent,

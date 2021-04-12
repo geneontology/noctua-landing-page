@@ -108,7 +108,7 @@ export class NoctuaSearchService {
             });
 
             if (this.noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.cams) {
-                this.noctuaSearchMenuService.resetResults();
+                this.noctuaSearchMenuService.scrollToTop();
             }
         });
 

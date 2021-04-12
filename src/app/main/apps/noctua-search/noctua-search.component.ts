@@ -42,7 +42,6 @@ export class NoctuaSearchComponent implements OnInit, AfterViewInit, OnDestroy {
   rightDrawer: MatDrawer;
 
   @ViewChildren(NoctuaPerfectScrollbarDirective)
-  private _noctuaPerfectScrollbarDirectives: QueryList<NoctuaPerfectScrollbarDirective>;
 
   @ViewChild(PerfectScrollbarDirective, { static: false })
   scrollbarRef?: PerfectScrollbarDirective;
@@ -54,7 +53,7 @@ export class NoctuaSearchComponent implements OnInit, AfterViewInit, OnDestroy {
     mode: 'indeterminate'
   };
 
-  config = {
+  scrollbarConfig = {
     suppressScrollX: true
   }
 
@@ -179,6 +178,7 @@ export class NoctuaSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   toggleLeftDrawer(panel) {
     this.noctuaSearchMenuService.toggleLeftDrawer(panel);
+    this.noctuaSearchMenuService.selectMiddlePanel(MiddlePanel.cams);
   }
 
   createModel(type: 'graph-editor' | 'noctua-form') {
@@ -187,6 +187,7 @@ export class NoctuaSearchComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openBasketPanel() {
     this.openLeftDrawer(LeftPanel.artBasket);
+    this.camsService.reviewChanges();
     this.noctuaSearchMenuService.selectMiddlePanel(MiddlePanel.camsReview);
     this.noctuaSearchMenuService.reviewMode = ReviewMode.on;
     this.noctuaSearchMenuService.isReviewMode = true;

@@ -8,7 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ActivatedRoute, } from '@angular/router';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 import { NoctuaDataService } from '@noctua.common/services/noctua-data.service';
-import { Activity, Cam, CamService, NoctuaGraphService } from 'noctua-form-base';
+import { Activity, Cam, CamOperation, CamService, NoctuaGraphService } from 'noctua-form-base';
 import { NoctuaShapesService } from '@noctua.graph/services/shapes.service';
 import { noctuaStencil } from '@noctua.graph/data/cam-stencil';
 
@@ -24,9 +24,6 @@ export class CamGraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Input('cam')
   public cam: Cam;
-
-  camId: string;
-
 
   private _unsubscribeAll: Subject<any>;
   stencils = [];
@@ -44,7 +41,6 @@ export class CamGraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
     this.stencils = noctuaStencil.camStencil
 
-    console.log(this.stencils)
   }
 
   ngAfterViewInit() {
@@ -60,17 +56,25 @@ export class CamGraphComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
         self.cam = cam;
-        self.noctuaCamGraphService.addToCanvas(self.cam);
+        if (cam.operation !== CamOperation.ADD_ACTIVITY) {
+          self.noctuaCamGraphService.addToCanvas(self.cam);
+        }
 
       });
   }
 
-  loadCam(camId: string): void {
-    this._camService.getCam(camId);
-  }
-
   ngOnInit() {
     const self = this;
+
+    self._noctuaGraphService.onActivityAdded
+      .pipe(takeUntil(self._unsubscribeAll))
+      .subscribe((activity: Activity) => {
+        if (!activity) {
+          return;
+        }
+        self.noctuaCamGraphService.addActivity(activity);
+
+      });
   }
 
   ngOnDestroy(): void {

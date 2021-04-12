@@ -1,5 +1,5 @@
-<div *ngIf="noctuaActivityConnectorService.selectedPanel.id === noctuaActivityConnectorService.panel.selectConnector.id"
-  fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer w-100-p h-100-p">
+<div *ngIf="noctuaActivityConnectorService.selectedPanel === ConnectorPanel.SELECT" fxLayout="column"
+  fxLayoutAlign="start stretch" class="noc-drawer w-100-p h-100-p">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
       Select Downstream Activity</span>
@@ -101,13 +101,10 @@
     <button (click)='close()' type="button" mat-raised-button color="" class="mr-8">Close</button>
   </div>
 </div>
-<form
-  *ngIf="noctuaActivityConnectorService.selectedPanel.id === noctuaActivityConnectorService.panel.activityConnectorForm.id"
-  name="connectorFormGroup" [formGroup]="connectorFormGroup" fxLayout="column" fxLayoutAlign="start stretch"
-  class="noc-drawer w-100-p h-100-p">
+<form *ngIf="noctuaActivityConnectorService.selectedPanel === ConnectorPanel.FORM" name="connectorFormGroup"
+  [formGroup]="connectorFormGroup" fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer w-100-p h-100-p">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
-    <button mat-icon-button
-      (click)="noctuaActivityConnectorService.selectPanel(noctuaActivityConnectorService.panel.selectConnector)"
+    <button mat-icon-button (click)="noctuaActivityConnectorService.selectPanel(ConnectorPanel.SELECT)"
       class="noc-rounded-button noc-sm" color="primary">
       <mat-icon>arrow_back</mat-icon>
     </button>
@@ -129,9 +126,9 @@
                 Upstream Activity
               </div>
               <div class="p-8 w-100-p" fxFlex="100%">
-                <small>{{ connectorActivity?.upstreamActivity?.presentation.mfText}}</small>
+                <small>{{ connectorActivity?.subjectActivity?.presentation.mfText}}</small>
                 enabled by:
-                <strong>{{ connectorActivity?.upstreamActivity?.presentation.gpText}}</strong>
+                <strong>{{ connectorActivity?.subjectActivity?.presentation.gpText}}</strong>
               </div>
             </div>
             <div>
@@ -142,9 +139,9 @@
                 Downstream Activity
               </div>
               <div class="p-8 w-100-p" fxFlex="100%">
-                <small>{{ connectorActivity?.downstreamActivity?.presentation.mfText}}</small>
+                <small>{{ connectorActivity?.objectActivity?.presentation.mfText}}</small>
                 enabled by:
-                <strong>{{ connectorActivity?.downstreamActivity?.presentation.gpText}}</strong>
+                <strong>{{ connectorActivity?.objectActivity?.presentation.gpText}}</strong>
               </div>
             </div>
           </div>

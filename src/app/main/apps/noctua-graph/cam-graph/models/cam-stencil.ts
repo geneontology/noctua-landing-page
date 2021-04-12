@@ -13,7 +13,7 @@ export class CamStencil {
     stencilEl
     selectedStencilElement;
 
-    onAddElement: (element: joint.shapes.noctua.NodeCell) => NodeCell;
+    onAddElement: (element: joint.shapes.noctua.NodeCell, x: number, y: number) => NodeCell;
 
     constructor(camCanvas: CamCanvas, stencils: StencilItem[]) {
         const self = this;
@@ -21,7 +21,7 @@ export class CamStencil {
         self.camCanvas = camCanvas;
         self.stencils = stencils;
 
-        self.onAddElement = camCanvas.addElement.bind(self.camCanvas);
+
         self._initializeStencils(stencils);
     }
 
@@ -115,8 +115,10 @@ export class CamStencil {
 
                 // Dropped over paper?
                 if (x1 > target.left && x1 < target.left + canvasPaper.$el.width() && y1 > target.top && y1 < target.top + canvasPaper.$el.height()) {
-                    const el = self.onAddElement(self.selectedStencilElement);
-                    el.position(x1 - target.left - offset.x, y1 - target.top - offset.y);
+                    self.onAddElement(self.selectedStencilElement, x1 - target.left - offset.x, y1 - target.top - offset.y);
+                    //  el.position(x1 - target.left - offset.x, y1 - target.top - offset.y);
+
+
                 }
                 $('#noc-canvas').off('mousemove.fly').off('mouseup.fly');
                 flyShape.remove();

@@ -56,6 +56,8 @@ export class ActivityTreeNodeComponent implements OnInit, OnDestroy {
   @Input('options')
   options: any = {};
 
+  relationWidth = '0px';
+
   optionsDisplay: any = {}
 
   editableTerms = false;
@@ -73,11 +75,7 @@ export class ActivityTreeNodeComponent implements OnInit, OnDestroy {
     public noctuaActivityEntityService: NoctuaActivityEntityService,
     public noctuaActivityFormService: NoctuaActivityFormService,
     private inlineEditorService: InlineEditorService) {
-
-
     this.unsubscribeAll = new Subject();
-
-
   }
 
   ngOnInit(): void {
@@ -87,6 +85,7 @@ export class ActivityTreeNodeComponent implements OnInit, OnDestroy {
     }
 
     this.optionsDisplay = { ...this.options, hideHeader: true };
+    this.relationWidth = 150 - (this.entity.treeLevel) * 16 + 'px';
   }
 
   toggleExpand(activity: Activity) {
