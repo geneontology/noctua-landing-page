@@ -1,12 +1,9 @@
 import { Component, Inject, OnInit, OnDestroy } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 import {
   NoctuaFormConfigService,
-  NoctuaActivityFormService,
-  noctuaFormConfig,
   Entity,
 } from 'noctua-form-base';
 
@@ -31,7 +28,6 @@ export class NoctuaDetailDropdownComponent implements OnInit, OnDestroy {
     @Inject(detailDropdownData) public data: any,
     private noctuaFormDialogService: NoctuaFormDialogService,
     public noctuaFormConfigService: NoctuaFormConfigService,
-    public noctuaActivityFormService: NoctuaActivityFormService,
   ) {
     this._unsubscribeAll = new Subject();
     this.formControl = data.formControl;

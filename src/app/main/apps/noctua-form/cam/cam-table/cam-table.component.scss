@@ -24,15 +24,14 @@ $accent: map-get($theme, accent);
     }
 
     &.noc-error-chip {
-      font-size: 12px;
+      font-size: 10px;
       font-weight: normal;
-      @include deep-height(30px);
       text-overflow: ellipsis;
       white-space: nowrap;
       padding: 0;
 
       .noc-chip-label {
-        padding: 0 12px 0 12px;
+        padding: 0 10px 0 10px;
         display: block;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -54,11 +53,11 @@ $accent: map-get($theme, accent);
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 30px;
-        width: 30px;
+        height: 20px;
+        width: 20px;
         border-radius: 50%;
         color: #777;
-        font-size: 14px;
+        font-size: 10px;
       }
 
       .noc-icon-action {
@@ -72,7 +71,7 @@ $accent: map-get($theme, accent);
         }
       }
 
-      @include noc-chip-color(#e28989);
+      @include noc-chip-color(#eb9797);
     }
   }
 
@@ -136,7 +135,7 @@ $accent: map-get($theme, accent);
   .noc-summary-bar {
     margin-bottom: 4px;
     padding: 0 10px;
-    @include deep-height(40px);
+    @include deep-height(30px);
     //  min-height: 40px; //min-height: 35px;
     background-color: #f2f2f2;
     font-size: 14px;

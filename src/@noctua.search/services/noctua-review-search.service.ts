@@ -104,11 +104,7 @@ export class NoctuaReviewSearchService {
                     self.goto(0);
                 });
 
-                const element = document.querySelector('#noc-review-results');
-
-                if (element) {
-                    element.scrollTop = 0;
-                }
+                //self.noctuaSearchMenuService.scrollToTop();
             }
         });
 
@@ -253,19 +249,15 @@ export class NoctuaReviewSearchService {
                 self._noctuaSearchService.updateSearch();
                 self.onReplaceChanged.next(true);
 
-                if (reset) {
-                    self.noctuaSearchMenuService.selectMiddlePanel(MiddlePanel.cams);
-                    self.noctuaSearchMenuService.selectLeftPanel(LeftPanel.filter);
-                    self.clear();
-                    self.camsService.clearCams();
-                    self.clearBasket();
-                    self.onResetReview.next(true);
-                }
                 self.updateSearch();
 
                 self.zone.run(() => {
                     self.camsService.resetLoading(reviewCams);
                     self.confirmDialogService.openSuccessfulSaveToast('Changes successfully saved.', 'OK');
+
+                    if (reset) {
+                        self.confirmAfterSave();
+                    }
                 });
 
             })).subscribe({
@@ -334,6 +326,31 @@ export class NoctuaReviewSearchService {
 
                 }
             })
+    }
+
+    confirmAfterSave() {
+        const self = this;
+
+        const success = (reset) => {
+            if (reset) {
+                self.noctuaSearchMenuService.selectMiddlePanel(MiddlePanel.cams);
+                self.noctuaSearchMenuService.selectLeftPanel(LeftPanel.filter);
+                self.clear();
+                self.camsService.clearCams();
+                self.clearBasket();
+                self.onResetReview.next(true);
+                self.noctuaSearchMenuService.scrollToTop();
+            }
+        }
+
+        const options = {
+            cancelLabel: 'No',
+            confirmLabel: 'Yes'
+        };
+
+        this.confirmDialogService.openConfirmDialog('Changes successfully saved.',
+            'Do you want to clear all your selected models from ART',
+            success, options);
     }
 
     populateStoredModel(cam: Cam, storedCam) {
@@ -438,8 +455,6 @@ export class NoctuaReviewSearchService {
         this.currentMatchedEnity = undefined;
         this.camsService.currentMatch = new Entity(null, null);
         this.searchCriteria = new SearchCriteria();
-
-
     }
 
     getPage(pageNumber: number, pageSize: number) {
@@ -508,6 +523,7 @@ export class NoctuaReviewSearchService {
         this.artBasket.clearBasket();
         localStorage.setItem('artBasket', JSON.stringify(this.artBasket));
         this.onArtBasketChanged.next(this.artBasket);
+        this.noctuaSearchMenuService.scrollToTop();
     }
 
     downloadSearchConfig() {

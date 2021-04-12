@@ -138,10 +138,10 @@ export class NodeLink extends shapes.NodeLink {
 })
 export class NoctuaShapesService {
   constructor() {
-    this.initialize();
+    this._initialize();
   }
 
-  initialize() {
+  private _initialize() {
 
     const self = this;
 

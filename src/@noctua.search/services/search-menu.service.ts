@@ -39,6 +39,7 @@ export class NoctuaSearchMenuService {
         } else if (panel === MiddlePanel.reviewChanges) {
             this.reviewLevel = 2;
         }
+        this.scrollToTop();
     }
 
     selectRightPanel(panel: RightPanel) {
@@ -78,7 +79,7 @@ export class NoctuaSearchMenuService {
         return this.rightDrawer.close();
     }
 
-    resetResults() {
+    scrollToTop() {
         const element = document.querySelector('#noc-results');
 
         if (element) {

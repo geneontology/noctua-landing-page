@@ -107,6 +107,7 @@ export class NoctuaEditorDropdownComponent implements OnInit, OnDestroy {
       case EditorCategory.evidence:
       case EditorCategory.reference:
       case EditorCategory.with:
+      case EditorCategory.relationship:
         this.close();
         self.noctuaActivityEntityService.saveActivityReplace(self.cam).pipe(
           take(1),

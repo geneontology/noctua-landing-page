@@ -13,7 +13,7 @@ import { NoctuaGraphComponent } from './noctua-graph.component';
 
 const routes = [
   {
-    path: 'ggggg',
+    path: 'gggg',
     component: NoctuaGraphComponent
   }
 ];

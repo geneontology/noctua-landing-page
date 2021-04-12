@@ -68,6 +68,20 @@ mat-chip {
   visibility: hidden;
 }
 
+.noc-activity-create-dialog {
+  @include deep-height(90%);
+  @include deep-width(900px);
+
+  noc-activity-form {
+    @include deep-height(100%);
+    @include deep-width(100%);
+  }
+
+  @include media-breakpoint("lt-lg") {
+    @include deep-width(95%);
+  }
+}
+
 .noc-select-evidence-dialog {
   @include deep-width(1100px);
 
@@ -301,6 +315,12 @@ input[type="text"] {
 .noc-tree {
   padding-left: 0;
   //margin-left: -5px;
+
+  .node-drop-slot {
+    display: none;
+    visibility: hidden;
+    @include deep-height(0);
+  }
 
   .tree-children::before {
     content: "";

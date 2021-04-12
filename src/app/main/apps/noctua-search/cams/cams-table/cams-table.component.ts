@@ -6,7 +6,12 @@ import { takeUntil } from 'rxjs/internal/operators';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
 
 import {
-  NoctuaFormConfigService, NoctuaUserService, CamService, Contributor, CamsService, Cam,
+  NoctuaFormConfigService,
+  NoctuaUserService,
+  CamService,
+  CamsService,
+  Cam,
+  ActivityDisplayType,
 } from 'noctua-form-base';
 
 import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
@@ -20,6 +25,7 @@ import { NoctuaReviewSearchService } from '@noctua.search/services/noctua-review
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import { LeftPanel, MiddlePanel, RightPanel } from '@noctua.search/models/menu-panels';
 import { each, find } from 'lodash';
+import { TableOptions } from '@noctua.common/models/table-options';
 
 
 export function CustomPaginator() {
@@ -78,10 +84,9 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   cams: any[] = [];
   camPage: CamPage;
 
-  tableOptions = {
-    treeTable: false,
-    reviewMode: true,
-    color: 'transparent'
+  tableOptions: TableOptions = {
+    displayType: ActivityDisplayType.TREE,
+    slimViewer: true,
   }
 
   selection = new SelectionModel<Cam>(true, []);

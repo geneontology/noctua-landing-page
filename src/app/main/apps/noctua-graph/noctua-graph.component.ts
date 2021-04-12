@@ -10,7 +10,8 @@ import {
   NoctuaFormConfigService,
   CamService,
   CamsService,
-  Activity
+  Activity,
+  ActivityDisplayType
 } from 'noctua-form-base';
 
 import { FormGroup } from '@angular/forms';
@@ -23,6 +24,8 @@ import { LeftPanel, MiddlePanel, RightPanel } from '@noctua.common/models/menu-p
 import { ArtBasket } from '@noctua.search/models/art-basket';
 import { NoctuaReviewSearchService } from '@noctua.search/services/noctua-review-search.service';
 import { NoctuaPerfectScrollbarDirective } from '@noctua/directives/noctua-perfect-scrollbar/noctua-perfect-scrollbar.directive';
+import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
+import { TableOptions } from '@noctua.common/models/table-options';
 
 @Component({
   selector: 'noc-noctua-graph',
@@ -39,8 +42,8 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('rightDrawer', { static: true })
   rightDrawer: MatDrawer;
 
-  @ViewChildren(NoctuaPerfectScrollbarDirective)
-  private _noctuaPerfectScrollbarDirectives: QueryList<NoctuaPerfectScrollbarDirective>;
+  @ViewChild(PerfectScrollbarDirective, { static: false })
+  scrollbarRef?: PerfectScrollbarDirective;
 
   loadingSpinner: any = {
     color: 'primary',
@@ -65,13 +68,18 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   cams: any[] = [];
 
-  tableOptions = {
-    treeTable: false,
+  tableOptions: TableOptions = {
+    displayType: ActivityDisplayType.TREE,
+    slimViewer: true,
     editableTerms: true,
     editableEvidence: true,
     editableReference: true,
     editableWith: true,
   };
+
+  scrollbarConfig = {
+    suppressScrollX: true
+  }
 
   private _unsubscribeAll: Subject<any>;
 
@@ -114,9 +122,7 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-    this.noctuaCommonMenuService.resultsViewScrollbar = this._noctuaPerfectScrollbarDirectives.find((directive) => {
-      return directive.elementRef.nativeElement.id === 'noc-results';
-    });
+    this.noctuaCommonMenuService.resultsViewScrollbar = this.scrollbarRef;
   }
 
   loadCam(modelId) {

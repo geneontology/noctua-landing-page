@@ -38,6 +38,7 @@ export class EvidenceTableComponent implements OnInit, OnDestroy {
     'assignedBy',
     'contributor'];
 
+
   @Input('options')
   options: any = {};
 

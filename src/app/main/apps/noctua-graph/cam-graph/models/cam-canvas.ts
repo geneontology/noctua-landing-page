@@ -19,7 +19,10 @@ export class CamCanvas {
     canvasGraph: joint.dia.Graph;
     selectedStencilElement;
     elementOnClick: (element: joint.shapes.noctua.NodeCell) => void;
-    onElementAdd: (modelType: ActivityType) => Activity;
+    onLinkCreated: (
+        sourceId: string,
+        targetId: string,
+        link: joint.shapes.noctua.NodeLink) => void;
     cam: Cam;
 
     constructor() {
@@ -166,31 +169,18 @@ export class CamCanvas {
             const targetId = link.get('target').id;
 
             if (targetId && sourceId) {
-                self.canvasGraph.getCell(targetId);
-                self.canvasGraph.getCell(targetId);
-            }
+                // const source = self.canvasGraph.getCell(sourceId) as NodeCell;
+                // const target = self.canvasGraph.getCell(targetId) as NodeCell;
 
+                //  console.log(targetId)
+                //  console.log(sourceId)
+
+                self.onLinkCreated(sourceId, targetId, link)
+            }
         });
     }
 
-    addElement(element: joint.shapes.noctua.NodeCell): NodeCell {
-        const self = this;
-        const node = element.get('node') as StencilItemNode;
 
-        const activity: Activity = self.onElementAdd(node.type);
-        const el = new NodeCell()
-            .position(0, 0)
-            .size(120, 100)
-
-        // el.attr({ nodeType: { text: activity.category } });
-        el.attr({ noctuaTitle: { text: activity.title } });
-
-        // el.set({ activity: new Activity(activity) });
-
-        self.canvasGraph.addCell(el);
-
-        return el;
-    }
 
     addLink(): NodeLink {
         const self = this;
@@ -313,6 +303,31 @@ export class CamCanvas {
         //  self.canvasPaper.
     }
 
+    createNode(activity: Activity): NodeCell {
+        const el = new NodeCell()
+        //.addActivityPorts()
+        // .addColor(activity.backgroundColor)
+        //.setSuccessorCount(activity.successorCount)
+
+        el.attr({ nodeType: { text: activity.id ? activity.activityType : 'Activity Unity' } });
+        el.attr({ noctuaTitle: { text: activity.id ? activity.title : 'New Activity' } });
+        el.attr({
+            expand: {
+                event: 'element:expand:pointerdown',
+                stroke: 'black',
+                strokeWidth: 2
+            },
+        })
+        el.set({
+            activity: activity,
+            id: activity.id,
+            position: activity.position,
+            size: activity.size,
+        });
+
+        return el
+    }
+
     addCanvasGraph(cam: Cam) {
         const self = this;
         const nodes = [];
@@ -322,28 +337,7 @@ export class CamCanvas {
 
         each(cam.activities, (activity: Activity) => {
             if (activity.visible) {
-
-                const el = new NodeCell()
-                //.addActivityPorts()
-                // .addColor(activity.backgroundColor)
-                //.setSuccessorCount(activity.successorCount)
-
-                el.attr({ nodeType: { text: activity.id ? activity.activityType : 'Activity Unity' } });
-                el.attr({ noctuaTitle: { text: activity.id ? activity.title : 'New Activity' } });
-                el.attr({
-                    expand: {
-                        event: 'element:expand:pointerdown',
-                        stroke: 'black',
-                        strokeWidth: 2
-                    },
-                })
-                el.set({
-                    activity: activity,
-                    id: activity.id,
-                    position: activity.position,
-                    size: activity.size,
-                });
-
+                const el = self.createNode(activity);
                 nodes.push(el);
             }
         });
