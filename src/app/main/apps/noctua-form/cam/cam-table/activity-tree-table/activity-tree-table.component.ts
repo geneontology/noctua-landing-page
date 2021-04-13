@@ -23,17 +23,13 @@ import {
   Cam,
   Activity,
   ActivityNode,
-  ShapeDefinition
+  compareNodeWeight,
 } from 'noctua-form-base';
 
 import { EditorCategory } from '@noctua.editor/models/editor-category';
-import { find } from 'lodash';
-import { InlineEditorService } from '@noctua.editor/inline-editor/inline-editor.service';
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import { MatTableDataSource } from '@angular/material/table';
-import { ArrayDataSource } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
-import { NoctuaConfirmDialogService } from '@noctua/components/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'noc-activity-tree-table',
@@ -82,8 +78,7 @@ export class ActivityTreeTableComponent implements OnInit, OnDestroy {
 
     this.gpNode = this.activity.getGPNode();
 
-    this.dataSource.data = this.activity.nodes;
-
+    this.dataSource.data = this.activity.nodes.sort(compareNodeWeight);
   }
 
   ngOnDestroy(): void {

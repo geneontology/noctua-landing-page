@@ -57,8 +57,7 @@
         <noc-art-basket [hidden]="noctuaSearchMenuService.selectedLeftPanel !== LeftPanel.artBasket"></noc-art-basket>
       </div>
     </mat-drawer>
-    <mat-drawer-content #scrollbarRef id="noc-results" class="noc-section-body w-100-p"
-      [perfectScrollbar]="scrollbarConfig">
+    <mat-drawer-content #scrollbarRef class="noc-section-body w-100-p" [perfectScrollbar]="scrollbarConfig">
 
       <div class="header accent p-8 w-100-p" fxLayout="column" fxLayoutAlign="center center">
         <h1 [@animate]="{value:'*',params:{delay:'100ms', y:'25px'}}">

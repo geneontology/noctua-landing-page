@@ -87,7 +87,10 @@ export class ReviewFormComponent implements OnInit, OnDestroy {
         this.cams = cams;
       });
 
-    this.gpNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoMolecularEntity]);
+    this.gpNode = EntityDefinition.generateBaseTerm([
+      EntityDefinition.GoMolecularEntity,
+      EntityDefinition.GoChemicalEntity
+    ]);
     this.termNode = EntityDefinition.generateBaseTerm([
       EntityDefinition.GoMolecularFunction,
       EntityDefinition.GoBiologicalProcess,
