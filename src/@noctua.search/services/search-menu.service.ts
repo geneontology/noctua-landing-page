@@ -80,12 +80,6 @@ export class NoctuaSearchMenuService {
     }
 
     scrollToTop() {
-        const element = document.querySelector('#noc-results');
-
-        if (element) {
-            // element.scrollTop = 0;
-        }
-
         setTimeout(() => {
             if (this.resultsViewScrollbar) {
                 this.resultsViewScrollbar.update();

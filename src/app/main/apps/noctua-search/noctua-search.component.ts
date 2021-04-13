@@ -22,7 +22,6 @@ import { ReviewMode } from '@noctua.search/models/review-mode';
 import { LeftPanel, MiddlePanel, RightPanel } from '@noctua.search/models/menu-panels';
 import { ArtBasket } from '@noctua.search/models/art-basket';
 import { NoctuaReviewSearchService } from '@noctua.search/services/noctua-review-search.service';
-import { NoctuaPerfectScrollbarDirective } from '@noctua/directives/noctua-perfect-scrollbar/noctua-perfect-scrollbar.directive';
 import { NgScrollbar } from 'ngx-scrollbar';
 import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
 
@@ -41,9 +40,7 @@ export class NoctuaSearchComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('rightDrawer', { static: true })
   rightDrawer: MatDrawer;
 
-  @ViewChildren(NoctuaPerfectScrollbarDirective)
-
-  @ViewChild(PerfectScrollbarDirective, { static: false })
+  @ViewChild(PerfectScrollbarDirective)
   scrollbarRef?: PerfectScrollbarDirective;
 
   // @ViewChild(NgScrollbar) scrollbarRef: NgScrollbar;
