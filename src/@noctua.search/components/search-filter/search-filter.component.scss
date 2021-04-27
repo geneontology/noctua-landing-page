@@ -11,6 +11,10 @@
 
   background-color: white;
 
+  .noc-checkbox {
+    font-size: 12px;
+  }
+
   mat-chip {
     font-size: 12px;
     font-weight: normal;
@@ -35,9 +39,10 @@
 
     .noc-form-section {
       width: 100%;
-      background-color: #FFF;
+      background-color: #fff;
 
       .noc-section-header {
+        padding-right: 12px;
         height: 30px;
         background-color: $noc-primary-color-light;
 
@@ -63,7 +68,6 @@
       }
     }
   }
-
 
   mat-chip {
     font-size: 12px;
@@ -95,12 +99,9 @@
         border-radius: 50%;
         color: #777;
         font-size: 14px;
-
       }
 
       @include noc-chip-color(#bbc9cc);
-
-
     }
   }
 

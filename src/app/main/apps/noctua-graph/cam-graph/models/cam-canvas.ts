@@ -12,6 +12,7 @@ import { NodeCell, NodeLink, StencilNode } from '@noctua.graph/services/shapes.s
 import * as joint from 'jointjs';
 import { each, cloneDeep } from 'lodash';
 import { StencilItemNode } from '@noctua.graph/data/cam-stencil';
+import { getEdgeColor } from '@noctua.graph/data/edge-display';
 
 export class CamCanvas {
 
@@ -19,6 +20,7 @@ export class CamCanvas {
     canvasGraph: joint.dia.Graph;
     selectedStencilElement;
     elementOnClick: (element: joint.shapes.noctua.NodeCell) => void;
+    linkOnClick: (element: joint.shapes.noctua.NodeLink) => void;
     onLinkCreated: (
         sourceId: string,
         targetId: string,
@@ -65,7 +67,8 @@ export class CamCanvas {
             },
 
             // connectionStrategy: joint.connectionStrategies.pinAbsolute,
-            // defaultConnectionPoint: { name: 'boundary', args: { selector: 'border' } },
+            defaultConnectionPoint: { name: 'boundary', args: { selector: 'border' } },
+            defaultConnector: { name: 'smooth' },
             async: true,
             interactive: { labelMove: false },
             linkPinning: false,
@@ -81,9 +84,9 @@ export class CamCanvas {
             sorting: joint.dia.Paper.sorting.APPROX,
             // markAvailable: true,
             defaultLink: function () {
-                return self.addLink();
+                return NodeLink.create();
             },
-            perpendicularLinks: true,
+            perpendicularLinks: false,
             // defaultRouter: {
             //   name: 'manhattan',
             //   args: {
@@ -140,18 +143,11 @@ export class CamCanvas {
         });
 
 
-        this.canvasPaper.on('link:pointerclick', function (linkView) {
+        this.canvasPaper.on('link:pointerdblclick', function (linkView) {
             const link = linkView.model;
 
-            self.elementOnClick(link);
-            link.attr('line/stroke', 'orange');
-            link.label(0, {
-                attrs: {
-                    body: {
-                        stroke: 'orange'
-                    }
-                }
-            });
+            self.linkOnClick(link);
+
         });
 
         this.canvasPaper.on('element:expand:pointerdown', function (elementView: joint.dia.ElementView, evt) {
@@ -180,12 +176,8 @@ export class CamCanvas {
         });
     }
 
-
-
-    addLink(): NodeLink {
+    addLink(link: NodeLink, predicate: Predicate) {
         const self = this;
-        const link = NodeLink.create();
-        const predicate: Predicate = new Predicate(Entity.createEntity(noctuaFormConfig.edge.causallyUpstreamOf));
 
         link.set({
             activity: predicate,
@@ -194,13 +186,9 @@ export class CamCanvas {
 
         link.setText(predicate.edge.label);
 
-        // Add remove button to the link.
-        const tools = new joint.dia.ToolsView({
-            tools: [new joint.linkTools.Remove()]
-        });
+
         // link.findView(this).addTools(tools);
 
-        return link;
     }
 
     createLinkFromElements(source: joint.shapes.noctua.NodeCell, target: joint.shapes.noctua.NodeCell) {
@@ -214,7 +202,7 @@ export class CamCanvas {
 
     createLink(subject: Activity, predicate: Predicate, object: Activity) {
         const self = this;
-        const triple = new Triple(subject, predicate, object);
+        const triple = new Triple(subject, object, predicate);
 
         ///self.cam.addNode(predicate);
         //self.cam.addTriple(triple);
@@ -342,22 +330,23 @@ export class CamCanvas {
             }
         });
 
-        each(cam.triples, (triple: Triple<Activity>) => {
+        each(cam.causalRelations, (triple: Triple<Activity>) => {
             if (triple.predicate.visible) {
+                const color = getEdgeColor(triple.predicate.edge.id);
                 const link = NodeLink.create();
+                // link.set('connector', { name: 'jumpover', args: { type: 'gap' } })
                 link.setText(triple.predicate.edge.label);
                 link.set({
                     activity: triple.predicate,
-                    id: triple.predicate.edge.id,
                     source: {
                         id: triple.subject.id,
-                        port: 'right'
                     },
                     target: {
                         id: triple.object.id,
-                        port: 'left'
                     }
                 });
+
+                link.setColor(color)
 
                 nodes.push(link);
             }

@@ -19,7 +19,7 @@ export class NoctuaConfirmDialogService {
         private _matDialog: MatDialog) {
     }
 
-    openSuccessfulSaveToast(message: string, action: string) {
+    openInfoToast(message: string, action: string) {
         this.snackBar.open(message, action, {
             duration: 5000,
             verticalPosition: 'top'

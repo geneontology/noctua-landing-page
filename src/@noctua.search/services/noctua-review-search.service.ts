@@ -253,7 +253,7 @@ export class NoctuaReviewSearchService {
 
                 self.zone.run(() => {
                     self.camsService.resetLoading(reviewCams);
-                    self.confirmDialogService.openSuccessfulSaveToast('Changes successfully saved.', 'OK');
+                    self.confirmDialogService.openInfoToast('Changes successfully saved.', 'OK');
 
                     if (reset) {
                         self.confirmAfterSave();

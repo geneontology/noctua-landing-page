@@ -89,7 +89,7 @@ export class ReviewFormComponent implements OnInit, OnDestroy {
 
     this.gpNode = EntityDefinition.generateBaseTerm([
       EntityDefinition.GoMolecularEntity,
-      EntityDefinition.GoChemicalEntity
+      // EntityDefinition.GoChemicalEntity
     ]);
     this.termNode = EntityDefinition.generateBaseTerm([
       EntityDefinition.GoMolecularFunction,
@@ -138,7 +138,7 @@ export class ReviewFormComponent implements OnInit, OnDestroy {
   }
 
   getClosure(rootTypes: Entity[]) {
-    const s = [
+    const range = [
       EntityDefinition.GoMolecularEntity,
       EntityDefinition.GoMolecularFunction,
       EntityDefinition.GoBiologicalProcess,
@@ -147,13 +147,13 @@ export class ReviewFormComponent implements OnInit, OnDestroy {
       EntityDefinition.GoAnatomicalEntity,
       EntityDefinition.GoCellTypeEntity,
       EntityDefinition.GoProteinContainingComplex,
-      EntityDefinition.GoChemicalEntity,
+      //EntityDefinition.GoChemicalEntity,
       EntityDefinition.GoOrganism,
       EntityDefinition.GoEvidence
     ];
 
-    const closures = s.filter(x => {
-      return rootTypes.find(y => y.id === x.category);
+    const closures = range.filter(closure => {
+      return rootTypes.find(rootType => rootType.id === closure.category);
     });
 
     return closures;
@@ -232,7 +232,7 @@ export class ReviewFormComponent implements OnInit, OnDestroy {
     this.noctuaReviewSearchService.goto(step);
   }
 
-  findSelected(value) {
+  findSelected(value: any) {
     const closures = this.getClosure(value.rootTypes);
     this.findNode!.termLookup.results = []
 

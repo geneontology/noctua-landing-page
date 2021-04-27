@@ -283,7 +283,7 @@ export class ActivityTreeComponent implements OnInit, OnDestroy {
 
     const success = () => {
       this.camService.deleteActivity(activity).then(() => {
-        self.noctuaFormDialogService.openSuccessfulSaveToast('Activity successfully deleted.', 'OK');
+        self.noctuaFormDialogService.openInfoToast('Activity successfully deleted.', 'OK');
       });
     };
 

@@ -66,9 +66,6 @@
                   <mat-icon class="green-500-fg">check_circle</mat-icon>
                   <span class="noc-description">
                     {{connector.connectorActivity?.rule.r1Edge?.label}}
-                    <span *ngIf="connector.connectorActivity?.rule.r2Edge">
-                      <strong> + </strong> {{connector.connectorActivity?.rule.r2Edge?.label}}
-                    </span>
                   </span>
                 </div>
               </div>
@@ -333,9 +330,6 @@
             <mat-icon class="green-500-fg">check_circle</mat-icon>
             <span class="noc-description">
               {{currentConnectorActivity?.rule.r1Edge?.label}}
-              <span *ngIf="currentConnectorActivity?.rule.r2Edge">
-                <strong> + </strong> {{currentConnectorActivity?.rule.r2Edge?.label}}
-              </span>
             </span>
           </div>
           <noc-graph-preview [nodes]="currentConnectorActivity?.graphPreview.nodes"
@@ -350,9 +344,6 @@
           <mat-icon class="green-500-fg">check_circle</mat-icon>
           <span class="noc-description">
             {{connectorActivity?.rule.r1Edge?.label}}
-            <span *ngIf="connectorActivity?.rule.r2Edge">
-              <strong> + </strong> {{connectorActivity?.rule.r2Edge?.label}}
-            </span>
           </span>
         </div>
         <noc-graph-preview [nodes]="connectorActivity?.graphPreview.nodes"

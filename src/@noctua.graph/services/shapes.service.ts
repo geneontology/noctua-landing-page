@@ -26,7 +26,7 @@ export class StencilNode extends shapes.StencilNode {
     const self = this;
 
     if (iconUrl) {
-      self.attr('icon/xlink:href', `./assets/icons/core/SVG/${iconUrl}.svg`);
+      self.attr('icon/xlink:href', `${iconUrl}`);
     }
 
     return this;
@@ -77,9 +77,8 @@ export class NodeLink extends shapes.NodeLink {
         }],
         attrs: {
           labelText: {
-            text: 'First',
             fill: '#7c68fc',
-            fontSize: 10,
+            fontSize: 8,
             fontFamily: 'sans-serif',
             textAnchor: 'middle',
             textVerticalAnchor: 'middle'
@@ -100,20 +99,21 @@ export class NodeLink extends shapes.NodeLink {
           }
         },
         position: {
-          distance: -100,
+          distance: 0.5,
           args: {
-            // keepGradient: true,
+            //keepGradient: true,
             ensureLegibility: true,
+            absoluteOffset: true
           }
         }
       }],
     });
-    link.router('manhattan', {
-      step: 10,
-      padding: 0,
+    link.router('normal', {
+      // step: 10,
+      // padding: 0,
       //  startDirections: ['bottom'],
       //   endDirections: ['top'],
-    }).connector('normal');
+    }).connector('smooth');
 
     return link;
   }
@@ -125,6 +125,31 @@ export class NodeLink extends shapes.NodeLink {
       attrs: {
         labelText: {
           text: text
+        }
+      }
+    });
+
+    return this;
+  }
+
+  setColor(colorKey: string): this {
+    const self = this;
+    const deep = getColor(colorKey, 800);
+    const light = getColor(colorKey, 600);
+
+    const lineColor = light ? light : colorKey;
+    const textColor = deep ? deep : colorKey;
+
+    self.attr('line/stroke', lineColor);
+    self.attr('line/targetMarker/stroke', lineColor);
+    self.attr('line/targetMarker/fill', lineColor);
+    self.label(0, {
+      attrs: {
+        labelText: {
+          fill: textColor
+        },
+        labelBody: {
+          stroke: lineColor
         }
       }
     });

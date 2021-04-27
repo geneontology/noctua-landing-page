@@ -47,7 +47,7 @@ export class CamsReviewComponent implements OnInit, OnDestroy {
 
   tableOptions: TableOptions = {
     displayType: ActivityDisplayType.TREE_TABLE,
-    slimViewer: true,
+    slimViewer: false,
     editableTerms: true,
     editableEvidence: true,
     editableReference: true,

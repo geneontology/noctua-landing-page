@@ -1,7 +1,6 @@
 
 import { StencilItem, StencilItemNode } from '@noctua.graph/data/cam-stencil';
-import { StencilNode } from '@noctua.graph/models/shapes';
-import { NodeCell } from '@noctua.graph/services/shapes.service';
+import { StencilNode, NodeCell } from '@noctua.graph/services/shapes.service';
 import * as joint from 'jointjs';
 import { cloneDeep, each } from "lodash";
 import { CamCanvas } from "./cam-canvas";
@@ -53,7 +52,7 @@ export class CamStencil {
             const el = new StencilNode();
             // .size(120, 80)
             // .setColor(cam.backgroundColor)
-            // .setIcon(cam.iconUrl);
+            el.setIcon(stencilItemNode.iconUrl);
             el.attr('label/text', stencilItemNode.label);
             el.set({ node: cloneDeep(stencilItemNode) });
 
