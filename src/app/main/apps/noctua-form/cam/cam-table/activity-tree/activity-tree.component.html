@@ -90,7 +90,7 @@
           Contributor
         </div>
       </div>
-      <div class="noc-cell noc-action-cell"> </div>
+      <div *ngIf="noctuaUserService.user && options.showMenu" class="noc-cell noc-action-cell"> </div>
     </div>
     <div class="noc-tree">
       <tree-root #tree (initialized)="onTreeLoad()" [nodes]="treeNodes" [options]="treeOptions">

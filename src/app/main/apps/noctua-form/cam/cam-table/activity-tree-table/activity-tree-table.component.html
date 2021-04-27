@@ -67,7 +67,7 @@
           Contributor
         </div>
       </div>
-      <div class="noc-cell noc-action-cell"> </div>
+      <div *ngIf="noctuaUserService.user &&  options.showMenu" class="noc-cell noc-action-cell"> </div>
     </div>
     <mat-tree #tree *ngIf="dataSource?.data" [dataSource]="dataSource" [treeControl]="treeControl">
       <mat-tree-node class="noc-tree-node" *matTreeNodeDef="let node" matTreeNodeToggle matTreeNodePadding
