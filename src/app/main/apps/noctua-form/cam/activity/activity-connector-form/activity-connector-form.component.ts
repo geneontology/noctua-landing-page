@@ -10,7 +10,6 @@ import {
   Activity,
   ConnectorActivity,
   ConnectorState,
-  ConnectorType,
   ActivityNode,
   Evidence,
   NoctuaActivityConnectorService,
@@ -40,7 +39,6 @@ export class ActivityConnectorFormComponent implements OnInit, OnDestroy {
 
   @Input() public closeDialog: () => void;
 
-  connectorType = ConnectorType;
   connectorState = ConnectorState;
   currentConnectorActivity: ConnectorActivity;
   connectorActivity: ConnectorActivity;
@@ -89,7 +87,7 @@ export class ActivityConnectorFormComponent implements OnInit, OnDestroy {
     this.noctuaActivityConnectorService.saveActivity().then(() => {
       self.noctuaActivityConnectorService.selectPanel(ConnectorPanel.SELECT);
       self.noctuaActivityConnectorService.getConnections();
-      self.noctuaFormDialogService.openSuccessfulSaveToast('Causal relation successfully created.', 'OK');
+      self.noctuaFormDialogService.openInfoToast('Causal relation successfully created.', 'OK');
       if (this.closeDialog) {
         this.closeDialog();
       }
@@ -102,7 +100,7 @@ export class ActivityConnectorFormComponent implements OnInit, OnDestroy {
       self.noctuaActivityConnectorService.saveActivity().then(() => {
         self.noctuaActivityConnectorService.selectPanel(ConnectorPanel.SELECT);
         self.noctuaActivityConnectorService.getConnections();
-        self.noctuaFormDialogService.openSuccessfulSaveToast('Causal relation successfully updated.', 'OK');
+        self.noctuaFormDialogService.openInfoToast('Causal relation successfully updated.', 'OK');
       });
     };
 
@@ -117,7 +115,7 @@ export class ActivityConnectorFormComponent implements OnInit, OnDestroy {
       self.noctuaActivityConnectorService.deleteActivity(connectorActivity).then(() => {
         self.noctuaActivityConnectorService.selectPanel(ConnectorPanel.SELECT);
         self.noctuaActivityConnectorService.getConnections();
-        self.noctuaFormDialogService.openSuccessfulSaveToast('Causal relation successfully deleted.', 'OK');
+        self.noctuaFormDialogService.openInfoToast('Causal relation successfully deleted.', 'OK');
       });
     };
 
@@ -129,15 +127,15 @@ export class ActivityConnectorFormComponent implements OnInit, OnDestroy {
   addEvidence() {
     const self = this;
 
-    self.connectorActivity.upstreamNode.predicate.addEvidence();
-    this.noctuaActivityConnectorService.updateEvidence(self.connectorActivity.upstreamNode);
+    self.connectorActivity.subjectNode.predicate.addEvidence();
+    this.noctuaActivityConnectorService.updateEvidence(self.connectorActivity.subjectNode);
   }
 
   removeEvidence(index: number) {
     const self = this;
 
-    self.connectorActivity.upstreamNode.predicate.removeEvidence(index);
-    this.noctuaActivityConnectorService.updateEvidence(self.connectorActivity.upstreamNode);
+    self.connectorActivity.subjectNode.predicate.removeEvidence(index);
+    this.noctuaActivityConnectorService.updateEvidence(self.connectorActivity.subjectNode);
   }
 
   addNDEvidence() {
@@ -148,15 +146,15 @@ export class ActivityConnectorFormComponent implements OnInit, OnDestroy {
       noctuaFormConfig.evidenceAutoPopulate.nd.evidence.id,
       noctuaFormConfig.evidenceAutoPopulate.nd.evidence.label));
     evidence.reference = noctuaFormConfig.evidenceAutoPopulate.nd.reference;
-    self.connectorActivity.upstreamNode.predicate.setEvidence([evidence]);
-    this.noctuaActivityConnectorService.updateEvidence(self.connectorActivity.upstreamNode);
+    self.connectorActivity.subjectNode.predicate.setEvidence([evidence]);
+    this.noctuaActivityConnectorService.updateEvidence(self.connectorActivity.subjectNode);
   }
 
   clearValues() {
     const self = this;
 
-    self.connectorActivity.upstreamNode.clearValues();
-    this.noctuaActivityConnectorService.updateEvidence(self.connectorActivity.upstreamNode);
+    self.connectorActivity.subjectNode.clearValues();
+    this.noctuaActivityConnectorService.updateEvidence(self.connectorActivity.subjectNode);
   }
 
   openSelectEvidenceDialog() {
@@ -166,8 +164,8 @@ export class ActivityConnectorFormComponent implements OnInit, OnDestroy {
 
     const success = (selected) => {
       if (selected.evidences && selected.evidences.length > 0) {
-        self.connectorActivity.upstreamNode.predicate.setEvidence(selected.evidences);
-        this.noctuaActivityConnectorService.updateEvidence(self.connectorActivity.upstreamNode);
+        self.connectorActivity.subjectNode.predicate.setEvidence(selected.evidences);
+        this.noctuaActivityConnectorService.updateEvidence(self.connectorActivity.subjectNode);
       }
     };
 

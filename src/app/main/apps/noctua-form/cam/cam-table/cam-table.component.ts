@@ -20,6 +20,7 @@ import {
 import { NoctuaConfirmDialogService } from '@noctua/components/confirm-dialog/confirm-dialog.service';
 import { trigger, state, transition, style, animate } from '@angular/animations';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
+import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'noc-cam-table',
@@ -42,6 +43,9 @@ export class CamTableComponent implements OnInit, OnDestroy {
   searchForm: FormGroup;
   camDisplayTypeOptions = noctuaFormConfig.camDisplayType.options;
   activityTypeOptions = noctuaFormConfig.activityType.options;
+
+  @Input('panelDrawer')
+  panelDrawer: MatDrawer;
 
   @Input('cam')
   public cam: Cam;
@@ -81,6 +85,10 @@ export class CamTableComponent implements OnInit, OnDestroy {
 
   }
 
+  ngOnDestroy(): void {
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
+  }
 
 
   addActivity() {
@@ -133,7 +141,7 @@ export class CamTableComponent implements OnInit, OnDestroy {
 
     const success = () => {
       this.camService.deleteActivity(activity).then(() => {
-        self.noctuaFormDialogService.openSuccessfulSaveToast('Activity successfully deleted.', 'OK');
+        self.noctuaFormDialogService.openInfoToast('Activity successfully deleted.', 'OK');
       });
     };
 
@@ -165,8 +173,11 @@ export class CamTableComponent implements OnInit, OnDestroy {
     this.noctuaFormDialogService.openCamErrorsDialog(errors);
   }
 
-  ngOnDestroy(): void {
-    this._unsubscribeAll.next();
-    this._unsubscribeAll.complete();
+  close() {
+    if (this.panelDrawer) {
+      this.panelDrawer.close();
+    }
   }
+
+
 }

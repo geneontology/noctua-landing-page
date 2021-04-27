@@ -56,9 +56,9 @@ export class CamGraphComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
         self.cam = cam;
-        if (cam.operation !== CamOperation.ADD_ACTIVITY) {
-          self.noctuaCamGraphService.addToCanvas(self.cam);
-        }
+        //if (cam.operation !== CamOperation.ADD_ACTIVITY) {
+        self.noctuaCamGraphService.addToCanvas(self.cam);
+        //   }
 
       });
   }

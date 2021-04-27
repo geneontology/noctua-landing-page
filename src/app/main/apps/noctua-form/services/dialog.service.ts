@@ -37,7 +37,7 @@ export class NoctuaFormDialogService {
         private _matDialog: MatDialog) {
     }
 
-    openSuccessfulSaveToast(message: string, action: string) {
+    openInfoToast(message: string, action: string) {
         this.zone.run(() => {
             this.snackBar.open(message, action, {
                 duration: 10000,

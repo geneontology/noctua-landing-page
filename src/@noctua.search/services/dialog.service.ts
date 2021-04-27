@@ -17,7 +17,7 @@ export class NoctuaSearchDialogService {
         private _matDialog: MatDialog) {
     }
 
-    openSuccessfulSaveToast(message: string, action: string) {
+    openInfoToast(message: string, action: string) {
         this.snackBar.open(message, action, {
             duration: 10000,
             verticalPosition: 'top'

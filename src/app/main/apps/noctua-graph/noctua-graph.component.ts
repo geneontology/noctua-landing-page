@@ -70,7 +70,7 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   tableOptions: TableOptions = {
     displayType: ActivityDisplayType.TREE,
-    slimViewer: true,
+    slimViewer: false,
     editableTerms: true,
     editableEvidence: true,
     editableReference: true,

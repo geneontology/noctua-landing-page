@@ -49,9 +49,10 @@
         [entity]="entity">
       </noc-evidence-table>
     </div>
-    <div class="noc-cell noc-action-cell" fxLayout="column" fxLayoutAlign="start center">
-      <button mat-icon-button *ngIf="noctuaUserService.user" (click)="updateCurrentMenuEvent($event)"
-        class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
+    <div *ngIf="noctuaUserService.user &&  options.showMenu" class="noc-cell noc-action-cell" fxLayout="column"
+      fxLayoutAlign="start center">
+      <button mat-icon-button (click)="updateCurrentMenuEvent($event)" class="noc-action-button" fxFlex="40px"
+        [matMenuTriggerFor]="entityMenu">
         <mat-icon>more_vert</mat-icon>
       </button>
       <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu">

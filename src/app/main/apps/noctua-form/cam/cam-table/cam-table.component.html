@@ -43,6 +43,11 @@
         Collapse All
       </button>
     </mat-menu>
+
+    <button mat-stroked-button *ngIf="panelDrawer" (click)="close()" class="noc-rounded-button noc-sm" color="primary"
+      aria-label="Close dialog">
+      <mat-icon>close</mat-icon> Close
+    </button>
   </div>
   <div class="w-100-p noc-cam-table-body">
     <div *ngFor="let activity of cam.activities" [attr.id]="activity.displayId" class="w-100-p"
