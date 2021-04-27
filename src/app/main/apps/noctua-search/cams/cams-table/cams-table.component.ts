@@ -86,7 +86,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
 
   tableOptions: TableOptions = {
     displayType: ActivityDisplayType.TREE,
-    slimViewer: false,
+    slimViewer: true,
   }
 
   selection = new SelectionModel<Cam>(true, []);
