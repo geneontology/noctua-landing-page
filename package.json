@@ -52,7 +52,7 @@
     "minerva-requests": "0.0.17",
     "moment": "2.24.0",
     "ncu": "^0.2.1",
-    "ng-packagr": "^9.0.0",
+    "ng-packagr": "^10.1.1",
     "ngx-build-plus": "^7.8.2",
     "ngx-cookie-service": "2.2.0",
     "ngx-pagination": "^5.0.0",
