@@ -50,6 +50,7 @@ export class NoctuaReviewSearchService {
     // onCamsChanged: BehaviorSubject<any>;
     onArtBasketChanged: BehaviorSubject<any>;
     onResetReview: BehaviorSubject<boolean>;
+    onClearForm: BehaviorSubject<boolean>;
     onReplaceChanged: BehaviorSubject<boolean>;
     onCamsPageChanged: BehaviorSubject<any>;
     onCamChanged: BehaviorSubject<any>;
@@ -79,6 +80,7 @@ export class NoctuaReviewSearchService {
 
         this.onArtBasketChanged = new BehaviorSubject(null);
         this.onResetReview = new BehaviorSubject(false);
+        this.onClearForm = new BehaviorSubject(false);
         this.onReplaceChanged = new BehaviorSubject(false);
         this.onCamsPageChanged = new BehaviorSubject(null);
         this.onCamChanged = new BehaviorSubject([]);
@@ -254,6 +256,7 @@ export class NoctuaReviewSearchService {
                 self.zone.run(() => {
                     self.camsService.resetLoading(reviewCams);
                     self.confirmDialogService.openInfoToast('Changes successfully saved.', 'OK');
+                    self.camsService.reviewChanges();
 
                     if (reset) {
                         self.confirmAfterSave();
@@ -574,7 +577,7 @@ export class NoctuaReviewSearchService {
         const result: Array<Cam> = [];
 
         each(self.camsService.cams, (cam: Cam) => {
-            return cam.clearFilter();
+            return cam.clearHighlight();
         });
 
         res.models.forEach((response) => {

@@ -11,11 +11,6 @@
       (click)="openTable()" matTooltip="Filter" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
       <fa-icon [icon]="['fas', 'table']"></fa-icon>
     </button>
-    <button mat-icon-button color="" class="noc-rounded-button"
-      [ngClass]="{'noc-active': noctuaCommonMenuService.selectedMiddlePanel === MiddlePanel.camPreview}"
-      (click)="openPreview()" matTooltip="Filter" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
-      <fa-icon [icon]="['fas', 'list-alt']"></fa-icon>
-    </button>
   </div>
   <div class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start stretch">
     <div *ngIf="!noctuaUserService.user" class="noc-not-loggedin" fxLayout="row" fxLayoutAlign="center center">
@@ -110,18 +105,23 @@
           </a>
         </mat-menu>
       </div>
+      <button mat-icon-button (click)="openSettings()" class="noc-icon-button" color="primary">
+        <fa-icon [icon]="['fas', 'cog']"></fa-icon>
+      </button>
     </div>
     <mat-drawer-container class="h-100-p" fxFlex="" fxLayout="row" fxLayoutAlign="start start" [hasBackdrop]="false"
       autosize>
       <mat-drawer #leftDrawer class="noc-left-drawer" mode="side" position="start" opened>
         <div [ngSwitch]="noctuaCommonMenuService.selectedLeftPanel" class="h-100-p">
-
+          <noc-cam-form [panelDrawer]="leftDrawer" *ngSwitchCase="LeftPanel.camForm">
+          </noc-cam-form>
+          <noc-activity-form [panelDrawer]="leftDrawer" *ngSwitchCase="LeftPanel.activityForm">
+          </noc-activity-form>
         </div>
       </mat-drawer>
       <mat-drawer-content class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start stretch">
         <div [ngSwitch]="noctuaCommonMenuService.selectedMiddlePanel" class="w-100-p h-100-p" noctuaPerfectScrollbar>
-          <noc-cam-preview *ngSwitchCase="MiddlePanel.camPreview" [cam]="cam"></noc-cam-preview>
-          <noc-cam-table *ngSwitchCase="MiddlePanel.camTable" [cam]="cam" [options]="tableOptions"></noc-cam-table>
+          <noc-cam-table *ngSwitchCase="MiddlePanel.camTable" [cam]="cam" [options]="noctuaFormOptions"></noc-cam-table>
           <noc-cam-graph *ngSwitchCase="MiddlePanel.camGraph" [cam]="cam"></noc-cam-graph>
         </div>
       </mat-drawer-content>
@@ -130,10 +130,12 @@
           [perfectScrollbar]="scrollbarConfig">
           <noc-cam-form [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.camForm">
           </noc-cam-form>
-          <noc-cam-table [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.camTable" [cam]="cam"
-            [options]="tableOptions"></noc-cam-table>
-          <noc-activity-connector [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.connectorForm">
+          <noc-cam-table [ngStyle]="{width:tableWidth}" [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.camTable"
+            [cam]="cam" [options]="tableOptions"></noc-cam-table>
+          <noc-activity-connector *ngSwitchCase="RightPanel.connectorForm">
           </noc-activity-connector>
+          <noc-triple-table [panelDrawer]="rightDrawer" [cam]="cam" *ngSwitchCase="RightPanel.tripleTable">
+          </noc-triple-table>
         </div>
       </mat-drawer>
     </mat-drawer-container>

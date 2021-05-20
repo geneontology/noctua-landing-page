@@ -64,6 +64,9 @@
     </mat-chip>
   </div>
   <div class="noc-summary-results-bar" fxLayout="row" fxLayoutAlign="start center">
+    <mat-progress-bar *ngIf="noctuaSearchService.loading" class="noc-cam-progress" [color]="loadingSpinner.color"
+      [mode]="loadingSpinner.mode">
+    </mat-progress-bar>
     <small>Results:</small>
     <div class="ml-8 mr-16" fxLayout="row" fxLayoutAlign="start center">
       <button mat-stroked-button color="" class="noc-rounded-button mr-4 noc-half-button noc-sm noc-r">

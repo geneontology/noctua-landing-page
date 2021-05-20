@@ -40,7 +40,6 @@ import { MatTableDataSource } from '@angular/material/table';
 export class ActivityTreeNodeComponent implements OnInit, OnDestroy {
   EditorCategory = EditorCategory;
   ActivityType = ActivityType;
-  camDisplayTypeOptions = noctuaFormConfig.camDisplayType.options;
   activityTypeOptions = noctuaFormConfig.activityType.options;
 
 

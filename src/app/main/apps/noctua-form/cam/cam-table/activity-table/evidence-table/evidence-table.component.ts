@@ -21,6 +21,7 @@ import {
   ActivityNode
 } from 'noctua-form-base';
 import { EditorCategory } from '@noctua.editor/models/editor-category';
+import { SettingsOptions } from '@noctua.common/models/graph-settings';
 
 
 @Component({
@@ -31,13 +32,9 @@ import { EditorCategory } from '@noctua.editor/models/editor-category';
 })
 export class EvidenceTableComponent implements OnInit, OnDestroy {
   EditorCategory = EditorCategory;
-  displayedColumns = [
-    'evidence',
-    'reference',
-    'with',
-    'assignedBy',
-    'contributor'];
 
+  @Input('settings')
+  settings: SettingsOptions = new SettingsOptions();
 
   @Input('options')
   options: any = {};

@@ -65,7 +65,7 @@
                 <div class="noc-note" fxLayout="row" fxLayoutAlign="start center">
                   <mat-icon class="green-500-fg">check_circle</mat-icon>
                   <span class="noc-description">
-                    {{connector.connectorActivity?.rule.r1Edge?.label}}
+                    {{connector.connectorActivity?.rule.rEdge?.label}}
                   </span>
                 </div>
               </div>
@@ -144,26 +144,7 @@
           </div>
         </div>
         <div class="noc-form-section p-0 w-100-p">
-          <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
-            <div class="noc-section-heading">
-              Causal Effect
-            </div>
-          </div>
-          <div *ngIf="connectorActivity?.rule.displaySection.causalEffect" class="px-8 noc-group-row" fxLayout="row"
-            fxLayoutAlign="start center">
-            <div fxFlex="180px">
-              <p> Direction of Effect </p>
-            </div>
-            <mat-radio-group fxFlex="" formControlName="causalEffect" fxLayout="column" fxLayoutAlign="start start">
-              <mat-radio-button *ngFor="let causalEffect of noctuaFormConfigService.causalEffect.options"
-                class="noc-radio-button-rounded mb-8" [value]="causalEffect"
-                [checked]="causalEffect.name === connectorActivity?.rule.effectDirection.direction.name">
-                {{causalEffect.label}}
-              </mat-radio-button>
-            </mat-radio-group>
-          </div>
-          <div *ngIf="connectorActivity?.rule.displaySection.mechanism" class="px-8 noc-group-row" fxLayout="row"
-            fxLayoutAlign="start center">
+          <div class="px-8 noc-group-row" fxLayout="row" fxLayoutAlign="start center">
             <div fxFlex="180px" class="pr-8">
               <p>Mechanism
                 <mat-icon
@@ -179,45 +160,22 @@
               </mat-radio-button>
             </mat-radio-group>
           </div>
-        </div>
-        <div *ngIf="connectorActivity?.rule.displaySection.process" class="noc-form-section p-0 w-100-p">
           <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
             <div class="noc-section-heading">
-              Choose activity regulating process
+              Causal Effect
             </div>
           </div>
-          <div class="noc-section-body p-0" fxLayout="column" fxLayoutAlign="start stretch">
-            <div class="px-8 noc-group-row" fxLayout="column">
-              <mat-form-field appearance="outline" class="noc-sm mb-16">
-                <mat-label>Choose Process</mat-label>
-                <mat-select placeholder="" formControlName="process">
-                  <mat-option *ngFor="let connectorProcess of noctuaFormConfigService.connectorProcess.options"
-                    [value]="connectorProcess">
-                    {{connectorProcess.label}}
-                  </mat-option>
-                </mat-select>
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="noc-sm">
-                <mat-label><strong>(Optional)</strong> Has Input (GP/Chemical)</mat-label>
-                <textarea type="text" matInput formControlName="hasInput" [matAutocomplete]="hasInputAuto"
-                  rows="2"></textarea>
-                <mat-autocomplete #hasInputAuto="matAutocomplete" [displayWith]="termDisplayFn"
-                  class="noc-term-autocomplete">
-                  <mat-option class="noc-term-autocomplete"
-                    *ngFor="let item of connectorActivity?.hasInputNode?.termLookup.results" [value]="item">
-                    <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
-                      <div class="noc-term-label">
-                        {{ item.label }}
-                      </div>
-                      <span fxFlex></span>
-                      <div class="noc-term-id">
-                        {{ item.id }}
-                      </div>
-                    </div>
-                  </mat-option>
-                </mat-autocomplete>
-              </mat-form-field>
+          <div class="px-8 noc-group-row" fxLayout="row" fxLayoutAlign="start center">
+            <div fxFlex="180px">
+              <p> Direction of Effect </p>
             </div>
+            <mat-radio-group fxFlex="" formControlName="causalEffect" fxLayout="column" fxLayoutAlign="start start">
+              <mat-radio-button *ngFor="let causalEffect of noctuaFormConfigService.causalEffect.options"
+                class="noc-radio-button-rounded mb-8" [value]="causalEffect"
+                [checked]="causalEffect.name === connectorActivity?.rule.effectDirection.direction.name">
+                {{causalEffect.label}}
+              </mat-radio-button>
+            </mat-radio-group>
           </div>
         </div>
         <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
@@ -329,7 +287,7 @@
           <div class="noc-note mb-4" fxLayout="row" fxLayoutAlign="start center">
             <mat-icon class="green-500-fg">check_circle</mat-icon>
             <span class="noc-description">
-              {{currentConnectorActivity?.rule.r1Edge?.label}}
+              {{currentConnectorActivity?.rule.rEdge?.label}}
             </span>
           </div>
           <noc-graph-preview [nodes]="currentConnectorActivity?.graphPreview.nodes"
@@ -343,7 +301,7 @@
         <div class="noc-note mb-4" fxLayout="row" fxLayoutAlign="start center">
           <mat-icon class="green-500-fg">check_circle</mat-icon>
           <span class="noc-description">
-            {{connectorActivity?.rule.r1Edge?.label}}
+            {{connectorActivity?.rule.rEdge?.label}}
           </span>
         </div>
         <noc-graph-preview [nodes]="connectorActivity?.graphPreview.nodes"

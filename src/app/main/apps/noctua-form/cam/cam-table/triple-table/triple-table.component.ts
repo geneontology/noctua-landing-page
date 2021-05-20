@@ -20,18 +20,6 @@ import {
   animations: noctuaAnimations
 })
 export class TripleTableComponent implements OnInit, OnDestroy {
-  displayedColumns = [
-    'subject',
-    'aspectS',
-    'relationship',
-    'object',
-    'aspectO',
-    'evidence',
-    'reference',
-    'with',
-    'assignedBy'];
-
-  grid: any[] = [];
 
   @Input('cam')
   public cam: Cam

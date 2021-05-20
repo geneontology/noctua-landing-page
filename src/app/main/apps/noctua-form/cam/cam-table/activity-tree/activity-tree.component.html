@@ -112,7 +112,7 @@
 
               <div class="noc-annotation-row" fxFlex="" fxLayout="column" fxLayoutAlign="start stretch">
                 <div *ngIf="options.slimViewer" class="noc-cell-label" fxLayout="row" fxLayoutAlign="start center">
-                  {{ node.data.node.label }}
+                  {{node.data.node?.predicate?.edge?.label}}
                   <noctua-inline-editor
                     *ngIf="noctuaUserService.user && node.data.node.relationEditable && options.editableRelation"
                     [cam]="cam" [activity]='activity' [entity]="node.data.node" [category]="EditorCategory.relationship"

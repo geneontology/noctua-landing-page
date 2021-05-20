@@ -21,17 +21,17 @@ const camStencil: StencilItem[] = [{
     nodes: [{
         type: ActivityType.default,
         id: noctuaFormConfig.activityType.options.default.name,
-        label: noctuaFormConfig.activityType.options.default.label,
+        label: noctuaFormConfig.activityType.options.default.label.toUpperCase(),
         iconUrl: './assets/images/activity/default.png'
     }, {
         type: ActivityType.bpOnly,
         id: noctuaFormConfig.activityType.options.bpOnly.name,
-        label: noctuaFormConfig.activityType.options.bpOnly.label,
+        label: noctuaFormConfig.activityType.options.bpOnly.label.toUpperCase(),
         iconUrl: './assets/images/activity/bpOnly.png'
     }, {
         type: ActivityType.ccOnly,
         id: noctuaFormConfig.activityType.options.ccOnly.name,
-        label: noctuaFormConfig.activityType.options.ccOnly.label,
+        label: noctuaFormConfig.activityType.options.ccOnly.label.toUpperCase(),
         iconUrl: './assets/images/activity/ccOnly.png'
     }]
 }]

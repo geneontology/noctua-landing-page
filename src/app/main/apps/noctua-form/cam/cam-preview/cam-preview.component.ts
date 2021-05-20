@@ -31,7 +31,6 @@ export class CamPreviewComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
   searchFormData: any = [];
   searchForm: FormGroup;
-  camDisplayType = noctuaFormConfig.camDisplayType.options;
 
   @Input('cam')
   public cam: Cam;

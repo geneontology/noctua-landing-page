@@ -196,6 +196,7 @@ export class NoctuaSearchComponent implements OnInit, AfterViewInit, OnDestroy {
       this.noctuaSearchMenuService.isReviewMode = true;
       // this.noctuaSearchMenuService.closeLeftDrawer();
     } else if (this.noctuaSearchMenuService.reviewMode === ReviewMode.on) {
+      this.noctuaReviewSearchService.onClearForm.next(true);
       this.noctuaSearchMenuService.reviewMode = ReviewMode.off;
       this.noctuaSearchMenuService.selectMiddlePanel(MiddlePanel.cams);
       this.noctuaSearchMenuService.selectLeftPanel(LeftPanel.filter);

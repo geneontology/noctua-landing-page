@@ -77,36 +77,16 @@ export class ArtBasketComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.complete();
   }
 
-  cancel() {
-    const self = this;
-
-    const success = (cancel) => {
-      if (cancel) {
-        self.noctuaSearchMenuService.scrollToTop()
-        self.noctuaReviewSearchService.clear();
-        self.noctuaReviewSearchService.onResetReview.next(true);
-      }
-    };
-
-    const options = {
-      cancelLabel: 'No',
-      confirmLabel: 'Yes'
-    };
-
-    self.confirmDialogService.openConfirmDialog('Confirm Cancel?',
-      'You are about to cancel annotation review. All your unsaved changes will be lost.',
-      success, options);
-  }
-
   backToReview() {
     this.noctuaSearchMenuService.selectMiddlePanel(MiddlePanel.camsReview);
   }
 
   clear() {
     const self = this;
-    const success = (cancel) => {
-      if (cancel) {
+    const success = (clear) => {
+      if (clear) {
 
+        this.noctuaReviewSearchService.onClearForm.next(true);
         this.noctuaReviewSearchService.clear();
         this.camsService.clearCams();
         this.noctuaReviewSearchService.clearBasket();
@@ -129,7 +109,7 @@ export class ArtBasketComponent implements OnInit, OnDestroy {
       };
 
       this.confirmDialogService.openConfirmDialog('Confirm Clear Basket?',
-        'You are about to remove all items from the basket. All your unsaved changes will be lost.',
+        'You are about to remove all items from the basket.',
         success, options);
     }
   }
@@ -293,7 +273,6 @@ export class ArtBasketComponent implements OnInit, OnDestroy {
     const self = this;
 
     self.noctuaReviewSearchService.reloadCams(cams, self.camsService.cams, ReloadType.STORE, reset)
-
   }
 
   private _resetCamsQuery(cams: Cam[], reset = false) {

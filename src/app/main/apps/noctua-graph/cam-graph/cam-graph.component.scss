@@ -5,7 +5,6 @@ $grid-line-color: rgba(#000, 0.1);
 $primary: #324c74;
 
 :host {
-
   width: 100%;
 
   #noc-canvas {
@@ -22,7 +21,7 @@ $primary: #324c74;
   }
 
   .noc-workflow-toolbar {
-    background-color: #FFFFFF;
+    background-color: #ffffff;
     padding: 2px 12px;
     @include deep-height(35px);
     @include mat-elevation(2);
@@ -42,12 +41,13 @@ $primary: #324c74;
     user-select: none;
   }
 
-  #noc-paper {}
+  #noc-paper {
+  }
 
   #noc-palette {
-    background-color: #DDD;
+    background-color: #fff;
     border-right: solid 1px #002255;
-    @include deep-width(120px);
+    @include deep-width(100px);
     @include deep-height(100%);
     overflow-x: hidden;
     overflow-y: auto;

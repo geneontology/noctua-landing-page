@@ -1,6 +1,6 @@
 
 import { StencilItem, StencilItemNode } from '@noctua.graph/data/cam-stencil';
-import { StencilNode, NodeCell } from '@noctua.graph/services/shapes.service';
+import { StencilNode, NodeCellList } from '@noctua.graph/services/shapes.service';
 import * as joint from 'jointjs';
 import { cloneDeep, each } from "lodash";
 import { CamCanvas } from "./cam-canvas";
@@ -12,7 +12,7 @@ export class CamStencil {
     stencilEl
     selectedStencilElement;
 
-    onAddElement: (element: joint.shapes.noctua.NodeCell, x: number, y: number) => NodeCell;
+    onAddElement: (element: joint.shapes.noctua.NodeCellList, x: number, y: number) => NodeCellList;
 
     constructor(camCanvas: CamCanvas, stencils: StencilItem[]) {
         const self = this;

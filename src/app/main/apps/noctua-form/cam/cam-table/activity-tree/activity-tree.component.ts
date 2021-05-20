@@ -16,7 +16,8 @@ import {
   NoctuaFormMenuService,
   CamsService,
   ActivityType,
-  ActivityTreeNode
+  ActivityTreeNode,
+  ActivityNodeType
 } from 'noctua-form-base';
 
 import {
@@ -30,10 +31,9 @@ import { EditorCategory } from '@noctua.editor/models/editor-category';
 import { find } from 'lodash';
 import { InlineEditorService } from '@noctua.editor/inline-editor/inline-editor.service';
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
-import { MatTableDataSource } from '@angular/material/table';
-import { ArrayDataSource } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { NoctuaConfirmDialogService } from '@noctua/components/confirm-dialog/confirm-dialog.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'noc-activity-tree',
@@ -44,9 +44,7 @@ import { NoctuaConfirmDialogService } from '@noctua/components/confirm-dialog/co
 export class ActivityTreeComponent implements OnInit, OnDestroy {
   EditorCategory = EditorCategory;
   ActivityType = ActivityType;
-  camDisplayTypeOptions = noctuaFormConfig.camDisplayType.options;
   activityTypeOptions = noctuaFormConfig.activityType.options;
-  dataSource: MatTableDataSource<ActivityNode>;
 
   treeNodes: ActivityTreeNode[] = [];
 
@@ -80,7 +78,7 @@ export class ActivityTreeComponent implements OnInit, OnDestroy {
     })
   };
 
-  private unsubscribeAll: Subject<any>;
+  private _unsubscribeAll: Subject<any>;
 
   constructor(
     private camService: CamService,
@@ -94,8 +92,7 @@ export class ActivityTreeComponent implements OnInit, OnDestroy {
     public noctuaActivityFormService: NoctuaActivityFormService,
     private inlineEditorService: InlineEditorService) {
 
-    this.dataSource = new MatTableDataSource<ActivityNode>();
-    this.unsubscribeAll = new Subject();
+    this._unsubscribeAll = new Subject();
   }
 
   ngOnInit(): void {
@@ -106,19 +103,13 @@ export class ActivityTreeComponent implements OnInit, OnDestroy {
     this.gpNode = this.activity.getGPNode();
 
     this.optionsDisplay = { ...this.options, hideHeader: true };
-    this.dataSource.data = this.activity.nodes;
-    this.dataSource.filterPredicate = function customFilter(data, filter: string): boolean {
-      return (data.id !== filter);
-    }
 
     this.treeNodes = this.activity.buildTrees();
-
-    this.dataSource.filter = this.gpNode?.id;
   }
 
   ngOnDestroy(): void {
-    this.unsubscribeAll.next();
-    this.unsubscribeAll.complete();
+    this._unsubscribeAll.next();
+    this._unsubscribeAll.complete();
   }
 
   onTreeLoad() {
