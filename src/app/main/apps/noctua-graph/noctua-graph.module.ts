@@ -10,10 +10,11 @@ import { NoctuaFormModule } from '../noctua-form';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CamGraphComponent } from './cam-graph/cam-graph.component';
 import { NoctuaGraphComponent } from './noctua-graph.component';
+import { GraphSettingsDialogComponent } from './dialogs/graph-settings/graph-settings.component';
 
 const routes = [
   {
-    path: 'gggg',
+    path: 'g',
     component: NoctuaGraphComponent
   }
 ];
@@ -34,6 +35,7 @@ const routes = [
   declarations: [
     NoctuaGraphComponent,
     CamGraphComponent,
+    GraphSettingsDialogComponent
   ]
 })
 

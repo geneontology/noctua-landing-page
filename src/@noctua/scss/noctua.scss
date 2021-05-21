@@ -187,6 +187,10 @@ textarea {
     .mat-form-field-wrapper {
       font-size: 12px;
     }
+
+    textarea {
+      @include deep-height(26px);
+    }
   }
 }
 

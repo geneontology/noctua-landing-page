@@ -41,7 +41,6 @@ export class CamTableComponent implements OnInit, OnDestroy {
   searchCriteria: any = {};
   searchFormData: any = [];
   searchForm: FormGroup;
-  camDisplayTypeOptions = noctuaFormConfig.camDisplayType.options;
   activityTypeOptions = noctuaFormConfig.activityType.options;
 
   @Input('panelDrawer')
@@ -90,7 +89,6 @@ export class CamTableComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.complete();
   }
 
-
   addActivity() {
     this.openForm(location);
   }
@@ -106,7 +104,6 @@ export class CamTableComponent implements OnInit, OnDestroy {
 
   search() {
     let searchCriteria = this.searchForm.value;
-    console.dir(searchCriteria)
     // this.noctuaSearchService.search(searchCriteria);
   }
 
@@ -178,6 +175,5 @@ export class CamTableComponent implements OnInit, OnDestroy {
       this.panelDrawer.close();
     }
   }
-
 
 }

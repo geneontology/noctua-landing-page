@@ -40,7 +40,6 @@ import { FlatTreeControl } from '@angular/cdk/tree';
 export class ActivityTreeTableComponent implements OnInit, OnDestroy {
   EditorCategory = EditorCategory;
   ActivityType = ActivityType;
-  camDisplayTypeOptions = noctuaFormConfig.camDisplayType.options;
   activityTypeOptions = noctuaFormConfig.activityType.options;
   dataSource: MatTableDataSource<ActivityNode>;
 

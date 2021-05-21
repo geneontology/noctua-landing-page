@@ -47,7 +47,7 @@ export class CamsReviewComponent implements OnInit, OnDestroy {
 
   tableOptions: TableOptions = {
     displayType: ActivityDisplayType.TREE_TABLE,
-    slimViewer: true,
+    slimViewer: false,
     editableTerms: true,
     editableEvidence: true,
     editableReference: true,
@@ -101,13 +101,6 @@ export class CamsReviewComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.complete();
   }
 
-  viewAsModel(cam: Cam) {
-    cam.displayType = noctuaFormConfig.camDisplayType.options.model;
-  }
-
-  viewAsActivities(cam: Cam) {
-    cam.displayType = noctuaFormConfig.camDisplayType.options.entity;
-  }
 
   selectMiddlePanel(panel) {
     this.noctuaSearchMenuService.selectMiddlePanel(panel);

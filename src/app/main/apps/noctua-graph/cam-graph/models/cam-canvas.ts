@@ -8,7 +8,7 @@ import {
     Triple
 } from 'noctua-form-base';
 import { NodeCellType } from '@noctua.graph/models/shapes';
-import { NodeCell, NodeLink, StencilNode } from '@noctua.graph/services/shapes.service';
+import { NodeCellList, NodeLink, StencilNode } from '@noctua.graph/services/shapes.service';
 import * as joint from 'jointjs';
 import { each, cloneDeep } from 'lodash';
 import { StencilItemNode } from '@noctua.graph/data/cam-stencil';
@@ -19,8 +19,10 @@ export class CamCanvas {
     canvasPaper: joint.dia.Paper;
     canvasGraph: joint.dia.Graph;
     selectedStencilElement;
-    elementOnClick: (element: joint.shapes.noctua.NodeCell) => void;
+    elementOnClick: (element: joint.shapes.noctua.NodeCellList) => void;
+    editOnClick: (element: joint.shapes.noctua.NodeCellList) => void;
     linkOnClick: (element: joint.shapes.noctua.NodeLink) => void;
+    onUpdateCamLocations: (cam: Cam) => void
     onLinkCreated: (
         sourceId: string,
         targetId: string,
@@ -97,65 +99,98 @@ export class CamCanvas {
 
         });
 
-        this.canvasPaper.on({
-            'element:pointerdblclick': function (cellView) {
-                const element = cellView.model;
-                self.elementOnClick(element);
-            },
-            'element:mouseover': function (cellView) {
-                const element = cellView.model;
-                if (element.get('type') === NodeCellType.cell) {
-                    (element as NodeCell).hover(true);
-                }
-            },
-
-            'element:mouseleave': function (cellView) {
-                cellView.removeTools();
-                const element = cellView.model;
-                if (element.get('type') === NodeCellType.cell) {
-                    (element as NodeCell).hover(false);
-                }
-            },
-            /* 'element:pointerup': function (elementView, evt, x, y) {
-                const coordinates = new joint.g.Point(x, y);
-                const elementAbove = elementView.model;
-                const elementBelow = this.model.findModelsFromPoint(coordinates).find(function (el) {
-                    return (el.id !== elementAbove.id);
-                });
-
-                // If the two elements are connected already, don't
-                if (elementBelow && self.canvasGraph.getNeighbors(elementBelow).indexOf(elementAbove) === -1) {
-
-                    // Move the element to the position before dragging.
-                    elementAbove.position(evt.data.x, evt.data.y);
-                    self.createLinkFromElements(elementAbove, elementBelow)
-
-                }
-            },
-            'element:gate:click': function (elementView) {
-                const element = elementView.model;
-                const gateType = element.gate();
-                const gateTypes = Object.keys(element.gateTypes);
-                const index = gateTypes.indexOf(gateType);
-                const newIndex = (index + 1) % gateTypes.length;
-                element.gate(gateTypes[newIndex]);
-            } */
+        self.canvasPaper.on('blank:pointerdblclick', function () {
+            // Remove all Highlighters from all cells
+            self.unselectAll();
         });
+
+        this.canvasPaper.on('element:pointerup', function (cellView) {
+            if (self.cam.layoutChanged) {
+                self.cam.layoutChanged = false;
+                self.updateLocation();
+            }
+        });
+
+        this.canvasPaper.on('element:pointerdblclick', function (cellView) {
+            const element = cellView.model;
+            self.elementOnClick(element);
+
+            if (element.get('type') === NodeCellType.cell) {
+                const cell = element as NodeCellList
+                self.selectNode(cell)
+            }
+        });
+
+        this.canvasPaper.on('element:mouseover', function (cellView) {
+            const element = cellView.model;
+            if (element.get('type') === NodeCellType.cell) {
+                const cell = element as NodeCellList
+                cell.hover(true);
+                self.highlightSuccessorNodes(cell)
+            }
+        });
+
+        this.canvasPaper.on('element:mouseleave', function (cellView) {
+            cellView.removeTools();
+            const element = cellView.model;
+            if (element.get('type') === NodeCellType.cell) {
+                (element as NodeCellList).hover(false);
+                self.unhighlightAllNodes()
+            }
+        });
+        /* 'element:pointerup': function (elementView, evt, x, y) {
+            const coordinates = new joint.g.Point(x, y);
+            const elementAbove = elementView.model;
+            const elementBelow = this.model.findModelsFromPoint(coordinates).find(function (el) {
+                return (el.id !== elementAbove.id);
+            });
+
+            // If the two elements are connected already, don't
+            if (elementBelow && self.canvasGraph.getNeighbors(elementBelow).indexOf(elementAbove) === -1) {
+
+                // Move the element to the position before dragging.
+                elementAbove.position(evt.data.x, evt.data.y);
+                self.createLinkFromElements(elementAbove, elementBelow)
+
+            }
+        },
+        'element:gate:click': function (elementView) {
+            const element = elementView.model;
+            const gateType = element.gate();
+            const gateTypes = Object.keys(element.gateTypes);
+            const index = gateTypes.indexOf(gateType);
+            const newIndex = (index + 1) % gateTypes.length;
+            element.gate(gateTypes[newIndex]);
+        } */
 
 
         this.canvasPaper.on('link:pointerdblclick', function (linkView) {
             const link = linkView.model;
 
             self.linkOnClick(link);
+            self.unselectAll();
+        });
+
+
+        this.canvasPaper.on('element:.icon:pointerdown', function (elementView: joint.dia.ElementView, evt) {
+            evt.stopPropagation();
+
+            const element = elementView.model;
+            self.editOnClick(element);
 
         });
 
         this.canvasPaper.on('element:expand:pointerdown', function (elementView: joint.dia.ElementView, evt) {
-            evt.stopPropagation(); // stop any further actions with the element view (e.g. dragging)
+            evt.stopPropagation();
 
             const model = elementView.model;
             const activity = model.prop('activity') as Activity;
             self.toggleActivityVisibility(model, activity);
+        });
+
+
+        this.canvasGraph.on('change:position', function (element: joint.dia.Element, evt) {
+            self.cam.layoutChanged = true;
         });
 
         this.canvasGraph.on('change:source change:target', function (link) {
@@ -191,7 +226,81 @@ export class CamCanvas {
 
     }
 
-    createLinkFromElements(source: joint.shapes.noctua.NodeCell, target: joint.shapes.noctua.NodeCell) {
+    highlightSuccessorNodes(node: NodeCellList) {
+        const self = this;
+
+        self.unhighlightAllNodes()
+
+        const predecessors = self.canvasGraph.getPredecessors(node)
+        const successors = self.canvasGraph.getSuccessors(node)
+
+
+        each(self.canvasGraph.getCells(), (cell: NodeCellList) => {
+            if (cell.get('type') === NodeCellType.cell) {
+                cell.setColor('grey', 200, 300);
+            }
+        })
+        each(successors, (cell: NodeCellList) => {
+            if (cell.get('type') === NodeCellType.cell) {
+                cell.setColor('amber', 200, 300)
+            }
+        })
+
+        each(predecessors, (cell: NodeCellList) => {
+            if (cell.get('type') === NodeCellType.cell) {
+                cell.setColor('yellow', 50, 100)
+            }
+        })
+        node.setColor('yellow', 100, 200)
+    }
+
+    selectNode(node: NodeCellList) {
+        const self = this;
+
+        self.unselectAll()
+
+        node.setBorder('orange', 500,)
+
+    }
+
+    updateLocation() {
+        const self = this;
+
+        each(self.canvasGraph.getElements(), (element: NodeCellList) => {
+            if (element.get('type') === NodeCellType.cell) {
+                const activity = element.prop('activity') as Activity
+                if (activity) {
+                    const position = element.position();
+
+                    activity.position.x = position.x;
+                    activity.position.y = position.y;
+                }
+            }
+        })
+
+        self.onUpdateCamLocations(self.cam)
+    }
+
+    unhighlightAllNodes() {
+        const self = this;
+        each(self.canvasGraph.getCells(), (cell: NodeCellList) => {
+            if (cell.get('type') === NodeCellType.cell) {
+                const activity = cell.prop('activity') as Activity
+                cell.setColor(activity.backgroundColor);
+            }
+        })
+    }
+
+    unselectAll() {
+        const self = this;
+        each(self.canvasGraph.getCells(), (cell: NodeCellList) => {
+            if (cell.get('type') === NodeCellType.cell) {
+                cell.unsetBorder();
+            }
+        })
+    }
+
+    createLinkFromElements(source: joint.shapes.noctua.NodeCellList, target: joint.shapes.noctua.NodeCellList) {
         const self = this;
 
         const subject = source.get('activity') as Activity;
@@ -229,7 +338,7 @@ export class CamCanvas {
 
         link.addTo(self.canvasGraph);
         if (autoLayout) {
-            self._layoutGraph(self.canvasGraph);
+            self.autoLayoutGraph(self.canvasGraph);
             // self.addCanvasGraph(self.activity);
         }
     }
@@ -253,18 +362,17 @@ export class CamCanvas {
             this.paperScale(delta, e);
         } else {
             this.canvasPaper.translate(0, 0);
-            this.canvasPaper.scale(delta, delta)
+            this.canvasPaper.scale(this.canvasPaper.scale().sx + delta, this.canvasPaper.scale().sx + delta)
         }
     }
 
     resetZoom() {
-        this.zoom(1);
+        this.canvasPaper.scale(1, 1)
     };
 
     toggleActivityVisibility(cell: joint.dia.Element, activity: Activity) {
         const self = this;
 
-        console.log(cell.position())
 
         //self.activity.subgraphVisibility(activity, !activity.expanded);
         const elements = self.canvasGraph.getSuccessors(cell).concat(cell);
@@ -284,21 +392,33 @@ export class CamCanvas {
         cell.attr('./visibility', 'visible');
         activity.expanded = !activity.expanded;
 
-        self._layoutGraph(self.canvasGraph);
+        self.autoLayoutGraph(self.canvasGraph);
 
         self.canvasPaper.translate(0, 0);
 
         //  self.canvasPaper.
     }
 
-    createNode(activity: Activity): NodeCell {
-        const el = new NodeCell()
+    createNode(activity: Activity): NodeCellList {
+        const el = new NodeCellList()
         //.addActivityPorts()
-        // .addColor(activity.backgroundColor)
+        el.setColor(activity.backgroundColor)
         //.setSuccessorCount(activity.successorCount)
+        const gpNode = activity.getGPNode();
+        const mfNode = activity.getMFNode();
 
-        el.attr({ nodeType: { text: activity.id ? activity.activityType : 'Activity Unity' } });
-        el.attr({ noctuaTitle: { text: activity.id ? activity.title : 'New Activity' } });
+        const activityType = activity.getActivityTypeDetail();
+
+        el.prop({ 'name': [activityType ? activityType.label : 'Activity Unity'] });
+
+        if (mfNode) {
+            el.prop({ 'mf': [mfNode.term.label,] });
+        }
+
+        if (gpNode) {
+            el.prop({ 'gp': [activity.title] });
+        }
+
         el.attr({
             expand: {
                 event: 'element:expand:pointerdown',
@@ -355,9 +475,29 @@ export class CamCanvas {
         self.canvasPaper.scaleContentToFit({ minScaleX: 0.3, minScaleY: 0.3, maxScaleX: 1, maxScaleY: 1 });
         self.canvasPaper.setDimensions('10000px', '10000px')
         self.canvasGraph.resetCells(nodes);
-        self._layoutGraph(self.canvasGraph);
+
+        if (!cam.manualLayout) {
+            self.autoLayoutGraph(self.canvasGraph);
+        }
+
         self.canvasPaper.unfreeze();
         self.canvasPaper.render();
+
+        /*    each(self.canvasGraph.getCells(), (cell: any) => {
+   
+               self.mask.add(
+                   cell.findView(self.canvasPaper),
+                   { selector: 'body' },
+                   'example-id',
+                   {
+                       layer: 'back',
+                       attrs: {
+                           'stroke': '#4666E5',
+                           'stroke-width': 3,
+                           'stroke-linejoin': 'round'
+                       }
+                   });
+           }); */
     }
 
     addStencilGraph(graph: joint.dia.Graph, activities: Activity[]) {
@@ -388,7 +528,7 @@ export class CamCanvas {
         });
     }
 
-    private _layoutGraph(graph) {
+    autoLayoutGraph(graph) {
         const autoLayoutElements = [];
         const manualLayoutElements = [];
         graph.getElements().forEach((el) => {

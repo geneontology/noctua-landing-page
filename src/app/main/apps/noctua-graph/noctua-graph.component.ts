@@ -11,7 +11,9 @@ import {
   CamService,
   CamsService,
   Activity,
-  ActivityDisplayType
+  ActivityDisplayType,
+  ActivityType,
+  NoctuaActivityFormService
 } from 'noctua-form-base';
 
 import { FormGroup } from '@angular/forms';
@@ -26,6 +28,8 @@ import { NoctuaReviewSearchService } from '@noctua.search/services/noctua-review
 import { NoctuaPerfectScrollbarDirective } from '@noctua/directives/noctua-perfect-scrollbar/noctua-perfect-scrollbar.directive';
 import { PerfectScrollbarDirective } from 'ngx-perfect-scrollbar';
 import { TableOptions } from '@noctua.common/models/table-options';
+import { NoctuaGraphDialogService } from './services/dialog.service';
+import { SettingsOptions } from '@noctua.common/models/graph-settings';
 
 @Component({
   selector: 'noc-noctua-graph',
@@ -45,11 +49,16 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild(PerfectScrollbarDirective, { static: false })
   scrollbarRef?: PerfectScrollbarDirective;
 
+  settings: SettingsOptions;
+  tableWidth = "550px";
+
   loadingSpinner: any = {
     color: 'primary',
     mode: 'indeterminate'
   };
 
+
+  ActivityType = ActivityType;
   ReviewMode = ReviewMode;
   LeftPanel = LeftPanel;
   MiddlePanel = MiddlePanel;
@@ -69,12 +78,21 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   cams: any[] = [];
 
   tableOptions: TableOptions = {
-    displayType: ActivityDisplayType.TREE,
-    slimViewer: true,
+    displayType: ActivityDisplayType.SLIM_TREE,
+    slimViewer: false,
     editableTerms: true,
     editableEvidence: true,
     editableReference: true,
     editableWith: true,
+  };
+  noctuaFormOptions: TableOptions = {
+    displayType: ActivityDisplayType.TREE,
+    slimViewer: false,
+    editableTerms: true,
+    editableEvidence: true,
+    editableReference: true,
+    editableWith: true,
+    showMenu: true
   };
 
   scrollbarConfig = {
@@ -87,6 +105,8 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
     private route: ActivatedRoute,
     private camService: CamService,
     public camsService: CamsService,
+    private graphDialogService: NoctuaGraphDialogService,
+    public noctuaActivityFormService: NoctuaActivityFormService,
     public noctuaReviewSearchService: NoctuaReviewSearchService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaCommonMenuService: NoctuaCommonMenuService,
@@ -119,6 +139,16 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit(): void {
     this.noctuaCommonMenuService.setLeftDrawer(this.leftDrawer);
     this.noctuaCommonMenuService.setRightDrawer(this.rightDrawer);
+
+    this.noctuaCommonMenuService.onCamSettingsChanged
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((settings: SettingsOptions) => {
+        if (!settings) {
+          return;
+        }
+        this.settings = settings;
+        this.tableWidth = this.getTableWidth(settings);
+      });
   }
 
   ngAfterViewInit(): void {
@@ -165,6 +195,24 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
     this.noctuaCommonMenuService.createModel(type);
   }
 
+  openSettings() {
+    this.graphDialogService.openGraphSettingsDialog()
+  }
+
+  getTableWidth(settings: SettingsOptions) {
+    let width = 500;
+
+    if (settings.showEvidence) {
+      width += settings.showEvidenceCode ? 150 : 0
+      width += settings.showReference ? 100 : 0
+      width += settings.showWith ? 100 : 0
+      width += settings.showGroup ? 100 : 0
+      width += settings.showContributor ? 100 : 0
+
+    }
+
+    return width + 'px'
+  }
 
 
   search() {
@@ -178,6 +226,20 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   reset() {
     this.noctuaSearchService.clearSearchCriteria();
+  }
+
+  openCamForm() {
+    this.camService.initializeForm(this.cam);
+    this.noctuaCommonMenuService.selectedLeftPanel(LeftPanel.camForm);
+    this.noctuaCommonMenuService.closeRightDrawer();
+    this.noctuaCommonMenuService.openLeftDrawer();
+  }
+
+  openActivityForm(activityType: ActivityType) {
+    this.noctuaActivityFormService.setActivityType(activityType);
+    this.noctuaCommonMenuService.selectLeftPanel(LeftPanel.activityForm);
+    this.noctuaCommonMenuService.closeRightDrawer();
+    this.noctuaCommonMenuService.openLeftDrawer();
   }
 
   ngOnDestroy(): void {

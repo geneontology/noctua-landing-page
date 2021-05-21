@@ -10,15 +10,19 @@
       </mat-select>
     </mat-form-field>
     <div class="noc-activity-group-row mb-4 w-100-p" fxLayout="column" fxLayoutAlign="start stretch">
+      <button class="noc-text-clear" mat-icon-button aria-label="Clear" (click)="$event.stopPropagation(); clearFind()">
+        <fa-icon [icon]="['far', 'times-circle']"></fa-icon>
+      </button>
       <mat-form-field *ngIf="selectedCategory?.name === ArtReplaceCategory.term" appearance="outline"
         class="noc-sm noc-review-input">
-        <mat-label>Find What <strong>(Ontology Term)</strong></mat-label>
-        <textarea type="text" matInput formControlName="findWhat" [matAutocomplete]="findAuto" rows="2"></textarea>
+        <mat-label>Find What <strong>(Ontology Term)</strong>
+        </mat-label>
+        <textarea type="text" matInput formControlName="findWhat" [matAutocomplete]="findAuto"></textarea>
       </mat-form-field>
       <mat-form-field *ngIf="selectedCategory?.name === ArtReplaceCategory.gp" appearance="outline"
         class="noc-sm  noc-review-input">
         <mat-label>Find What <strong>(Gene Product)</strong></mat-label>
-        <textarea type="text" matInput formControlName="findWhat" [matAutocomplete]="findAuto" rows="2"></textarea>
+        <textarea type="text" matInput formControlName="findWhat" [matAutocomplete]="findAuto"></textarea>
       </mat-form-field>
       <mat-form-field *ngIf="selectedCategory?.name === ArtReplaceCategory.reference" appearance="outline"
         class="noc-sm  noc-review-input">
@@ -32,6 +36,10 @@
     </div>
     <div [ngClass]="{'noc-disabled':noctuaReviewSearchService.matchedCount===0 || !displayReplaceForm.replaceSection}"
       class="noc-activity-group-row w-100-p" fxLayout="column" fxLayoutAlign="start stretch">
+      <button class="noc-text-clear" mat-icon-button aria-label="Clear"
+        (click)="$event.stopPropagation(); clearReplace()">
+        <fa-icon [icon]="['far', 'times-circle']"></fa-icon>
+      </button>
       <mat-form-field *ngIf="selectedCategory?.name === ArtReplaceCategory.term" appearance="outline"
         class="noc-sm noc-review-input">
         <mat-label>Replace With <strong>(Ontology Term)</strong></mat-label>

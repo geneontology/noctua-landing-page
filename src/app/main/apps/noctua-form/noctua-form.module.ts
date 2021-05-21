@@ -58,6 +58,9 @@ import { ActivityTreeComponent } from './cam/cam-table/activity-tree/activity-tr
 import { ActivityTreeNodeComponent } from './cam/cam-table/activity-tree/activity-tree-node/activity-tree-node.component';
 import { CreateActivityDialogComponent } from './dialogs/create-activity/create-activity.component';
 import { ActivityTreeTableComponent } from './cam/cam-table/activity-tree-table/activity-tree-table.component';
+import { ActivitySlimTreeComponent } from './cam/cam-table/activity-slim-tree/activity-slim-tree.component';
+import { ActivitySlimTreeNodeComponent } from './cam/cam-table/activity-slim-tree/activity-slim-tree-node/activity-tree-node.component';
+import { PreviewActivityComponent } from './cam/activity/preview-activity/preview-activity.component';
 
 const routes = [
   {
@@ -123,7 +126,10 @@ const routes = [
     ActivityTreeTableComponent,
     TripleTableComponent,
     ActivityTreeNodeComponent,
-    CamPreviewComponent
+    ActivitySlimTreeComponent,
+    ActivitySlimTreeNodeComponent,
+    CamPreviewComponent,
+    PreviewActivityComponent
   ],
   providers: [
     NoctuaFormDialogService,
@@ -153,14 +159,18 @@ const routes = [
     ActivityConnectorFormComponent,
     TripleTableComponent,
     ActivityTableComponent,
-    ActivityTreeComponent,
+
     ActivityTreeTableComponent,
     EvidenceTableComponent,
     GraphPreviewComponent,
     CamPreviewComponent,
     CamGraphComponent,
+    ActivityTreeComponent,
     ActivityTreeNodeComponent,
+    ActivitySlimTreeComponent,
+    ActivitySlimTreeNodeComponent,
     SelectEvidenceComponent,
+    PreviewActivityComponent
   ],
 })
 
