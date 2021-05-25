@@ -1,0 +1,5 @@
+menu-name: "Landing Page (Beta Version)"
+page-name: "Landing Page (Beta Version)"
+type: "universal"
+is-beta: true
+help-link: "https://github.com/geneontology/noctua-landing-page/issues"
