@@ -42,7 +42,10 @@ export class SparqlService {
   baseUrl = environment.spaqrlApiUrl;
   wikidataSparqlUrl = environment.wikidataSparqlUrl;
   curieUtil: any;
+  cams: any[] = [];
   loading: boolean = false;
+  //onCamsChanged: BehaviorSubject<any>;
+  //onCamChanged: BehaviorSubject<any>;
   onContributorFilterChanged: BehaviorSubject<any>;
   linker = new amigo.linker();
 
@@ -53,6 +56,8 @@ export class SparqlService {
     private httpClient: HttpClient,
     private sparqlMinervaService: SparqlMinervaService,
     private curieService: CurieService) {
+    // this.onCamsChanged = new BehaviorSubject({});
+    //  this.onCamChanged = new BehaviorSubject({});
     this.curieUtil = this.curieService.getCurieUtil();
   }
 
@@ -219,13 +224,6 @@ export class SparqlService {
         });
       }
 
-      if (response.entities && response.entities.value !== "") {
-        cam.filter.uuids.push(...response.entities.value.split(self.separator).map((iri) => {
-          return self.curieUtil.getCurie(iri);
-        }));
-      }
-
-      cam.configureDisplayType();
       result.push(cam);
     });
 

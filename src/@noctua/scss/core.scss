@@ -1,11 +1,4 @@
 @import '~perfect-scrollbar/css/perfect-scrollbar';
-
-$fa-font-path: "../assets/fonts" !default;
-
-i[class^="fa-"] {
-  font-family: "FontAwesome" !important;
-}
-
 @import "noctua";
 @include mat-core();
 @include angular-material-typography($typography);

@@ -19,6 +19,14 @@ export class SearchHistory {
         const threshold = 5;
         let count = 0;
 
+        if (searchCriteria.ids && searchCriteria.ids.length > 0) {
+            const ids = searchCriteria.ids.map((id: Entity) => {
+                return id.label;
+            }).join(', ');
+            self._addParam('Model Id(s)', ids);
+            count++;
+        }
+
         if (searchCriteria.contributors && searchCriteria.contributors.length > 0) {
             const contributors = searchCriteria.contributors.map((contributor: Contributor) => {
                 return contributor.name;

@@ -13,6 +13,9 @@ import {
     NoctuaFormConfigService,
     NoctuaUserService,
     Entity,
+    CamsService,
+    NoctuaGraphService,
+    CamService
 } from 'noctua-form-base';
 import { SearchCriteria } from './../models/search-criteria';
 import { saveAs } from 'file-saver';
@@ -21,6 +24,8 @@ import { CurieService } from '@noctua.curie/services/curie.service';
 import { CamPage } from './../models/cam-page';
 import { SearchHistory } from './../models/search-history';
 import { NoctuaDataService } from '@noctua.common/services/noctua-data.service';
+import { NoctuaSearchMenuService } from './search-menu.service';
+import { MiddlePanel } from '../models/menu-panels';
 
 declare const require: any;
 
@@ -40,7 +45,6 @@ export class NoctuaSearchService {
 
     onSearchCriteriaChanged: BehaviorSubject<any>;
     onSearchHistoryChanged: BehaviorSubject<any>;
-    baseUrl = environment.spaqrlApiUrl;
     curieUtil: any;
     cams: any[] = [];
     camPage: CamPage;
@@ -50,11 +54,11 @@ export class NoctuaSearchService {
     loading = false;
     onCamsChanged: BehaviorSubject<any>;
     onCamsPageChanged: BehaviorSubject<any>;
-    onCamChanged: BehaviorSubject<any>;
     onContributorFilterChanged: BehaviorSubject<any>;
     searchSummary: any = {};
 
     filterType = {
+        ids: 'ids',
         titles: 'titles',
         gps: 'gps',
         terms: 'terms',
@@ -71,20 +75,20 @@ export class NoctuaSearchService {
     constructor(
         private httpClient: HttpClient,
         private noctuaDataService: NoctuaDataService,
+        private _noctuaGraphService: NoctuaGraphService,
+        private camsService: CamsService,
+        private camService: CamService,
         public noctuaFormConfigService: NoctuaFormConfigService,
         public noctuaUserService: NoctuaUserService,
+        private noctuaSearchMenuService: NoctuaSearchMenuService,
         private curieService: CurieService) {
         this.onCamsChanged = new BehaviorSubject([]);
         this.onCamsPageChanged = new BehaviorSubject(null);
-        this.onCamChanged = new BehaviorSubject([]);
         this.onSearchHistoryChanged = new BehaviorSubject(null);
-
         this.states = this.noctuaFormConfigService.modelState.options;
         this.searchCriteria = new SearchCriteria();
         this.onSearchCriteriaChanged = new BehaviorSubject(null);
         this.curieUtil = this.curieService.getCurieUtil();
-
-        this._getModelMetadata();
 
         this.onSearchCriteriaChanged.subscribe((searchCriteria: SearchCriteria) => {
             if (!searchCriteria) {
@@ -93,6 +97,7 @@ export class NoctuaSearchService {
 
             this.getCams(searchCriteria).subscribe((response: any) => {
                 this.cams = response;
+                this.camsService.updateDisplayNumber(this.cams);
                 this.onCamsChanged.next(this.cams);
             });
 
@@ -102,37 +107,50 @@ export class NoctuaSearchService {
                 this.onCamsPageChanged.next(this.camPage);
             });
 
-            const element = document.querySelector('#noc-results');
-
-            if (element) {
-                element.scrollTop = 0;
+            if (this.noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.cams) {
+                this.noctuaSearchMenuService.scrollToTop();
             }
         });
+
+        this.loadCamRebuild();
     }
 
     // Get Users and Groups
-    private _getModelMetadata() {
+    setup() {
         const self = this;
 
-        self.noctuaDataService.loadContributors();
-        self.noctuaDataService.loadGroups();
         self.noctuaDataService.loadOrganisms();
-
-        self.noctuaDataService.onContributorsChanged
-            .subscribe(contributors => {
-                this.noctuaUserService.contributors = contributors;
-                this.updateSearch();
-            });
-
-        self.noctuaDataService.onGroupsChanged
-            .subscribe(groups => {
-                this.noctuaUserService.groups = groups;
-            });
 
         self.noctuaDataService.onOrganismsChanged
             .subscribe(organisms => {
                 this.organisms = organisms;
             });
+
+        const contributor =
+            {
+                'name': 'Tremayne Mushayahama',
+                'orcid': 'http://orcid.org/0000-0002-2874-6934',
+                'initials': 'TM',
+                'color': '#e1bee7'
+            } as Contributor;
+        //  this.searchCriteria.contributors = [contributor];
+        this.updateSearch();
+    }
+
+    loadCamRebuild() {
+        const self = this;
+        self._noctuaGraphService.onCamRebuildChange.subscribe((inCam: Cam) => {
+            if (!inCam) {
+                return;
+            }
+
+            const cam = find(self.cams, { id: inCam.id }) as Cam;
+
+            if (!cam || !cam.expanded) return;
+
+            this.camService.loadCam(cam);
+            this.camService.onCamChanged.next(cam);
+        })
     }
 
     search(searchCriteria) {
@@ -143,6 +161,7 @@ export class NoctuaSearchService {
         searchCriteria.group ? this.searchCriteria.groups.push(searchCriteria.group) : null;
         searchCriteria.pmid ? this.searchCriteria.pmids.push(searchCriteria.pmid) : null;
         searchCriteria.term ? this.searchCriteria.terms.push(searchCriteria.term) : null;
+        searchCriteria.id ? this.searchCriteria.ids.push(searchCriteria.id) : null;
         searchCriteria.gp ? this.searchCriteria.gps.push(searchCriteria.gp) : null;
         searchCriteria.organism ? this.searchCriteria.organisms.push(searchCriteria.organism) : null;
         searchCriteria.state ? this.searchCriteria.states.push(searchCriteria.state) : null;
@@ -164,6 +183,7 @@ export class NoctuaSearchService {
         this.searchCriteria = new SearchCriteria();
 
         param.title ? this.searchCriteria.titles.push(param.title) : null;
+        param.id ? this.searchCriteria.ids.push(param.id) : null;
         param.contributor ? this.searchCriteria.contributors.push(param.contributor) : null;
         param.group ? this.searchCriteria.groups.push(param.group) : null;
         param.pmid ? this.searchCriteria.pmids.push(param.pmid) : null;
@@ -230,6 +250,9 @@ export class NoctuaSearchService {
 
         if (searchCriteria.titles) {
             this.searchCriteria.titles = searchCriteria.titles;
+        }
+        if (searchCriteria.ids) {
+            this.searchCriteria.ids = searchCriteria.ids;
         }
         if (searchCriteria.contributors) {
             this.searchCriteria.contributors = searchCriteria.contributors;
@@ -305,12 +328,12 @@ export class NoctuaSearchService {
             cam.state = self.noctuaFormConfigService.findModelState(response.state);
             cam.title = response.title;
             cam.date = response.date;
-
+            cam.modified = response['modified-p'];
             cam.model = Object.assign({}, {
                 modelInfo: this.noctuaFormConfigService.getModelUrls(modelId)
             });
 
-            cam.groups = <Group[]>response.groups.map(function (url) {
+            cam.groups = <Group[]>response.groups.map((url) => {
                 const group = find(self.noctuaUserService.groups, (inGroup: Group) => {
                     return inGroup.url === url;
                 });

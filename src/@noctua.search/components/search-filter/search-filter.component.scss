@@ -5,7 +5,15 @@
   @include deep-width(100%);
   @include deep-height(100%);
 
+  .noc-drawer {
+    @include deep-width(300px);
+  }
+
   background-color: white;
+
+  .noc-checkbox {
+    font-size: 12px;
+  }
 
   mat-chip {
     font-size: 12px;
@@ -31,9 +39,10 @@
 
     .noc-form-section {
       width: 100%;
-      background-color: #FFF;
+      background-color: #fff;
 
       .noc-section-header {
+        padding-right: 12px;
         height: 30px;
         background-color: $noc-primary-color-light;
 
@@ -53,13 +62,12 @@
       .noc-section-body {
         padding: 16px 8px 0 8px;
 
-        .noc-annoton-group-row {
+        .noc-activity-group-row {
           margin-bottom: 8px;
         }
       }
     }
   }
-
 
   mat-chip {
     font-size: 12px;
@@ -91,12 +99,9 @@
         border-radius: 50%;
         color: #777;
         font-size: 14px;
-
       }
 
       @include noc-chip-color(#bbc9cc);
-
-
     }
   }
 

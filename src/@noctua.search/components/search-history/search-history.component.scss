@@ -6,6 +6,10 @@
   background-color: white;
   @include mat-elevation(4);
 
+  .noc-drawer {
+    @include deep-width(300px);
+  }
+
   .noc-header {
     @include deep-height(30px);
     background-color: #EEE;
@@ -24,13 +28,12 @@
   }
 
   .noc-group-row {
-    margin-bottom: 12px;
-    padding: 10px 10px;
+    padding: 12px 10px;
     min-height: 40px;
     max-height: 300px;
-    border: #CCC solid 1px;
+    border-bottom: #BBB solid 1px;
     font-size: 12px;
-    @include mat-elevation(2);
+    @include mat-elevation(1);
 
     .noc-name {
       font-size: 14px;

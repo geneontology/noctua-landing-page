@@ -8,12 +8,12 @@ mat-radio-button {
     line-height: 30px;
     font-size: 12px;
     font-weight: normal;
-    border: rgba(map-get($primary, default), 0.7) solid 1px;
+    border: rgba(map-get($accent, default), 0.7) solid 1px;
     border-radius: 15px;
 
     &.mat-radio-checked {
-      background-color: rgba(map-get($primary, default), 0.2);
-      border-color: rgba(map-get($primary, default), 0.9);
+      background-color: rgba(map-get($accent, default), 0.2);
+      border-color: rgba(map-get($accent, default), 0.9);
     }
 
     .mat-radio-container,
@@ -30,29 +30,14 @@ mat-radio-button {
       font-size: 10px;
       border-radius: 10px;
       font-weight: normal;
-
-      .mat-radio-container,
-      .mat-radio-outer-circle,
-      .mat-radio-inner-circle {
-        height: 10px;
-        width: 10px;
-      }
     }
 
     &.noc-xs {
-      padding: 0 5px;
       border-radius: 12px;
       @include deep-height(24px);
       line-height: 24px;
-      font-size: 10px;
+      font-size: 12px;
       font-weight: normal;
-
-      .mat-radio-container,
-      .mat-radio-outer-circle,
-      .mat-radio-inner-circle {
-        height: 13px;
-        width: 13px;
-      }
     }
 
     &.noc-sm {
@@ -68,7 +53,7 @@ mat-radio-button {
 .mat-autocomplete-panel {
   &.noc-term-autocomplete {
     background-color: #fbf9de;
-    @include deep-width(500px !important);
+    @include deep-width(400px !important);
 
     .mat-option {
       padding: 8px !important;
@@ -87,6 +72,10 @@ mat-radio-button {
         //margin-right: 
       }
 
+      .noc-term-detail-trigger {
+        padding: 0 8px;
+        @include deep-width(50px);
+      }
     }
   }
 }
@@ -97,7 +86,7 @@ mat-radio-button {
     @include deep-width(400px !important);
 
     .mat-option {
-      padding: 8px !important;
+      padding: 5px !important;
       border-bottom: rgba(map-get($primary, default), 0.6) solid 1px;
       height: auto !important;
       line-height: 18px !important;

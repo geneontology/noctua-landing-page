@@ -3,8 +3,13 @@
 
 :host {
   width: 100%; // display: block;
+
   background-color: white;
   @include mat-elevation(4);
+
+  .noc-drawer {
+    @include deep-width(300px);
+  }
 
   .noc-header {
     @include deep-height(30px);
@@ -69,6 +74,7 @@
     padding: 0 10px;
     @include deep-height(50px);
     border-top: #CCC solid 1px;
+    @include mat-elevation(1);
     font-size: 12px;
 
 
@@ -129,7 +135,7 @@
         font-size: 18px;
       }
 
-      .noc-annoton-group-row {
+      .noc-activity-group-row {
         &.noc-row-disabled {
           opacity: 0.2;
           pointer-events: none;
