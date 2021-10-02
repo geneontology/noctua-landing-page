@@ -1,5 +1,5 @@
 <div [attr.id]="activity.displayId" fxLayout="column" fxLayoutAlign="start stretch" class="w-100-p"
-  [ngClass]="{'noc-selected': activity.displayId===camsService.currentMatch?.activityDisplayId}">
+  [ngClass]="{'noc-selected': activity.displayId===camService.currentMatch?.activityDisplayId}">
   <div class="noc-activity-heading" fxLayout="row" fxLayoutAlign="start center">
     <div fxFlex="25px" (click)="$event.stopPropagation()">
       <button mat-icon-button (click)="toggleExpand(activity)" color="primary" class="noc-toggle-expand-button">
@@ -10,8 +10,10 @@
     <div class="noc-display-number noc-sm" (click)="$event.stopPropagation()">
       {{activity.displayNumber}}
     </div>
-    <div class="noc-title mr-12">
-      <div class="noc-gp" *ngIf="gpNode" fxLayout="row" fxLayoutAlign="start center">
+    <div class="noc-title mr-8" fxLayout="row" fxLayoutAlign="start center">
+      <div class="noc-gp" *ngIf="gpNode" fxLayout="row" fxLayoutAlign="start center"
+        matTooltip="GP:  {{gpNode.term?.label}}  &#13; ( {{ gpNode.term?.id }})" [matTooltipPosition]="'below'"
+        [matTooltipShowDelay]="1000">
         <span class="text-truncate">
           {{gpNode.term?.label}}
           <a class="ml-4" (click)="$event.stopPropagation()" href="{{gpNode.term?.url}}" target="_blank">
@@ -19,10 +21,28 @@
           </a>
         </span>
       </div>
+      <mat-chip class="noc-chip-xs" [ngClass]="activity.activityType">
+        <span>{{activityTypeOptions[activity.activityType]?.label}}</span>
+      </mat-chip>
     </div>
-    <mat-chip class="noc-chip-xs" [ngClass]="activity.activityType">
-      <span>{{activityTypeOptions[activity.activityType]?.label}}</span>
-    </mat-chip>
+    <div fxFlex="" class="scard-title-summary" fxLayout="row" fxLayoutAlign="start start">
+      <mat-chip-list>
+        <ng-container *ngFor="let summaryNode of activity.summary.nodes">
+          <mat-chip *ngIf="summaryNode.nodes.length>0" class="noc-chip-xs noc-summary-chip noc-type-chip" fxLayout="row"
+            fxLayoutAlign="start center" matTooltip="{{summaryNode.tooltip}}" [matTooltipPosition]="'below'"
+            [matTooltipShowDelay]="1000">
+            <div class="noc-icon noc-icon-initials">
+              {{summaryNode.shorthand}}
+            </div>
+            <div fxFlex="" class="noc-chip-label">
+              <span>
+                {{summaryNode.nodes[0].term?.label}}
+              </span>
+            </div>
+          </mat-chip>
+        </ng-container>
+      </mat-chip-list>
+    </div>
     <div *ngIf="activity.hasViolations" class="noc-error" fxLayout="row" fxLayoutAlign="start center">
       <mat-chip class="noc-error-chip noc-chip-xs ml-8" fxLayout="row" fxLayoutAlign="start center"
         (click)="displayActivityErrors(activity)">
@@ -34,30 +54,33 @@
         </div>
       </mat-chip>
     </div>
-    <span fxFlex=""></span>
-    <!--
-<div *ngIf="!options.reviewMode" class="" fxFlex="200px" fxLayout="row" fxLayoutAlign="end center">
-  <button *ngIf="activity.activityType !==ActivityType.ccOnly" mat-stroked-button
-    (click)="openActivityConnector(activity)" color="primary" class="noc-rounded-button noc-sm mr-8"
-    matTooltip="connect activity causal relation" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
-    <small>Connect</small>
-  </button>
-   <button mat-stroked-button (click)="openActivityForm(activity)" color="primary"
-    class="noc-rounded-button noc-sm mr-8">
-    <small>Edit</small>
-  </button> 
-  <button mat-icon-button class="noc-rounded-button noc-sm" fxFlex="40px" color="primary"
-    [matMenuTriggerFor]="connectionOptionMenu">
-    <mat-icon>more_vert</mat-icon>
-  </button>
-  <mat-menu #connectionOptionMenu="matMenu" class="noc-dropdown-menu">
-    <h6 class="noc-menu-heading"> Danger Zone</h6>
-    <button mat-menu-item class="" (click)="deleteActivity(activity)">
-      Delete Activity
-    </button>
-  </mat-menu>
- 
-</div>-->
+
+
+    <div *ngIf="!options.reviewMode" class="" fxFlex="50px" fxLayout="row" fxLayoutAlign="end center">
+      <!--     <button *ngIf="activity.activityType !==ActivityType.ccOnly" mat-stroked-button
+        (click)="openActivityConnector(activity)" color="primary" class="noc-rounded-button noc-sm mr-8"
+        matTooltip="connect activity causal relation" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+        <small>Connect</small>
+      </button>
+      <button mat-stroked-button (click)="openActivityForm(activity)" color="primary"
+        class="noc-rounded-button noc-sm mr-8">
+        <small>Edit</small>
+      </button> -->
+      <button mat-icon-button class="noc-rounded-button noc-sm" fxFlex="40px" color="primary"
+        [matMenuTriggerFor]="connectionOptionMenu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+      <mat-menu #connectionOptionMenu="matMenu" class="noc-dropdown-menu">
+        <h6 class="noc-menu-heading"> Danger Zone</h6>
+        <button mat-menu-item class="" (click)="cloneActivity(activity)">
+          Clone Activity
+        </button>
+        <button mat-menu-item class="" (click)="deleteActivity(activity)">
+          Delete Activity
+        </button>
+      </mat-menu>
+
+    </div>
   </div>
   <div *ngIf="activity.expanded" class="noc-tree-container">
     <div class="noctua-form-table noc-activity-header w-100-p" fxLayout="row" fxLayoutAlign="start center">

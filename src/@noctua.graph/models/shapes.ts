@@ -233,14 +233,12 @@ export const NodeCellList = joint.dia.Element.define('noctua.NodeCellList', {
     },
     '.icon': {
       event: 'element:.icon:pointerdown',
-      'xlink:href': './../../assets/images/activity/bpOnlyk.png',
-      // ref: '.activity-name-rect',
+      'xlink:href': './assets/icons/edit.svg',
+      ref: '.activity-name-rect',
       refX: '100%',
       refX2: -30,
-      refY: 10,
-      width: 50,
-      refHeight: '100%',
-      stroke: 'blue',
+      y: 10,
+      height: 20,
       cursor: 'pointer'
     },
     '.activity-mf-rect': {
@@ -294,11 +292,12 @@ export const NodeCellList = joint.dia.Element.define('noctua.NodeCellList', {
     '<rect class="highlighter"/>',
     '<g class="rotatable">',
     '<g class="scalable">',
-    '<rect class="activity-name-rect"/><rect class="icon"/>',
+    '<rect class="activity-name-rect"/>',
     '<rect class="activity-mf-rect"/>',
     '<rect class="activity-gp-rect"/>',
     '</g>',
     '<text class="activity-name-text"/><text class="activity-mf-text"/><text class="activity-gp-text"/>',
+    '<image class="icon"/>',
     '</g>'
   ].join(''),
 

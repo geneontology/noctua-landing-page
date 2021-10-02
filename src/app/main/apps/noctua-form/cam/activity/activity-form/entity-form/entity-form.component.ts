@@ -16,7 +16,8 @@ import {
   ActivityNodeType,
   Activity,
   ErrorLevel,
-  ErrorType
+  ErrorType,
+  ActivityType
 } from 'noctua-form-base';
 import { InlineReferenceService } from '@noctua.editor/inline-reference/inline-reference.service';
 import { each, find, flatten } from 'lodash';
@@ -43,8 +44,10 @@ export class EntityFormComponent implements OnInit, OnDestroy {
   selectedItemDisplay;
   friendNodes;
   friendNodesFlat;
-
   activityNodeType = ActivityNodeType;
+  displayAddButton;
+
+  termData
 
   private unsubscribeAll: Subject<any>;
 
@@ -62,6 +65,8 @@ export class EntityFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.entity = this.noctuaActivityFormService.activity.getNode(this.entityFormGroup.get('id').value);
     this.friendNodes = this.camService.getNodesByType(this.entity.type);
+    this.displayAddButton = this.noctuaActivityFormService.activity.activityType === ActivityType.ccOnly
+      && this.entity.type === ActivityNodeType.GoMolecularEntity
     //  this.friendNodesFlat = this.camService.getNodesByTypeFlat(this.entity.type);
   }
 
@@ -266,6 +271,13 @@ export class EntityFormComponent implements OnInit, OnDestroy {
     self.noctuaActivityFormService.initializeForm();
   }
 
+  removeNode() {
+    const self = this;
+
+    self.noctuaActivityFormService.activity.removeNode(self.entity);
+    self.noctuaActivityFormService.initializeForm();
+  }
+
   openSelectEvidenceDialog() {
     const self = this;
     const evidences: Evidence[] = this.camService.getUniqueEvidence(self.noctuaActivityFormService.activity);
@@ -300,6 +312,7 @@ export class EntityFormComponent implements OnInit, OnDestroy {
   }
 
   openAddReference(event, evidence: FormGroup, name: string) {
+    event.stopPropagation();
     const data = {
       formControl: evidence.controls[name] as FormControl,
     };
@@ -307,6 +320,7 @@ export class EntityFormComponent implements OnInit, OnDestroy {
   }
 
   openAddWith(event, evidence: FormGroup, name: string) {
+    event.stopPropagation();
     const data = {
       formControl: evidence.controls[name] as FormControl,
     };
@@ -325,6 +339,10 @@ export class EntityFormComponent implements OnInit, OnDestroy {
       formControl: this.entityFormGroup.controls['term'] as FormControl,
     };
     this.inlineDetailService.open(event.target, { data });
+
+    //this.termData = data
+
+    console.log(this.termData)
   }
 
   termDisplayFn(term): string | undefined {

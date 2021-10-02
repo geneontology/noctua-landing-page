@@ -9,7 +9,7 @@ import {
   NoctuaUserService,
   NoctuaFormConfigService,
   CamService,
-  CamsService,
+
   Activity,
   ActivityDisplayType,
   ActivityType,
@@ -104,7 +104,7 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private camService: CamService,
-    public camsService: CamsService,
+
     private graphDialogService: NoctuaGraphDialogService,
     public noctuaActivityFormService: NoctuaActivityFormService,
     public noctuaReviewSearchService: NoctuaReviewSearchService,
@@ -160,10 +160,14 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openGraph() {
+    this.noctuaCommonMenuService.closeLeftDrawer();
+    this.noctuaCommonMenuService.closeRightDrawer();
     this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.camGraph)
   }
 
   openTable() {
+    //this.noctuaCommonMenuService.closeLeftDrawer();
+    this.noctuaCommonMenuService.closeRightDrawer();
     this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.camTable)
   }
 
@@ -230,7 +234,7 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openCamForm() {
     this.camService.initializeForm(this.cam);
-    this.noctuaCommonMenuService.selectedLeftPanel(LeftPanel.camForm);
+    this.noctuaCommonMenuService.selectLeftPanel(LeftPanel.camForm);
     this.noctuaCommonMenuService.closeRightDrawer();
     this.noctuaCommonMenuService.openLeftDrawer();
   }

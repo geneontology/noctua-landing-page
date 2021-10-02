@@ -19,8 +19,6 @@ export class CamStencil {
 
         self.camCanvas = camCanvas;
         self.stencils = stencils;
-
-
         self._initializeStencils(stencils);
     }
 
@@ -116,8 +114,6 @@ export class CamStencil {
                 if (x1 > target.left && x1 < target.left + canvasPaper.$el.width() && y1 > target.top && y1 < target.top + canvasPaper.$el.height()) {
                     self.onAddElement(self.selectedStencilElement, x1 - target.left - offset.x, y1 - target.top - offset.y);
                     //  el.position(x1 - target.left - offset.x, y1 - target.top - offset.y);
-
-
                 }
                 $('#noc-canvas').off('mousemove.fly').off('mouseup.fly');
                 flyShape.remove();

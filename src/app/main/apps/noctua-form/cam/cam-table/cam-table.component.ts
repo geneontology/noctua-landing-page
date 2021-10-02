@@ -13,7 +13,7 @@ import {
   Activity,
   ActivityType,
   NoctuaUserService,
-  CamsService,
+
   CamRebuildSignal,
   ActivityDisplayType
 } from 'noctua-form-base';
@@ -67,7 +67,6 @@ export class CamTableComponent implements OnInit, OnDestroy {
 
   constructor(
     public camService: CamService,
-    public camsService: CamsService,
     public noctuaCommonMenuService: NoctuaCommonMenuService,
     public noctuaUserService: NoctuaUserService,
     public noctuaFormConfigService: NoctuaFormConfigService,
@@ -120,7 +119,6 @@ export class CamTableComponent implements OnInit, OnDestroy {
     this.camService.activity = activity;
     this.noctuaActivityConnectorService.subjectActivity = activity;
     this.noctuaActivityConnectorService.onActivityChanged.next(activity);
-    this.noctuaActivityConnectorService.getConnections();
   }
 
   openActivityForm(activity: Activity) {

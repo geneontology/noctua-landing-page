@@ -61,6 +61,10 @@ import { ActivityTreeTableComponent } from './cam/cam-table/activity-tree-table/
 import { ActivitySlimTreeComponent } from './cam/cam-table/activity-slim-tree/activity-slim-tree.component';
 import { ActivitySlimTreeNodeComponent } from './cam/cam-table/activity-slim-tree/activity-slim-tree-node/activity-tree-node.component';
 import { PreviewActivityComponent } from './cam/activity/preview-activity/preview-activity.component';
+import { NoctuaSearchBaseModule } from '@noctua.search';
+import { DuplicateCamFormComponent } from './cam/duplicate-cam-form/duplicate-cam-form.component';
+import { ResizableModule } from 'angular-resizable-element';
+import { NoctuaTermDetailComponent } from './components/term-detail/term-detail.component';
 
 const routes = [
   {
@@ -79,6 +83,7 @@ const routes = [
     ContextMenuModule.forRoot(),
     NoctuaConfirmDialogModule,
     NoctuaEditorModule,
+    NoctuaSearchBaseModule,
 
     //Material
     MatAutocompleteModule,
@@ -100,6 +105,7 @@ const routes = [
     MatTableModule,
     MatTooltipModule,
     MatTreeModule,
+    ResizableModule,
   ],
   exports: [
     ActivityFormComponent,
@@ -118,6 +124,7 @@ const routes = [
     PreviewActivityDialogComponent,
     CamDiagramComponent,
     CamFormComponent,
+    DuplicateCamFormComponent,
     NodeComponent,
     NodesContainerComponent,
     ActivityConnectorFormComponent,
@@ -154,12 +161,12 @@ const routes = [
     SearchEvidenceDialogComponent,
     CamDiagramComponent,
     CamFormComponent,
+    DuplicateCamFormComponent,
     NodeComponent,
     NodesContainerComponent,
     ActivityConnectorFormComponent,
     TripleTableComponent,
     ActivityTableComponent,
-
     ActivityTreeTableComponent,
     EvidenceTableComponent,
     GraphPreviewComponent,
@@ -170,7 +177,8 @@ const routes = [
     ActivitySlimTreeComponent,
     ActivitySlimTreeNodeComponent,
     SelectEvidenceComponent,
-    PreviewActivityComponent
+    PreviewActivityComponent,
+    NoctuaTermDetailComponent
   ],
 })
 

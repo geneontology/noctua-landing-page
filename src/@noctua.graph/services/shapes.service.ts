@@ -64,6 +64,11 @@ export class NodeCell extends shapes.NodeCell {
 
 export class NodeCellList extends shapes.NodeCellList {
 
+  constructor() {
+    super();
+
+  }
+
   addNodePorts(): this {
     const self = this;
 
@@ -78,6 +83,8 @@ export class NodeCellList extends shapes.NodeCellList {
     self.attr('.activity-name-rect/fill', deep);
     self.attr('.activity-mf-rect/fill', light);
     self.attr('.activity-gp-rect/fill', light);
+
+    //this.attr('.icon/height', 200);
 
     return this;
   }

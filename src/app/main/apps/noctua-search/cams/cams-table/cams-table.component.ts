@@ -9,12 +9,12 @@ import {
   NoctuaFormConfigService,
   NoctuaUserService,
   CamService,
-  CamsService,
+
   Cam,
   ActivityDisplayType,
 } from 'noctua-form-base';
 
-import { MatPaginator, MatPaginatorIntl } from '@angular/material/paginator';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { CamPage } from '@noctua.search/models/cam-page';
 import { NoctuaSearchMenuService } from '@noctua.search/services/search-menu.service';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -26,6 +26,7 @@ import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import { LeftPanel, MiddlePanel, RightPanel } from '@noctua.search/models/menu-panels';
 import { each, find } from 'lodash';
 import { TableOptions } from '@noctua.common/models/table-options';
+import { SearchFilterType } from '@noctua.search/models/search-criteria';
 
 
 export function CustomPaginator() {
@@ -53,6 +54,7 @@ export function CustomPaginator() {
   ]
 })
 export class CamsTableComponent implements OnInit, OnDestroy {
+  SearchFilterType = SearchFilterType
   ReviewMode = ReviewMode;
   LeftPanel = LeftPanel;
   MiddlePanel = MiddlePanel;
@@ -93,7 +95,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
 
   constructor(
     private camService: CamService,
-    private camsService: CamsService,
+
     public noctuaReviewSearchService: NoctuaReviewSearchService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     public noctuaCommonMenuService: NoctuaCommonMenuService,
@@ -134,7 +136,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
         this.preCheck();
       });
 
-    this.camsService.onCamsChanged
+    this.camService.onCamsChanged
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe(cams => {
         if (!cams) {
@@ -156,7 +158,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this._unsubscribeAll))
       .subscribe((remove: boolean) => {
         if (remove) {
-          this.camsService.clearCams();
+          this.camService.clearCams();
           this.selection.clear();
         }
       });
@@ -198,7 +200,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     this.selection.clear();
 
     each(self.cams, (cam) => {
-      const found = find(self.camsService.cams, { id: cam.id });
+      const found = find(self.camService.cams, { id: cam.id });
 
       if (found) {
         self.selection.select(cam);
@@ -258,7 +260,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
   }
 
   addToReview(cam: Cam) {
-    this.noctuaReviewSearchService.addCamsToReview([cam], this.camsService.cams);
+    this.noctuaReviewSearchService.addCamsToReview([cam], this.camService.cams);
     this.noctuaReviewSearchService.addToArtBasket(cam.id, cam.title);
   }
 
@@ -269,15 +271,29 @@ export class CamsTableComponent implements OnInit, OnDestroy {
     cam.expanded = true;
     this.camService.cam = cam;
     this.camService.onCamChanged.next(cam);
-    //this.openRightDrawer(RightPanel.camDetail);
   }
 
-  openLeftDrawer(panel) {
+  openCamForm(cam: Cam) {
+    this.camService.cam = cam;
+    this.camService.initializeForm(cam);
+    this.camService.onCamChanged.next(cam);
+
+    this.openRightDrawer(RightPanel.camForm)
+  }
+
+  openDuplicateCamForm(cam: Cam) {
+    this.camService.cam = cam;
+    this.camService.onCamChanged.next(cam);
+
+    this.openRightDrawer(RightPanel.duplicateCamForm)
+  }
+
+  openLeftDrawer(panel: LeftPanel) {
     this.noctuaSearchMenuService.selectLeftPanel(panel);
     this.noctuaSearchMenuService.openLeftDrawer();
   }
 
-  openRightDrawer(panel) {
+  openRightDrawer(panel: RightPanel) {
     this.noctuaSearchMenuService.selectRightPanel(panel);
     this.noctuaSearchMenuService.openRightDrawer();
   }
