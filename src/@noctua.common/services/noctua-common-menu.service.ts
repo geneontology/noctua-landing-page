@@ -14,9 +14,9 @@ import { SettingsOptions } from './../models/graph-settings';
 export class NoctuaCommonMenuService {
 
   onCamSettingsChanged: BehaviorSubject<SettingsOptions>;
-  selectedLeftPanel;
-  selectedMiddlePanel;
-  selectedRightPanel;
+  selectedLeftPanel: LeftPanel;
+  selectedMiddlePanel: MiddlePanel;
+  selectedRightPanel: RightPanel;
   resultsViewScrollbar: PerfectScrollbarDirective;
 
   private _leftDrawer: MatDrawer;

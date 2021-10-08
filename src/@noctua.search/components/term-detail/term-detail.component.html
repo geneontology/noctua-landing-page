@@ -1,0 +1,47 @@
+<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-100-p">
+  <div class="noc-drawer-header" fxLayout="column" fxLayoutAlign="start stretch">
+    <div class="noc-header w-100-p" fxLayout="row" fxLayoutAlign="start center">
+      <span class="noc-drawer-header-title">
+        Term Details</span>
+      <span fxFlex></span>
+      <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
+        aria-label="Close dialog">
+        <mat-icon>close</mat-icon> CLOSE
+      </button>
+    </div>
+  </div>
+  <div class="noc-drawer-body noc-item-details" noctuaPerfectScrollbar>
+    <div class="noc-section-row">
+      <div class="noc-title">
+        Term
+      </div>
+      <div class="noc-description">
+        {{termDetail.label}} <small>({{termDetail.id}})</small>
+      </div>
+    </div>
+    <div class="noc-section-row">
+      <div class="noc-title">
+        Definition
+      </div>
+      <div class="noc-description">
+        {{termDetail.description}}
+      </div>
+    </div>
+    <div class="noc-section-row">
+      <div class="noc-title">
+        Is A Type Of
+      </div>
+      <div class="noc-description">
+        <div *ngFor="let rootType of termDetail.rootTypes">
+          {{rootType.label}}<small>({{rootType.id}})</small>
+          <a (click)="useTerm(rootType)">
+            Use
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
+
+  </div>
+</div>

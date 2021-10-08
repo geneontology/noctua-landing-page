@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
 import { NoctuaSharedModule } from '@noctua/shared.module';
 import { SearchOrganismsComponent } from './components/search-organisms/search-organisms.component';
 import { SearchGroupsComponent } from './components/search-groups/search-groups.component';
@@ -16,6 +15,10 @@ import { ArtBasketComponent } from './components/art-basket/art-basket.component
 import { ReviewFormComponent } from './components/review-form/review-form.component';
 import { CamsReviewChangesDialogComponent } from './components/dialogs/cams-review-changes/cams-review-changes.component';
 import { CamsUnsavedDialogComponent } from './components/dialogs/cams-unsaved/cams-unsaved.component';
+import { FindReplaceComponent } from './components/find-replace/find-replace.component';
+import { CamTermsComponent } from './components/cam-terms/cam-terms.component';
+import { TreeModule } from '@circlon/angular-tree-component';
+import { TermDetailComponent } from './components/term-detail/term-detail.component';
 
 @NgModule({
     declarations: [
@@ -27,9 +30,12 @@ import { CamsUnsavedDialogComponent } from './components/dialogs/cams-unsaved/ca
         SearchRelationComponent,
         SearchHistoryComponent,
         ArtBasketComponent,
+        FindReplaceComponent,
         ReviewFormComponent,
         CamsReviewChangesDialogComponent,
         CamsUnsavedDialogComponent,
+        CamTermsComponent,
+        TermDetailComponent,
     ],
     imports: [
         CommonModule,
@@ -37,6 +43,7 @@ import { CamsUnsavedDialogComponent } from './components/dialogs/cams-unsaved/ca
         FormsModule,
         ReactiveFormsModule,
         NoctuaSharedModule,
+        TreeModule,
         NoctuaEditorModule
     ],
     exports: [
@@ -48,9 +55,12 @@ import { CamsUnsavedDialogComponent } from './components/dialogs/cams-unsaved/ca
         SearchRelationComponent,
         SearchHistoryComponent,
         ArtBasketComponent,
+        FindReplaceComponent,
         ReviewFormComponent,
         CamsReviewChangesDialogComponent,
         CamsUnsavedDialogComponent,
+        CamTermsComponent,
+        TermDetailComponent
     ]
 })
 export class NoctuaSearchBaseModule {

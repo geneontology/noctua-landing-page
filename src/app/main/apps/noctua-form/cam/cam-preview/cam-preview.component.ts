@@ -70,7 +70,6 @@ export class CamPreviewComponent implements OnInit, OnDestroy {
     this.camService.activity = activity;
     this.noctuaActivityConnectorService.subjectActivity = activity;
     this.noctuaActivityConnectorService.onActivityChanged.next(activity);
-    this.noctuaActivityConnectorService.getConnections();
     // this.noctuaFormMenuService.openRightDrawer(this.noctuaFormMenuService.panel.connectorForm);
   }
 

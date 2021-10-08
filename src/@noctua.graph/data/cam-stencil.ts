@@ -33,10 +33,13 @@ const camStencil: StencilItem[] = [{
         id: noctuaFormConfig.activityType.options.ccOnly.name,
         label: noctuaFormConfig.activityType.options.ccOnly.label.toUpperCase(),
         iconUrl: './assets/images/activity/ccOnly.png'
+    }, {
+        type: ActivityType.molecule,
+        id: noctuaFormConfig.activityType.options.molecule.name,
+        label: noctuaFormConfig.activityType.options.molecule.label.toUpperCase(),
+        iconUrl: './assets/images/activity/molecule.png'
     }]
 }]
-
-
 
 export const noctuaStencil = {
     camStencil: cloneDeep(camStencil)

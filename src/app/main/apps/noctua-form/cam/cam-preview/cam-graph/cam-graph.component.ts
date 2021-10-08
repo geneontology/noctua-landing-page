@@ -196,7 +196,6 @@ export class CamGraphComponent implements OnInit, OnDestroy {
     this.camService.activity = activity;
     this.noctuaActivityConnectorService.subjectActivity = activity;
     this.noctuaActivityConnectorService.onActivityChanged.next(activity);
-    this.noctuaActivityConnectorService.getConnections();
     // this.noctuaFormMenuService.openRightDrawer(LeftPanel.connectorForm);
   }
 
@@ -207,10 +206,6 @@ export class CamGraphComponent implements OnInit, OnDestroy {
     //this.noctuaFormMenuService.openRightDrawer(LeftPanel.activityForm);
   }
 
-  openActivityConnector(activityConnector: ConnectorActivity) {
-    this.noctuaActivityConnectorService.initializeForm(activityConnector.subjectNode.uuid, activityConnector.objectNode.uuid);
-    // this.noctuaFormMenuService.openRightDrawer(LeftPanel.connectorForm);
-  }
 
 
   deleteActivity(activity: Activity) {

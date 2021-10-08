@@ -1,0 +1,79 @@
+<div fxLayout="column" fxLayoutAlign="start stretch" class="noc-drawer h-100-p">
+  <div class="noc-drawer-header" fxLayout="column" fxLayoutAlign="start stretch">
+    <div class="noc-header w-100-p" fxLayout="row" fxLayoutAlign="start center">
+      <span class="noc-drawer-header-title">
+        Find and Replace</span>
+      <span fxFlex></span>
+      <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
+        aria-label="Close dialog">
+        <mat-icon>close</mat-icon> CLOSE
+      </button>
+    </div>
+  </div>
+  <div class="noc-drawer-body" noctuaPerfectScrollbar>
+    <div class="noc-tree-container">
+
+      <div class="noc-tree">
+        <tree-root #tree (initialized)="onTreeLoad()" [nodes]="treeNodes" [options]="treeOptions">
+          <ng-template #treeNodeWrapperTemplate let-node let-index="index">
+            <div class="node-wrapper noc-tree-node" fxLayout="row" fxLayoutAlign="start center"
+              [style.padding-left]="node.getNodePadding()">
+              <button mat-icon-button class="noc-node-expander-button" color="primary" (click)="node.toggleExpanded()"
+                *ngIf="node.hasChildren">
+                <fa-icon *ngIf="node?.isCollapsed" [icon]="['fas', 'caret-right']"></fa-icon>
+                <fa-icon *ngIf="node?.isExpanded" [icon]="['fas', 'caret-down']"></fa-icon>
+              </button>
+              <div class="noc-expander-placeholder" *ngIf="!node.hasChildren">
+              </div>
+              <div class="node-content-wrapper" fxFlex="" fxLayout="row" fxLayoutAlign="start center"
+                [class.node-content-wrapper-active]="node.isActive"
+                [class.node-content-wrapper-focused]="node.isFocused" (click)="node.mouseAction('click', $event)"
+                (dblclick)="node.mouseAction('dblClick', $event)"
+                (contextmenu)="node.mouseAction('contextMenu', $event)" (treeDrop)="node.onDrop($event)"
+                [treeAllowDrop]="node.allowDrop" [treeDrag]="node" [treeDragEnabled]="node.allowDrag()">
+
+                <div *ngIf="node.data.isCategory" class="noc-term-row noc-category-row" fxFlex="" fxLayout="row"
+                  fxLayoutAlign="start center">
+                  <div>
+                    {{node.data.label}}
+                  </div>
+                  <span fxFlex=""></span>
+                  <div class="noc-aspect-badge" (click)="openSearch(node.data)" fxLayout="row"
+                    fxLayoutAlign="center center">
+                    {{node.data.frequency}}
+                  </div>
+                </div>
+
+                <div *ngIf="!node.data.isCategory" class="noc-term-row" fxFlex="" fxLayout="row"
+                  fxLayoutAlign="start center">
+                  <div *ngIf="!node.data.isCategory" (click)="openSearch()" class="noc-title">
+                    {{node.data.term?.label}}
+                  </div>
+                  <span fxFlex=""></span>
+                  <div class="noc-badge" (click)="openSearch(node.data)" fxLayout="row" fxLayoutAlign="center center">
+                    {{node.data.frequency}}
+                  </div>
+                  <div class="noc-icon" (click)="openSearch(node.data)" fxLayout="row" fxLayoutAlign="center center">
+                    <fa-icon [icon]="['fas', 'search']"></fa-icon>
+                  </div>
+                  <div class="noc-icon" (click)="openTermDetail(node.data)" fxLayout="row"
+                    fxLayoutAlign="center center">
+                    <fa-icon [icon]="['fas', 'info-circle']"></fa-icon>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-template>
+        </tree-root>
+      </div>
+    </div>
+    <div class="noc-stats-results" fxLayout="column" fxLayoutAlign="start center">
+      <!--  <div *ngFor="let node of termsSummary.allTerms" class="">
+        {{node.term.label}}
+      </div> -->
+    </div>
+  </div>
+  <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
+
+  </div>
+</div>

@@ -21,7 +21,7 @@ const golrNeoServer = typeof global_golr_neo_server !== 'undefined'
   : 'http://noctua-golr.berkeleybop.org/';
 const golrServer = typeof global_golr_server !== 'undefined'
   ? global_golr_server
-  : 'http://golr.berkeleybop.org/';
+  : 'http://golr-aux.geneontology.io/solr/';//'http://golr-aux.geneontology.io/solr/'
 
 const globalWorkbenchesModel = typeof global_workbenches_model !== 'undefined'
   ? global_workbenches_model
@@ -45,8 +45,9 @@ const globalKnownRelations = typeof global_known_relations !== 'undefined'
 
 export const environment = {
   production: false,
-  isDev: false,
+  isDev: true,
   isBeta: false,
+  isGraph: false,
   spaqrlApiUrl: 'http://rdf-internal.berkeleybop.io/blazegraph/sparql',
   // spaqrlApiUrl: 'http://rdf.geneontology.org/blazegraph/sparql',
   // gorestApiUrl: 'https://api.geneontology.cloud/'

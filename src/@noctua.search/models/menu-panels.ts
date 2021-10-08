@@ -10,11 +10,13 @@ export enum LeftPanel {
 };
 
 export enum MiddlePanel {
+    home = 'home',
     cams = 'cams',
     camsReview = 'camReview',
     reviewChanges = 'reviewChanges'
 };
 
 export enum RightPanel {
-
+    camForm = 'camForm',
+    duplicateCamForm = 'duplicateCamForm',
 }

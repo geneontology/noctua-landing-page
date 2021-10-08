@@ -65,7 +65,7 @@
                 <div class="noc-note" fxLayout="row" fxLayoutAlign="start center">
                   <mat-icon class="green-500-fg">check_circle</mat-icon>
                   <span class="noc-description">
-                    {{connector.connectorActivity?.rule.rEdge?.label}}
+                    {{connector.connectorActivity?.predicate.edge?.label}}
                   </span>
                 </div>
               </div>
@@ -117,28 +117,30 @@
     <div *ngIf="connectorFormGroup" class="noc-connector-form h-100-p" noctuaPerfectScrollbar>
       <div fxLayout="column" fxLayoutAlign="start stretch" class="noc-form-section w-100-p">
         <div class="noc-section-body w-100-p p-0" fxLayout="column" fxLayoutAlign="start center">
-          <div fxLayout="row" fxLayoutAlign="space-between center " class="noc-summary-row w-100-p">
-            <div class="noc-activity-box" fxLayout="column" fxLayoutAlign="center center">
-              <div class="noc-activity-box-header">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="noc-summary-row p-8 w-100-p">
+            <div class="noc-activity-box" fxLayout="column" fxLayoutAlign="center start">
+              <div class="noc-activity-box-header" fxLayout="row" fxLayoutAlign="start center">
                 Upstream Activity
               </div>
-              <div class="p-8 w-100-p" fxFlex="100%">
-                <small>{{ connectorActivity?.subjectActivity?.presentation.mfText}}</small>
-                enabled by:
-                <strong>{{ connectorActivity?.subjectActivity?.presentation.gpText}}</strong>
+              <div class="noc-activity-box-row">
+                {{ connectorActivity?.subject?.presentation.mfText}}
+              </div>
+              <div class="noc-activity-box-row">
+                <small>enabled by:</small><strong>{{ connectorActivity?.subject?.presentation.gpText}} </strong>
               </div>
             </div>
             <div>
               <mat-icon class="s-32">arrow_right_alt</mat-icon>
             </div>
-            <div class="noc-activity-box" fxLayout="column" fxLayoutAlign="center center">
-              <div class="noc-activity-box-header">
+            <div class="noc-activity-box" fxLayout="column" fxLayoutAlign="center start">
+              <div class="noc-activity-box-header" fxLayout="row" fxLayoutAlign="start center">
                 Downstream Activity
               </div>
-              <div class="p-8 w-100-p" fxFlex="100%">
-                <small>{{ connectorActivity?.objectActivity?.presentation.mfText}}</small>
-                enabled by:
-                <strong>{{ connectorActivity?.objectActivity?.presentation.gpText}}</strong>
+              <div class="noc-activity-box-row">
+                {{ connectorActivity?.object?.presentation.mfText}}
+              </div>
+              <div class="noc-activity-box-row">
+                <small>enabled by:</small><strong>{{ connectorActivity?.object?.presentation.gpText}}</strong>
               </div>
             </div>
           </div>
@@ -223,36 +225,7 @@
                   </mat-form-field>
                 </div>
                 <span fxFlex=""></span>
-                <button mat-icon-button class="noc-action-button" fxFlex="40px" [matMenuTriggerFor]="entityMenu">
-                  <mat-icon>more_vert</mat-icon>
-                </button>
-                <mat-menu #entityMenu="matMenu" class="noc-dropdown-menu">
-                  <button mat-menu-item class="" (click)="clearValues()">
-                    Clear Values
-                  </button>
-                  <h6 class="noc-menu-heading"> Evidence</h6>
-                  <button mat-menu-item class="" (click)="addEvidence()">
-                    Add Evidence
-                  </button>
-                  <button (click)="removeEvidence(i)" mat-menu-item>
-                    Remove Evidence
-                  </button>
-                  <button mat-menu-item class="" (click)="openSelectEvidenceDialog(evidence)">
-                    Clone Evidence
-                  </button>
-                  <button mat-menu-item class="" (click)="addNDEvidence()">
-                    Add ND Reference
-                  </button>
 
-                  <!--
-                    <button mat-menu-item *ngIf="entity.treeLevel===0" class="" (click)="toggleIsComplement(entity)">
-                      NOT Qualifier
-                    </button>     
-                    <button mat-menu-item class="" (click)="openMoreEvidenceDialog()">
-                      More Evidence
-                    </button>          
-                    -->
-                </mat-menu>
               </div>
             </div>
           </div>
@@ -287,7 +260,7 @@
           <div class="noc-note mb-4" fxLayout="row" fxLayoutAlign="start center">
             <mat-icon class="green-500-fg">check_circle</mat-icon>
             <span class="noc-description">
-              {{currentConnectorActivity?.rule.rEdge?.label}}
+              {{currentConnectorActivity?.predicate.edge?.label}}
             </span>
           </div>
           <noc-graph-preview [nodes]="currentConnectorActivity?.graphPreview.nodes"
@@ -301,7 +274,7 @@
         <div class="noc-note mb-4" fxLayout="row" fxLayoutAlign="start center">
           <mat-icon class="green-500-fg">check_circle</mat-icon>
           <span class="noc-description">
-            {{connectorActivity?.rule.rEdge?.label}}
+            {{connectorActivity?.predicate.edge?.label}}
           </span>
         </div>
         <noc-graph-preview [nodes]="connectorActivity?.graphPreview.nodes"
