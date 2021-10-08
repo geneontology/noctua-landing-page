@@ -27,13 +27,17 @@
       (click)="openSearch()" matTooltip="Find and replace" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
       <fa-icon [icon]="['fas', 'search']"></fa-icon>
     </button>
-
-
     <button mat-icon-button color="" class="noc-rounded-button"
       [ngClass]="{'noc-active': noctuaFormMenuService.selectedLeftPanel === LeftPanel.camTermsSummary}"
       (click)="openTermsSummary()" matTooltip="terms summary" [matTooltipPosition]="'after'"
       [matTooltipShowDelay]="1500">
-      <fa-icon [icon]="['fas', 'clipboard-list']"></fa-icon>
+      <fa-icon [icon]="['fas', 'list']"></fa-icon>
+    </button>
+    <button mat-icon-button color="" class="noc-rounded-button"
+      [ngClass]="{'noc-active': noctuaFormMenuService.selectedLeftPanel === LeftPanel.camStats}"
+      (click)="openCamStats()" matTooltip="GO CAM Statistics" [matTooltipPosition]="'after'"
+      [matTooltipShowDelay]="1500">
+      <fa-icon [icon]="['fas', 'chart-bar']"></fa-icon>
     </button>
     <!--    <button mat-icon-button color="" class="noc-rounded-button" (click)="openDuplicateCamForm()"
       [ngClass]="{'noc-active': noctuaFormMenuService.selectedLeftPanel === LeftPanel.duplicateCamForm}"
@@ -188,6 +192,8 @@
 
           <noc-cam-terms [panelDrawer]="leftDrawer"
             [hidden]="noctuaFormMenuService.selectedLeftPanel !== LeftPanel.camTermsSummary"></noc-cam-terms>
+          <noc-cam-stats [panelDrawer]="leftDrawer"
+            [hidden]="noctuaFormMenuService.selectedLeftPanel !== LeftPanel.camStats"></noc-cam-stats>
         </div>
       </mat-drawer>
       <mat-drawer-content class="w-100-p h-100-p" fxLayout="column" fxLayoutAlign="start stretch">

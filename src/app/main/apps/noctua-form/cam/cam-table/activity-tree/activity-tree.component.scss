@@ -14,7 +14,7 @@ $accent: map-get($theme, accent);
     line-height: 12px;
     //@include deep-height(30px);
     // display: inline-block !important;
-    padding: 4px 8px;
+    // padding: 4px 8px;
     font-size: 12px !important;
     color: #000;
     border-right: $noc-primary-color-light solid 1px;
@@ -68,8 +68,15 @@ $accent: map-get($theme, accent);
     // @include deep-width(100%);
     //min-height: 35px;
     background-color: #fff;
-    font-size: 14px;
+    font-size: 12px;
     border-bottom: $noc-primary-color-light solid 1px;
+
+    .noc-cell {
+      padding: 2px 8px;
+      //@include deep-height(100%);
+      border-right: #aaa solid 1px;
+      overflow: hidden;
+    }
 
     //border-bottom: rgba(#000, 0.4) solid 1px;
     .noc-toggle-expand-button {
@@ -78,20 +85,10 @@ $accent: map-get($theme, accent);
       line-height: 12px;
     }
 
-    .noc-title {
-      height: 100%;
-      @include deep-width(300px);
-      small {
-        font-size: 12px;
-        font-style: italic;
-      }
-    }
-
     .noc-gp {
       position: relative;
-      width: 190px;
+      @include deep-width(170px);
       line-height: 12px;
-      @include deep-height(30px);
       // display: inline-block !important;
       padding: 4px 8px;
       font-size: 12px !important;
@@ -104,6 +101,15 @@ $accent: map-get($theme, accent);
       text-overflow: ellipsis;
       white-space: nowrap;
 
+      .noc-no-info {
+        padding: 0;
+        font-size: 10px;
+      }
+      small {
+        font-size: 12px;
+        font-style: italic;
+      }
+
       p {
         padding: 0;
         margin: 0;
@@ -112,6 +118,22 @@ $accent: map-get($theme, accent);
       a {
         color: #777;
         font-size: 10px !important;
+      }
+    }
+
+    .noc-cam-type {
+      @include deep-width(50px);
+      img {
+        height: 30px;
+      }
+    }
+
+    .noc-cam-date {
+      font-size: 10px;
+      color: #555;
+      @include deep-width(90px);
+      noc-icon {
+        color: #777;
       }
     }
 
@@ -134,21 +156,6 @@ $accent: map-get($theme, accent);
       color: white;
       background-color: $noc-tree-line-color;
       content: "";
-    }
-  }
-
-  .noc-toolbar {
-    padding: 0px 20px;
-    height: 40px;
-    width: 100%;
-    background-color: #f2f2f2;
-    border-bottom: #bbb solid 1px;
-
-    .noc-title {
-      line-height: 38px;
-      color: #555;
-      font-size: 14px;
-      font-weight: bold;
     }
   }
 
@@ -300,9 +307,14 @@ $accent: map-get($theme, accent);
       @include noc-chip-color(#e28989);
     }
 
+    .noc-chip-activity-type {
+      font-size: 10px;
+    }
+
     &.noc-summary-chip {
       padding: 0;
       @include deep-height(20px);
+      max-width: 220px;
       font-size: 10px;
 
       .noc-icon,
@@ -311,8 +323,7 @@ $accent: map-get($theme, accent);
         align-items: center;
         justify-content: center;
         height: 20px;
-        min-width: 20px;
-        max-width: 40px;
+        @include deep-width(20px);
         border-radius: 50%;
         color: #777;
         font-size: 10px;
@@ -345,13 +356,31 @@ $accent: map-get($theme, accent);
         white-space: nowrap;
       }
 
-      @include noc-chip-color(#ddd);
+      @include noc-chip-color(#bbb);
 
       &.noc-type-chip {
-        @include noc-chip-color(#bbc9cc);
-
         .noc-icon {
-          color: #59939e;
+          color: #555;
+        }
+        &.noc-mf {
+          border: mat-color($mat-green, 300) solid 1px;
+          .noc-icon {
+            background-color: mat-color($mat-green, 100);
+          }
+        }
+
+        &.noc-bp {
+          border: mat-color($mat-brown, 300) solid 1px;
+          .noc-icon {
+            background-color: mat-color($mat-brown, 100);
+          }
+        }
+
+        &.noc-cc {
+          border: mat-color($mat-purple, 300) solid 1px;
+          .noc-icon {
+            background-color: mat-color($mat-purple, 100);
+          }
         }
       }
     }

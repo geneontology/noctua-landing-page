@@ -40,6 +40,8 @@ export class NoctuaReviewSearchService {
     searchHistory: SearchHistory[] = [];
     onSearchCriteriaChanged: BehaviorSubject<any>;
     onSearchHistoryChanged: BehaviorSubject<any>;
+    onCamTermSearch: BehaviorSubject<any>;
+    onCamReplaceTermSearch: BehaviorSubject<any>;
     curieUtil: any;
     camPage: CamPage;
     searchCriteria: SearchCriteria;
@@ -82,6 +84,8 @@ export class NoctuaReviewSearchService {
         this.onReplaceChanged = new BehaviorSubject(false);
         this.onCamsPageChanged = new BehaviorSubject(null);
         this.onCamChanged = new BehaviorSubject([]);
+        this.onCamTermSearch = new BehaviorSubject(null);
+        this.onCamReplaceTermSearch = new BehaviorSubject(null);
         this.onSearchHistoryChanged = new BehaviorSubject(null);
         this.searchCriteria = new SearchCriteria();
         this.onSearchCriteriaChanged = new BehaviorSubject(null);

@@ -2,8 +2,8 @@ import { AfterViewInit, Component, Input, NgZone, OnInit } from '@angular/core';
 import Reveal from 'reveal.js';
 import Markdown from 'reveal.js/plugin/markdown/markdown.esm.js';
 import Highlight from 'reveal.js/plugin/highlight/highlight.esm.js';
+import { ActivityDisplayType, Cam } from 'noctua-form-base';
 import { TableOptions } from '@noctua.common/models/table-options';
-import { Cam, ActivityDisplayType } from 'noctua-form-base';
 
 
 @Component({
