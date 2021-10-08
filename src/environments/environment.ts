@@ -44,9 +44,10 @@ const globalKnownRelations = typeof global_known_relations !== 'undefined'
   : enviromnenetData.globalKnownRelations;
 
 export const environment = {
+  // noctuaTempUrl: 'http://localhost:8910/workbench/noctua-landing-page',
   production: false,
   isDev: true,
-  isBeta: false,
+  isBeta: true,
   isGraph: false,
   spaqrlApiUrl: 'http://rdf-internal.berkeleybop.io/blazegraph/sparql',
   // spaqrlApiUrl: 'http://rdf.geneontology.org/blazegraph/sparql',
@@ -64,7 +65,7 @@ export const environment = {
   searchApi: `${baristaLocation}/search/`,
 
   //Workbench
-  noctuaUrl: `${window.location.origin}`,
+  noctuaUrl: `${window.location.origin}/workbench/noctua-landing-page`,
   workbenchUrl: `${window.location.origin}/workbench/`,
 
   amigoTerm: 'http://amigo.geneontology.org/amigo/term/',

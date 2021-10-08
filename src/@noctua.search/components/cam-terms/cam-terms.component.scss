@@ -22,19 +22,11 @@ $accent: map-get($theme, accent);
     @include deep-width(380px);
 
     .noc-drawer-header {
-      padding: 0;
-      @include deep-height(40px);
+      padding: 0 12px;
+      @include deep-height(30px);
       background-color: #fff;
       @include mat-elevation(2);
       z-index: 1000;
-
-      .noc-header {
-        padding: 0 12px;
-        @include deep-height(40px);
-        border-bottom: #bbb solid 1px;
-        @include mat-elevation(2);
-        background-color: #fff;
-      }
 
       .noc-drawer-header-title {
         font-size: 14px;
@@ -44,7 +36,7 @@ $accent: map-get($theme, accent);
 
     .noc-drawer-body {
       padding: 24px 8 100px 0;
-      min-height: calc(100% - 330px);
+      min-height: calc(100% - 30px);
     }
   }
 
@@ -120,6 +112,24 @@ $accent: map-get($theme, accent);
           // word-break: break-all;
         }
 
+        .noc-subtitle {
+          font-size: 10px;
+          color: #777;
+        }
+
+        .noc-article-title {
+          font-size: 10px;
+          max-height: 60px;
+          overflow: hidden;
+        }
+
+        .noc-article-author {
+          font-size: 10px;
+          max-height: 60px;
+          color: #777;
+          overflow: hidden;
+        }
+
         .noc-badge,
         .noc-aspect-badge {
           margin: 2px 5px;
@@ -150,7 +160,7 @@ $accent: map-get($theme, accent);
       }
 
       .noc-category-row {
-        padding-right: 50px;
+        //padding-right: 50px;
         .noc-title {
           // font-weight: bold;
           font-size: 18px;

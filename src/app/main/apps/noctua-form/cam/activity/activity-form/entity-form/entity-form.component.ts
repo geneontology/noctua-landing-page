@@ -342,7 +342,6 @@ export class EntityFormComponent implements OnInit, OnDestroy {
 
     //this.termData = data
 
-    console.log(this.termData)
   }
 
   termDisplayFn(term): string | undefined {

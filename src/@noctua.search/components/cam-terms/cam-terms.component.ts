@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone, Input, ViewChild } from '@angular/core';
 import { Subject } from 'rxjs';
-import { ActivityNode, Cam, CamLoadingIndicator, CamService, CamStats, LeftPanel, NoctuaFormConfigService, NoctuaFormMenuService, NoctuaGraphService, NoctuaUserService, RightPanel, TermsSummary, TermSummary } from 'noctua-form-base';
+import { ActivityNode, Article, Cam, CamLoadingIndicator, CamService, CamStats, CamSummary, EntityType, Evidence, LeftPanel, NoctuaFormConfigService, NoctuaFormMenuService, NoctuaGraphService, NoctuaLookupService, NoctuaUserService, RightPanel, TermsSummary } from 'noctua-form-base';
 import { NoctuaSearchService } from './../..//services/noctua-search.service';
 import { NoctuaSearchMenuService } from '../../services/search-menu.service';
 import { finalize, takeUntil } from 'rxjs/operators';
@@ -9,6 +9,8 @@ import { NoctuaConfirmDialogService } from '@noctua/components/confirm-dialog/co
 import { MiddlePanel } from './../../models/menu-panels';
 import { NoctuaSearchDialogService } from './../../services/dialog.service';
 import { MatDrawer } from '@angular/material/sidenav';
+import { SearchCriteria } from '@noctua.search/models/search-criteria';
+import { environment } from 'environments/environment';
 
 @Component({
   selector: 'noc-cam-terms',
@@ -17,25 +19,18 @@ import { MatDrawer } from '@angular/material/sidenav';
 })
 export class CamTermsComponent implements OnInit, OnDestroy {
   MiddlePanel = MiddlePanel;
+  EntityType = EntityType;
 
   @ViewChild('tree') tree;
   @Input('panelDrawer')
   panelDrawer: MatDrawer;
   cam: Cam;
   termsSummary: TermsSummary;
-  stats
 
   loadingSpinner: any = {
     color: 'primary',
     mode: 'indeterminate'
   };
-
-  displayedColumns = [
-    'category',
-    'count'
-  ];
-
-
 
   treeOptions = {
     allowDrag: false,
@@ -48,6 +43,7 @@ export class CamTermsComponent implements OnInit, OnDestroy {
 
   constructor(
     private zone: NgZone,
+    private noctuaLookupService: NoctuaLookupService,
     private _noctuaGraphService: NoctuaGraphService,
     public noctuaFormMenuService: NoctuaFormMenuService,
     public camService: CamService,
@@ -70,9 +66,31 @@ export class CamTermsComponent implements OnInit, OnDestroy {
         }
         this.cam = cam;
         this.termsSummary = this._noctuaGraphService.getTerms(this.cam.graph)
-        this.treeNodes = this._buildTree(this.termsSummary)
+        this.treeNodes = this.camService.buildTermsTree(this.termsSummary)
+        const pmids = this.termsSummary.papers.nodes.map((article: Article) => {
+          return Evidence.getReferenceNumber(article.id)
+        })
+
+        this.noctuaLookupService.addPubmedInfos(pmids)
       });
 
+    this.noctuaLookupService.onArticleCacheReady
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((ready: boolean) => {
+        if (!ready) {
+          return;
+        }
+
+        this.termsSummary.papers.nodes.forEach((article: Article) => {
+          const cachedArticle = this.noctuaLookupService.articleCache[article.id]
+          if (cachedArticle) {
+            article.title = cachedArticle.title
+            article.link = cachedArticle.link
+            article.author = cachedArticle.author
+            article.date = cachedArticle.date
+          }
+        })
+      });
   }
 
   ngOnDestroy(): void {
@@ -80,37 +98,40 @@ export class CamTermsComponent implements OnInit, OnDestroy {
     this._unsubscribeAll.complete();
   }
 
-  openSearch() {
-    this.noctuaFormMenuService.openLeftDrawer(LeftPanel.findReplace);
+  openSearch(node) {
+    this.noctuaLookupService.getTermDetail(node.term.id)
+      .pipe(takeUntil(this._unsubscribeAll))
+      .subscribe((term) => {
+        if (!term) return;
+        this.noctuaReviewSearchService.onCamTermSearch.next(term)
+        this.noctuaFormMenuService.openLeftDrawer(LeftPanel.findReplace);
+      })
   }
 
+  search(node: ActivityNode) {
+    this.noctuaReviewSearchService.searchCriteria['terms'] = [node.term];
+    this.noctuaReviewSearchService.updateSearch();
+  }
+
+  searchModels(node: ActivityNode) {
+    const searchCriteria = new SearchCriteria()
+    searchCriteria.terms = [node.term]
+    const url = `${environment.noctuaUrl}?${searchCriteria.build()}`
+    window.open(url, '_blank');
+  }
+
+  searchModelsByContributor(node: ActivityNode) {
+    const searchCriteria = new SearchCriteria()
+    searchCriteria.terms = [node.term]
+    searchCriteria.contributors = [this.noctuaUserService.user]
+    const url = `${environment.noctuaUrl}?${searchCriteria.build()}`
+    window.open(url, '_blank')
+  }
 
   openTermDetail(term) {
     this.noctuaSearchService.onDetailTermChanged.next(term)
     this.noctuaFormMenuService.openRightDrawer(RightPanel.termDetail);
   }
-
-  private _buildTree(termsSummary: TermsSummary) {
-
-    termsSummary.other.label = 'Other';
-
-    const allTerms = [termsSummary.mf, termsSummary.bp, termsSummary.cc, termsSummary.gp, termsSummary.other]
-
-    const treeNodes = allTerms.map((termSummary: TermSummary) => {
-      return {
-        id: termSummary.label,
-        frequency: termSummary.frequency,
-        isCategory: true,
-        label: termSummary.label,
-        children: termSummary.nodes
-      }
-    })
-
-    console.log(treeNodes)
-
-    return treeNodes
-  }
-
 
 
   onTreeLoad() {
