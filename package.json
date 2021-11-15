@@ -45,7 +45,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.2",
     "@fortawesome/free-solid-svg-icons": "^5.15.2",
     "@geneontology/curie-util-es5": "^1.2.4",
-    "@geneontology/noctua-form-base": "1.5.11",
+    "@geneontology/noctua-form-base": "1.5.12",
     "@swimlane/ngx-charts": "^19.0.1",
     "@swimlane/ngx-graph": "7.2.0",
     "D": "^1.0.0",
