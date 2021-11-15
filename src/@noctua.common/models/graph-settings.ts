@@ -2,6 +2,8 @@ import { FormControl, FormGroup } from "@angular/forms";
 
 
 export class SettingsOptions {
+  showAspect = false;
+  showIsExtension = false;
   showEvidence = true;
   showReference = true;
   showEvidenceCode = true;
@@ -11,16 +13,20 @@ export class SettingsOptions {
 
   createSettingsForm() {
     return new FormGroup({
+      showAspect: new FormControl(this.showAspect),
+      showIsExtension: new FormControl(this.showIsExtension),
       showEvidence: new FormControl(this.showEvidence),
       showEvidenceCode: new FormControl(this.showEvidenceCode),
       showReference: new FormControl(this.showReference),
       showWith: new FormControl(this.showWith),
       showGroup: new FormControl(this.showGroup),
-      showContributor: new FormControl(this.showWith),
+      showContributor: new FormControl(this.showContributor),
     });
   }
 
   populateSettings(value) {
+    this.showAspect = value.showAspect;
+    this.showIsExtension = value.showIsExtension;
     this.showEvidence = value.showEvidence;
     this.showReference = value.showReference;
     this.showEvidenceCode = value.showEvidenceCode;
@@ -30,10 +36,12 @@ export class SettingsOptions {
   }
 
   graphSettings() {
-    this.showEvidence = false;
-    this.showReference = false;
-    this.showEvidenceCode = false;
-    this.showWith = false;
+    this.showAspect = false;
+    this.showIsExtension = false;
+    this.showEvidence = true;
+    this.showReference = true;
+    this.showEvidenceCode = true;
+    this.showWith = true;
     this.showGroup = false;
     this.showContributor = false;
   }

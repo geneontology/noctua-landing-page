@@ -132,6 +132,16 @@
           </noc-cam-form>
           <noc-cam-table [ngStyle]="{width:tableWidth}" [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.camTable"
             [cam]="cam" [options]="tableOptions"></noc-cam-table>
+
+          <div [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.activityTable">
+            <noc-activity-slim-tree *ngIf="options.displayType===ActivityDisplayType.SLIM_TREE" [options]="options"
+              [cam]="cam" [activity]="activity" class="noc-activities-table-body" fxLayout="row"
+              fxLayoutAlign="start center">
+            </noc-activity-slim-tree>
+          </div>
+
+          <noc-graph-settings [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.graphSettings">
+          </noc-graph-settings>
           <noc-activity-connector *ngSwitchCase="RightPanel.connectorForm">
           </noc-activity-connector>
           <noc-triple-table [panelDrawer]="rightDrawer" [cam]="cam" *ngSwitchCase="RightPanel.tripleTable">

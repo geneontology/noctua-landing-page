@@ -1,4 +1,4 @@
-import { noctuaFormConfig } from "noctua-form-base";
+import { noctuaFormConfig } from '@geneontology/noctua-form-base';
 
 export function getEdgeColor(edgeId) {
     switch (edgeId) {

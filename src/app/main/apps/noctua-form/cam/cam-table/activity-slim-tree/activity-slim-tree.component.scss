@@ -14,6 +14,9 @@ $accent: map-get($theme, accent);
       background-color: #d8ebcd;
     }
   }
+  .noc-display-number-cell {
+    @include deep-width(40px);
+  }
   .noc-gp {
     width: 200px;
     line-height: 12px;
@@ -80,72 +83,6 @@ $accent: map-get($theme, accent);
     }
   }
 
-  mat-chip {
-    &.default {
-      border: #cdf1d2 solid 2px;
-    }
-
-    &.bpOnly {
-      border: #f8c6e5 solid 2px;
-    }
-
-    &.ccOnly {
-      border: #d3b5f5 solid 2px;
-    }
-
-    &.noc-error-chip {
-      font-size: 10px;
-      font-weight: normal;
-      // @include deep-height(20px);
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      padding: 0;
-
-      .noc-chip-label {
-        padding: 0 8px 0 8px;
-        display: block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-
-        .noc-icon-action {
-          font-size: 10px;
-          background-color: transparent;
-
-          &:hover {
-            font-size: 14px;
-            color: #222;
-          }
-        }
-      }
-
-      .noc-icon,
-      .noc-icon-action {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 20px;
-        width: 20px;
-        border-radius: 50%;
-        color: #777;
-        font-size: 10px;
-      }
-
-      .noc-icon-action {
-        font-size: 10px;
-        background-color: transparent;
-
-        &:hover {
-          font-size: 14px;
-          color: #222;
-          background-color: rgba(#000000, 0.2);
-        }
-      }
-
-      @include noc-chip-color(#e28989);
-    }
-  }
-
   .noc-form-container {
     background-color: #eee;
     padding: 20px 10px;
@@ -186,11 +123,19 @@ $accent: map-get($theme, accent);
   .noc-activity-heading {
     position: relative;
     margin-bottom: 1px;
-    @include deep-height(30px);
+    // @include deep-height(30px);
+    // @include deep-width(100%);
     //min-height: 35px;
     background-color: #fff;
-    font-size: 14px;
+    font-size: 12px;
     border-bottom: $noc-primary-color-light solid 1px;
+
+    .noc-cell {
+      padding: 2px 0;
+      //@include deep-height(100%);
+      border-right: #aaa solid 1px;
+      overflow: hidden;
+    }
 
     //border-bottom: rgba(#000, 0.4) solid 1px;
     .noc-toggle-expand-button {
@@ -199,12 +144,55 @@ $accent: map-get($theme, accent);
       line-height: 12px;
     }
 
-    .noc-title {
-      height: 100%;
+    .noc-gp {
+      position: relative;
+      @include deep-width(170px);
+      line-height: 12px;
+      // display: inline-block !important;
+      padding: 4px 8px;
+      font-size: 12px !important;
+      color: #000;
+      //border-right: $noc-primary-color-light solid 1px;
 
+      //overflow-wrap: break-word;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      .noc-no-info {
+        padding: 0;
+        font-size: 10px;
+      }
       small {
         font-size: 12px;
         font-style: italic;
+      }
+
+      p {
+        padding: 0;
+        margin: 0;
+      }
+
+      a {
+        color: #777;
+        font-size: 10px !important;
+      }
+    }
+
+    .noc-cam-type {
+      @include deep-width(50px);
+      img {
+        height: 30px;
+      }
+    }
+
+    .noc-cam-date {
+      font-size: 10px;
+      color: #555;
+      @include deep-width(90px);
+      noc-icon {
+        color: #777;
       }
     }
 
@@ -281,6 +269,150 @@ $accent: map-get($theme, accent);
 
     &.noc-selected {
       background-color: rgba($noc-highlight-model-color, 0.3);
+    }
+  }
+
+  mat-chip {
+    &.default {
+      border: #cdf1d2 solid 2px;
+    }
+
+    &.bpOnly {
+      border: #f8c6e5 solid 2px;
+    }
+
+    &.ccOnly {
+      border: #d3b5f5 solid 2px;
+    }
+
+    &.noc-error-chip {
+      font-size: 10px;
+      font-weight: normal;
+      // @include deep-height(20px);
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      padding: 0;
+
+      .noc-chip-label {
+        padding: 0 8px 0 8px;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        .noc-icon-action {
+          font-size: 10px;
+          background-color: transparent;
+
+          &:hover {
+            font-size: 14px;
+            color: #222;
+          }
+        }
+      }
+
+      .noc-icon,
+      .noc-icon-action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 20px;
+        width: 20px;
+        border-radius: 50%;
+        color: #777;
+        font-size: 10px;
+      }
+
+      .noc-icon-action {
+        font-size: 10px;
+        background-color: transparent;
+
+        &:hover {
+          font-size: 14px;
+          color: #222;
+          background-color: rgba(#000000, 0.2);
+        }
+      }
+
+      @include noc-chip-color(#e28989);
+    }
+
+    .noc-chip-activity-type {
+      font-size: 10px;
+    }
+
+    &.noc-summary-chip {
+      padding: 0;
+      @include deep-height(20px);
+      max-width: 70%;
+      font-size: 10px;
+
+      .noc-icon,
+      .noc-icon-action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 20px;
+        @include deep-width(20px);
+        border-radius: 50%;
+        color: #777;
+        font-size: 10px;
+        font-weight: bold;
+
+        .noc-count {
+          margin-right: 5px;
+          font-size: 10px;
+          font-weight: normal;
+        }
+      }
+
+      .noc-icon-action {
+        font-size: 10px;
+        background-color: transparent;
+
+        &:hover {
+          font-size: 14px;
+          color: #222;
+          background-color: rgba(#000000, 0.2);
+        }
+      }
+
+      .noc-chip-label {
+        padding: 0 8px 0 4px;
+        max-width: 200px;
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      @include noc-chip-color(#bbb);
+
+      &.noc-type-chip {
+        .noc-icon {
+          color: #555;
+        }
+        &.noc-mf {
+          border: mat-color($mat-green, 300) solid 1px;
+          .noc-icon {
+            background-color: mat-color($mat-green, 100);
+          }
+        }
+
+        &.noc-bp {
+          border: mat-color($mat-brown, 300) solid 1px;
+          .noc-icon {
+            background-color: mat-color($mat-brown, 100);
+          }
+        }
+
+        &.noc-cc {
+          border: mat-color($mat-purple, 300) solid 1px;
+          .noc-icon {
+            background-color: mat-color($mat-purple, 100);
+          }
+        }
+      }
     }
   }
 }

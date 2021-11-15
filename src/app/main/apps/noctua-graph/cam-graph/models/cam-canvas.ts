@@ -6,9 +6,9 @@ import {
     noctuaFormConfig,
     Predicate,
     Triple
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 import { NodeCellType } from '@noctua.graph/models/shapes';
-import { NodeCellList, NodeLink, StencilNode } from '@noctua.graph/services/shapes.service';
+import { NodeCellList, NodeCellMolecule, NodeLink, StencilNode } from '@noctua.graph/services/shapes.service';
 import * as joint from 'jointjs';
 import { each, cloneDeep } from 'lodash';
 import { StencilItemNode } from '@noctua.graph/data/cam-stencil';
@@ -69,7 +69,8 @@ export class CamCanvas {
             },
 
             // connectionStrategy: joint.connectionStrategies.pinAbsolute,
-            defaultConnectionPoint: { name: 'boundary', args: { selector: 'border' } },
+            defaultConnectionPoint: { name: 'boundary', args: { sticky: true } },
+
             defaultConnector: { name: 'smooth' },
             async: true,
             interactive: { labelMove: false },
@@ -89,13 +90,6 @@ export class CamCanvas {
                 return NodeLink.create();
             },
             perpendicularLinks: false,
-            // defaultRouter: {
-            //   name: 'manhattan',
-            //   args: {
-            //  perpendicular: false,
-            //    step: 20
-            //    }
-            //   },
 
         });
 
@@ -115,7 +109,7 @@ export class CamCanvas {
             const element = cellView.model;
             self.elementOnClick(element);
 
-            if (element.get('type') === NodeCellType.cell) {
+            if (element.get('type') !== NodeCellType.link) {
                 const cell = element as NodeCellList
                 self.selectNode(cell)
             }
@@ -123,7 +117,7 @@ export class CamCanvas {
 
         this.canvasPaper.on('element:mouseover', function (cellView) {
             const element = cellView.model;
-            if (element.get('type') === NodeCellType.cell) {
+            if (element.get('type') !== NodeCellType.link) {
                 const cell = element as NodeCellList
                 cell.hover(true);
                 self.highlightSuccessorNodes(cell)
@@ -133,7 +127,7 @@ export class CamCanvas {
         this.canvasPaper.on('element:mouseleave', function (cellView) {
             cellView.removeTools();
             const element = cellView.model;
-            if (element.get('type') === NodeCellType.cell) {
+            if (element.get('type') !== NodeCellType.link) {
                 (element as NodeCellList).hover(false);
                 self.unhighlightAllNodes()
             }
@@ -236,18 +230,18 @@ export class CamCanvas {
 
 
         each(self.canvasGraph.getCells(), (cell: NodeCellList) => {
-            if (cell.get('type') === NodeCellType.cell) {
+            if (cell.get('type') !== NodeCellType.link) {
                 cell.setColor('grey', 200, 300);
             }
         })
         each(successors, (cell: NodeCellList) => {
-            if (cell.get('type') === NodeCellType.cell) {
+            if (cell.get('type') !== NodeCellType.link) {
                 cell.setColor('amber', 200, 300)
             }
         })
 
         each(predecessors, (cell: NodeCellList) => {
-            if (cell.get('type') === NodeCellType.cell) {
+            if (cell.get('type') !== NodeCellType.link) {
                 cell.setColor('yellow', 50, 100)
             }
         })
@@ -267,7 +261,7 @@ export class CamCanvas {
         const self = this;
 
         each(self.canvasGraph.getElements(), (element: NodeCellList) => {
-            if (element.get('type') === NodeCellType.cell) {
+            if (element.get('type') !== NodeCellType.link) {
                 const activity = element.prop('activity') as Activity
                 if (activity) {
                     const position = element.position();
@@ -284,7 +278,7 @@ export class CamCanvas {
     unhighlightAllNodes() {
         const self = this;
         each(self.canvasGraph.getCells(), (cell: NodeCellList) => {
-            if (cell.get('type') === NodeCellType.cell) {
+            if (cell.get('type') !== NodeCellType.link) {
                 const activity = cell.prop('activity') as Activity
                 cell.setColor(activity.backgroundColor);
             }
@@ -294,7 +288,7 @@ export class CamCanvas {
     unselectAll() {
         const self = this;
         each(self.canvasGraph.getCells(), (cell: NodeCellList) => {
-            if (cell.get('type') === NodeCellType.cell) {
+            if (cell.get('type') !== NodeCellType.link) {
                 cell.unsetBorder();
             }
         })
@@ -373,7 +367,6 @@ export class CamCanvas {
     toggleActivityVisibility(cell: joint.dia.Element, activity: Activity) {
         const self = this;
 
-
         //self.activity.subgraphVisibility(activity, !activity.expanded);
         const elements = self.canvasGraph.getSuccessors(cell).concat(cell);
         // find all the links between successors and the element
@@ -436,6 +429,40 @@ export class CamCanvas {
         return el
     }
 
+    createMolecule(activity: Activity): NodeCellList {
+        const el = new NodeCellMolecule()
+        activity.size.width = 120;
+        activity.size.height = 100;
+        //.addActivityPorts()
+        el.setColor(activity.backgroundColor)
+        //.setSuccessorCount(activity.successorCount)
+        const moleculeNode = activity.rootNode;
+
+        const activityType = activity.getActivityTypeDetail();
+
+        el.prop({ 'name': [activityType ? activityType.label : 'Activity Unity'] });
+
+        if (moleculeNode) {
+            el.setText(moleculeNode.term.label);
+        }
+
+        el.attr({
+            expand: {
+                event: 'element:expand:pointerdown',
+                stroke: 'black',
+                strokeWidth: 2
+            },
+        })
+        el.set({
+            activity: activity,
+            id: activity.id,
+            position: activity.position,
+            size: activity.size,
+        });
+
+        return el
+    }
+
     addCanvasGraph(cam: Cam) {
         const self = this;
         const nodes = [];
@@ -445,7 +472,12 @@ export class CamCanvas {
 
         each(cam.activities, (activity: Activity) => {
             if (activity.visible) {
-                const el = self.createNode(activity);
+                let el
+                if (activity.activityType === ActivityType.molecule) {
+                    el = self.createMolecule(activity);
+                } else {
+                    el = self.createNode(activity);
+                }
                 nodes.push(el);
             }
         });
@@ -539,7 +571,6 @@ export class CamCanvas {
         // Automatic Layout
         joint.layout.DirectedGraph.layout(graph.getSubgraph(autoLayoutElements), {
             align: 'UR',
-            setVertices: true,
             setLabels: true,
             marginX: 50,
             marginY: 50,

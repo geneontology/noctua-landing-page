@@ -18,7 +18,7 @@ import {
   ErrorLevel,
   ErrorType,
   ActivityType
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 import { InlineReferenceService } from '@noctua.editor/inline-reference/inline-reference.service';
 import { each, find, flatten } from 'lodash';
 import { InlineWithService } from '@noctua.editor/inline-with/inline-with.service';

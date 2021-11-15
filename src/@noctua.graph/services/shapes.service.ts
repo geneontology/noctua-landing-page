@@ -116,6 +116,67 @@ export class NodeCellList extends shapes.NodeCellList {
   }
 }
 
+export class NodeCellMolecule extends shapes.NodeCellMolecule {
+  constructor() {
+    super();
+
+  }
+
+  addNodePorts(): this {
+    const self = this;
+
+    return this;
+  }
+
+  setColor(colorKey: string, low?: number, high?: number): this {
+    const self = this;
+    const deep = getColor(colorKey, low ? low : 200);
+    const light = getColor(colorKey, high ? high : 100);
+
+    self.attr('.polygon/stroke', deep);
+    self.attr('.polygon/fill', light);
+
+    //this.attr('.icon/height', 200);
+
+    return this;
+  }
+
+
+  setText(text: string): this {
+    const self = this;
+
+    self.attr('.label/text', text);
+
+    return this;
+  }
+
+
+  setBorder(colorKey: string, hue?: number): this {
+    const self = this;
+    const deep = getColor(colorKey, hue ? hue : 500);
+
+    self.attr('.highlighter/stroke', deep);
+
+    return this;
+  }
+
+  unsetBorder(): this {
+    const self = this;
+
+    self.attr('.highlighter/stroke', 'transparent');
+
+    return this;
+  }
+
+
+  hover(on: boolean): this {
+    const self = this;
+    self.attr('.wrapper/strokeWidth', on ? 30 : 0);
+
+    return this;
+  }
+}
+
 export class NodeLink extends shapes.NodeLink {
   static create() {
     const link = new NodeLink();
@@ -228,6 +289,7 @@ export class NoctuaShapesService {
       noctua: {
         StencilNode: StencilNode,
         NodeCell: NodeCell,
+        NodeCellMolecule: NodeCellMolecule,
         NodeCellList: NodeCellList,
         NodeLink: NodeLink
       }
