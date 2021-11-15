@@ -1,4 +1,4 @@
-import { ActivityDisplayType } from "noctua-form-base";
+import { ActivityDisplayType } from '@geneontology/noctua-form-base';
 
 
 export interface TableOptions {

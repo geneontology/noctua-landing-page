@@ -32,13 +32,15 @@
         [activity]='activity' [entity]="entity" [category]="EditorCategory.term" class="noc-edit-button">
       </noctua-inline-editor>
     </div>
-    <div class="noc-aspect-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
+    <div *ngIf="settings.showAspect" class="noc-aspect-cell noc-entity-cell" fxLayout="column"
+      fxLayoutAlign="start stretch">
       <mat-chip *ngIf="entity.aspect" class="noc-chip-xs noc-aspect {{entity.aspect}}" fxLayout="column"
         fxLayoutAlign="center center">
         <span>{{entity.aspect}}</span>
       </mat-chip>
     </div>
-    <div class="noc-extension-cell noc-entity-cell" fxLayout="column" fxLayoutAlign="start stretch">
+    <div *ngIf="settings.showIsExtension" class="noc-extension-cell noc-entity-cell" fxLayout="column"
+      fxLayoutAlign="start stretch">
       <mat-chip *ngIf="entity.isExtension" class="noc-chip-xs noc-extension" fxLayout="column"
         fxLayoutAlign="center center">
         <span>ext.</span>

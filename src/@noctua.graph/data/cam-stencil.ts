@@ -1,4 +1,4 @@
-import { ActivityType, noctuaFormConfig } from "noctua-form-base";
+import { ActivityType, noctuaFormConfig } from '@geneontology/noctua-form-base';
 import { cloneDeep } from "lodash";
 
 export interface StencilItemNode {

@@ -14,7 +14,7 @@ import {
   ActivityType,
   NoctuaUserService,
   NoctuaFormMenuService,
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 import { ResizeEvent } from 'angular-resizable-element';
 
 @Component({

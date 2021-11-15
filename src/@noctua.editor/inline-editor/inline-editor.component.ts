@@ -14,7 +14,7 @@ import {
     Activity,
     Cam,
     NoctuaActivityFormService
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 import { EditorCategory } from './../models/editor-category';
 
 @Component({

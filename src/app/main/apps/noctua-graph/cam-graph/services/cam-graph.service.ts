@@ -6,7 +6,7 @@ import { CamCanvas } from '../models/cam-canvas';
 import { CamStencil } from '../models/cam-stencil';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 import { NoctuaDataService } from '@noctua.common/services/noctua-data.service';
-import { Activity, Cam, CamService, ConnectorPanel, FormType, NoctuaActivityConnectorService, NoctuaActivityFormService, NoctuaFormConfigService, NoctuaGraphService } from 'noctua-form-base';
+import { Activity, Cam, CamService, FormType, NoctuaActivityConnectorService, NoctuaActivityFormService, NoctuaFormConfigService, NoctuaGraphService } from '@geneontology/noctua-form-base';
 import { NodeLink, NodeCellList, NoctuaShapesService } from '@noctua.graph/services/shapes.service';
 import { NodeType } from 'scard-graph-ts';
 import { NodeCellType } from '@noctua.graph/models/shapes';
@@ -28,7 +28,6 @@ export class CamGraphService {
 
   selectedElement: joint.shapes.noctua.NodeCellList | joint.shapes.noctua.NodeLink;
   selectedStencilElement: joint.shapes.noctua.NodeCellList;
-
   placeholderElement: joint.shapes.noctua.NodeCellList = new NodeCellList();
 
   camCanvas: CamCanvas;
@@ -118,7 +117,6 @@ export class CamGraphService {
     const self = this;
 
     self._activityConnectorService.initializeForm(sourceId, targetId);
-    self._activityConnectorService.selectPanel(ConnectorPanel.FORM)
     self.noctuaFormDialogService.openCreateActivityDialog(FormType.ACTIVITY_CONNECTOR);
   }
 
@@ -169,8 +167,6 @@ export class CamGraphService {
     if (!source || !target) return;
 
     self._activityConnectorService.initializeForm(source.id, target.id);
-    self._activityConnectorService.selectPanel(ConnectorPanel.FORM)
-
     self.noctuaCommonMenuService.selectRightPanel(RightPanel.connectorForm);
     self.noctuaCommonMenuService.closeLeftDrawer();
     self.noctuaCommonMenuService.openRightDrawer();
