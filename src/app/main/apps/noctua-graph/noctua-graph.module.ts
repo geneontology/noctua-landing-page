@@ -15,7 +15,7 @@ import { RelationPreviewComponent } from './relation-preview/relation-preview.co
 
 const routes = [
   {
-    path: 'g',
+    path: '',
     component: NoctuaGraphComponent
   }
 ];
