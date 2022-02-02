@@ -31,7 +31,9 @@ $accent: map-get($theme, accent);
     }
 
     .noc-hint {
+      margin-left: 12px;
       font-size: 12px;
+      max-width: 300px;
       color: #676767;
       font-style: italic;
     }

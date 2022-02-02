@@ -82,6 +82,9 @@ export class ActivityConnectorFormComponent implements OnInit, OnDestroy {
     const self = this;
     this.noctuaActivityConnectorService.saveActivity().then(() => {
       self.noctuaFormDialogService.openInfoToast('Causal relation successfully created.', 'OK');
+
+      this.noctuaActivityConnectorService.initializeForm(
+        self.noctuaActivityConnectorService.subjectActivity.id, self.noctuaActivityConnectorService.objectActivity.id)
       if (this.closeDialog) {
         this.closeDialog();
       }
@@ -101,10 +104,10 @@ export class ActivityConnectorFormComponent implements OnInit, OnDestroy {
       success);
   }
 
-  deleteActivity(connectorActivity: ConnectorActivity) {
+  deleteConnectorEdge() {
     const self = this;
     const success = () => {
-      self.noctuaActivityConnectorService.deleteActivity(connectorActivity).then(() => {
+      self.noctuaActivityConnectorService.deleteConnectorEdge(this.connectorActivity).then(() => {
         self.noctuaFormDialogService.openInfoToast('Causal relation successfully deleted.', 'OK');
       });
     };
@@ -112,11 +115,6 @@ export class ActivityConnectorFormComponent implements OnInit, OnDestroy {
     this.confirmDialogService.openConfirmDialog('Confirm Delete?',
       'You are about to remove the causal relation',
       success);
-  }
-
-
-  clear() {
-    this.noctuaActivityFormService.clearForm();
   }
 
   close() {

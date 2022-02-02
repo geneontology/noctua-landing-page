@@ -56,7 +56,6 @@ export class NoctuaInlineEditorComponent implements OnInit, OnDestroy {
             category: this.category,
             evidenceIndex: this.evidenceIndex
         };
-        // this.camService.onCamChanged.next(this.cam);
         this.camService.onCamChanged.next(this.cam);
         this.camService.activity = this.activity;
         this.noctuaActivityEntityService.initializeForm(this.activity, displayEntity);

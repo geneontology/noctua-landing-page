@@ -1,5 +1,6 @@
 import {
     Activity,
+    ActivityNodeType,
     ActivityType,
     Cam,
     Entity,
@@ -21,6 +22,7 @@ export class CamCanvas {
     selectedStencilElement;
     elementOnClick: (element: joint.shapes.noctua.NodeCellList) => void;
     editOnClick: (element: joint.shapes.noctua.NodeCellList) => void;
+    deleteOnClick: (element: joint.shapes.noctua.NodeCellList) => void;
     linkOnClick: (element: joint.shapes.noctua.NodeLink) => void;
     onUpdateCamLocations: (cam: Cam) => void
     onLinkCreated: (
@@ -165,12 +167,19 @@ export class CamCanvas {
             self.unselectAll();
         });
 
-
-        this.canvasPaper.on('element:.icon:pointerdown', function (elementView: joint.dia.ElementView, evt) {
+        this.canvasPaper.on('element:.edit:pointerdown', function (elementView: joint.dia.ElementView, evt) {
             evt.stopPropagation();
 
             const element = elementView.model;
             self.editOnClick(element);
+
+        });
+
+        this.canvasPaper.on('element:.delete:pointerdown', function (elementView: joint.dia.ElementView, evt) {
+            evt.stopPropagation();
+
+            const element = elementView.model;
+            self.deleteOnClick(element);
 
         });
 
@@ -397,19 +406,22 @@ export class CamCanvas {
         //.addActivityPorts()
         el.setColor(activity.backgroundColor)
         //.setSuccessorCount(activity.successorCount)
-        const gpNode = activity.getGPNode();
-        const mfNode = activity.getMFNode();
 
         const activityType = activity.getActivityTypeDetail();
 
-        el.prop({ 'name': [activityType ? activityType.label : 'Activity Unity'] });
-
-        if (mfNode) {
-            el.prop({ 'mf': [mfNode.term.label,] });
+        if (activity.mfNode) {
+            el.prop({ 'mf': [activity.mfNode.term.label] });
         }
 
-        if (gpNode) {
-            el.prop({ 'gp': [activity.title] });
+        if (activity.ccNode) {
+            el.prop({ 'cc': [`occurs in: ${activity.ccNode.term.label}`] });
+        }
+
+        if (activity.bpNode) {
+            el.prop({ 'bp': [`part of: ${activity.bpNode.term.label}`] });
+        }
+        if (activity.gpNode) {
+            el.prop({ 'gp': [activity.gpNode?.term.label] });
         }
 
         el.attr({
@@ -432,18 +444,22 @@ export class CamCanvas {
     createMolecule(activity: Activity): NodeCellList {
         const el = new NodeCellMolecule()
         activity.size.width = 120;
-        activity.size.height = 100;
+        activity.size.height = 120;
         //.addActivityPorts()
         el.setColor(activity.backgroundColor)
-        //.setSuccessorCount(activity.successorCount)
-        const moleculeNode = activity.rootNode;
-
+        //.setSuccessorCount(activity.successorCount)  
         const activityType = activity.getActivityTypeDetail();
+        const moleculeNode = activity.rootNode;
 
         el.prop({ 'name': [activityType ? activityType.label : 'Activity Unity'] });
 
         if (moleculeNode) {
-            el.setText(moleculeNode.term.label);
+            let label = moleculeNode.term.label
+
+            if (activity.ccNode) {
+                label += `\nlocated in: ${activity.ccNode.term.label}`;
+            }
+            el.setText(label);
         }
 
         el.attr({
@@ -483,23 +499,26 @@ export class CamCanvas {
         });
 
         each(cam.causalRelations, (triple: Triple<Activity>) => {
-            if (triple.predicate.visible) {
+            if (triple.predicate.visible && triple.isTripleComplete()) {
                 const color = getEdgeColor(triple.predicate.edge.id);
                 const link = NodeLink.create();
-                // link.set('connector', { name: 'jumpover', args: { type: 'gap' } })
-                link.setText(triple.predicate.edge.label);
-                link.set({
-                    activity: triple.predicate,
-                    source: {
-                        id: triple.subject.id,
-                    },
-                    target: {
-                        id: triple.object.id,
-                    }
-                });
+                if (triple.predicate.isReverseLink) {
+                    this.reverseLink(triple, link)
+                } else {
+                    // link.set('connector', { name: 'jumpover', args: { type: 'gap' } })
+                    link.setText(triple.predicate.edge.label);
+                    link.set({
+                        activity: triple.predicate,
+                        source: {
+                            id: triple.subject.id,
+                        },
+                        target: {
+                            id: triple.object.id,
+                        }
+                    });
+                }
 
                 link.setColor(color)
-
                 nodes.push(link);
             }
         });
@@ -530,6 +549,19 @@ export class CamCanvas {
                        }
                    });
            }); */
+    }
+
+    reverseLink(triple: Triple<Activity>, link: NodeLink) {
+        link.setText(triple.predicate.reverseLinkTitle);
+        link.set({
+            activity: triple.predicate,
+            source: {
+                id: triple.object.id,
+            },
+            target: {
+                id: triple.subject.id,
+            }
+        });
     }
 
     addStencilGraph(graph: joint.dia.Graph, activities: Activity[]) {

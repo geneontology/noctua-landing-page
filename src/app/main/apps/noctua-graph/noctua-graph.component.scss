@@ -19,6 +19,11 @@
     @include deep-width(500px);
   }
 
+  noc-graph-activity-table {
+    display: block;
+    min-width: 400px;
+  }
+
   .mat-drawer-content {
     width: 100%;
   }

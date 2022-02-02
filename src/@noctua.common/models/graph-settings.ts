@@ -5,6 +5,7 @@ export class SettingsOptions {
   showAspect = false;
   showIsExtension = false;
   showEvidence = true;
+  showEvidenceSummary = true;
   showReference = true;
   showEvidenceCode = true;
   showWith = true;
@@ -16,6 +17,7 @@ export class SettingsOptions {
       showAspect: new FormControl(this.showAspect),
       showIsExtension: new FormControl(this.showIsExtension),
       showEvidence: new FormControl(this.showEvidence),
+      showEvidenceSummary: new FormControl(this.showEvidenceSummary),
       showEvidenceCode: new FormControl(this.showEvidenceCode),
       showReference: new FormControl(this.showReference),
       showWith: new FormControl(this.showWith),
@@ -30,6 +32,7 @@ export class SettingsOptions {
     this.showEvidence = value.showEvidence;
     this.showReference = value.showReference;
     this.showEvidenceCode = value.showEvidenceCode;
+    this.showEvidenceSummary = value.showEvidenceSummary;
     this.showWith = value.showWith;
     this.showGroup = value.showGroup;
     this.showContributor = value.showContributor;
@@ -39,6 +42,7 @@ export class SettingsOptions {
     this.showAspect = false;
     this.showIsExtension = false;
     this.showEvidence = true;
+    this.showEvidenceSummary = true;
     this.showReference = true;
     this.showEvidenceCode = true;
     this.showWith = true;

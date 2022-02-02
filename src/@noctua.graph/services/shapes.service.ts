@@ -80,9 +80,10 @@ export class NodeCellList extends shapes.NodeCellList {
     const deep = getColor(colorKey, low ? low : 200);
     const light = getColor(colorKey, high ? high : 100);
 
-    self.attr('.activity-name-rect/fill', deep);
+    self.attr('.activity-gp-rect/fill', deep);
     self.attr('.activity-mf-rect/fill', light);
-    self.attr('.activity-gp-rect/fill', light);
+    self.attr('.activity-cc-rect/fill', light);
+    self.attr('.activity-bp-rect/fill', light);
 
     //this.attr('.icon/height', 200);
 
@@ -110,7 +111,9 @@ export class NodeCellList extends shapes.NodeCellList {
 
   hover(on: boolean): this {
     const self = this;
-    self.attr('.wrapper/strokeWidth', on ? 30 : 0);
+    self.attr('.wrapper/strokeWidth', on ? 40 : 0);
+    self.attr('.edit/visibility', on ? 'visible' : 'hidden');
+    self.attr('.delete/visibility', on ? 'visible' : 'hidden');
 
     return this;
   }
@@ -133,8 +136,8 @@ export class NodeCellMolecule extends shapes.NodeCellMolecule {
     const deep = getColor(colorKey, low ? low : 200);
     const light = getColor(colorKey, high ? high : 100);
 
-    self.attr('.polygon/stroke', deep);
-    self.attr('.polygon/fill', light);
+    self.attr('.circle/stroke', deep);
+    self.attr('.circle/fill', light);
 
     //this.attr('.icon/height', 200);
 
@@ -171,7 +174,9 @@ export class NodeCellMolecule extends shapes.NodeCellMolecule {
 
   hover(on: boolean): this {
     const self = this;
-    self.attr('.wrapper/strokeWidth', on ? 30 : 0);
+    self.attr('.wrapper/strokeWidth', on ? 40 : 0);
+    self.attr('.edit/visibility', on ? 'visible' : 'hidden');
+    self.attr('.delete/visibility', on ? 'visible' : 'hidden');
 
     return this;
   }
