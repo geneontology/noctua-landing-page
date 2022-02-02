@@ -45,9 +45,9 @@ export const globalWorkbenchesModel =
       "css": [
 
       ],
-      "workbench-id": "noctua-activity-graph",
-      "template-injectable": "../noctua-form-base/workbenches/noctua-activity-graph/public/inject.tmpl",
-      "public-directory": "../noctua-form-base/workbenches/noctua-activity-graph/public"
+      "workbench-id": "visual-pathway-editor",
+      "template-injectable": "../noctua-form-base/workbenches/visual-pathway-editor/public/inject.tmpl",
+      "public-directory": "../noctua-form-base/workbenches/visual-pathway-editor/public"
     },
     {
       "menu-name": "Annotation preview",

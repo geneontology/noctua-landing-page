@@ -45,7 +45,7 @@ export class EntityFormComponent implements OnInit, OnDestroy {
   friendNodes;
   friendNodesFlat;
   activityNodeType = ActivityNodeType;
-  displayAddButton;
+  displayAddButton = false;
 
   termData
 
@@ -65,8 +65,15 @@ export class EntityFormComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.entity = this.noctuaActivityFormService.activity.getNode(this.entityFormGroup.get('id').value);
     this.friendNodes = this.camService.getNodesByType(this.entity.type);
-    this.displayAddButton = this.noctuaActivityFormService.activity.activityType === ActivityType.ccOnly
-      && this.entity.type === ActivityNodeType.GoMolecularEntity
+    if (this.noctuaActivityFormService.activity.activityType === ActivityType.ccOnly
+      && this.entity.type === ActivityNodeType.GoMolecularEntity) {
+      this.displayAddButton = true;
+    }
+
+    if (this.noctuaActivityFormService.activity.activityType === ActivityType.proteinComplex
+      && this.entity.type === ActivityNodeType.GoProteinContainingComplex) {
+      this.displayAddButton = true;
+    }
     //  this.friendNodesFlat = this.camService.getNodesByTypeFlat(this.entity.type);
   }
 

@@ -9,10 +9,12 @@ export function getEdgeColor(edgeId) {
         case noctuaFormConfig.edge.positivelyRegulates.id:
         case noctuaFormConfig.edge.directlyPositivelyRegulates.id:
         case noctuaFormConfig.edge.causallyUpstreamOfPositiveEffect.id:
+        case noctuaFormConfig.edge.isSmallMoleculeActivator.id:
             return 'green'
         case noctuaFormConfig.edge.negativelyRegulates.id:
         case noctuaFormConfig.edge.directlyNegativelyRegulates.id:
         case noctuaFormConfig.edge.causallyUpstreamOfNegativeEffect.id:
+        case noctuaFormConfig.edge.isSmallMoleculeInhibitor.id:
             return 'red'
         default:
             return 'black'

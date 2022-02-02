@@ -24,6 +24,6 @@ export enum RightPanel {
     camTable = 'camTable',
     activityTable = 'activityTable',
     tripleTable = 'tripleTable',
-    connectorForm = 'connectorForm',
+    activityConnectorTable = 'activityConnectorTable',
     graphSettings = 'graphSettings'
 }

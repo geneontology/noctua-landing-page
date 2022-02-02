@@ -83,7 +83,9 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
     editableEvidence: true,
     editableReference: true,
     editableWith: true,
+    showMenu: true
   };
+
   noctuaFormOptions: TableOptions = {
     displayType: ActivityDisplayType.TREE,
     slimViewer: false,

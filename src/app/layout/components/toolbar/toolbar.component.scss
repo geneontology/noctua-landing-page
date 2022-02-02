@@ -28,11 +28,11 @@ $accent: map-get($theme, accent);
     position: relative;
 
     &.noc-dev {
-      background-color: #fdcbbc;
+      background-color: #fad38a;
     }
 
     &.noc-beta {
-      background-color: #f7f5a7;
+      background-color: #fdcbbc;
     }
 
     mat-toolbar-row {
