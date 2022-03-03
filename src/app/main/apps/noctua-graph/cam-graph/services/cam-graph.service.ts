@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import 'jqueryui';
 import * as joint from 'jointjs';
 import { each } from 'lodash';
-import { CamCanvas } from '../models/cam-canvas';
-import { CamStencil } from '../models/cam-stencil';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 import { NoctuaDataService } from '@noctua.common/services/noctua-data.service';
 import { Activity, Cam, CamService, FormType, NoctuaActivityConnectorService, NoctuaActivityFormService, NoctuaFormConfigService, NoctuaGraphService, NoctuaUserService } from '@geneontology/noctua-form-base';
@@ -14,6 +12,8 @@ import { noctuaStencil, StencilItemNode } from '@noctua.graph/data/cam-stencil';
 import { RightPanel } from '@noctua.common/models/menu-panels';
 import { NoctuaFormDialogService } from 'app/main/apps/noctua-form';
 import { NoctuaConfirmDialogService } from '@noctua/components/confirm-dialog/confirm-dialog.service';
+import { CamCanvas } from '@noctua.graph/models/cam-canvas';
+import { CamStencil } from '@noctua.graph/models/cam-stencil';
 
 @Injectable({
   providedIn: 'root'

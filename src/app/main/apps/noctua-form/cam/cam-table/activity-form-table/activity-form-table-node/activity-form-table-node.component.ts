@@ -15,7 +15,10 @@ import {
   NoctuaUserService,
   NoctuaFormMenuService,
 
-  ActivityType
+  ActivityType,
+  ActivityError,
+  ErrorLevel,
+  ErrorType
 } from '@geneontology/noctua-form-base';
 
 import {
@@ -26,7 +29,7 @@ import {
 } from '@geneontology/noctua-form-base';
 
 import { EditorCategory } from '@noctua.editor/models/editor-category';
-import { find } from 'lodash';
+import { cloneDeep, find } from 'lodash';
 import { InlineEditorService } from '@noctua.editor/inline-editor/inline-editor.service';
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import { MatTableDataSource } from '@angular/material/table';
@@ -138,9 +141,9 @@ export class ActivityFormTableNodeComponent implements OnInit, OnDestroy {
 
   openSearchDatabaseDialog(entity: ActivityNode) {
     const self = this;
-    const gpNode = this.noctuaActivityFormService.activity.getGPNode();
+    const gpNode = this.activity.getGPNode();
 
-    if (gpNode) {
+    if (gpNode && gpNode.hasValue()) {
       const data = {
         readonly: false,
         gpNode: gpNode.term,
@@ -152,22 +155,38 @@ export class ActivityFormTableNodeComponent implements OnInit, OnDestroy {
         }
       };
 
-      const success = function (selected) {
+      const success = (selected) => {
         if (selected.term) {
-          entity.term = new Entity(selected.term.term.id, selected.term.term.label);
+          const term = new Entity(selected.term.term.id, selected.term.term.label);
 
           if (selected.evidences && selected.evidences.length > 0) {
+
+            self.noctuaActivityEntityService.initializeForm(this.activity, entity);
+            entity.term = term;
             entity.predicate.setEvidence(selected.evidences);
+            self.noctuaActivityEntityService.saveActivity(false);
+
+
+            /*  selected.evidences.forEach((evidence: Evidence) => {
+               evidence.evidenceExts.forEach((evidenceExt) => {
+                 evidenceExt.relations.forEach((relation) => {
+                   const node = self.noctuaFormConfigService.insertActivityNodeByPredicate(self.noctuaActivityFormService.activity, self.entity, relation.id);
+                   node.term = new Entity(evidenceExt.term.id, evidenceExt.term.id);
+                   node.predicate.setEvidence([evidence]);
+                 });
+               });
+ 
+             }); */
           }
-          self.noctuaActivityFormService.initializeForm();
         }
       };
-
       self.noctuaFormDialogService.openSearchDatabaseDialog(data, success);
     } else {
-      // const error = new ActivityError(ErrorLevel.error, ErrorType.general,  "Please enter a gene product", meta)
-      //errors.push(error);
-      // self.dialogService.openActivityErrorsDialog(ev, entity, errors)
+      const meta = {
+        aspect: 'Gene Product'
+      };
+      const error = new ActivityError(ErrorLevel.error, ErrorType.general, 'Please enter a gene product', meta)
+      self.noctuaFormDialogService.openActivityErrorsDialog([error])
     }
   }
 
@@ -188,6 +207,23 @@ export class ActivityFormTableNodeComponent implements OnInit, OnDestroy {
     this.camService.onCamChanged.next(this.cam);
     this.camService.activity = this.activity;
     this.noctuaActivityEntityService.initializeForm(this.activity, insertedNode);
+    this.inlineEditorService.open(this.currentMenuEvent.target, { data });
+  }
+
+  editEntity(entity: ActivityNode) {
+
+    const data = {
+      cam: this.cam,
+      activity: this.activity,
+      entity: entity,
+      category: EditorCategory.all,
+      evidenceIndex: 0,
+      insertEntity: true
+    };
+
+    this.camService.onCamChanged.next(this.cam);
+    this.camService.activity = this.activity;
+    this.noctuaActivityEntityService.initializeForm(this.activity, entity);
     this.inlineEditorService.open(this.currentMenuEvent.target, { data });
   }
 
