@@ -15,9 +15,9 @@ export const globalWorkbenchesModel =
       "page-name": "Alliance Pathway Preview",
       "type": "model",
       "help-link": "https://github.com/geneontology/alliance-pathway-preview/issues",
-      "workbench-id": "noctua-gocam-pathway",
-      "template-injectable": "../alliance-pathway-preview/workbenches/noctua-gocam-pathway/public/inject.tmpl",
-      "public-directory": "../alliance-pathway-preview/workbenches/noctua-gocam-pathway/public"
+      "workbench-id": "visual-pathway-editor",
+      "template-injectable": "../alliance-pathway-preview/workbenches/visual-pathway-editor/public/inject.tmpl",
+      "public-directory": "../alliance-pathway-preview/workbenches/visual-pathway-editor/public"
     },
     {
       "menu-name": "Noctua form Legacy",
