@@ -47,10 +47,8 @@ export const environment = {
   production: false,
   isDev: false,
   isBeta: true,
+  isGraph: false,
   spaqrlApiUrl: 'http://rdf-internal.berkeleybop.io/blazegraph/sparql',
-  // spaqrlApiUrl: 'http://rdf.geneontology.org/blazegraph/sparql',
-  // gorestApiUrl: 'https://api.geneontology.cloud/'
-  gorestApiUrl: 'http://localhost:3000/',
   globalGolrNeoServer: golrNeoServer,
   globalGolrServer: golrServer,
   globalMinervaDefinitionName: minervaDefinitionName,
@@ -64,6 +62,7 @@ export const environment = {
 
   //Workbench
   noctuaUrl: `${window.location.origin}`,
+  noctuaLandingPageUrl: `${window.location.origin}/workbench/noctua-landing-page`,
   workbenchUrl: `${window.location.origin}/workbench/`,
 
   amigoTerm: 'http://amigo.geneontology.org/amigo/term/',

@@ -1,0 +1,88 @@
+<div class="w-100-p h-100-p" fxLayout="row" fxLayoutAlign="start start">
+  <div class="noc-sidemenu" fxLayout="column" fxLayoutAlign="start center">
+    <button mat-button color="" class="noc-rounded-button green-400-bg" fxLayout="row" fxLayoutAlign="start center"
+      matTooltip="Filter" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+      <fa-icon [icon]="['fas', 'plus']" class="noc-icon"></fa-icon>
+      <div class="noc-label" fxFlex="">
+        Create
+      </div>
+    </button>
+    <button mat-button color="" class="" fxLayout="row" fxLayoutAlign="start center"
+      [ngClass]="{'noc-active': noctuaDoctorMenuService.selectedMiddlePanel === MiddlePanel.home}"
+      matTooltip="Board home" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+      <fa-icon [icon]="['fas', 'home']" class="noc-icon"></fa-icon>
+      <div class="noc-label" fxFlex="">
+        Home
+      </div>
+    </button>
+
+    <button mat-button color="" class="" fxLayout="row" fxLayoutAlign="start center"
+      [ngClass]="{'noc-active': noctuaDoctorMenuService.selectedMiddlePanel === MiddlePanel.home}"
+      matTooltip="Board home" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+      <fa-icon [icon]="['fas', 'home']" class="noc-icon"></fa-icon>
+      <div class="noc-label" fxFlex="">
+        Obsolete Manager
+      </div>
+    </button>
+    <button mat-button color="" class="" fxLayout="row" fxLayoutAlign="start center"
+      [ngClass]="{'noc-active': noctuaDoctorMenuService.selectedMiddlePanel === MiddlePanel.home}"
+      matTooltip="Board home" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+      <fa-icon [icon]="['fas', 'home']" class="noc-icon"></fa-icon>
+      <div class="noc-label" fxFlex="">
+        My Terms
+      </div>
+    </button>
+    <button mat-button color="" class="" fxLayout="row" fxLayoutAlign="start center"
+      [ngClass]="{'noc-active': noctuaDoctorMenuService.selectedMiddlePanel === MiddlePanel.home}"
+      matTooltip="Board home" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+      <fa-icon [icon]="['fas', 'home']" class="noc-icon"></fa-icon>
+      <div class="noc-label" fxFlex="">
+        Checklist
+      </div>
+    </button>
+    <button mat-button color="" class="" fxLayout="row" fxLayoutAlign="start center"
+      [ngClass]="{'noc-active': noctuaDoctorMenuService.selectedMiddlePanel === MiddlePanel.home}"
+      matTooltip="Board home" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+      <fa-icon [icon]="['fas', 'home']" class="noc-icon"></fa-icon>
+      <div class="noc-label" fxFlex="">
+        Calendar
+      </div>
+    </button>
+    <button mat-button color="" class="" fxLayout="row" fxLayoutAlign="start center"
+      [ngClass]="{'noc-active': noctuaDoctorMenuService.selectedMiddlePanel === MiddlePanel.home}"
+      matTooltip="Board home" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
+      <fa-icon [icon]="['fas', 'home']" class="noc-icon"></fa-icon>
+      <div class="noc-label" fxFlex="">
+        Chat
+      </div>
+    </button>
+  </div>
+  <mat-drawer-container class="h-100-p" fxFlex="" fxLayout="row" fxLayoutAlign="start start" [hasBackdrop]="false"
+    autosize>
+    <mat-drawer #leftDrawer class="noc-left-drawer" mode="side" position="start" opened>
+      <div [ngSwitch]="noctuaSearchMenuService.selectedLeftPanel" class="h-100-p">
+      </div>
+    </mat-drawer>
+    <mat-drawer-content #scrollbarRef class="noc-section-body w-100-p" [perfectScrollbar]="scrollbarConfig">
+
+      <div class="header accent p-8 w-100-p" fxLayout="column" fxLayoutAlign="center center">
+        <h1 [@animate]="{value:'*',params:{delay:'100ms', y:'25px'}}">
+          WELCOME TO NOCTUA DOCTOR
+        </h1>
+        <h3 [@animate]="{value:'*',params:{delay:'100ms', y:'25px'}}">
+          Notify
+        </h3>
+      </div>
+      <div class="noc-middle-panel w-100-p">
+      </div>
+      <div class="w-100-p">
+        <app-footer></app-footer>
+      </div>
+    </mat-drawer-content>
+    <mat-drawer #rightDrawer class="noc-right-drawer" mode="over" position="end">
+      <div [ngSwitch]="noctuaSearchMenuService.selectedRightPanel" class="h-100-p">
+
+      </div>
+    </mat-drawer>
+  </mat-drawer-container>
+</div>

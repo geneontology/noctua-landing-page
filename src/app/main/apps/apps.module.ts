@@ -1,28 +1,35 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { NoctuaSharedModule } from '@noctua/shared.module';
 import { NoctuaFormModule } from './noctua-form/noctua-form.module';
 import { NoctuaGraphModule } from './noctua-graph/noctua-graph.module';
 import { NoctuaSearchModule } from './noctua-search/noctua-search.module';
-import { TreeModule } from '@circlon/angular-tree-component';
+import { NoctuaDoctorModule } from './noctua-doctor/noctua-doctor.module';
+import { NoctuaTutorialModule } from './noctua-tutorial/noctua-tutorial.module';
+import { NoctuaPathwayModule } from './noctua-pathway/noctua-pathway.module';
 
 @NgModule({
-  declarations: [],
   imports: [
     NoctuaSharedModule,
     NoctuaFormModule,
     NoctuaSearchModule,
-    NoctuaGraphModule
+    NoctuaGraphModule,
+    NoctuaDoctorModule,
+    NoctuaTutorialModule,
+    NoctuaPathwayModule
   ],
   exports: [
     NoctuaFormModule,
     NoctuaFormModule,
     NoctuaSearchModule,
-    NoctuaGraphModule
+    NoctuaGraphModule,
+    NoctuaDoctorModule,
+    NoctuaTutorialModule,
+    NoctuaPathwayModule
   ],
   providers: [
 
-  ]
+  ],
+  declarations: []
 
 })
 

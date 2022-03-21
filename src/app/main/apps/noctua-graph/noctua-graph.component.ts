@@ -9,12 +9,11 @@ import {
   NoctuaUserService,
   NoctuaFormConfigService,
   CamService,
-  CamsService,
   Activity,
   ActivityDisplayType,
   ActivityType,
   NoctuaActivityFormService
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 
 import { FormGroup } from '@angular/forms';
 import { NoctuaSearchService } from '@noctua.search/services/noctua-search.service';
@@ -79,12 +78,14 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   tableOptions: TableOptions = {
     displayType: ActivityDisplayType.SLIM_TREE,
-    slimViewer: false,
+    slimViewer: true,
     editableTerms: true,
     editableEvidence: true,
     editableReference: true,
     editableWith: true,
+    showMenu: true
   };
+
   noctuaFormOptions: TableOptions = {
     displayType: ActivityDisplayType.TREE,
     slimViewer: false,
@@ -104,7 +105,7 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private camService: CamService,
-    public camsService: CamsService,
+
     private graphDialogService: NoctuaGraphDialogService,
     public noctuaActivityFormService: NoctuaActivityFormService,
     public noctuaReviewSearchService: NoctuaReviewSearchService,
@@ -160,10 +161,14 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openGraph() {
+    this.noctuaCommonMenuService.closeLeftDrawer();
+    this.noctuaCommonMenuService.closeRightDrawer();
     this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.camGraph)
   }
 
   openTable() {
+    //this.noctuaCommonMenuService.closeLeftDrawer();
+    this.noctuaCommonMenuService.closeRightDrawer();
     this.noctuaCommonMenuService.selectMiddlePanel(MiddlePanel.camTable)
   }
 
@@ -196,7 +201,7 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   openSettings() {
-    this.graphDialogService.openGraphSettingsDialog()
+    this.openRightDrawer(RightPanel.graphSettings)
   }
 
   getTableWidth(settings: SettingsOptions) {
@@ -230,7 +235,7 @@ export class NoctuaGraphComponent implements OnInit, AfterViewInit, OnDestroy {
 
   openCamForm() {
     this.camService.initializeForm(this.cam);
-    this.noctuaCommonMenuService.selectedLeftPanel(LeftPanel.camForm);
+    this.noctuaCommonMenuService.selectLeftPanel(LeftPanel.camForm);
     this.noctuaCommonMenuService.closeRightDrawer();
     this.noctuaCommonMenuService.openLeftDrawer();
   }

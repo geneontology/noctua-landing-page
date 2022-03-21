@@ -12,14 +12,13 @@ import {
   NoctuaFormMenuService,
   Predicate,
   NoctuaUserService,
-  CamsService
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 
 import {
   Cam,
   Activity,
   ActivityNode
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 import { EditorCategory } from '@noctua.editor/models/editor-category';
 import { SettingsOptions } from '@noctua.common/models/graph-settings';
 
@@ -48,8 +47,7 @@ export class EvidenceTableComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<any>;
 
   constructor(
-    private camService: CamService,
-    public camsService: CamsService,
+    public camService: CamService,
     public noctuaUserService: NoctuaUserService,
     public noctuaFormMenuService: NoctuaFormMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,

@@ -7,10 +7,10 @@
       [matTooltipShowDelay]="1500">
       <fa-icon [icon]="['fas', 'search']"></fa-icon>
     </button>
-    <!--  <button mat-icon-button color="" class="noc-rounded-button" (click)="toggleLeftDrawer(LeftPanel.relation)"
+    <button mat-icon-button color="" class="noc-rounded-button" (click)="toggleLeftDrawer(LeftPanel.relation)"
       matTooltip="Relation Search" [matTooltipPosition]="'after'" [matTooltipShowDelay]="1500">
       <mat-icon class="icon-rotate-relation"> linear_scale </mat-icon>
-    </button> -->
+    </button>
     <button mat-icon-button color="" class="noc-rounded-button" (click)="
       toggleLeftDrawer(LeftPanel.contributor)" matTooltip="Browse by contributor"
       [ngClass]="{'noc-active': noctuaSearchMenuService.selectedLeftPanel === LeftPanel.contributor}"
@@ -140,6 +140,12 @@
       </div>
     </mat-drawer-content>
     <mat-drawer #rightDrawer class="noc-right-drawer" mode="over" position="end">
+      <div [ngSwitch]="noctuaSearchMenuService.selectedRightPanel" class="h-100-p">
+        <noc-cam-form [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.camForm">
+        </noc-cam-form>
+        <noc-duplicate-cam-form [panelDrawer]="rightDrawer" *ngSwitchCase="RightPanel.duplicateCamForm">
+        </noc-duplicate-cam-form>
+      </div>
     </mat-drawer>
   </mat-drawer-container>
 </div>

@@ -7,11 +7,11 @@ import {
   NoctuaTripleFormService,
   CamService,
   NoctuaFormMenuService
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 
 import {
   Cam
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 
 @Component({
   selector: 'noc-triple-table',
@@ -26,7 +26,8 @@ export class TripleTableComponent implements OnInit, OnDestroy {
 
   private unsubscribeAll: Subject<any>;
 
-  constructor(private camService: CamService,
+  constructor(
+    public camService: CamService,
     public noctuaFormMenuService: NoctuaFormMenuService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     //  public noctuaFormMenuService: NoctuaFormMenuService,

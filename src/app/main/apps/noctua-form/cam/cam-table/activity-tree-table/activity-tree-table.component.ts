@@ -14,17 +14,17 @@ import {
   noctuaFormConfig,
   NoctuaUserService,
   NoctuaFormMenuService,
-  CamsService,
+
   ActivityType,
   ActivityTreeNode
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 
 import {
   Cam,
   Activity,
   ActivityNode,
   compareNodeWeight,
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 
 import { EditorCategory } from '@noctua.editor/models/editor-category';
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
@@ -61,7 +61,7 @@ export class ActivityTreeTableComponent implements OnInit, OnDestroy {
   private unsubscribeAll: Subject<any>;
 
   constructor(
-    public camsService: CamsService,
+    public camService: CamService,
     public noctuaFormMenuService: NoctuaFormMenuService,
     public noctuaUserService: NoctuaUserService,
     public noctuaFormConfigService: NoctuaFormConfigService,

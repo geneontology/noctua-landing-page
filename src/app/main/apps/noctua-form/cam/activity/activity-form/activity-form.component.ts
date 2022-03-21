@@ -3,8 +3,6 @@ import { FormGroup, FormArray } from '@angular/forms';
 import { MatDrawer } from '@angular/material/sidenav';
 import { Subscription, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-
-
 import { NoctuaFormDialogService } from './../../../services/dialog.service';
 import {
   Cam,
@@ -16,7 +14,8 @@ import {
   ActivityType,
   NoctuaUserService,
   NoctuaFormMenuService,
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
+import { ResizeEvent } from 'angular-resizable-element';
 
 @Component({
   selector: 'noc-activity-form',
@@ -33,6 +32,8 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
 
   @Input() public closeDialog: () => void;
 
+  resizeStyle = {};
+
   cam: Cam;
   activityFormGroup: FormGroup;
   activityFormSub: Subscription;
@@ -44,6 +45,9 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   activity: Activity;
   currentActivity: Activity;
   state: ActivityState;
+
+  descriptionSectionTitle = 'Function Description';
+  annotatedSectionTitle = 'Gene Product';
 
   private _unsubscribeAll: Subject<any>;
 
@@ -72,7 +76,45 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
         this.activity = this.noctuaActivityFormService.activity;
         this.state = this.noctuaActivityFormService.state;
         this.molecularEntity = <FormGroup>this.activityFormGroup.get('molecularEntity');
+
+        if (this.activity.activityType === ActivityType.ccOnly) {
+          this.descriptionSectionTitle = 'Localization Description';
+        } else if (this.activity.activityType === ActivityType.molecule) {
+          this.annotatedSectionTitle = 'Small Molecule';
+          this.descriptionSectionTitle = 'Location (optional)';
+        } else {
+          this.descriptionSectionTitle = 'Function Description';
+        }
       });
+  }
+
+  resizeValidate(event: ResizeEvent): boolean {
+    const MIN_DIMENSIONS_PX: number = 50;
+    if (
+      event.rectangle.width &&
+      event.rectangle.height &&
+      (event.rectangle.width < MIN_DIMENSIONS_PX ||
+        event.rectangle.height < MIN_DIMENSIONS_PX)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Finilizes resize positions
+   * (used for drawer/sidenav width)
+   * @param event 
+   */
+  onResizeEnd(event: ResizeEvent): void {
+    this.resizeStyle = {
+      // enable/disable these per your needs
+      //position: 'fixed',
+      //left: `${event.rectangle.left}px`,
+      //top: `${event.rectangle.top}px`,
+      //height: `${event.rectangle.height}px`,
+      width: `${event.rectangle.width}px`,
+    };
   }
 
   checkErrors() {
@@ -83,8 +125,8 @@ export class ActivityFormComponent implements OnInit, OnDestroy {
   save() {
     const self = this;
 
-    self.noctuaActivityFormService.saveActivity().then(() => {
-      self.noctuaFormDialogService.openInfoToast('Activity successfully created.', 'OK');
+    self.noctuaActivityFormService.saveActivity().subscribe(() => {
+      self.noctuaFormDialogService.openInfoToast('Annotation successfully created.', 'OK');
       self.noctuaActivityFormService.clearForm();
       if (this.closeDialog) {
         this.closeDialog();

@@ -8,7 +8,7 @@ import { takeUntil } from 'rxjs/operators';
 import { ActivatedRoute, } from '@angular/router';
 import { NoctuaCommonMenuService } from '@noctua.common/services/noctua-common-menu.service';
 import { NoctuaDataService } from '@noctua.common/services/noctua-data.service';
-import { Activity, Cam, CamOperation, CamService, NoctuaGraphService } from 'noctua-form-base';
+import { Activity, Cam, CamOperation, CamService, NoctuaGraphService } from '@geneontology/noctua-form-base';
 import { NoctuaShapesService } from '@noctua.graph/services/shapes.service';
 import { noctuaStencil } from '@noctua.graph/data/cam-stencil';
 
@@ -56,6 +56,7 @@ export class CamGraphComponent implements OnInit, AfterViewInit, OnDestroy {
           return;
         }
         self.cam = cam;
+        self.noctuaCamGraphService.cam = self.cam;
         if (cam.operation !== CamOperation.ADD_ACTIVITY) {
           self.noctuaCamGraphService.addToCanvas(self.cam);
         }
@@ -72,6 +73,7 @@ export class CamGraphComponent implements OnInit, AfterViewInit, OnDestroy {
         if (!activity) {
           return;
         }
+        //self.noctuaCamGraphService.cam.activities.push(activity)
         self.noctuaCamGraphService.addActivity(activity);
 
       });
@@ -103,7 +105,6 @@ export class CamGraphComponent implements OnInit, AfterViewInit, OnDestroy {
   onCtrlScroll($event) {
     const self = this;
     const delta = Math.max(-1, Math.min(1, ($event.wheelDelta || $event.detail))) / 10;
-    console.log(delta)
 
     if ($event.ctrlKey) {
       self.noctuaCamGraphService.zoom(delta, $event);

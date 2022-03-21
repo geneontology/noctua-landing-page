@@ -17,7 +17,7 @@ import {
   Cam,
   Activity,
   NoctuaFormMenuService
-} from 'noctua-form-base';
+} from '@geneontology/noctua-form-base';
 import { NoctuaConfirmDialogService } from '@noctua/components/confirm-dialog/confirm-dialog.service';
 
 @Component({
@@ -70,7 +70,6 @@ export class CamPreviewComponent implements OnInit, OnDestroy {
     this.camService.activity = activity;
     this.noctuaActivityConnectorService.subjectActivity = activity;
     this.noctuaActivityConnectorService.onActivityChanged.next(activity);
-    this.noctuaActivityConnectorService.getConnections();
     // this.noctuaFormMenuService.openRightDrawer(this.noctuaFormMenuService.panel.connectorForm);
   }
 

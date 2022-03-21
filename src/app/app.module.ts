@@ -7,13 +7,10 @@ import { ContextMenuModule } from 'ngx-contextmenu';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { NoctuaModule } from '@noctua/noctua.module';
 import { NoctuaProgressBarModule } from '@noctua/components';
-
 import { NoctuaSharedModule } from '@noctua/shared.module';
 import { noctuaConfig } from './noctua-config';
 import { AppComponent } from './app.component';
 import { LayoutModule } from 'app/layout/layout.module';
-
-import { PagesModule } from './main/pages/pages.module';
 import { AppsModule } from './main/apps/apps.module';
 import {
     faAngleDoubleDown,
@@ -24,19 +21,25 @@ import {
     faAngleRight,
     faArrowDown,
     faArrowUp,
+    faBars,
     faCalendarDay,
     faCalendarWeek,
     faCaretDown,
     faCaretRight,
+    faChartBar,
     faChevronDown,
     faChevronRight,
+    faClipboardList,
+    faClone,
     faCog,
     faCopy,
     faExclamationTriangle,
     faHistory,
+    faInfoCircle,
     faLevelDownAlt,
     faLevelUpAlt,
     faLink,
+    faList,
     faListAlt,
     faPaw,
     faPen,
@@ -47,6 +50,8 @@ import {
     faSearchPlus,
     faShoppingBasket,
     faSitemap,
+    faSortAlphaDown,
+    faSortAlphaDownAlt,
     faTable,
     faTasks,
     faTimes,
@@ -96,7 +101,6 @@ const appRoutes: Routes = [
         MatSidenavModule,
 
         //Noctua App 
-        PagesModule,
         AppsModule
     ],
     providers: [
@@ -124,22 +128,28 @@ export class AppModule {
             faAngleDoubleDown,
             faAngleLeft,
             faAngleRight,
+            faBars,
             faCalendarDay,
             faCalendarWeek,
             faCaretDown,
             faCaretRight,
+            faChartBar,
             faChevronDown,
             faChevronRight,
             faCheckCircle,
+            faClipboardList,
             faCog,
             faCopy,
+            faClone,
             faExclamationTriangle,
             faFacebook,
             faGithub,
             faHistory,
+            faInfoCircle,
             faLevelDownAlt,
             faLevelUpAlt,
             faLink,
+            faList,
             faListAlt,
             faPaw,
             faPen,
@@ -150,6 +160,8 @@ export class AppModule {
             faSearchPlus,
             faShoppingBasket,
             faSitemap,
+            faSortAlphaDown,
+            faSortAlphaDownAlt,
             faTable,
             faTasks,
             faTimes,
