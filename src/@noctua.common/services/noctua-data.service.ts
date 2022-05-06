@@ -18,7 +18,7 @@ export class NoctuaDataService {
   constructor(
     private httpClient: HttpClient,
     private noctuaUserService: NoctuaUserService) {
-    this.onOrganismsChanged = new BehaviorSubject([]);
+    this.onOrganismsChanged = new BehaviorSubject(null);
 
   }
 
@@ -104,7 +104,7 @@ export class NoctuaDataService {
 
         const organisms = response.map((item) => {
           const organism: Organism = {
-            taxonName: item.label,
+            taxonName: item.label ? item.label : '',
             taxonIri: item.id
           };
 

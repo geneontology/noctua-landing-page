@@ -1,16 +1,20 @@
 import {
     Activity,
+    ActivityNode,
+    ActivityNodeType,
+    ActivityTreeNode,
     ActivityType,
     Cam,
     Entity,
     noctuaFormConfig,
+    NoctuaFormUtils,
     Predicate,
     Triple
 } from '@geneontology/noctua-form-base';
 import { NodeCellType } from './shapes';
 import { NodeCellList, NodeCellMolecule, NodeLink, StencilNode } from './../services/shapes.service';
 import * as joint from 'jointjs';
-import { each, cloneDeep } from 'lodash';
+import { each, cloneDeep, find } from 'lodash';
 import { StencilItemNode } from './../data/cam-stencil';
 import { getEdgeColor } from './../data/edge-display';
 
@@ -132,6 +136,24 @@ export class CamCanvas {
                 (element as NodeCellList).hover(false);
                 self.unhighlightAllNodes()
             }
+        });
+
+        this.canvasPaper.on('link:mouseenter', function (cellView) {
+            cellView.removeTools();
+            const element = cellView.model;
+            if (element.get('type') === NodeCellType.link) {
+                (element as NodeLink).hover(true);
+            }
+
+        });
+
+        this.canvasPaper.on('link:mouseleave', function (cellView) {
+            cellView.removeTools();
+            const element = cellView.model;
+            if (element.get('type') === NodeCellType.link) {
+                (element as NodeLink).hover(false);
+            }
+
         });
         /* 'element:pointerup': function (elementView, evt, x, y) {
             const coordinates = new joint.g.Point(x, y);
@@ -400,30 +422,75 @@ export class CamCanvas {
         //  self.canvasPaper.
     }
 
-    createNode(activity: Activity): NodeCellList {
+    private _addGPEntity(treeNode: ActivityTreeNode, el: NodeCellList) {
+        const self = this;
+
+        if (treeNode.node?.displaySection.id === noctuaFormConfig.displaySection.gp.id) {
+            if (treeNode.node?.term && treeNode.node.predicate.edge?.id !== noctuaFormConfig.edge.enabledBy.id) {
+                el.addEntity(NoctuaFormUtils.pad('—', treeNode.node.treeLevel - 2)
+                    + treeNode.node.predicate.edge?.label, treeNode.node.term.label,
+                    treeNode.node.predicate.hasEvidence());
+            }
+
+            treeNode.children.forEach(child => {
+                self._addGPEntity(child, el)
+            })
+        }
+    }
+
+    private _addFDEntity(treeNode: ActivityTreeNode, el: NodeCellList) {
+        const self = this;
+
+        if (treeNode.node?.displaySection.id === noctuaFormConfig.displaySection.fd.id) {
+            if (treeNode.node?.term) {
+                el.addEntity(NoctuaFormUtils.pad('—', treeNode.node.treeLevel - 2)
+                    + treeNode.node.predicate.edge?.label, treeNode.node.term.label, treeNode.node.predicate.hasEvidence());
+            }
+
+            treeNode.children.forEach(child => {
+                self._addFDEntity(child, el)
+            })
+        }
+    }
+
+    createNode(activity: Activity, graphLayoutDetail: string): NodeCellList {
         const el = new NodeCellList()
-        //.addActivityPorts()
-        el.setColor(activity.backgroundColor)
+
+        el.addIcon(`./assets/images/activity/coverage-${activity.summary.coverage}.png`)
         //.setSuccessorCount(activity.successorCount)
 
-        const activityType = activity.getActivityTypeDetail();
+        if (graphLayoutDetail === noctuaFormConfig.graphLayoutDetail.options.detailed.id) {
+            if (activity.activityType === ActivityType.proteinComplex) {
+                const gpNodes = activity.buildGPTrees();
+                gpNodes.forEach(gpNode => this._addGPEntity(gpNode, el));
+            }
 
-        if (activity.mfNode) {
-            el.prop({ 'mf': [activity.mfNode.term.label] });
+            const fdNodes = activity.buildTrees();
+            fdNodes.forEach(fdNode => this._addFDEntity(fdNode, el));
+        } else if (graphLayoutDetail === noctuaFormConfig.graphLayoutDetail.options.activity.id) {
+
+            if (activity.mfNode) {
+                const activityNodes = activity.getEdges(activity.mfNode.id)
+                el.addEntity('', activity.mfNode?.term.label, activity.mfNode.predicate.hasEvidence());
+
+                activityNodes.forEach((activityNode: Triple<ActivityNode>) => {
+                    const canAdd = find(noctuaFormConfig.defaultGraphDisplayEdges, (edge: Entity) => edge.id === activityNode.predicate.edge?.id);
+
+                    if (activityNode.object?.term.hasValue() && canAdd) {
+                        el.addEntity(activityNode.object.predicate.edge.label, activityNode.object?.term.label,
+                            activityNode.object.predicate.hasEvidence());
+                    }
+                })
+            }
         }
 
-        if (activity.ccNode) {
-            el.prop({ 'cc': [`occurs in: ${activity.ccNode.term.label}`] });
-        }
-
-        if (activity.bpNode) {
-            el.prop({ 'bp': [`part of: ${activity.bpNode.term.label}`] });
-        }
         if (activity.gpNode) {
-            el.prop({ 'gp': [activity.gpNode?.term.label] });
+            el.addHeader(activity.gpNode?.term.label);
         } else {
-            el.prop({ 'gp': [''] });
+            el.prop('GP info unavailable');
         }
+
+        el.setColor(activity.backgroundColor);
 
         el.attr({
             expand: {
@@ -436,13 +503,13 @@ export class CamCanvas {
             activity: activity,
             id: activity.id,
             position: activity.position,
-            size: activity.size,
+            //  size: activity.size,
         });
 
         return el
     }
 
-    createMolecule(activity: Activity): NodeCellList {
+    createMolecule(activity: Activity) {
         const el = new NodeCellMolecule()
         activity.size.width = 120;
         activity.size.height = 120;
@@ -480,7 +547,7 @@ export class CamCanvas {
         return el
     }
 
-    addCanvasGraph(cam: Cam) {
+    addCanvasGraph(cam: Cam, graphLayoutDetail: string) {
         const self = this;
         const nodes = [];
 
@@ -493,7 +560,7 @@ export class CamCanvas {
                 if (activity.activityType === ActivityType.molecule) {
                     el = self.createMolecule(activity);
                 } else {
-                    el = self.createNode(activity);
+                    el = self.createNode(activity, graphLayoutDetail);
                 }
                 nodes.push(el);
             }
@@ -523,9 +590,8 @@ export class CamCanvas {
                 nodes.push(link);
             }
         });
-
+        self.canvasPaper.setDimensions('30000px', '30000px')
         self.canvasPaper.scaleContentToFit({ minScaleX: 0.3, minScaleY: 0.3, maxScaleX: 1, maxScaleY: 1 });
-        self.canvasPaper.setDimensions('10000px', '10000px')
         self.canvasGraph.resetCells(nodes);
 
         if (!cam.manualLayout) {
@@ -534,6 +600,7 @@ export class CamCanvas {
 
         self.canvasPaper.unfreeze();
         self.canvasPaper.render();
+
 
         /*    each(self.canvasGraph.getCells(), (cell: any) => {
    
@@ -603,14 +670,14 @@ export class CamCanvas {
         });
         // Automatic Layout
         joint.layout.DirectedGraph.layout(graph.getSubgraph(autoLayoutElements), {
-            align: 'UR',
+            align: 'UL',
             setLabels: true,
             marginX: 50,
             marginY: 50,
             rankSep: 200,
             // nodeSep: 2000,
             //edgeSep: 2000,
-            rankDir: "LR"
+            rankDir: "TB"
         });
         // Manual Layout
         manualLayoutElements.forEach(function (el) {
@@ -629,4 +696,5 @@ export class CamCanvas {
         const pointTransformed = svgPoint.matrixTransform(self.canvasPaper.viewport.getCTM().inverse());
         return pointTransformed;
     }
+
 }
