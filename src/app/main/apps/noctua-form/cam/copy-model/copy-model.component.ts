@@ -82,7 +82,7 @@ export class CopyModelComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.camService.onCopyModelChanged.next(null)
-    this._unsubscribeAll.next();
+    this._unsubscribeAll.next(null);
     this._unsubscribeAll.complete();
   }
 }

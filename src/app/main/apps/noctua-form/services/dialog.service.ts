@@ -1,8 +1,7 @@
-import { environment } from '../../../../../environments/environment';
 import { Injectable, NgZone } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
 import { ActivityErrorsDialogComponent } from './../dialogs/activity-errors/activity-errors.component';
@@ -13,10 +12,9 @@ import { SelectEvidenceDialogComponent } from './../dialogs/select-evidence/sele
 import { SearchDatabaseDialogComponent } from './../dialogs/search-database/search-database.component';
 
 import {
-    Evidence, ActivityNode, Activity, FormType
+    Evidence, FormType
 } from '@geneontology/noctua-form-base';
 
-import 'rxjs/add/operator/map';
 import { NoctuaConfirmDialogComponent } from '@noctua/components/confirm-dialog/confirm-dialog.component';
 import { PreviewActivityDialogComponent } from '../dialogs/preview-activity/preview-activity.component';
 import { SearchEvidenceDialogComponent } from '../dialogs/search-evidence/search-evidence.component';
@@ -32,7 +30,7 @@ export class NoctuaFormDialogService {
 
     dialogRef: any;
 
-    constructor(private httpClient: HttpClient,
+    constructor(
         private zone: NgZone,
         private snackBar: MatSnackBar,
         private _matDialog: MatDialog) {
