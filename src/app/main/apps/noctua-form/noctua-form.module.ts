@@ -67,6 +67,7 @@ import { GPStatsComponent } from './components/cam-stats/gp-stats/gp-stats.compo
 import { ActivityFormTableNodeComponent } from './cam/cam-table/activity-form-table/activity-form-table-node/activity-form-table-node.component';
 import { ActivityFormTableComponent } from './cam/cam-table/activity-form-table/activity-form-table.component';
 import { EvidenceFormTableComponent } from './cam/cam-table/activity-form-table/evidence-table/evidence-table.component';
+import { ConfirmCopyModelDialogComponent } from './dialogs/confirm-copy-model/confirm-copy-model.component';
 
 const routes = [
   {
@@ -137,7 +138,8 @@ const routes = [
     CamPreviewComponent,
     PreviewActivityComponent,
     GraphPreviewComponent,
-    EvidenceFormTableComponent
+    EvidenceFormTableComponent,
+    ConfirmCopyModelDialogComponent
   ],
   providers: [
     NoctuaFormDialogService,
@@ -181,7 +183,8 @@ const routes = [
     GeneralStatsComponent,
     ContributionStatsComponent,
     StatementStatsComponent,
-    EvidenceFormTableComponent
+    EvidenceFormTableComponent,
+    ConfirmCopyModelDialogComponent
   ],
 })
 

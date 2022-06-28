@@ -24,6 +24,7 @@ import { TermsSummary } from './../models/activity/summary';
 import { Article } from './../models/article';
 import { Contributor, equalContributor } from '../models/contributor';
 import * as moment from 'moment';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 declare const require: any;
 
@@ -51,6 +52,7 @@ export class NoctuaGraphService {
 
   constructor(
     private curieService: CurieService,
+    private httpClient: HttpClient,
     private noctuaUserService: NoctuaUserService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     private noctuaLookupService: NoctuaLookupService) {
@@ -154,19 +156,19 @@ export class NoctuaGraphService {
     }, 10);
   }
 
-  getMetadata(response) {
+  getMetadata(responseData) {
     const self = this;
     const noctua_graph = model.graph;
     const cam = new Cam()
 
     cam.graph = new noctua_graph();
-    cam.graph.load_data_basic(response.data());
+    cam.graph.load_data_basic(responseData);
 
-    cam.id = response.data().id;
+    cam.id = responseData.id;
     cam.model = Object.assign({}, {
       modelInfo: this.noctuaFormConfigService.getModelUrls(cam.id)
     });
-    cam.modified = response.data()['modified-p'];
+    cam.modified = responseData['modified-p'];
 
     const titleAnnotations = cam.graph.get_annotations_by_key('title');
     const stateAnnotations = cam.graph.get_annotations_by_key('state');
@@ -794,9 +796,9 @@ export class NoctuaGraphService {
 
         activity.postRunUpdateCompliment();
 
-        if (environment.isGraph) {
-          activity.postRunUpdate();
-        }
+        // if (environment.isGraph) {
+        activity.postRunUpdate();
+        // }
 
         activities.push(activity);
       }
@@ -883,14 +885,41 @@ export class NoctuaGraphService {
     cam.groupId = groupId;
   }
 
-  copyModel(cam: Cam) {
+  copyModel(cam: Cam, title) {
     const self = this;
     const reqs = new minerva_requests.request_set(self.noctuaUserService.baristaToken, cam.id);
     const req = new minerva_requests.request('model', 'copy');
 
     req.model(cam.id);
+    req.special('title', title);
     reqs.add(req, 'query');
+
+    if (self.noctuaUserService.user && self.noctuaUserService.user.groups.length > 0) {
+      reqs.use_groups([self.noctuaUserService.user.group.id]);
+    }
+
     return cam.copyModelManager.request_with(reqs);
+  }
+
+  copyModelHttp(cam: Cam, title) {
+    const baristaUrl = environment.globalBaristaLocation
+    const globalMinervaDefinitionName = environment.globalMinervaDefinitionName
+
+    let headers = new HttpHeaders();
+    headers = headers.append('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8');
+
+    const requests = [
+      {
+        "entity": "model",
+        "operation": "copy",
+        "arguments":
+        {
+          "model-id": cam.id,
+          "title": title
+        }
+      }]
+    const payload = `token=${this.noctuaUserService.baristaToken}&intention=query&requests=${encodeURIComponent(JSON.stringify(requests))}`
+    return this.httpClient.post(`${baristaUrl}/api/${globalMinervaDefinitionName}/m3BatchPrivileged`, payload, { headers });
   }
 
   resetModel(cam: Cam) {

@@ -12,6 +12,7 @@ import { SelectEvidenceDialogComponent } from './../dialogs/select-evidence/sele
 import { SearchDatabaseDialogComponent } from './../dialogs/search-database/search-database.component';
 
 import {
+    Cam,
     Evidence, FormType
 } from '@geneontology/noctua-form-base';
 
@@ -21,6 +22,7 @@ import { SearchEvidenceDialogComponent } from '../dialogs/search-evidence/search
 import { CamErrorsDialogComponent } from '../dialogs/cam-errors/cam-errors.component';
 import { CreateActivityDialogComponent } from '../dialogs/create-activity/create-activity.component';
 import { AddEvidenceDialogComponent } from '../dialogs/add-evidence/add-evidence.component';
+import { ConfirmCopyModelDialogComponent } from '../dialogs/confirm-copy-model/confirm-copy-model.component';
 
 
 @Injectable({
@@ -127,6 +129,22 @@ export class NoctuaFormDialogService {
         this.dialogRef.afterClosed()
             .subscribe(response => {
 
+            });
+    }
+
+    openConfirmCopyModelDialog(cam: Cam, success): void {
+        this.dialogRef = this._matDialog.open(ConfirmCopyModelDialogComponent, {
+            panelClass: 'noc-confirm-copy-model-dialog',
+            data: {
+                cam: cam
+            },
+            width: '600px',
+        });
+        this.dialogRef.afterClosed()
+            .subscribe(response => {
+                if (response) {
+                    success(response);
+                }
             });
     }
 
