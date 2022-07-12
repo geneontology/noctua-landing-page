@@ -34,6 +34,7 @@ import { InlineEditorService } from '@noctua.editor/inline-editor/inline-editor.
 import { NoctuaUtils } from '@noctua/utils/noctua-utils';
 import { MatTableDataSource } from '@angular/material/table';
 import { SettingsOptions } from '@noctua.common/models/graph-settings';
+import { NoctuaConfirmDialogService } from '@noctua/components/confirm-dialog/confirm-dialog.service';
 
 @Component({
   selector: 'noc-activity-form-table-node',
@@ -74,6 +75,7 @@ export class ActivityFormTableNodeComponent implements OnInit, OnDestroy {
     public camService: CamService,
 
     public noctuaFormMenuService: NoctuaFormMenuService,
+    private confirmDialogService: NoctuaConfirmDialogService,
     public noctuaUserService: NoctuaUserService,
     public noctuaFormConfigService: NoctuaFormConfigService,
     private noctuaFormDialogService: NoctuaFormDialogService,
@@ -91,6 +93,7 @@ export class ActivityFormTableNodeComponent implements OnInit, OnDestroy {
 
     this.optionsDisplay = { ...this.options, hideHeader: true };
     this.relationWidth = 250 - (this.entity.treeLevel) * 16 + 'px';
+
   }
 
   toggleExpand(activity: Activity) {
@@ -135,8 +138,25 @@ export class ActivityFormTableNodeComponent implements OnInit, OnDestroy {
     self.noctuaActivityFormService.initializeForm();
   }
 
-  toggleIsComplement() {
+  deleteEntity(entity: ActivityNode) {
+    const self = this;
 
+    const success = () => {
+      this.noctuaActivityEntityService.deleteActivityNode(self.activity, entity).then(() => {
+        self.noctuaFormDialogService.openInfoToast(`${entity.term.label} successfully deleted.`, 'OK');
+      });
+    };
+
+    const descendants = this.activity.descendants(entity.id).map((node: ActivityNode) => {
+      return node.term.label
+    }).join(", ");
+    let message = `You are about to delete an ${entity.term.label}`;
+    if (descendants) {
+      message += ` and its descendants ${descendants}`;
+    }
+
+    this.confirmDialogService.openConfirmDialog('Confirm Delete?',
+      `${message}`, success);
   }
 
   openSearchDatabaseDialog(entity: ActivityNode) {
@@ -164,19 +184,8 @@ export class ActivityFormTableNodeComponent implements OnInit, OnDestroy {
             self.noctuaActivityEntityService.initializeForm(this.activity, entity);
             entity.term = term;
             entity.predicate.setEvidence(selected.evidences);
-            self.noctuaActivityEntityService.saveActivity(false);
+            self.noctuaActivityEntityService.saveSearchDatabase();
 
-
-            /*  selected.evidences.forEach((evidence: Evidence) => {
-               evidence.evidenceExts.forEach((evidenceExt) => {
-                 evidenceExt.relations.forEach((relation) => {
-                   const node = self.noctuaFormConfigService.insertActivityNodeByPredicate(self.noctuaActivityFormService.activity, self.entity, relation.id);
-                   node.term = new Entity(evidenceExt.term.id, evidenceExt.term.id);
-                   node.predicate.setEvidence([evidence]);
-                 });
-               });
- 
-             }); */
           }
         }
       };
@@ -273,7 +282,7 @@ export class ActivityFormTableNodeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.unsubscribeAll.next();
+    this.unsubscribeAll.next(null);
     this.unsubscribeAll.complete();
   }
 
