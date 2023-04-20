@@ -73604,6 +73604,37 @@ mat-radio-button.noc-radio-button-rounded.noc-sm {
   font-size: 12px;
   font-weight: normal;
 }
+.mat-menu-panel.noc-menu-panel {
+  background-color: #d2e8f8;
+  max-width: none !important;
+}
+.mat-menu-panel.noc-menu-panel .mat-menu-item {
+  font-size: 10px;
+  border-bottom: rgba(59, 89, 152, 0.6) solid 1px;
+  height: auto !important;
+  line-height: 18px !important;
+  white-space: normal !important;
+}
+.mat-menu-panel.noc-menu-panel .mat-menu-item .noc-terms-description {
+  font-weight: bold;
+  text-transform: capitalize;
+}
+.mat-menu-panel.noc-extensions-menu-panel {
+  background-color: #d2e8f8;
+  max-width: none !important;
+}
+.mat-menu-panel.noc-extensions-menu-panel .mat-menu-item {
+  padding: 4px 12px;
+  font-size: 10px;
+  border-bottom: rgba(59, 89, 152, 0.6) solid 1px;
+  height: auto !important;
+  line-height: 12px !important;
+  white-space: normal !important;
+}
+.mat-menu-panel.noc-extensions-menu-panel .mat-menu-item .noc-terms-description {
+  font-weight: bold;
+  text-transform: capitalize;
+}
 .mat-autocomplete-panel.noc-term-autocomplete {
   background-color: #fbf9de;
   width: 400px !important;
