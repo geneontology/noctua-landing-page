@@ -320,13 +320,17 @@ export class ActivityNode implements ActivityNodeDisplay {
 }
 
 export function categoryToClosure(categories) {
-  return categories.map((category) => {
+
+  let results = categories.map((category) => {
     let result = `${category.categoryType}:"${category.category}"`;
     if (category.suffix) {
       result += ' ' + category.suffix;
     }
     return result
   }).join(' OR ');
+  results += 'OR is_obsolete:true'
+
+  return results;
 }
 
 export function compareTerm(a: ActivityNode, b: ActivityNode) {
