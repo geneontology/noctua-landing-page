@@ -10,10 +10,10 @@ import { Predicate } from './predicate';
 import { PendingChange } from './pending-change';
 import { CamStats } from './cam';
 
-export interface GoCategory {
+export class GoCategory {
   id: ActivityNodeType;
   category: string;
-  categoryType: string;
+  categoryType = 'isa_closure';
   suffix: string;
 }
 
@@ -319,16 +319,20 @@ export class ActivityNode implements ActivityNodeDisplay {
   }
 }
 
-export function categoryToClosure(categories) {
+export function categoryToClosure(categories: GoCategory[]) {
 
   let results = categories.map((category) => {
-    let result = `${category.categoryType}:"${category.category}"`;
+    let result
+    if (category.categoryType === 'is_obsolete') {
+      result = `${category.categoryType}:${category.category}`;
+    } else {
+      result = `${category.categoryType}:"${category.category}"`;
+    }
     if (category.suffix) {
       result += ' ' + category.suffix;
     }
     return result
   }).join(' OR ');
-  results += 'OR is_obsolete:true'
 
   return results;
 }
