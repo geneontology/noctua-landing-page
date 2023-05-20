@@ -911,7 +911,7 @@ export class NoctuaGraphService {
     return cam.copyModelManager.request_with(reqs);
   }
 
-  copyModelRaw(cam: Cam, title) {
+  copyModelRaw(cam: Cam, title, includeEvidence = false) {
     const self = this;
     const baristaUrl = environment.globalBaristaLocation
     const globalMinervaDefinitionName = environment.globalMinervaDefinitionName
@@ -926,6 +926,7 @@ export class NoctuaGraphService {
         "arguments":
         {
           "model-id": cam.id,
+          "preserve-evidence": includeEvidence,
           "values": [
             {
               "key": "title",
