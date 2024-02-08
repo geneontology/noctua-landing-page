@@ -201,6 +201,10 @@
           <mat-icon>more_horiz</mat-icon>
         </a>
         <mat-menu #optionsMenu="matMenu">
+          <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url"
+            target="_blank" class="" [attr.data-cy]="'open-standard-annotation-button'">
+            Standard Annotations
+          </a>
           <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-alliance-pathway-preview']?.url"
             target="_blank" class="">
             Alliance Pathway Preview
