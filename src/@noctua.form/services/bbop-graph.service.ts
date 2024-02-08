@@ -41,7 +41,7 @@ const minerva_manager = require('bbop-manager-minerva');
 @Injectable({
   providedIn: 'root'
 })
-export class NoctuaGraphService {
+export class BbopGraphService {
   baristaLocation = environment.globalBaristaLocation;
   minervaDefinitionName = environment.globalMinervaDefinitionName;
   linker = new amigo.linker();

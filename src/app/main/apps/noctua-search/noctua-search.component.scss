@@ -204,11 +204,11 @@ $noc-art-badge: mat.get-color-from-palette(mat.$orange-palette, 500);
     }
 
     button {
-      padding: 0 8px;
+      padding: 0 12px;
       color: map-get($accent, default);
       @include deep-height(50px);
       line-height: 20px;
-      width: 140px;
+      min-width: 120px;
       font-size: 12px;
       text-transform: capitalize !important;
 
@@ -226,7 +226,7 @@ $noc-art-badge: mat.get-color-from-palette(mat.$orange-palette, 500);
         width: 40px;
         height: 15px;
         color: #eee;
-        background-color: #3c8b43;
+        background-color: #f0b74b;
         font-size: 10px;
         text-align: center;
         line-height: 15px;
