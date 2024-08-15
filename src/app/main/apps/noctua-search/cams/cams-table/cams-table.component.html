@@ -113,18 +113,24 @@
         Title
       </th>
       <td mat-cell *matCellDef="let cam" fxFlex="200px" class="noc-title" fxLayout="row" fxLayoutAlign="start center">
-        <span *ngIf="cam.conformsToGpad">
+        <span *ngIf="cam.conformsToGpad" fxFlex="40px">
           <a [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url" target="_blank"
             class="mr-4" matTooltip="Open with Standard Annotation " [matTooltipPosition]="'above'"
             [matTooltipShowDelay]="2500">
             <img width="30" src="assets/icons/nsa.png">
           </a>
         </span>
-        <span *ngIf="!cam.conformsToGpad">
+        <span *ngIf="cam.conformsToGpad===false" fxFlex="40px">
           <a [href]="cam?.model?.modelInfo?.workbenches['noctua-visual-pathway-editor']?.url" target="_blank"
             class="mr-4" matTooltip="Open with Pathway Editor" [matTooltipPosition]="'above'"
             [matTooltipShowDelay]="2500">
             <img width="30" src="assets/icons/vpe.png">
+          </a>
+        </span>
+        <span *ngIf="cam.conformsToGpad===undefined" fxFlex="40px">
+          <a [href]="cam?.model?.modelInfo?.workbenches['noctua-visual-pathway-editor']?.url" target="_blank"
+            class="mr-4" matTooltip="Open with Pathway Editor" [matTooltipPosition]="'above'"
+            [matTooltipShowDelay]="2500">
           </a>
         </span>
         {{cam.title }}
