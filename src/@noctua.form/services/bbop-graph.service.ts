@@ -177,6 +177,7 @@ export class BbopGraphService {
     const dateAnnotations = cam.graph.get_annotations_by_key('date');
     const groupAnnotations = cam.graph.get_annotations_by_key('providedBy');
     const contributorAnnotations = cam.graph.get_annotations_by_key('contributor');
+    const conformsToGpad = cam.graph.get_annotations_by_key('conforms-to-gpad');
 
     cam.contributors = self.noctuaUserService.getContributorsFromAnnotations(contributorAnnotations);
     cam.groups = self.noctuaUserService.getGroupsFromAnnotations(groupAnnotations);
@@ -195,6 +196,10 @@ export class BbopGraphService {
 
     if (stateAnnotations.length > 0) {
       cam.state = self.noctuaFormConfigService.findModelState(stateAnnotations[0].value());
+    }
+
+    if (conformsToGpad.length > 0) {
+      cam.conformsToGpad = conformsToGpad[0].value();
     }
 
     return cam;
@@ -221,9 +226,6 @@ export class BbopGraphService {
     cam.modified = response.data()['modified-p'];
     cam.isReasoned = response['is-reasoned'];
 
-    if (cam.isReasoned) {
-
-    }
 
     const titleAnnotations = cam.graph.get_annotations_by_key('title');
     const commentAnnotations = cam.graph.get_annotations_by_key('comment');
@@ -231,6 +233,7 @@ export class BbopGraphService {
     const dateAnnotations = cam.graph.get_annotations_by_key('date');
     const groupAnnotations = cam.graph.get_annotations_by_key('providedBy');
     const contributorAnnotations = cam.graph.get_annotations_by_key('contributor');
+    const conformsToGpad = cam.graph.get_annotations_by_key('conforms-to-gpad');
 
     cam.contributors = self.noctuaUserService.getContributorsFromAnnotations(contributorAnnotations);
     cam.groups = self.noctuaUserService.getGroupsFromAnnotations(groupAnnotations);
@@ -249,6 +252,10 @@ export class BbopGraphService {
 
     if (stateAnnotations.length > 0) {
       cam.state = self.noctuaFormConfigService.findModelState(stateAnnotations[0].value());
+    }
+
+    if (conformsToGpad.length > 0) {
+      cam.conformsToGpad = conformsToGpad[0].value();
     }
 
     self.loadCam(cam);
@@ -287,6 +294,7 @@ export class BbopGraphService {
     const dateAnnotations = cam.graph.get_annotations_by_key('date');
     const groupAnnotations = cam.graph.get_annotations_by_key('providedBy');
     const contributorAnnotations = cam.graph.get_annotations_by_key('contributor');
+    const conformsToGpad = cam.graph.get_annotations_by_key('conforms-to-gpad');
 
     cam.contributors = self.noctuaUserService.getContributorsFromAnnotations(contributorAnnotations);
     cam.groups = self.noctuaUserService.getGroupsFromAnnotations(groupAnnotations);
@@ -305,6 +313,10 @@ export class BbopGraphService {
 
     if (stateAnnotations.length > 0) {
       cam.state = self.noctuaFormConfigService.findModelState(stateAnnotations[0].value());
+    }
+
+    if (conformsToGpad.length > 0) {
+      cam.conformsToGpad = conformsToGpad[0].value();
     }
 
     self.loadCam(cam, false);

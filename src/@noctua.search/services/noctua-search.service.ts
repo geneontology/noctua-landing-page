@@ -371,11 +371,14 @@ export class NoctuaSearchService {
             const modelId = response.id;
             const cam = new Cam();
 
+            console.log('response', response)
+
             cam.graph = null;
             cam.id = modelId;
             cam.state = self.noctuaFormConfigService.findModelState(response.state);
             cam.title = response.title;
             cam.date = response.date;
+            cam.conformsToGpad = response['conforms-to-gpad'];
             cam.modified = response['modified-p'];
             cam.model = Object.assign({}, {
                 modelInfo: this.noctuaFormConfigService.getModelUrls(modelId)

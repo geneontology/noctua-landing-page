@@ -131,6 +131,7 @@ export class CamsTableComponent implements OnInit, OnDestroy {
         }
         this.cams = cams;
         this.preCheck();
+        console.log('this.cams', this.cams)
       });
 
     this.camService.onCamsChanged
