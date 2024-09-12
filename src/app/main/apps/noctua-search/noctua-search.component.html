@@ -82,12 +82,16 @@
               Create
             </div>
             <div fxLayout="row" fxLayoutAlign="start center">
-              <button mat-raised-button (click)="createModel(WorkbenchId.VISUAL_PATHWAY_EDITOR)" color=""
+              <button mat-raised-button (click)="createModel(WorkbenchId.STANDARD_ANNOTATIONS)" color=""
                 class="noc-rounded-button mr-4 noc-half-button noc-r">
-                PATHWAY <br> EDITOR
+                STANDARD ANNOTATIONS <br> EDITOR
                 <div class="noc-badge" fxLayout="row" fxLayoutAlign="center center">
-                  new
+                  beta
                 </div>
+              </button>
+              <button mat-raised-button (click)="createModel(WorkbenchId.VISUAL_PATHWAY_EDITOR)" color=""
+                class="noc-rounded-button mr-4 noc-half-button noc-m">
+                PATHWAY <br> EDITOR
               </button>
               <button mat-raised-button (click)="createModel(WorkbenchId.FORM)" color=""
                 class="noc-rounded-button mr-4 noc-half-button noc-m">

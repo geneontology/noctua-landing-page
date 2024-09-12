@@ -123,6 +123,7 @@ export class Cam {
   groups: Group[] = [];
   contributors: Contributor[] = [];
   groupId: any;
+  conformsToGpad = false;
   expanded = false;
   model: any;
   //connectorActivities: ConnectorActivity[] = [];

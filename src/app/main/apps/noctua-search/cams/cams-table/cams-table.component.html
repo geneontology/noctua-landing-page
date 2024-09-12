@@ -96,16 +96,16 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="expand">
-      <th mat-header-cell *matHeaderCellDef fxFlex="80px" fxLayout="row" fxLayoutAlign="start center"></th>
-      <td mat-cell *matCellDef="let cam" class="noc-expand-cell" fxFlex="80px" fxLayout="row"
+      <th mat-header-cell *matHeaderCellDef fxFlex="30px" fxLayout="row" fxLayoutAlign="start center"></th>
+      <td mat-cell *matCellDef="let cam" class="noc-expand-cell" fxFlex="30px" fxLayout="row"
         fxLayoutAlign="start center">
         <button mat-icon-button (click)="toggleCamExpand(cam)" color="primary" class="noc-toggle-expand-button">
           <fa-icon *ngIf="!cam.expanded" [icon]="['fas', 'caret-right']"></fa-icon>
           <fa-icon *ngIf="cam.expanded" [icon]="['fas', 'caret-down']"></fa-icon>
         </button>
-        <div class="noc-display-number mr-8">
+        <!--       <div class="noc-display-number mr-8">
           {{cam.displayNumber}}
-        </div>
+        </div> -->
       </td>
     </ng-container>
     <ng-container matColumnDef="title">
@@ -113,6 +113,26 @@
         Title
       </th>
       <td mat-cell *matCellDef="let cam" fxFlex="200px" class="noc-title" fxLayout="row" fxLayoutAlign="start center">
+        <!--  <span *ngIf="cam.conformsToGpad" fxFlex="40px">
+          <a [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url" target="_blank"
+            class="mr-4" matTooltip="Open with Standard Annotation " [matTooltipPosition]="'above'"
+            [matTooltipShowDelay]="2500">
+            <img width="30" src="assets/icons/nsa.png">
+          </a>
+        </span>
+        <span *ngIf="cam.conformsToGpad===false" fxFlex="40px">
+          <a [href]="cam?.model?.modelInfo?.workbenches['noctua-visual-pathway-editor']?.url" target="_blank"
+            class="mr-4" matTooltip="Open with Pathway Editor" [matTooltipPosition]="'above'"
+            [matTooltipShowDelay]="2500">
+            <img width="30" src="assets/icons/vpe.png">
+          </a>
+        </span>
+        <span *ngIf="cam.conformsToGpad===undefined" fxFlex="40px">
+          <a [href]="cam?.model?.modelInfo?.workbenches['noctua-visual-pathway-editor']?.url" target="_blank"
+            class="mr-4" matTooltip="Open with Pathway Editor" [matTooltipPosition]="'above'"
+            [matTooltipShowDelay]="2500">
+          </a>
+        </span> -->
         {{cam.title }}
       </td>
     </ng-container>
@@ -179,32 +199,51 @@
       </td>
     </ng-container>
     <ng-container matColumnDef="edit">
-      <th mat-header-cell *matHeaderCellDef fxFlex="180px" fxLayout="row" fxLayoutAlign="start center">Open In</th>
-      <td mat-cell *matCellDef="let cam" fxFlex="180px" fxLayout="row" fxLayoutAlign="start center">
-        <a mat-icon-button [href]="cam?.model?.modelInfo?.workbenches['noctua-visual-pathway-editor']?.url"
-          target="_blank" class="noc-edit-button noc-rounded-button noc-sm noc-half-button noc-r"
-          matTooltip="Pathway Editor" [matTooltipPosition]="'above'" [matTooltipShowDelay]="1500">
-          <img width="15" src="assets/icons/pathway.png">
+      <th mat-header-cell *matHeaderCellDef fxFlex="120px" fxLayout="row" fxLayoutAlign="start center"></th>
+      <td mat-cell *matCellDef="let cam" fxFlex="120px" fxLayout="row" fxLayoutAlign="start center">
+        <a mat-stroked-button [matMenuTriggerFor]="openMenu"
+          class="noc-edit-button noc-rounded-button noc-sm noc-half-button noc-r" color="primary">
+          Open In
         </a>
-        <a mat-icon-button [href]='cam?.model?.modelInfo?.noctuaFormUrl' target="_blank"
-          class="noc-edit-button noc-rounded-button noc-sm  mr-4 noc-half-button noc-m" matTooltip="Form Editor"
-          [matTooltipPosition]="'above'" [matTooltipShowDelay]="1500">
-          <fa-icon [icon]="['fas', 'list-alt']"></fa-icon>
-        </a>
-        <a mat-icon-button [href]='cam?.model?.modelInfo?.graphEditorUrl' target="_blank"
-          class="noc-edit-button noc-rounded-button noc-sm noc-half-button noc-m" matTooltip="Graph Editor"
-          [matTooltipPosition]="'above'" [matTooltipShowDelay]="1500">
-          <fa-icon [icon]="['fas', 'sitemap']"></fa-icon>
-        </a>
+        <mat-menu #openMenu="matMenu">
+          <ng-container *ngIf="cam.conformsToGpad">
+            <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url"
+              target="_blank" class="" [attr.data-cy]="'open-standard-annotation-button'">
+              Standard Annotations
+            </a>
+            <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-visual-pathway-editor']?.url"
+              target="_blank" class="" matTooltip="Pathway Editor" [matTooltipPosition]="'above'"
+              [matTooltipShowDelay]="1500"> Visual Pathway Editor
+            </a>
+          </ng-container>
+          <ng-container *ngIf="!cam.conformsToGpad">
+            <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-visual-pathway-editor']?.url"
+              target="_blank" class="" matTooltip="Pathway Editor" [matTooltipPosition]="'above'"
+              [matTooltipShowDelay]="1500"> Visual Pathway Editor
+            </a>
+            <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url"
+              target="_blank" class="" [attr.data-cy]="'open-standard-annotation-button'">
+              Standard Annotations
+            </a>
+          </ng-container>
+          <a mat-menu-item [href]='cam?.model?.modelInfo?.noctuaFormUrl' target="_blank" class=""
+            matTooltip="Form Editor" [matTooltipPosition]="'above'" [matTooltipShowDelay]="1500">
+            Noctua Form
+          </a>
+          <a mat-menu-item [href]='cam?.model?.modelInfo?.graphEditorUrl' target="_blank" class=""
+            matTooltip="Graph Editor" [matTooltipPosition]="'above'" [matTooltipShowDelay]="1500">
+            Graph Editor
+          </a>
+          <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-alliance-pathway-preview']?.url"
+            target="_blank" class="">
+            Alliance Pathway Preview
+          </a>
+        </mat-menu>
         <a mat-icon-button [matMenuTriggerFor]="optionsMenu"
           class="noc-edit-button noc-rounded-button noc-sm noc-half-button noc-l" color="primary">
           <mat-icon>more_horiz</mat-icon>
         </a>
         <mat-menu #optionsMenu="matMenu">
-          <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-alliance-pathway-preview']?.url"
-            target="_blank" class="">
-            Alliance Pathway Preview
-          </a>
           <button mat-menu-item (click)="openCamForm(cam)" class="">
             Model Info
           </button>
