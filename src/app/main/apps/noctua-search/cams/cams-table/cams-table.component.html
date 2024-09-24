@@ -113,7 +113,7 @@
         Title
       </th>
       <td mat-cell *matCellDef="let cam" fxFlex="200px" class="noc-title" fxLayout="row" fxLayoutAlign="start center">
-        <!--  <span *ngIf="cam.conformsToGpad" fxFlex="40px">
+        <span *ngIf="cam.conformsToGpad" fxFlex="40px">
           <a [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url" target="_blank"
             class="mr-4" matTooltip="Open with Standard Annotation " [matTooltipPosition]="'above'"
             [matTooltipShowDelay]="2500">
@@ -132,7 +132,7 @@
             class="mr-4" matTooltip="Open with Pathway Editor" [matTooltipPosition]="'above'"
             [matTooltipShowDelay]="2500">
           </a>
-        </span> -->
+        </span>
         {{cam.title }}
       </td>
     </ng-container>
