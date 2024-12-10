@@ -208,7 +208,7 @@
         <mat-menu #openMenu="matMenu">
           <ng-container *ngIf="cam.conformsToGpad">
             <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url"
-              target="_blank" class="" [attr.data-cy]="'open-standard-annotation-button'">
+              target="_blank" class="" [attr.data-pw]="'open-standard-annotation-button'">
               Standard Annotations
             </a>
             <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-visual-pathway-editor']?.url"
@@ -222,7 +222,7 @@
               [matTooltipShowDelay]="1500"> Visual Pathway Editor
             </a>
             <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url"
-              target="_blank" class="" [attr.data-cy]="'open-standard-annotation-button'">
+              target="_blank" class="" [attr.data-pw]="'open-standard-annotation-button'">
               Standard Annotations
             </a>
           </ng-container>
