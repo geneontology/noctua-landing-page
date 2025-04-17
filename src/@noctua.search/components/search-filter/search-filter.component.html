@@ -122,6 +122,45 @@
             </mat-autocomplete>
           </mat-form-field>
         </div>
+
+
+        <div class="noc-activity-group-row" fxLayout="column">
+          <mat-form-field appearance="outline" class="noc-sm w-100-p">
+            <mat-label>Filter by Molecule</mat-label>
+            <mat-chip-list #moleculeChipList>
+              <mat-chip class="noc-form-chip" *ngFor="let molecule of noctuaSearchService.searchCriteria.molecules"
+                [selectable]="true" [removable]="true" (removed)="remove(molecule, SearchFilterType.molecules)"
+                fxLayout="row" fxLayoutAlign="start center" matTooltip="Term: {{molecule.label}} ({{molecule.id}})"
+                [matTooltipPosition]="'below'" [matTooltipShowDelay]="1000">
+                <div fxFlex="" class="noc-chip-label">
+                  {{molecule.label}}
+                </div>
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input #searchInput formControlName="molecules" placeholder="Add molecule Filter"
+                [matAutocomplete]="moleculeAuto" #moleculeInput [matChipInputFor]="moleculeChipList"
+                [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="false">
+            </mat-chip-list>
+            <mat-autocomplete #moleculeAuto="matAutocomplete"
+              (optionSelected)="selected($event, SearchFilterType.molecules)" [displayWith]="termDisplayFn"
+              class="noc-term-autocomplete">
+              <mat-option class="noc-term-autocomplete" *ngFor="let item of moleculeNode.termLookup.results"
+                [value]="item">
+                <div class="w-100-p" fxLayout="row" fxLayoutAlign="start center">
+                  <div class="noc-term-label">
+                    {{ item.label }}
+                  </div>
+                  <span fxFlex></span>
+                  <div class="noc-term-id">
+                    {{ item.id }}
+                  </div>
+                </div>
+              </mat-option>
+            </mat-autocomplete>
+          </mat-form-field>
+        </div>
+
+
         <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
             <mat-label>Filter by Reference</mat-label>
