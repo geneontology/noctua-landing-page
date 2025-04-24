@@ -85,7 +85,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     public noctuaSearchService: NoctuaSearchService) {
 
     this.gpNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoMolecularEntity]);
-    this.moleculeNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoChemicalEntity]);
+    this.moleculeNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoChemicalNotGPEntity]);
 
     this.termNode = EntityDefinition.generateBaseTerm([
       EntityDefinition.GoMolecularFunction,
