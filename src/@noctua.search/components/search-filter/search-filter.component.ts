@@ -68,6 +68,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
   filteredStates: Observable<any[]>;
 
   gpNode: ActivityNode;
+  moleculeNode: ActivityNode;
   termNode: ActivityNode;
   obsoleteTermNode: ActivityNode;
 
@@ -84,6 +85,8 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     public noctuaSearchService: NoctuaSearchService) {
 
     this.gpNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoMolecularEntity]);
+    this.moleculeNode = EntityDefinition.generateBaseTerm([EntityDefinition.GoChemicalNotGPEntity]);
+
     this.termNode = EntityDefinition.generateBaseTerm([
       EntityDefinition.GoMolecularFunction,
       EntityDefinition.GoBiologicalProcess,
@@ -117,6 +120,7 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
     return new FormGroup({
       ids: new FormControl(),
       gps: new FormControl(),
+      molecules: new FormControl(),
       obsoleteTerms: new FormControl(),
       terms: new FormControl(),
       pmids: new FormControl(),
@@ -265,6 +269,17 @@ export class SearchFilterComponent implements OnInit, OnDestroy {
       debounceTime(400)
     ).subscribe(data => {
       const lookup: EntityLookup = self.gpNode.termLookup;
+
+      lookupFunc.termLookup(data, lookup.requestParams).subscribe(response => {
+        lookup.results = response;
+      });
+    });
+
+    this.filterForm.get('molecules').valueChanges.pipe(
+      distinctUntilChanged(),
+      debounceTime(400)
+    ).subscribe(data => {
+      const lookup: EntityLookup = self.moleculeNode.termLookup;
 
       lookupFunc.termLookup(data, lookup.requestParams).subscribe(response => {
         lookup.results = response;

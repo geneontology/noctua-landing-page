@@ -6,6 +6,7 @@ export enum SearchFilterType {
     ids = 'ids',
     titles = 'titles',
     gps = 'gps',
+    molecules = 'molecules',
     terms = 'terms',
     obsoleteTerms = 'obsoleteTerms',
     pmids = 'pmids',
@@ -23,6 +24,7 @@ export class SearchCriteria {
     titles: any[] = [];
     ids: any[] = [];
     gps: any[] = [];
+    molecules: any[] = [];
     terms: any[] = [];
     obsoleteTerms: any[] = []
     pmids: any[] = [];
@@ -47,6 +49,7 @@ export class SearchCriteria {
             this.obsoleteTerms = searchCriteria.obsoleteTerms || [];
             this.ids = searchCriteria.ids || [];
             this.gps = searchCriteria.gps || [];
+            this.molecules = searchCriteria.molecules || [];
             this.organisms = searchCriteria.organisms || [];
             this.states = searchCriteria.states || [];
             this.exactdates = searchCriteria.exactdates || [];
@@ -62,6 +65,7 @@ export class SearchCriteria {
         self.filtersCount = self.titles.length +
             self.ids.length +
             self.gps.length +
+            self.molecules.length +
             self.terms.length +
             self.obsoleteTerms.length +
             self.pmids.length +
@@ -89,6 +93,10 @@ export class SearchCriteria {
 
         each(self.terms, (term) => {
             query.push(`term=${term.id}`);
+        });
+
+        each(self.molecules, (molecule) => {
+            query.push(`term=${molecule.id}`);
         });
 
         each(self.obsoleteTerms, (obsoleteTerm) => {

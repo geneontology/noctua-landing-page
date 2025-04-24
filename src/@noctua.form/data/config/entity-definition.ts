@@ -86,6 +86,13 @@ export const GoChemicalEntity = {
     categoryType: 'isa_closure',
 } as GoCategory;
 
+export const GoChemicalNotGPEntity = {
+    id: ActivityNodeType.GoChemicalEntity,
+    category: 'CHEBI:24431',
+    categoryType: 'isa_closure',
+    suffix: `OR NOT ${GoMolecularEntity.categoryType}:"${GoMolecularEntity.category}"`,
+} as GoCategory;
+
 export const GoEvidence = {
     id: ActivityNodeType.GoEvidence,
     category: 'ECO:0000352',

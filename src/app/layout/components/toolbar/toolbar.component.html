@@ -102,12 +102,13 @@
           </div>
         </button>
         <mat-menu #userMenu="matMenu" class="">
-          <a mat-button (click)="logout()" class="red-500-fg w-100-p">
+          <a mat-button (click)="logout()" class="red-500-fg w-100-p" [attr.data-pw]="'noc-logout-button'">
             Logout
           </a>
         </mat-menu>
         <div *ngIf="!noctuaUserService.user">
-          <a mat-button href="{{noctuaConfigService.loginUrl}}" class="noc-login-button">
+          <a mat-button href="{{noctuaConfigService.loginUrl}}" class="noc-login-button"
+            [attr.data-pw]="'noc-login-button'">
             Login
           </a>
         </div>
