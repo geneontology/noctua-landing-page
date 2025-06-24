@@ -209,7 +209,7 @@
           <ng-container *ngIf="cam.conformsToGpad">
             <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url"
               target="_blank" class="" [attr.data-pw]="'open-standard-annotation-button'">
-              Standard Annotations
+              Standard Annotations Editor
             </a>
             <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-visual-pathway-editor']?.url"
               target="_blank" class="" matTooltip="Pathway Editor" [matTooltipPosition]="'above'"
@@ -223,7 +223,7 @@
             </a>
             <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url"
               target="_blank" class="" [attr.data-pw]="'open-standard-annotation-button'">
-              Standard Annotations
+              Standard Annotations Editor
             </a>
           </ng-container>
           <a mat-menu-item [href]='cam?.model?.modelInfo?.noctuaFormUrl' target="_blank" class=""
@@ -236,10 +236,10 @@
           </a>
           <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-alliance-pathway-preview']?.url"
             target="_blank" class="">
-            Alliance Pathway Preview
+            Pathway Viewer
           </a>
         </mat-menu>
-        <a mat-icon-button [matMenuTriggerFor]="optionsMenu"
+        <!--    <a mat-icon-button [matMenuTriggerFor]="optionsMenu"
           class="noc-edit-button noc-rounded-button noc-sm noc-half-button noc-l" color="primary">
           <mat-icon>more_horiz</mat-icon>
         </a>
@@ -261,7 +261,7 @@
           <a [href]='cam?.model?.modelInfo?.owlUrl' target="_blank" mat-menu-item>
             OWL
           </a>
-        </mat-menu>
+        </mat-menu> -->
       </td>
     </ng-container>
     <ng-container matColumnDef="expandedDetail">
