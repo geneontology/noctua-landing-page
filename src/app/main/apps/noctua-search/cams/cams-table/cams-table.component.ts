@@ -107,7 +107,6 @@ export class CamsTableComponent implements OnInit, OnDestroy {
 
   initTable(isReviewMode) {
     this.displayedColumns = [
-      'expand',
       'title',
       'saved',
       'state',

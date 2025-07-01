@@ -120,6 +120,9 @@ $noc-art-badge: mat.get-color-from-palette(mat.$orange-palette, 500);
       @include media-breakpoint("lt-md") {
         font-size: 14px;
       }
+      a {
+        color: #bcd9f4;
+      }
     }
 
     h4 {
@@ -203,7 +206,8 @@ $noc-art-badge: mat.get-color-from-palette(mat.$orange-palette, 500);
       }
     }
 
-    button {
+    button,
+    a {
       padding: 0 12px;
       color: map-get($accent, default);
       @include deep-height(50px);

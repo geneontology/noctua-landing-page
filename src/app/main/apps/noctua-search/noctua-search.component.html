@@ -89,8 +89,8 @@
                 STANDARD ANNOTATIONS <br> EDITOR
               </button>
               <button mat-raised-button (click)="createModel(WorkbenchId.VISUAL_PATHWAY_EDITOR)" color=""
-                class="noc-rounded-button mr-4 noc-half-button noc-m" [attr.data-pw]="'open-pathway-editor-button'">
-                GO-CAM VISUAL <br> PATHWAY EDITOR
+                class="noc-rounded-button mr-4 noc-half-button noc-l" [attr.data-pw]="'open-pathway-editor-button'">
+                GO-CAM VISUAL PATHWAY <br> EDITOR
               </button>
             </div>
           </div>
@@ -99,42 +99,11 @@
               <span>Help</span>
             </div>
             <div fxLayout="row" fxLayoutAlign="start center">
-              <a mat-raised-button color="" href="https://wiki.geneontology.org/Noctua"
-                class="noc-rounded-button noc-half-button noc-review-mode-button">
+              <a mat-raised-button color="" href="https://wiki.geneontology.org/Noctua" target="_blank"
+                class="noc-rounded-button noc-half-button noc-review-mode-button" fxLayoutAlign="center center">
                 USER GUIDE
               </a>
             </div>
-          </div>
-        </div>
-      </div>
-      <div *ngIf="noctuaSearchMenuService.reviewMode !== ReviewMode.off" class="noc-art-info" fxLayout="row"
-        fxLayoutAlign="center center">
-        <div class="noc-art-tabs" fxLayout="row" fxLayoutAlign="center center">
-          <div class="noc-line noc-visited" fxFlex>
-          </div>
-          <button mat-stroked-button (click)="selectMiddlePanel(MiddlePanel.cams)" class="" color="" [ngClass]="{'noc-active': noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.cams,
-            'noc-visited': noctuaSearchMenuService.reviewLevel>0}">
-            <div class="noc-title">Search</div><br>
-            <div class="noc-description">Add/remove to review</div>
-            <div class="noc-badge">
-              {{artBasket?.cams.length}} selected
-            </div>
-          </button>
-          <div class="noc-line" fxFlex="80px" [ngClass]="{'noc-visited': noctuaSearchMenuService.reviewLevel>0}">
-          </div>
-          <button mat-stroked-button (click)="selectMiddlePanel(MiddlePanel.camsReview)" [ngClass]="{'noc-active': noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.camsReview,
-            'noc-visited': noctuaSearchMenuService.reviewLevel>1}" class="" color="">
-            <div class="noc-title">Review</div> <br>
-            <div class="noc-description">Edit models</div>
-          </button>
-          <div class="noc-line" fxFlex="80px" [ngClass]="{'noc-visited': noctuaSearchMenuService.reviewLevel>1}">
-          </div>
-          <button mat-stroked-button (click)="selectMiddlePanel(MiddlePanel.reviewChanges)" class="" color="" [ngClass]="{'noc-active': noctuaSearchMenuService.selectedMiddlePanel === MiddlePanel.reviewChanges,
-            'noc-visited': noctuaSearchMenuService.reviewLevel>2}">
-            <div class="noc-title">Checkout</div> <br>
-            <div class="noc-description">Review and submit changes</div>
-          </button>
-          <div class="noc-line" fxFlex [ngClass]="{'noc-visited': noctuaSearchMenuService.reviewLevel>2}">
           </div>
         </div>
       </div>
@@ -142,10 +111,6 @@
         <noc-cams-table class="w-100-p" [hidden]="noctuaSearchMenuService.selectedMiddlePanel !== MiddlePanel.cams"
           [isReviewMode]="noctuaSearchMenuService.isReviewMode">
         </noc-cams-table>
-        <noc-cams-review [hidden]="noctuaSearchMenuService.selectedMiddlePanel !== MiddlePanel.camsReview">
-        </noc-cams-review>
-        <noc-cams-review-changes [hidden]="noctuaSearchMenuService.selectedMiddlePanel !== MiddlePanel.reviewChanges">
-        </noc-cams-review-changes>
       </div>
       <div class="w-100-p">
         <app-footer></app-footer>
