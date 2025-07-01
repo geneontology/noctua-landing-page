@@ -7,7 +7,7 @@
     "start": "ng serve --port 4203",
     "start:high-memory": "node --max-old-space-size=4048 ./node_modules/@angular/cli/bin/ng serve --port 4202",
     "clean": "rm -r workbenches/noctua-landing-page/public workbenches/noctua-landing-page-beta/public",
-    "build": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng build --configuration development --index src/inject.tmpl  --base-href  /workbench/noctua-landing-page/ ",
+    "build": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng build --configuration production --index src/inject.tmpl  --base-href  /workbench/noctua-landing-page/ ",
     "build:beta-test": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng build  --index src/inject.tmpl --output-path workbenches/noctua-landing-page-beta/public --base-href  /workbench/noctua-landing-page-beta/ --configuration=beta-test",
     "build:pathway-wb": "node --max_old_space_size=6144 ./node_modules/@angular/cli/bin/ng build --configuration production --index src/inject.tmpl  --base-href  /workbench/noctua-alliance-pathway-preview/ ",
     "start-hmr": "ng serve --configuration hmr -sm=false",

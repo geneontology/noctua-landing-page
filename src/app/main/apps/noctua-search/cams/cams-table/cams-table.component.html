@@ -95,25 +95,12 @@
         </mat-checkbox>
       </td>
     </ng-container>
-    <ng-container matColumnDef="expand">
-      <th mat-header-cell *matHeaderCellDef fxFlex="30px" fxLayout="row" fxLayoutAlign="start center"></th>
-      <td mat-cell *matCellDef="let cam" class="noc-expand-cell" fxFlex="30px" fxLayout="row"
-        fxLayoutAlign="start center">
-        <button mat-icon-button (click)="toggleCamExpand(cam)" color="primary" class="noc-toggle-expand-button">
-          <fa-icon *ngIf="!cam.expanded" [icon]="['fas', 'caret-right']"></fa-icon>
-          <fa-icon *ngIf="cam.expanded" [icon]="['fas', 'caret-down']"></fa-icon>
-        </button>
-        <!--       <div class="noc-display-number mr-8">
-          {{cam.displayNumber}}
-        </div> -->
-      </td>
-    </ng-container>
     <ng-container matColumnDef="title">
       <th mat-header-cell *matHeaderCellDef fxFlex="200px" fxLayout="row" fxLayoutAlign="start center">
         Title
       </th>
       <td mat-cell *matCellDef="let cam" fxFlex="200px" class="noc-title" fxLayout="row" fxLayoutAlign="start center">
-        <span *ngIf="cam.conformsToGpad" fxFlex="40px">
+        <!--    <span *ngIf="cam.conformsToGpad" fxFlex="40px">
           <a [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url" target="_blank"
             class="mr-4" matTooltip="Open with Standard Annotation " [matTooltipPosition]="'above'"
             [matTooltipShowDelay]="2500">
@@ -132,7 +119,7 @@
             class="mr-4" matTooltip="Open with Pathway Editor" [matTooltipPosition]="'above'"
             [matTooltipShowDelay]="2500">
           </a>
-        </span>
+        </span> -->
         {{cam.title }}
       </td>
     </ng-container>
@@ -202,14 +189,14 @@
       <th mat-header-cell *matHeaderCellDef fxFlex="120px" fxLayout="row" fxLayoutAlign="start center"></th>
       <td mat-cell *matCellDef="let cam" fxFlex="120px" fxLayout="row" fxLayoutAlign="start center">
         <a mat-stroked-button [matMenuTriggerFor]="openMenu"
-          class="noc-edit-button noc-rounded-button noc-sm noc-half-button noc-r" color="primary">
+          class="noc-edit-button noc-rounded-button noc-sm noc-half-button" color="primary">
           Open In
         </a>
         <mat-menu #openMenu="matMenu">
           <ng-container *ngIf="cam.conformsToGpad">
             <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url"
               target="_blank" class="" [attr.data-pw]="'open-standard-annotation-button'">
-              Standard Annotations
+              Standard Annotations Editor
             </a>
             <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-visual-pathway-editor']?.url"
               target="_blank" class="" matTooltip="Pathway Editor" [matTooltipPosition]="'above'"
@@ -223,7 +210,7 @@
             </a>
             <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url"
               target="_blank" class="" [attr.data-pw]="'open-standard-annotation-button'">
-              Standard Annotations
+              Standard Annotations Editor
             </a>
           </ng-container>
           <a mat-menu-item [href]='cam?.model?.modelInfo?.noctuaFormUrl' target="_blank" class=""
@@ -236,10 +223,10 @@
           </a>
           <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-alliance-pathway-preview']?.url"
             target="_blank" class="">
-            Alliance Pathway Preview
+            Pathway Viewer
           </a>
         </mat-menu>
-        <a mat-icon-button [matMenuTriggerFor]="optionsMenu"
+        <!--    <a mat-icon-button [matMenuTriggerFor]="optionsMenu"
           class="noc-edit-button noc-rounded-button noc-sm noc-half-button noc-l" color="primary">
           <mat-icon>more_horiz</mat-icon>
         </a>
@@ -261,7 +248,7 @@
           <a [href]='cam?.model?.modelInfo?.owlUrl' target="_blank" mat-menu-item>
             OWL
           </a>
-        </mat-menu>
+        </mat-menu> -->
       </td>
     </ng-container>
     <ng-container matColumnDef="expandedDetail">
