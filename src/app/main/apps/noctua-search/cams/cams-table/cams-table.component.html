@@ -190,7 +190,7 @@
       <td mat-cell *matCellDef="let cam" fxFlex="120px" fxLayout="row" fxLayoutAlign="start center">
         <a mat-stroked-button [matMenuTriggerFor]="openMenu"
           class="noc-edit-button noc-rounded-button noc-sm noc-half-button" color="primary">
-          Open In
+          Actions
         </a>
         <mat-menu #openMenu="matMenu">
           <ng-container *ngIf="cam.conformsToGpad">
@@ -224,6 +224,12 @@
           <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['noctua-alliance-pathway-preview']?.url"
             target="_blank" class="">
             Pathway Viewer
+          </a>
+          <button mat-menu-item (click)="openCopyModel(cam)" class="">
+            Copy Model
+          </button>
+          <a mat-menu-item [href]="cam?.model?.modelInfo?.workbenches['annpreview']?.url" target="_blank" class="">
+            Annotation Preview
           </a>
         </mat-menu>
         <!--    <a mat-icon-button [matMenuTriggerFor]="optionsMenu"
