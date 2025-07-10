@@ -2,11 +2,11 @@
   class="noc-drawer h-100-p">
   <div class="noc-drawer-header" fxLayout="row" fxLayoutAlign="start center">
     <span class="noc-drawer-header-title">
-      Filter By</span>
+      Filter by</span>
     <span fxFlex></span>
-    <button mat-stroked-button (click)="close()" class="noc-rounded-button noc-sm" color="primary"
+    <button mat-stroked-button (click)="clear()" class="noc-rounded-button noc-sm" color="primary"
       aria-label="Close dialog">
-      <mat-icon>close</mat-icon> CLOSE
+      Clear
     </button>
   </div>
   <div class="noc-drawer-body noc-filter-form" noctuaPerfectScrollbar>
@@ -22,7 +22,7 @@
       <div class="noc-section-body" fxLayout="column" fxLayoutAlign="start stretch">
         <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
-            <mat-label>Filter by Term</mat-label>
+            <mat-label>Filter by Any Ontology Term</mat-label>
             <mat-chip-list #termChipList>
               <mat-chip class="noc-form-chip" *ngFor="let term of noctuaSearchService.searchCriteria.terms"
                 [selectable]="true" [removable]="true" (removed)="remove(term, SearchFilterType.terms)" fxLayout="row"
@@ -55,7 +55,7 @@
         </div>
         <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
-            <mat-label>Filter by Obsolete Term</mat-label>
+            <mat-label>Filter by Obsolete GO Term</mat-label>
             <mat-chip-list #obsoleteTermChipList>
               <mat-chip class="noc-form-chip"
                 *ngFor="let obsoleteTerm of noctuaSearchService.searchCriteria.obsoleteTerms" [selectable]="true"
@@ -126,7 +126,7 @@
 
         <div class="noc-activity-group-row" fxLayout="column">
           <mat-form-field appearance="outline" class="noc-sm w-100-p">
-            <mat-label>Filter by Molecule</mat-label>
+            <mat-label>Filter by Chemical</mat-label>
             <mat-chip-list #moleculeChipList>
               <mat-chip class="noc-form-chip" *ngFor="let molecule of noctuaSearchService.searchCriteria.molecules"
                 [selectable]="true" [removable]="true" (removed)="remove(molecule, SearchFilterType.molecules)"
@@ -197,7 +197,7 @@
                 </div>
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
-              <input #searchInput formControlName="organisms" placeholder="Add Organism Filter"
+              <input #searchInput formControlName="organisms" placeholder="Filter by Organism"
                 [matAutocomplete]="organismAuto" #organismInput [matChipInputFor]="organismChipList"
                 [matChipInputSeparatorKeyCodes]="separatorKeysCodes" [matChipInputAddOnBlur]="false">
             </mat-chip-list>
@@ -302,7 +302,7 @@
     <div class="noc-table-form noc-form-section" fxLayout="column" fxLayoutAlign="start stretch">
       <div class="noc-section-header" fxLayout="row" fxLayoutAlign="start center">
         <div class="noc-section-heading">
-          Model Date
+          Date last modified
         </div>
         <span fxFlex></span>
         <mat-checkbox formControlName="isDateRange" class="noc-checkbox" color="primary">Date Range
@@ -448,7 +448,7 @@
       </div>
     </div>
   </div>
-  <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
+  <!--   <div fxLayout="row" fxLayoutAlign="start center" class="noc-drawer-footer noc-submit-row">
     <label for="noc-upload-filter" fxLayout="row" fxLayoutAlign="start center" class="noc-file-upload">
       <button mat-icon-button class="noc-file-button">
         <mat-icon class="s-16 mr-4">cloud_upload</mat-icon>
@@ -460,5 +460,5 @@
       <mat-icon class="s-16 mr-4">cloud_download</mat-icon>
     </button>
     <button (click)="clear()" type="button" mat-raised-button>Clear</button>
-  </div>
+  </div> -->
 </form>

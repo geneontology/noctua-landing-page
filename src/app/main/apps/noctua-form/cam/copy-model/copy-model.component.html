@@ -50,22 +50,7 @@
                   </div>
                 </span>
               </div>
-              <div class="noc-item" fxLayout="row" fxLayoutAlign="start center">
-                <div class="noc-title">Open In:</div>
-                <a class="mr-4" [href]='cam.model?.modelInfo?.noctuaVPEUrl' target="_blank">
-                  Pathway Editor
-                </a>
-                <span>&#8226;</span>
-                <a class="ml-4 mr-4" [href]='cam.model?.modelInfo?.noctuaFormUrl' target="_blank">
-                  Form Editor
-                </a>
-                <span>&#8226;</span>
-                <a class="ml-4" [href]='cam.model?.modelInfo?.graphEditorUrl' target="_blank">
-                  Graph Editor
-                </a>
-              </div>
             </div>
-
             <div>
               <mat-checkbox class="example-margin" [(ngModel)]="includeEvidence">Include Evidence</mat-checkbox>
             </div>
@@ -118,11 +103,12 @@
               <div class="noc-item" fxLayout="row" fxLayoutAlign="start center">
                 <div class="noc-title">Open In:</div>
                 <a class="mr-4" [href]='duplicatedCam.model?.modelInfo?.noctuaVPEUrl' target="_blank">
-                  Pathway Editor
+                  Visual Pathway Editor
                 </a>
                 <span>&#8226;</span>
-                <a class="ml-4 mr-4" [href]='duplicatedCam.model?.modelInfo?.noctuaFormUrl' target="_blank">
-                  Form Editor
+                <a class="ml-4 mr-4" [href]="cam?.model?.modelInfo?.workbenches['noctua-standard-annotations']?.url"
+                  target="_blank">
+                  Standard Annotation Editor
                 </a>
                 <span>&#8226;</span>
                 <a class="ml-4" [href]='duplicatedCam.model?.modelInfo?.graphEditorUrl' target="_blank">
