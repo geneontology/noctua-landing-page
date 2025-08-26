@@ -17,7 +17,7 @@
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
         "CHEBI:24431",
-        "CARO:0000000",
+        "UBERON:0001062",
         "GO:0032991",
         "NCBITaxon:1"
       ],
@@ -32,7 +32,7 @@
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
         "CHEBI:24431",
-        "CARO:0000000",
+        "UBERON:0001062",
         "GO:0032991"
       ],
       "is_multivalued": true,
@@ -46,7 +46,7 @@
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
         "CHEBI:24431",
-        "CARO:0000000",
+        "UBERON:0001062",
         "GO:0032991",
         "NCBITaxon:1"
       ],
@@ -61,7 +61,7 @@
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
         "CHEBI:24431",
-        "CARO:0000000",
+        "UBERON:0001062",
         "GO:0032991"
       ],
       "is_multivalued": true,
@@ -74,7 +74,7 @@
       "subject": "GO:0008150",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -99,7 +99,7 @@
       "subject": "GO:0008150",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -111,7 +111,7 @@
       "subject": "GO:0008150",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -201,7 +201,7 @@
       "subject": "GO:0008150",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000",
+        "UBERON:0001062",
         "NCBITaxon:1"
       ],
       "is_multivalued": true,
@@ -214,7 +214,7 @@
       "subject": "GO:0048856",
       "root_subject": "GO:0008150",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -226,7 +226,7 @@
       "subject": "GO:0048646",
       "root_subject": "GO:0008150",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -238,7 +238,7 @@
       "subject": "GO:0009653",
       "root_subject": "GO:0008150",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -346,7 +346,7 @@
       "subject": "GO:0021700",
       "root_subject": "GO:0008150",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -358,7 +358,7 @@
       "subject": "GO:0040007",
       "root_subject": "GO:0008150",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -370,7 +370,7 @@
       "subject": "GO:0051179",
       "root_subject": "GO:0008150",
       "object": [
-        "CARO:0000000",
+        "UBERON:0001062",
         "CHEBI:24431",
         "CHEBI:33695",
         "GO:0032991"
@@ -385,7 +385,7 @@
       "subject": "GO:0051179",
       "root_subject": "GO:0008150",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -397,7 +397,7 @@
       "subject": "GO:0051179",
       "root_subject": "GO:0008150",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -409,7 +409,7 @@
       "subject": "GO:0040011",
       "root_subject": "GO:0008150",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -457,7 +457,7 @@
       "subject": "GO:0007389",
       "root_subject": "GO:0008150",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -470,7 +470,7 @@
       "root_subject": "GO:0008150",
       "object": [
         "CHEBI:24431",
-        "CARO:0000000",
+        "UBERON:0001062",
         "GO:0032991"
       ],
       "is_multivalued": true,
@@ -484,7 +484,7 @@
       "root_subject": "GO:0008150",
       "object": [
         "CHEBI:24431",
-        "CARO:0000000",
+        "UBERON:0001062",
         "GO:0032991"
       ],
       "is_multivalued": true,
@@ -534,7 +534,7 @@
       "subject": "GO:0003674",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -857,10 +857,10 @@
       "exclude_from_extensions": false
     },
     {
-      "subject": "CARO:0000000",
+      "subject": "UBERON:0001062",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -869,7 +869,7 @@
       "exclude_from_extensions": false
     },
     {
-      "subject": "CARO:0000000",
+      "subject": "UBERON:0001062",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
         "CHEBI:33695",
@@ -885,7 +885,7 @@
       "subject": "CL:0000003",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -897,7 +897,7 @@
       "subject": "GO:0005575",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -909,7 +909,7 @@
       "subject": "GO:0005575",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -921,7 +921,7 @@
       "subject": "GO:0005575",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": true,
       "is_required": false,
@@ -961,7 +961,7 @@
       "subject": "GO:0032991",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -973,7 +973,7 @@
       "subject": "GO:0032991",
       "root_subject": "http://purl.obolibrary.org/obo/go/shapes/GoCamEntity",
       "object": [
-        "CARO:0000000",
+        "UBERON:0001062",
         "http://purl.obolibrary.org/obo/go/shapes/RootCellularComponent"
       ],
       "is_multivalued": false,
@@ -1027,7 +1027,7 @@
       "subject": "CHEBI:36080",
       "root_subject": "CHEBI:24431",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -1039,7 +1039,7 @@
       "subject": "CHEBI:36080",
       "root_subject": "CHEBI:24431",
       "object": [
-        "CARO:0000000",
+        "UBERON:0001062",
         "http://purl.obolibrary.org/obo/go/shapes/RootCellularComponent"
       ],
       "is_multivalued": false,
@@ -1076,7 +1076,7 @@
       "subject": "CHEBI:33695",
       "root_subject": "CHEBI:24431",
       "object": [
-        "CARO:0000000"
+        "UBERON:0001062"
       ],
       "is_multivalued": false,
       "is_required": false,
@@ -1088,7 +1088,7 @@
       "subject": "CHEBI:33695",
       "root_subject": "CHEBI:24431",
       "object": [
-        "CARO:0000000",
+        "UBERON:0001062",
         "http://purl.obolibrary.org/obo/go/shapes/RootCellularComponent"
       ],
       "is_multivalued": false,
