@@ -371,8 +371,6 @@ export class NoctuaSearchService {
             const modelId = response.id;
             const cam = new Cam();
 
-            console.log('response', response)
-
             cam.graph = null;
             cam.id = modelId;
             cam.state = self.noctuaFormConfigService.findModelState(response.state);
