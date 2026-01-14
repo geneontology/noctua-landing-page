@@ -504,7 +504,6 @@ export const insertNodeShex = (activity: Activity,
     const ranges = []
     subjectNode.category.forEach((category: GoCategory) => {
         //const subjectShapes = DataUtils.getSubjectShapes(shapes, category.category);
-        console.log(category.category)
         const shape = DataUtils.getRangeBySubject(shapes, category.category, predExpr.id);
         if (shape) {
             const range = shape.object.map(inNode => {

@@ -231,9 +231,9 @@ export const noctuaFormConfig = {
         'name': 'review',
         'label': 'Review'
       },
-      'closed': {
-        'name': 'closed',
-        'label': 'Closed'
+      'template': {
+        'name': 'template',
+        'label': 'Template'
       },
       'delete': {
         'name': 'delete',

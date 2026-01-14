@@ -12,22 +12,22 @@ An interface for the Search API
 
 ## Parameters
 
-| Parameter                          | Format             | Comments                                                                                           |
-| ---------------------------------- | ------------------ | -------------------------------------------------------------------------------------------------- |
-| **gps** (optional)                 | list\<gp>          | A list of one or more gps in a model (AND operator)                                                |
-| **goterms**  (optional)            | list\<goterm>      | A list of one or more GO terms in a model (AND operator)                                           |
-| **pmids** (optional)               | list\<pmid>        | A list of one or more pmids in a model (AND operator)                                              |
-| **taxa** (optional)                | list\<taxon>       | A list of one or more taxon                                                                        |
+| Parameter                          | Format             | Comments                                                                                             |
+| ---------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------- |
+| **gps** (optional)                 | list\<gp>          | A list of one or more gps in a model (AND operator)                                                  |
+| **goterms**  (optional)            | list\<goterm>      | A list of one or more GO terms in a model (AND operator)                                             |
+| **pmids** (optional)               | list\<pmid>        | A list of one or more pmids in a model (AND operator)                                                |
+| **taxa** (optional)                | list\<taxon>       | A list of one or more taxon                                                                          |
 | Model Meta                         |
-| **title** (optional)               | string             | Partial String (contains) so it works like the current landing page                                |
-| **states** (optional)              | list\<state>       | A list of one or more model states 'development, production, closed, review, delete' (OR operator) |
-| **contributors** (optional)        | list\<contributor> | A list of one or more contributors in a model (AND operator)                                       |
-| **groups** (optional)              | list\<group>       | A list of one or more groups(provided by) in a model (AND operator)                                |
-| **date** (optional)                | date               | model date)                                                                                        |
+| **title** (optional)               | string             | Partial String (contains) so it works like the current landing page                                  |
+| **states** (optional)              | list\<state>       | A list of one or more model states 'development, production, template, review, delete' (OR operator) |
+| **contributors** (optional)        | list\<contributor> | A list of one or more contributors in a model (AND operator)                                         |
+| **groups** (optional)              | list\<group>       | A list of one or more groups(provided by) in a model (AND operator)                                  |
+| **date** (optional)                | date               | model date)                                                                                          |
 | Pagination (optional, none or all) |
-| **page**                           | int                | Page number                                                                                        |
-| **offset**                         | int                | Page Offset                                                                                        |
-| **limit**                          | int                | Page Size                                                                                          |
+| **page**                           | int                | Page number                                                                                          |
+| **offset**                         | int                | Page Offset                                                                                          |
+| **limit**                          | int                | Page Size                                                                                            |
 
 
 ## Return
