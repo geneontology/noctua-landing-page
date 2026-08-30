@@ -1,0 +1,114 @@
+/* `important` makes every Tailwind utility `!important`. Required because
+   this workbench is embedded inside the Noctua shell which loads Bootstrap 3
+   globally — Bootstrap rules like `.hidden { display: none !important }`
+   otherwise override our hover/state utilities. With both sides !important,
+   source order wins, and our CSS loads after Bootstrap. */
+@import 'tailwindcss' important;
+
+@theme {
+  --color-primary-50: #e4e7ec;
+  --color-primary-100: #bbc3d0;
+  --color-primary-200: #8e9bb0;
+  --color-primary-300: #627491;
+  --color-primary-400: #3f567b;
+  --color-primary-500: #173672;
+  --color-primary-600: #132f64;
+  --color-primary-700: #102653;
+  --color-primary-800: #0c1d42;
+  --color-primary-900: #08142f;
+
+  --color-accent-50: #fef9f0;
+  --color-accent-100: #fef2dd;
+  --color-accent-200: #fde9c4;
+  --color-accent-300: #fce0ac;
+  --color-accent-400: #fbd898;
+  --color-accent-500: #fad38a;
+  --color-accent-600: #f8be54;
+  --color-accent-700: #f6ac23;
+  --color-accent-800: #dc9209;
+  --color-accent-900: #ab7207;
+
+  /* ── Landing-page palette, carried over from the Angular app ──────
+     The Angular landing page used its own Material theme (primary
+     $mat-noctuadark 500, accent light-blue 600) plus a set of literal
+     chip/hero colours. They are kept as their own tokens rather than
+     repainting VPE's primary/accent, which the shared components use. */
+  --color-noc-primary: #3b5998;
+  --color-noc-primary-light: #798fb8;
+  --color-noc-accent: #039be5;
+  --color-noc-hero: #00174f;
+  --color-noc-login: #52a16c;
+  --color-noc-surface: #f7f7f7;
+  --color-noc-chip: #bbc9cc;
+  --color-noc-chip-icon: #59939e;
+  --color-noc-chip-clear: #da7f7f;
+  --color-noc-state-development: #f4c89c;
+  --color-noc-state-production: #b6f1cc;
+  --color-noc-state-review: #d8f6a3;
+
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+  --text-3xs: 0.5rem;
+  --text-3xs--line-height: 0.625rem;
+}
+
+.navbar {
+  display: none !important;
+  visibility: hidden;
+}
+
+/* ── Noctua shell (Bootstrap 3) reset ──────────────────────────────
+   When this workbench is mounted inside the Noctua shell, Bootstrap 3,
+   bbop.css, and amigo.css cascade into our DOM. The `important` flag on
+   the Tailwind import handles utility conflicts; the rules below reset
+   non-utility cascades that still bleed through. Scoped to `#root` so
+   we don't fight the parent navbar's own styling. */
+#root {
+  a:hover {
+    text-decoration: none;
+  }
+  button {
+    background: transparent;
+    border: none;
+    line-height: normal;
+  }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+@layer base {
+  a {
+    @apply text-blue-800 hover:text-primary-800;
+  }
+
+  thead tr {
+    @apply border-b border-t border-accent-700;
+  }
+
+  th {
+    @apply h-10 border-r border-gray-300 p-3 text-left text-xs font-bold uppercase text-primary-300;
+  }
+
+  td {
+    @apply border-r border-gray-300 align-top;
+  }
+}
