@@ -1,0 +1,51 @@
+.wrap {
+  position: relative;
+}
+
+.wrap .label {
+  position: absolute;
+  z-index: 2;
+  top: 9px;
+  left: 6px;
+  margin: 0 !important;
+  padding: 0 4px;
+  pointer-events: none;
+  max-width: 90%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 12px !important;
+  font-weight: 400 !important;
+  line-height: 1 !important;
+  color: var(--color-gray-500) !important;
+  background-color: #ffffff;
+  transform-origin: left top;
+  transition:
+    transform 150ms ease,
+    color 150ms ease;
+}
+
+.wrap:hover .label,
+.wrap[data-floating='true'] .label {
+  color: var(--color-primary-500) !important;
+}
+
+.wrap[data-floating='true'] .label {
+  transform: translate(-2px, -15px);
+}
+
+.input {
+  background-color: #ffffff !important;
+  border: 1px solid var(--color-gray-400) !important;
+  border-radius: 6px !important;
+  padding: 8px 6px !important;
+  font-size: 14px !important;
+  line-height: 1.4 !important;
+  transition: border-color 150ms ease;
+}
+
+.input:hover,
+.input:focus {
+  outline: none !important;
+  border-color: var(--color-primary-500) !important;
+}
