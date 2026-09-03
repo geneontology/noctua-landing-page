@@ -20,8 +20,19 @@ const RuledHeading: React.FC<{ children: React.ReactNode }> = ({ children }) => 
   </div>
 )
 
+/**
+ * `.noc-rounded-button.noc-half-button` at the hero's sizing: a 20px-radius,
+ * 50px-tall pill, 120px minimum, 12px/20px accent-blue type on white with a
+ * level-4 shadow. Angular's copy is uppercase and `text-transform: capitalize`
+ * leaves it that way.
+ */
 const CREATE_BUTTON =
-  'flex h-[50px] min-w-[120px] items-center justify-center rounded bg-white px-3 text-center text-xs leading-5 text-noc-accent shadow-md transition hover:brightness-95'
+  'flex h-[50px] min-w-[120px] items-center justify-center rounded-[20px] bg-white px-3 text-center text-xs uppercase leading-5 text-noc-accent shadow-md transition hover:brightness-95 disabled:opacity-60'
+
+// `.noc-r` / `.noc-l` square off the facing corners so the two Create buttons
+// read as one split pill with a 2px seam, rather than two separate buttons.
+const CREATE_BUTTON_LEFT = `${CREATE_BUTTON} !rounded-r-none mr-0.5`
+const CREATE_BUTTON_RIGHT = `${CREATE_BUTTON} !rounded-l-none`
 
 const WelcomeHeader: React.FC = () => {
   const { isLoggedIn, loginUrl } = useAuth()
@@ -78,11 +89,11 @@ const WelcomeHeader: React.FC = () => {
         <div className="mt-5 flex w-full max-w-5xl flex-col items-stretch gap-2 p-2 sm:flex-row">
           <div className="flex basis-3/4 flex-col items-center bg-noc-accent/50 p-2">
             <RuledHeading>Create</RuledHeading>
-            <div className="flex flex-wrap items-center justify-center gap-1">
+            <div className="flex items-center justify-center">
               <button
                 type="button"
                 disabled={isCreating}
-                className={CREATE_BUTTON}
+                className={CREATE_BUTTON_LEFT}
                 onClick={() => create(WorkbenchId.STANDARD_ANNOTATIONS)}
                 data-pw="create-standard-annotations-button"
               >
@@ -93,7 +104,7 @@ const WelcomeHeader: React.FC = () => {
               <button
                 type="button"
                 disabled={isCreating}
-                className={CREATE_BUTTON}
+                className={CREATE_BUTTON_RIGHT}
                 onClick={() => create(WorkbenchId.VISUAL_PATHWAY_EDITOR)}
                 data-pw="open-pathway-editor-button"
               >
