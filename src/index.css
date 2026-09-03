@@ -99,16 +99,12 @@ code {
   a {
     @apply text-blue-800 hover:text-primary-800;
   }
-
-  thead tr {
-    @apply border-b border-t border-accent-700;
-  }
-
-  th {
-    @apply h-10 border-r border-gray-300 p-3 text-left text-xs font-bold uppercase text-primary-300;
-  }
-
-  td {
-    @apply border-r border-gray-300 align-top;
-  }
 }
+
+/* NOTE: VPE's base `thead tr` / `th` / `td` rules are deliberately not carried
+   over. They painted accent-700 rules above and below the header, a 40px
+   `h-10` header cell, a `border-r` gridline on every cell, and `align-top`
+   text — none of which the Angular landing page had. `.mat-cell` there was
+   `display:flex; align-items:center` with no vertical borders, and
+   `.mat-header-cell` was 10px bold primary with `padding: 0 10px`. ModelsTable
+   styles its own cells; leave them to it. */
