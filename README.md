@@ -20,13 +20,13 @@ and shared library of [noctua-visual-pathway-editor](https://github.com/geneonto
 ```
 npm install
 npm run dev          # dev server on http://localhost:4210/
-npm start            # dev server on http://0.0.0.0:4202/, development mode
+npm start            # dev server on http://0.0.0.0:4204/, development mode
 ```
 
 | Command | What it does |
 | ------- | ------------ |
 | `npm run dev` | Vite dev server on port 4210 |
-| `npm start` | Dev server on port 4202, host `0.0.0.0` (`start:development`, `start:staging`, `start:production` variants) |
+| `npm start` | Dev server on port 4204, host `0.0.0.0` (`start:development`, `start:staging`, `start:production` variants) |
 | `npm run build` | Type-check, then production build into `workbenches/noctua-landing-page/public` |
 | `npm run build:beta-test` | Staging build into `workbenches/noctua-landing-page-beta/public` |
 | `npm test` | Vitest unit suite |

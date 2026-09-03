@@ -15,7 +15,7 @@ Toolkit, and Mantine v9.
 ## Commands
 
 - `npm run dev` — Start dev server on port **4210** (port set in `vite.config.ts`)
-- `npm run start` — Start dev server on port **4202**, host `0.0.0.0`, `development` mode (variants: `start:development`, `start:staging`, `start:production`)
+- `npm run start` — Start dev server on port **4204**, host `0.0.0.0`, `development` mode (variants: `start:development`, `start:staging`, `start:production`)
 - `npm run build` — Clean `workbenches/noctua-landing-page/public`, type-check, then `vite build --mode production`
 - `npm run build:beta-test` — Same flow against the `noctua-landing-page-beta` workbench in `staging` mode
 - `npm run test` — Vitest run (looks for `tests/**/*.test.{ts,tsx}` only — files outside `tests/` are ignored)
