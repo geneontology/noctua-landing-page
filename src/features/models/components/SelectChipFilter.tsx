@@ -1,7 +1,7 @@
 import type React from 'react'
-import { useState } from 'react'
+import { useId, useState } from 'react'
 import { Autocomplete } from '@mantine/core'
-import FilterChipList from './FilterChipList'
+import ChipInputField from './ChipInputField'
 
 export interface SelectOption {
   /** Unique key; also the string the user matches against. */
@@ -31,18 +31,23 @@ const SelectChipFilter: React.FC<SelectChipFilterProps> = ({
   onAdd,
   onRemove,
 }) => {
+  const id = useId()
   const [draft, setDraft] = useState('')
 
   return (
-    <div className="w-full">
+    <ChipInputField label={label} htmlFor={id} chips={values} onRemove={onRemove}>
       <Autocomplete
+        id={id}
         size="xs"
-        label={label}
         placeholder={placeholder}
         value={draft}
         data={options.map(option => option.label)}
         limit={50}
         maxDropdownHeight={240}
+        variant="unstyled"
+        // The outlined box belongs to ChipInputField; the combobox inside it is
+        // borderless so the two do not nest visibly.
+        styles={{ input: { minHeight: 22, height: 22, fontSize: 12, paddingInline: 0 } }}
         onChange={setDraft}
         onOptionSubmit={submitted => {
           const option = options.find(o => o.label === submitted)
@@ -50,8 +55,7 @@ const SelectChipFilter: React.FC<SelectChipFilterProps> = ({
           setDraft('')
         }}
       />
-      <FilterChipList items={values} onRemove={onRemove} />
-    </div>
+    </ChipInputField>
   )
 }
 

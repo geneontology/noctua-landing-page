@@ -49,3 +49,22 @@
   outline: none !important;
   border-color: var(--color-primary-500) !important;
 }
+
+/* Borderless variant: the field's outline and label are owned by a wrapper
+   (see ChipInputField), so the control inside must not draw its own box. */
+.inputBare {
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  min-height: 22px !important;
+  font-size: 12px !important;
+  line-height: 1.4 !important;
+  resize: none !important;
+}
+
+.inputBare:hover,
+.inputBare:focus {
+  outline: none !important;
+  border: none !important;
+}

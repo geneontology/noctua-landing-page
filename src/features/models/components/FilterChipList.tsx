@@ -4,14 +4,18 @@ import { IoClose } from 'react-icons/io5'
 interface FilterChipListProps {
   items: { key: string; label: string; title?: string }[]
   onRemove: (index: number) => void
+  /** Override the wrapper layout — `contents` makes the chips flex siblings of
+   *  whatever else shares the parent, which is how ChipInputField inlines them
+   *  alongside the input. */
+  className?: string
 }
 
-/** The removable chips sitting under a filter input. */
-const FilterChipList: React.FC<FilterChipListProps> = ({ items, onRemove }) => {
+/** The removable chips for a filter input. */
+const FilterChipList: React.FC<FilterChipListProps> = ({ items, onRemove, className }) => {
   if (items.length === 0) return null
 
   return (
-    <div className="mt-1 flex flex-wrap gap-1">
+    <div className={className ?? 'mt-1 flex flex-wrap gap-1'}>
       {items.map((item, index) => (
         <span
           key={item.key}

@@ -1,7 +1,6 @@
 import type React from 'react'
-import { useState } from 'react'
-import { TextInput } from '@mantine/core'
-import FilterChipList from './FilterChipList'
+import { useId, useState } from 'react'
+import ChipInputField from './ChipInputField'
 
 interface TextChipFilterProps {
   label: string
@@ -27,6 +26,7 @@ const TextChipFilter: React.FC<TextChipFilterProps> = ({
   transform,
   inputType = 'text',
 }) => {
+  const id = useId()
   const [draft, setDraft] = useState('')
 
   const commit = () => {
@@ -37,13 +37,18 @@ const TextChipFilter: React.FC<TextChipFilterProps> = ({
   }
 
   return (
-    <div className="w-full">
-      <TextInput
-        size="xs"
+    <ChipInputField
+      label={label}
+      htmlFor={id}
+      chips={values.map(value => ({ key: value, label: value }))}
+      onRemove={onRemove}
+    >
+      <input
+        id={id}
         type={inputType}
-        label={label}
         placeholder={placeholder}
         value={draft}
+        className="w-full border-none bg-transparent text-xs text-gray-900 outline-none placeholder:text-gray-400"
         onChange={e => setDraft(e.currentTarget.value)}
         onKeyDown={e => {
           if (e.key === 'Enter' || (e.key === ',' && inputType === 'text')) {
@@ -53,11 +58,7 @@ const TextChipFilter: React.FC<TextChipFilterProps> = ({
         }}
         onBlur={() => inputType === 'date' && commit()}
       />
-      <FilterChipList
-        items={values.map(value => ({ key: value, label: value }))}
-        onRemove={onRemove}
-      />
-    </div>
+    </ChipInputField>
   )
 }
 

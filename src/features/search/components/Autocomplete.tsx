@@ -25,6 +25,8 @@ interface TermAutocompleteProps {
    * Used by chip-style filter fields, where the selection becomes a chip.
    */
   clearOnSelect?: boolean
+  /** Render the control borderless, for use inside ChipInputField. */
+  bare?: boolean
 }
 
 const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
@@ -39,6 +41,7 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
   disabled = false,
   rows = 2,
   clearOnSelect = false,
+  bare = false,
 }) => {
   const [inputValue, setInputValue] = useState<string>('')
   const [open, setOpen] = useState<boolean>(false)
@@ -189,6 +192,7 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
           }}
           disabled={disabled}
           rows={rows}
+          bare={bare}
           rightSection={searching ? <Loader size={16} /> : null}
         />
       </div>

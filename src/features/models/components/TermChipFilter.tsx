@@ -2,7 +2,7 @@ import type React from 'react'
 import TermAutocomplete from '@/features/search/components/Autocomplete'
 import type { GOlrResponse } from '@/features/search/models/search'
 import type { TermFilter } from '../models/searchCriteria'
-import FilterChipList from './FilterChipList'
+import ChipInputField from './ChipInputField'
 
 interface TermChipFilterProps {
   label: string
@@ -26,10 +26,22 @@ const TermChipFilter: React.FC<TermChipFilterProps> = ({
   onAdd,
   onRemove,
 }) => (
-  <div className="w-full">
+  <ChipInputField
+    label={label}
+    htmlFor={`autocomplete-${name}`}
+    chips={values.map(term => ({
+      key: term.id,
+      label: term.label,
+      title: `${term.label} (${term.id})`,
+    }))}
+    onRemove={onRemove}
+  >
+    {/* The label and outline belong to ChipInputField, so the autocomplete
+        renders label-less and borderless inside it. */}
     <TermAutocomplete
-      label={label}
+      label=""
       name={name}
+      bare
       rootTypeIds={rootTypeIds}
       excludeRootTypeIds={excludeRootTypeIds}
       obsoleteOnly={obsoleteOnly}
@@ -38,15 +50,7 @@ const TermChipFilter: React.FC<TermChipFilterProps> = ({
       value={null}
       onChange={(option: GOlrResponse) => onAdd({ id: option.id, label: option.label })}
     />
-    <FilterChipList
-      items={values.map(term => ({
-        key: term.id,
-        label: term.label,
-        title: `${term.label} (${term.id})`,
-      }))}
-      onRemove={onRemove}
-    />
-  </div>
+  </ChipInputField>
 )
 
 export default TermChipFilter
