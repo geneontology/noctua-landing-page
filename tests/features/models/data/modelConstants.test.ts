@@ -2,6 +2,11 @@ import { describe, expect, it } from 'vitest'
 import {
   CHIP_COLORS,
   CLOSURE_IDS,
+  FILTER_BAR_HEIGHT,
+  RESULTS_BAR_HEIGHT,
+  RESULTS_BAR_TOP,
+  STICKY_GAP,
+  TABLE_HEADER_TOP,
   MAX_FILTER_VALUES,
   MAX_TITLE_FILTERS,
   MODEL_STATES,
@@ -98,5 +103,25 @@ describe('MODEL_STATES', () => {
   it('has no duplicate values', () => {
     const values = MODEL_STATES.map(s => s.value)
     expect(new Set(values).size).toBe(values.length)
+  })
+})
+
+describe('sticky geometry', () => {
+  // Three hand-kept offsets drift, and the symptom is the table header
+  // floating over the first row. They are derived; this pins the derivation.
+  it('stacks each strip below the one above plus its gap', () => {
+    expect(RESULTS_BAR_TOP).toBe(FILTER_BAR_HEIGHT + STICKY_GAP)
+    expect(TABLE_HEADER_TOP).toBe(RESULTS_BAR_TOP + RESULTS_BAR_HEIGHT + STICKY_GAP)
+  })
+
+  it('matches the Angular strip heights', () => {
+    expect(FILTER_BAR_HEIGHT).toBe(30)
+    expect(RESULTS_BAR_HEIGHT).toBe(40)
+    expect(STICKY_GAP).toBe(4)
+  })
+
+  it('leaves no strip overlapping the next', () => {
+    expect(TABLE_HEADER_TOP).toBeGreaterThan(RESULTS_BAR_TOP)
+    expect(RESULTS_BAR_TOP).toBeGreaterThan(0)
   })
 })

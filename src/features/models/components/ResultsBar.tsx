@@ -10,6 +10,7 @@ import {
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { selectPage, setPage } from '../slices/modelSearchSlice'
 import { PAGE_SIZE_OPTIONS } from '../models/camSearch'
+import { RESULTS_BAR_TOP } from '../data/modelConstants'
 
 interface ResultsBarProps {
   total: number
@@ -30,7 +31,10 @@ const ResultsBar: React.FC<ResultsBarProps> = ({ total, isFetching, onRefresh })
     dispatch(setPage({ pageNumber: Math.min(Math.max(0, pageNumber), lastPage) }))
 
   return (
-    <div className="sticky top-[30px] z-10 flex h-10 shrink-0 items-center gap-2 bg-white pl-5 pr-2.5 shadow-sm">
+    <div
+      className="sticky z-10 mb-1 flex h-10 shrink-0 items-center gap-2 bg-white pl-5 pr-2.5 shadow-noc-2"
+      style={{ top: RESULTS_BAR_TOP }}
+    >
       {isFetching && (
         <Progress
           value={100}

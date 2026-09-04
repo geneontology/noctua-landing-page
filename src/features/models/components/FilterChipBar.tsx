@@ -9,7 +9,7 @@ import {
   selectFiltersCount,
 } from '../slices/modelSearchSlice'
 import { FILTER_LABELS, FILTER_TYPES } from '../models/searchCriteria'
-import { CHIP_COLORS, chipColors } from '../data/modelConstants'
+import { CHIP_COLORS, FILTER_BAR_HEIGHT, chipColors } from '../data/modelConstants'
 
 const filterChip = chipColors(CHIP_COLORS.filter)
 const clearChip = chipColors(CHIP_COLORS.clearAll)
@@ -29,7 +29,8 @@ const FilterChipBar: React.FC = () => {
   const active = FILTER_TYPES.filter(type => criteria[type].length > 0)
 
   return (
-    <div className="sticky top-0 z-10 flex h-[30px] shrink-0 items-center gap-2 overflow-x-auto whitespace-nowrap bg-white px-2.5 shadow-sm">
+    <div className="sticky top-0 z-10 mb-1 flex shrink-0 items-center gap-2 overflow-x-auto whitespace-nowrap bg-white px-2.5 shadow-noc-2"
+      style={{ height: FILTER_BAR_HEIGHT }}>
       <small className="shrink-0 text-2xs text-gray-500">Filtered By:</small>
 
       {filtersCount > 0 && (

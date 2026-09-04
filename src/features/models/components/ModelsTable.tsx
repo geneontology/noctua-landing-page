@@ -5,7 +5,13 @@ import Chip from '@/@noctua.core/components/chip/Chip'
 import ContributorChips from '@/features/users/components/ContributorChips'
 import { addFilter } from '../slices/modelSearchSlice'
 import { FilterType } from '../models/searchCriteria'
-import { CHIP_COLORS, chipColors, modelStateLabel, stateChipColors } from '../data/modelConstants'
+import {
+  CHIP_COLORS,
+  TABLE_HEADER_TOP,
+  chipColors,
+  modelStateLabel,
+  stateChipColors,
+} from '../data/modelConstants'
 import type { CamRow } from '../models/camSearch'
 import ModelActionsMenu from './ModelActionsMenu'
 
@@ -45,7 +51,10 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching }) => {
           <col style={{ width: '30%' }} />
           <col style={{ width: 110 }} />
         </colgroup>
-        <thead className="sticky top-[70px] z-10 bg-white shadow-[inset_0_-1px_0_rgba(121,143,184,0.3)]">
+        <thead
+          className="sticky z-10 bg-white shadow-[inset_0_-1px_0_var(--color-noc-rule)]"
+          style={{ top: TABLE_HEADER_TOP }}
+        >
           <tr className="h-[30px]">
             <th className={HEADER_CELL}>Title</th>
             <th className={`${HEADER_CELL} text-center`}>Saved</th>
@@ -61,7 +70,7 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching }) => {
             return (
               <tr
                 key={model.id}
-                className="border-b border-noc-primary-light/30 align-middle hover:bg-white/60"
+                className="border-b border-noc-rule align-middle hover:bg-white/60"
               >
                 <td className="py-1.5 pl-3 pr-2.5 text-xs text-gray-900">
                   <span title={model.id}>{model.title}</span>

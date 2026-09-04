@@ -77,6 +77,22 @@ export const CLOSURE_IDS = {
   ],
 } as const
 
+/**
+ * Geometry of the stacked sticky strips above the results.
+ *
+ * The filter bar pins to the top of the scroll container, the results bar sits
+ * below it, and the table header below both — each separated by a 4px gap that
+ * shows the grey surface through, the way Angular's `margin-bottom: 4px` did.
+ * Derived rather than written out, because three hand-kept offsets drift and
+ * the symptom is a header floating over the first row.
+ */
+export const FILTER_BAR_HEIGHT = 30
+export const RESULTS_BAR_HEIGHT = 40
+export const STICKY_GAP = 4
+
+export const RESULTS_BAR_TOP = FILTER_BAR_HEIGHT + STICKY_GAP
+export const TABLE_HEADER_TOP = RESULTS_BAR_TOP + RESULTS_BAR_HEIGHT + STICKY_GAP
+
 /** Max number of values allowed per filter, matching the Angular limits. */
 export const MAX_FILTER_VALUES = 10
 export const MAX_TITLE_FILTERS = 1

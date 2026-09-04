@@ -33,9 +33,16 @@ const LandingPage: React.FC = () => {
   return (
     <div className="flex flex-col">
       <WelcomeHeader />
-      <FilterChipBar />
-      <ResultsBar total={total} isFetching={isFetching} onRefresh={refresh} />
-      <ModelsTable models={models} isFetching={isFetching} />
+
+      {/* The Angular `.noc-cams-result` surface. The two bars and the table
+          header are white cards floating on this grey, and the 4px gaps
+          between them are how they read as separate strips rather than one
+          undifferentiated white block. */}
+      <div className="flex flex-col bg-noc-surface">
+        <FilterChipBar />
+        <ResultsBar total={total} isFetching={isFetching} onRefresh={refresh} />
+        <ModelsTable models={models} isFetching={isFetching} />
+      </div>
     </div>
   )
 }
