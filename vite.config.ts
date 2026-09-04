@@ -70,12 +70,15 @@ export default defineConfig(({ command, mode }) => {
             if (id.includes('@reduxjs') || id.includes('react-redux')) return 'redux'
             if (id.includes('react-router')) return 'react-router'
           },
-          assetFileNames: (assetInfo) => {
-            let extType = assetInfo.name.split('.').at(1);
-            if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
-              extType = 'img';
+          assetFileNames: assetInfo => {
+            // Take the segment after the LAST dot, not the first: `.at(1)` on
+            // `go-logo.large.png` yielded `large`, filing it under
+            // `assets/large/`, and a name with no dot yielded `undefined`.
+            let extType = assetInfo.name?.split('.').pop() ?? 'misc'
+            if (/^(png|jpe?g|svg|gif|tiff|bmp|ico)$/i.test(extType)) {
+              extType = 'img'
             }
-            return `assets/${extType}/[name]-[hash][extname]`;
+            return `assets/${extType}/[name]-[hash][extname]`
           },
           chunkFileNames: 'assets/js/[name]-[hash].js',
           entryFileNames: 'assets/js/[name]-[hash].js',
