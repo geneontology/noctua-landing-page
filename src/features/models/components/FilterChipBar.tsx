@@ -1,7 +1,9 @@
 import type React from 'react'
 import { IoClose } from 'react-icons/io5'
+import { FaFilter } from 'react-icons/fa'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { setLeftDrawerOpen } from '@/@noctua.core/components/drawer/drawerSlice'
+import { useIsAtLeast } from '@/@noctua.core/hooks/useBreakpoint'
 import {
   clearAll,
   clearFilterType,
@@ -25,12 +27,25 @@ const FilterChipBar: React.FC = () => {
   const dispatch = useAppDispatch()
   const criteria = useAppSelector(selectCriteria)
   const filtersCount = useAppSelector(selectFiltersCount)
+  const isDesktop = useIsAtLeast('lg')
 
   const active = FILTER_TYPES.filter(type => criteria[type].length > 0)
 
   return (
-    <div className="sticky top-0 z-10 mb-1 flex shrink-0 items-center gap-2 overflow-x-auto whitespace-nowrap bg-white px-2.5 shadow-noc-2"
-      style={{ height: FILTER_BAR_HEIGHT }}>
+    <div className="sticky z-10 mb-1 flex shrink-0 items-center gap-2 overflow-x-auto whitespace-nowrap bg-white px-2.5 shadow-noc-2"
+      style={{ height: FILTER_BAR_HEIGHT, top: 0 }}>
+      {/* Below lg the panel is an overlay, so it needs a way in. */}
+      {!isDesktop && (
+        <button
+          type="button"
+          className="flex h-[22px] shrink-0 items-center gap-1 rounded-full border border-noc-primary/40 px-2 text-2xs text-noc-primary hover:bg-noc-primary/5"
+          onClick={() => dispatch(setLeftDrawerOpen(true))}
+        >
+          <FaFilter size={9} />
+          Filters
+        </button>
+      )}
+
       <small className="shrink-0 text-2xs text-gray-500">Filtered By:</small>
 
       {filtersCount > 0 && (

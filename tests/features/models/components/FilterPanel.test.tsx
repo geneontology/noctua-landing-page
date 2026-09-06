@@ -1,8 +1,10 @@
-import { describe, expect, it } from 'vitest'
-import { screen, within } from '@testing-library/react'
+import { afterEach, describe, expect, it } from 'vitest'
+import { act, screen, within } from '@testing-library/react'
 import FilterPanel from '@/features/models/components/FilterPanel'
 import LeftDrawer from '@/app/layout/LeftDrawer'
+import FilterChipBar from '@/features/models/components/FilterChipBar'
 import { emptyCriteria } from '@/features/models/models/searchCriteria'
+import { setLeftDrawerOpen } from '@/@noctua.core/components/drawer/drawerSlice'
 import { renderWithProviders } from '@tests/test-utils'
 
 const withCriteria = (overrides: Partial<ReturnType<typeof emptyCriteria>> = {}) => ({
@@ -190,5 +192,104 @@ describe('LeftDrawer', () => {
 
     const panel = screen.getByText('Filter by').closest('div')?.parentElement as HTMLElement
     expect(within(panel).getByText('Model')).toBeInTheDocument()
+  })
+})
+
+describe('LeftDrawer on a narrow viewport', () => {
+  const setViewport = (matches: boolean) => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: (query: string) => ({
+        matches: matches && query.includes('min-width'),
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    })
+  }
+
+  afterEach(() => setViewport(true))
+
+  // A fixed 340px panel would leave no room for results below lg, so it
+  // becomes an overlay that starts closed.
+  it('keeps the panel closed until asked for', () => {
+    setViewport(false)
+    renderWithProviders(<LeftDrawer />)
+
+    expect(screen.queryByText('Annotations')).not.toBeInTheDocument()
+  })
+
+  // Opened after mount rather than preloaded: the drawer closes itself on
+  // mount when there is no room, so a preloaded `true` never survives.
+  it('opens as a labelled overlay', () => {
+    setViewport(false)
+    const { store } = renderWithProviders(<LeftDrawer />)
+
+    act(() => {
+      store.dispatch(setLeftDrawerOpen(true))
+    })
+
+    expect(screen.getByRole('dialog', { name: 'Search filters' })).toBeInTheDocument()
+    expect(screen.getByText('Annotations')).toBeInTheDocument()
+  })
+
+  it('can be dismissed', async () => {
+    setViewport(false)
+    const { store, user } = renderWithProviders(<LeftDrawer />)
+
+    act(() => {
+      store.dispatch(setLeftDrawerOpen(true))
+    })
+    await user.click(screen.getByLabelText('Close filters'))
+
+    expect(store.getState().drawer.leftDrawerOpen).toBe(false)
+  })
+
+  it('stays a static panel with no dialog role on a wide viewport', () => {
+    renderWithProviders(<LeftDrawer />)
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(screen.getByText('Annotations')).toBeInTheDocument()
+  })
+})
+
+describe('FilterChipBar filters toggle', () => {
+  const setViewport = (matches: boolean) => {
+    Object.defineProperty(window, 'matchMedia', {
+      writable: true,
+      configurable: true,
+      value: (query: string) => ({
+        matches: matches && query.includes('min-width'),
+        media: query,
+        onchange: null,
+        addListener: () => {},
+        removeListener: () => {},
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        dispatchEvent: () => false,
+      }),
+    })
+  }
+
+  afterEach(() => setViewport(true))
+
+  it('offers no toggle on a wide viewport, where the panel is always visible', () => {
+    renderWithProviders(<FilterChipBar />)
+
+    expect(screen.queryByRole('button', { name: 'Filters' })).not.toBeInTheDocument()
+  })
+
+  it('offers a way into the overlay below lg', async () => {
+    setViewport(false)
+    const { store, user } = renderWithProviders(<FilterChipBar />)
+
+    await user.click(screen.getByRole('button', { name: 'Filters' }))
+
+    expect(store.getState().drawer.leftDrawerOpen).toBe(true)
   })
 })

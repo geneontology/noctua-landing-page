@@ -1,13 +1,17 @@
 import '@testing-library/jest-dom/vitest'
 
 // jsdom lacks window.matchMedia; Mantine's MantineProvider color-scheme logic
-// calls it on mount. Provide a stub so component tests can render Mantine
-// components (Modal, etc.) without crashing.
+// calls it on mount, and the responsive layouts read it through useMediaQuery.
+//
+// `min-width` queries answer true so the default test viewport is a desktop —
+// otherwise every component would render its narrow variant and the layout
+// tests would be asserting against a phone. Tests for the narrow paths
+// override this stub themselves.
 if (typeof window !== 'undefined' && !window.matchMedia) {
   Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: (query: string) => ({
-      matches: false,
+      matches: query.includes('min-width'),
       media: query,
       onchange: null,
       addListener: () => {},
