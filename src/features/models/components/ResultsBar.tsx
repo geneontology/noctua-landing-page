@@ -1,16 +1,19 @@
 import type React from 'react'
-import { ActionIcon, Progress, Select, Tooltip } from '@mantine/core'
+import { ActionIcon, Select, Tooltip } from '@mantine/core'
 import {
   MdFirstPage,
   MdLastPage,
   MdNavigateBefore,
   MdNavigateNext,
+  MdViewAgenda,
+  MdViewHeadline,
   MdYoutubeSearchedFor,
 } from 'react-icons/md'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { selectPage, setPage } from '../slices/modelSearchSlice'
 import { PAGE_SIZE_OPTIONS } from '../models/camSearch'
 import { RESULTS_BAR_TOP } from '../data/modelConstants'
+import { selectDensity, setDensity } from '@/@noctua.core/state/preferencesSlice'
 
 interface ResultsBarProps {
   total: number
@@ -22,6 +25,7 @@ interface ResultsBarProps {
 const ResultsBar: React.FC<ResultsBarProps> = ({ total, isFetching, onRefresh }) => {
   const dispatch = useAppDispatch()
   const page = useAppSelector(selectPage)
+  const density = useAppSelector(selectDensity)
 
   const lastPage = Math.max(0, Math.ceil(total / page.size) - 1)
   const from = total === 0 ? 0 : page.pageNumber * page.size + 1
@@ -36,12 +40,10 @@ const ResultsBar: React.FC<ResultsBarProps> = ({ total, isFetching, onRefresh })
       style={{ top: RESULTS_BAR_TOP }}
     >
       {isFetching && (
-        <Progress
-          value={100}
-          size="xs"
-          animated
-          className="absolute inset-x-0 top-0"
+        <div
+          role="progressbar"
           aria-label="Loading results"
+          className="noc-indeterminate absolute inset-x-0 top-0 h-0.5"
         />
       )}
 
@@ -65,6 +67,24 @@ const ResultsBar: React.FC<ResultsBarProps> = ({ total, isFetching, onRefresh })
       <span className="grow" />
 
       <div className="flex items-center gap-2">
+        <Tooltip
+          label={density === 'compact' ? 'Comfortable rows' : 'Compact rows'}
+          position="top"
+          withArrow
+        >
+          <ActionIcon
+            variant="subtle"
+            color="gray"
+            size="sm"
+            aria-label={density === 'compact' ? 'Use comfortable rows' : 'Use compact rows'}
+            onClick={() =>
+              dispatch(setDensity(density === 'compact' ? 'comfortable' : 'compact'))
+            }
+          >
+            {density === 'compact' ? <MdViewAgenda /> : <MdViewHeadline />}
+          </ActionIcon>
+        </Tooltip>
+
         <span className="text-2xs text-gray-600">GO CAMs per page:</span>
         <Select
           size="xs"

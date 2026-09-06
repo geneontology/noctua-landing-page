@@ -3,6 +3,7 @@ import { combineSlices, configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import apiService from './apiService'
 import { drawerSlice } from '@/@noctua.core/components/drawer/drawerSlice'
+import { preferencesSlice } from '@/@noctua.core/state/preferencesSlice'
 import { dialogSlice } from '@/@noctua.core/components/dialog/dialogSlice'
 import { toastSlice } from '@/@noctua.core/components/toast/toastSlice'
 import { loadingOverlaySlice } from '@/@noctua.core/components/loading-overlay/loadingOverlaySlice'
@@ -16,6 +17,7 @@ const rootReducer = combineSlices({
   metadata: metadataSlice.reducer,
   modelSearch: modelSearchSlice.reducer,
   drawer: drawerSlice.reducer,
+  preferences: preferencesSlice.reducer,
   dialog: dialogSlice.reducer,
   toast: toastSlice.reducer,
   loadingOverlay: loadingOverlaySlice.reducer,

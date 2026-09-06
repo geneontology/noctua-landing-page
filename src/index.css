@@ -118,3 +118,45 @@ code {
    `display:flex; align-items:center` with no vertical borders, and
    `.mat-header-cell` was 10px bold primary with `padding: 0 10px`. ModelsTable
    styles its own cells; leave them to it. */
+
+/* Indeterminate progress. Mantine's Progress only renders a determinate bar,
+   and `value={100}` reads as "finished" while a fetch is still in flight. */
+@keyframes noc-indeterminate {
+  0% {
+    left: -40%;
+    width: 40%;
+  }
+  50% {
+    left: 25%;
+    width: 55%;
+  }
+  100% {
+    left: 100%;
+    width: 40%;
+  }
+}
+
+.noc-indeterminate {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-primary-50);
+}
+
+.noc-indeterminate::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 9999px;
+  background-color: var(--color-noc-accent);
+  animation: noc-indeterminate 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noc-indeterminate::after {
+    animation: none;
+    left: 0;
+    width: 100%;
+    opacity: 0.5;
+  }
+}
