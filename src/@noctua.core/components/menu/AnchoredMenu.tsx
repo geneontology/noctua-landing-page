@@ -94,6 +94,17 @@ const AnchoredMenu = ({
     }
   }, [open, el, anchorEl, updatePosition])
 
+  // Move focus into the menu on open and return it to the trigger on close, so
+  // keyboard users are not dropped back at the top of the document.
+  useEffect(() => {
+    if (!open || !el) return
+
+    const first = el.querySelector<HTMLElement>('[role="menuitem"]')
+    first?.focus()
+
+    return () => anchorEl?.focus()
+  }, [open, el, anchorEl])
+
   useEffect(() => {
     if (!open) return
     const handleClick = (e: MouseEvent) => {
@@ -115,8 +126,28 @@ const AnchoredMenu = ({
       }
       onClose()
     }
+    const items = (): HTMLElement[] =>
+      el ? Array.from(el.querySelectorAll<HTMLElement>('[role="menuitem"]')) : []
+
     const handleKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
+      if (e.key === 'Escape') {
+        onClose()
+        return
+      }
+
+      const list = items()
+      if (list.length === 0) return
+
+      const current = list.indexOf(document.activeElement as HTMLElement)
+      const move = (next: number) => {
+        e.preventDefault()
+        list[(next + list.length) % list.length]?.focus()
+      }
+
+      if (e.key === 'ArrowDown') move(current + 1)
+      else if (e.key === 'ArrowUp') move(current <= 0 ? list.length - 1 : current - 1)
+      else if (e.key === 'Home') move(0)
+      else if (e.key === 'End') move(list.length - 1)
     }
     document.addEventListener('mousedown', handleClick)
     document.addEventListener('keydown', handleKey)
@@ -132,6 +163,8 @@ const AnchoredMenu = ({
     <Portal>
       <div
         ref={setEl}
+        role="menu"
+        tabIndex={-1}
         className={`z-[1300] min-w-[160px] rounded-md border border-gray-200 bg-primary-100 py-1 text-gray-900 shadow-lg ${className ?? ''}`}
         style={{ position: 'fixed', visibility: 'hidden' }}
       >
@@ -150,8 +183,12 @@ interface MenuItemProps {
 export const MenuItem = ({ onClick, className, children }: MenuItemProps) => (
   <button
     type="button"
+    role="menuitem"
+    // Roving focus: arrow keys move between items, so they stay out of the tab
+    // sequence and Tab leaves the menu rather than walking it.
+    tabIndex={-1}
     onClick={onClick}
-    className={`block w-full px-3 py-1.5 text-left text-sm text-gray-900 hover:bg-primary-200 ${className ?? ''}`}
+    className={`block w-full px-3 py-1.5 text-left text-sm text-gray-900 hover:bg-primary-200 focus:bg-primary-200 focus:outline-none ${className ?? ''}`}
   >
     {children}
   </button>

@@ -14,16 +14,11 @@ const openMenu = async (conformsToGpad?: boolean) => {
 }
 
 /**
- * `MenuItem` renders a plain button, so drop the Actions trigger itself.
- *
  * `hidden: true` is required: AnchoredMenu positions itself from
  * `getBoundingClientRect`, which is all zeros under jsdom, so it keeps the
  * portal at `visibility: hidden` and the items fall out of the a11y tree.
  */
-const menuItems = () =>
-  screen
-    .getAllByRole('button', { hidden: true })
-    .filter(button => button.textContent?.trim() !== 'Actions')
+const menuItems = () => screen.getAllByRole('menuitem', { hidden: true })
 
 /** The menu item labels, in render order. */
 const itemLabels = () => menuItems().map(item => item.textContent?.trim())
