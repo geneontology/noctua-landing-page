@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { criteriaFromParams, paramsFromCriteria } from '@/features/models/services/urlSync'
+import {
+  criteriaFromParams,
+  pageFromParams,
+  paramsFromCriteria,
+} from '@/features/models/services/urlSync'
+import { DEFAULT_PAGE_SIZE } from '@/features/models/models/camSearch'
 import { buildCriteria } from '@tests/fixtures/models'
 
 describe('criteriaFromParams', () => {
@@ -71,5 +76,66 @@ describe('round trip', () => {
       buildCriteria({ molecules: [{ id: 'CHEBI:1', label: 'CHEBI:1' }] })
     )
     expect(criteriaFromParams(params).terms.map(t => t.id)).toEqual(['CHEBI:1'])
+  })
+})
+
+describe('pageFromParams', () => {
+  const parse = (query: string) => pageFromParams(new URLSearchParams(query))
+
+  it('defaults to the first page at the default size', () => {
+    expect(parse('')).toEqual({ pageNumber: 0, size: DEFAULT_PAGE_SIZE })
+  })
+
+  // The URL is 1-based because that is what a reader expects; state is 0-based.
+  it('converts a 1-based page to a 0-based index', () => {
+    expect(parse('page=4').pageNumber).toBe(3)
+  })
+
+  it('treats page=1 as the first page', () => {
+    expect(parse('page=1').pageNumber).toBe(0)
+  })
+
+  it.each(['page=0', 'page=-2', 'page=abc', 'page='])('ignores a nonsense %s', query => {
+    expect(parse(query).pageNumber).toBe(0)
+  })
+
+  it('accepts a size the picker offers', () => {
+    expect(parse('size=25').size).toBe(25)
+  })
+
+  // A hand-edited URL must not be able to ask Barista for an arbitrary number
+  // of rows.
+  it.each(['size=10000', 'size=7', 'size=abc'])('rejects an unoffered %s', query => {
+    expect(parse(query).size).toBe(DEFAULT_PAGE_SIZE)
+  })
+})
+
+describe('paramsFromCriteria page round-trip', () => {
+  const criteria = buildCriteria({ titles: ['kinase'] })
+
+  it('omits the page on the first page at the default size', () => {
+    const params = paramsFromCriteria(criteria, { pageNumber: 0, size: DEFAULT_PAGE_SIZE })
+
+    expect(params.has('page')).toBe(false)
+    expect(params.has('size')).toBe(false)
+  })
+
+  it('writes a 1-based page number', () => {
+    expect(paramsFromCriteria(criteria, { pageNumber: 3, size: 50 }).get('page')).toBe('4')
+  })
+
+  it('writes a non-default size', () => {
+    expect(paramsFromCriteria(criteria, { pageNumber: 0, size: 25 }).get('size')).toBe('25')
+  })
+
+  it('round-trips a position through the URL', () => {
+    const page = { pageNumber: 2, size: 25 }
+    const params = paramsFromCriteria(criteria, page)
+
+    expect(pageFromParams(new URLSearchParams(params.toString()))).toEqual(page)
+  })
+
+  it('still works with no page supplied', () => {
+    expect(paramsFromCriteria(criteria).has('page')).toBe(false)
   })
 })

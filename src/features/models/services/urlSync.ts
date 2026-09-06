@@ -1,5 +1,7 @@
 import type { SearchCriteria } from '../models/searchCriteria'
 import { FilterType, emptyCriteria } from '../models/searchCriteria'
+import type { CamPage } from '../models/camSearch'
+import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../models/camSearch'
 
 /** Maps a URL query parameter onto the criteria field it populates. */
 const PARAM_TO_FILTER: Record<string, FilterType> = {
@@ -62,11 +64,31 @@ export const criteriaFromParams = (searchParams: URLSearchParams): SearchCriteri
 }
 
 /**
- * Build the browser-visible query string. Deliberately not the same as the API
- * query: no pagination, and `expand` is inverted into an `exact` flag so the
- * default (expanded) URL stays clean.
+ * Read the page position out of the URL.
+ *
+ * `page` is 1-based in the address bar because that is what a reader expects,
+ * and 0-based in state. A size outside the offered options is ignored rather
+ * than trusted, so a hand-edited URL cannot ask Barista for 100000 rows.
  */
-export const paramsFromCriteria = (criteria: SearchCriteria): URLSearchParams => {
+export const pageFromParams = (searchParams: URLSearchParams): CamPage => {
+  const rawPage = Number(searchParams.get('page'))
+  const rawSize = Number(searchParams.get('size'))
+
+  return {
+    pageNumber: Number.isFinite(rawPage) && rawPage > 1 ? Math.floor(rawPage) - 1 : 0,
+    size: PAGE_SIZE_OPTIONS.includes(rawSize) ? rawSize : DEFAULT_PAGE_SIZE,
+  }
+}
+
+/**
+ * Build the browser-visible query string. Deliberately not the same as the API
+ * query: `expand` is inverted into an `exact` flag and the page is 1-based, so
+ * a default, first-page search still produces a clean URL.
+ */
+export const paramsFromCriteria = (
+  criteria: SearchCriteria,
+  page?: CamPage
+): URLSearchParams => {
   const params = new URLSearchParams()
 
   criteria.titles.forEach(v => params.append('title', v))
@@ -85,6 +107,10 @@ export const paramsFromCriteria = (criteria: SearchCriteria): URLSearchParams =>
   criteria.organisms.forEach(v => params.append('organism', v.taxonIri))
 
   if (!criteria.expand) params.append('exact', '1')
+
+  // Only written when they differ from the default, so the common URL stays short.
+  if (page && page.pageNumber > 0) params.append('page', String(page.pageNumber + 1))
+  if (page && page.size !== DEFAULT_PAGE_SIZE) params.append('size', String(page.size))
 
   return params
 }

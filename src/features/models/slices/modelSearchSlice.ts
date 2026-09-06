@@ -4,9 +4,8 @@ import type { RootState } from '@/app/store/store'
 import type { SearchCriteria } from '../models/searchCriteria'
 import { FilterType, countFilters, emptyCriteria, filterValueKey } from '../models/searchCriteria'
 import type { CamPage } from '../models/camSearch'
-import { DEFAULT_PAGE_SIZE } from '../models/camSearch'
 import { MAX_FILTER_VALUES, MAX_TITLE_FILTERS } from '../data/modelConstants'
-import { criteriaFromParams } from '../services/urlSync'
+import { criteriaFromParams, pageFromParams } from '../services/urlSync'
 
 interface ModelSearchState {
   criteria: SearchCriteria
@@ -20,16 +19,17 @@ interface ModelSearchState {
  * shared search URL issues one request instead of firing an unfiltered query
  * first and immediately superseding it.
  */
-const criteriaFromLocation = (): SearchCriteria => {
-  if (typeof window === 'undefined') return emptyCriteria()
-  const params = new URLSearchParams(window.location.search)
+const locationParams = (): URLSearchParams => {
+  const params = new URLSearchParams(
+    typeof window === 'undefined' ? '' : window.location.search
+  )
   params.delete('barista_token')
-  return criteriaFromParams(params)
+  return params
 }
 
 const initialState: ModelSearchState = {
-  criteria: criteriaFromLocation(),
-  page: { pageNumber: 0, size: DEFAULT_PAGE_SIZE },
+  criteria: criteriaFromParams(locationParams()),
+  page: pageFromParams(locationParams()),
   lastRejection: null,
 }
 
@@ -117,6 +117,20 @@ export const modelSearchSlice = createSlice({
     clearRejection: state => {
       state.lastRejection = null
     },
+
+    /**
+     * Adopt a whole position from the address bar in one action — used by the
+     * Back button. Two separate dispatches would fire two searches, the first
+     * against a half-restored state.
+     */
+    restoreFromUrl: (
+      state,
+      action: PayloadAction<{ criteria: SearchCriteria; page: CamPage }>
+    ) => {
+      state.criteria = action.payload.criteria
+      state.page = action.payload.page
+      state.lastRejection = null
+    },
   },
 })
 
@@ -130,6 +144,7 @@ export const {
   hydrateTermLabel,
   setPage,
   clearRejection,
+  restoreFromUrl,
 } = modelSearchSlice.actions
 
 export const selectCriteria = (state: RootState) => state.modelSearch.criteria

@@ -7,6 +7,7 @@ import { emptyCriteria } from '@/features/models/models/searchCriteria'
 import { FilterType } from '@/features/models/models/searchCriteria'
 import { addFilter, clearAll } from '@/features/models/slices/modelSearchSlice'
 
+
 /**
  * The GOlr lookup rides on JSONP, which cannot resolve under jsdom, so the
  * label-hydration dependency is mocked at the module boundary.
@@ -29,6 +30,10 @@ const renderSync = (criteria = emptyCriteria()) => {
   )
   return { store, ...renderHook(() => useUrlSync(), { wrapper }) }
 }
+
+// Captured before any spy replaces it, so tests can actually move the address
+// bar — the spies below are no-ops and would otherwise swallow the change.
+const realReplaceState = window.history.replaceState.bind(window.history)
 
 let pushState: ReturnType<typeof vi.spyOn>
 let replaceState: ReturnType<typeof vi.spyOn>
@@ -181,5 +186,91 @@ describe('useUrlSync', () => {
       await waitFor(() => expect(pushState).toHaveBeenCalled())
       expect(fetchTerm).toHaveBeenCalledTimes(1)
     })
+  })
+})
+
+describe('useUrlSync history navigation', () => {
+  const setUrl = (query: string) => {
+    realReplaceState({}, '', `/${query ? `?${query}` : ''}`)
+  }
+
+  afterEach(() => setUrl(''))
+
+  const back = () => act(() => void window.dispatchEvent(new PopStateEvent('popstate')))
+
+  it('adopts the criteria in the URL when the user goes Back', async () => {
+    const { store } = renderSync()
+
+    setUrl('title=kinase')
+    back()
+
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.titles).toEqual(['kinase'])
+    )
+  })
+
+  it('adopts the page position too', async () => {
+    const { store } = renderSync()
+
+    setUrl('title=kinase&page=3&size=25')
+    back()
+
+    await waitFor(() => expect(store.getState().modelSearch.page).toEqual({
+      pageNumber: 2,
+      size: 25,
+    }))
+  })
+
+  it('returns to an unfiltered search when Back reaches a bare URL', async () => {
+    const { store } = renderSync({ ...emptyCriteria(), titles: ['kinase'] })
+
+    setUrl('')
+    back()
+
+    await waitFor(() => expect(store.getState().modelSearch.criteria.titles).toEqual([]))
+  })
+
+  // Without a guard, adopting a history entry would immediately push it back
+  // on as a new one and Back could never move past the latest search.
+  it('does not push a new entry while adopting one', async () => {
+    const { store } = renderSync()
+    pushState.mockClear()
+
+    setUrl('title=kinase')
+    back()
+
+    // Wait on the adoption itself; the write effect deliberately produces no
+    // history call at all on that render.
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.titles).toEqual(['kinase'])
+    )
+    expect(pushState).not.toHaveBeenCalled()
+  })
+
+  it('resumes pushing once the user changes the search again', async () => {
+    const { store } = renderSync()
+
+    setUrl('title=kinase')
+    back()
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.titles).toEqual(['kinase'])
+    )
+
+    pushState.mockClear()
+    act(() => {
+      store.dispatch(addFilter({ type: FilterType.PMIDS, value: 'PMID:1' }))
+    })
+
+    await waitFor(() => expect(pushState).toHaveBeenCalled())
+  })
+
+  it('stops listening once unmounted', async () => {
+    const { store, unmount } = renderSync()
+    unmount()
+
+    setUrl('title=kinase')
+    back()
+
+    expect(store.getState().modelSearch.criteria.titles).toEqual([])
   })
 })
