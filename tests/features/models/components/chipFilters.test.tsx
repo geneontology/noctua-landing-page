@@ -240,6 +240,40 @@ describe('SelectChipFilter', () => {
     })
   })
 
+  // Mantine writes the picked label back into the input right after the submit
+  // handler runs. Left alone, the user has to backspace it out before typing
+  // the next filter, and sees the label twice — once as a chip, once as text.
+  it('empties the input after a pick', async () => {
+    const { user } = renderSelect()
+    const combobox = comboboxFor('Filter by Contributor')
+
+    await user.click(combobox)
+    await user.click(await screen.findByText('Grace Hopper'))
+
+    expect(combobox).toHaveValue('')
+  })
+
+  it('empties a partially typed search after a pick', async () => {
+    const { user } = renderSelect()
+    const combobox = comboboxFor('Filter by Contributor')
+
+    await user.type(combobox, 'Grace')
+    await user.click(await screen.findByText('Grace Hopper'))
+
+    expect(combobox).toHaveValue('')
+  })
+
+  it('still accepts typing after a pick', async () => {
+    const { user } = renderSelect()
+    const combobox = comboboxFor('Filter by Contributor')
+
+    await user.click(combobox)
+    await user.click(await screen.findByText('Grace Hopper'))
+    await user.type(combobox, 'Ada')
+
+    expect(combobox).toHaveValue('Ada')
+  })
+
   // The dropdown keeps its options in the DOM, so match on the chip's own
   // remove button rather than the label text, which appears in both places.
   it('renders a chip per selected value', () => {

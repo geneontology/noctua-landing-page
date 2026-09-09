@@ -51,14 +51,15 @@ describe('modelSearchSlice', () => {
       state = reducer(state, addFilter({ type: FilterType.PMIDS, value: `PMID:${i}` }))
     }
     expect(state.criteria.pmids).toHaveLength(10)
-    expect(state.lastRejection).toMatch(/maximum of 10/)
+    // Reads as a sentence with the filter's own name, not its enum value.
+    expect(state.lastRejection).toBe('Only 10 References filters allowed')
   })
 
   it('allows only one title filter', () => {
     let state = reducer(initial(), addFilter({ type: FilterType.TITLES, value: 'first' }))
     state = reducer(state, addFilter({ type: FilterType.TITLES, value: 'second' }))
     expect(state.criteria.titles).toEqual(['first'])
-    expect(state.lastRejection).toMatch(/maximum of 1 /)
+    expect(state.lastRejection).toBe('Only 1 Titles filter allowed')
   })
 
   it('returns to the first page whenever the criteria change', () => {

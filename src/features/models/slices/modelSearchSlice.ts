@@ -2,7 +2,13 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import { createSelector, createSlice } from '@reduxjs/toolkit'
 import type { RootState } from '@/app/store/store'
 import type { SearchCriteria } from '../models/searchCriteria'
-import { FilterType, countFilters, emptyCriteria, filterValueKey } from '../models/searchCriteria'
+import {
+  FILTER_LABELS,
+  FilterType,
+  countFilters,
+  emptyCriteria,
+  filterValueKey,
+} from '../models/searchCriteria'
 import type { CamPage } from '../models/camSearch'
 import { MAX_FILTER_VALUES, MAX_TITLE_FILTERS } from '../data/modelConstants'
 import { criteriaFromParams, pageFromParams } from '../services/urlSync'
@@ -49,7 +55,7 @@ export const modelSearchSlice = createSlice({
       const limit = limitFor(type)
 
       if (list.length >= limit) {
-        state.lastRejection = `Reached the maximum of ${limit} ${type} filter${limit === 1 ? '' : 's'}`
+        state.lastRejection = `Only ${limit} ${FILTER_LABELS[type]} filter${limit === 1 ? '' : 's'} allowed`
         return
       }
 

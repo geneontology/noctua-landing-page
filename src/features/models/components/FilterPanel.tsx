@@ -34,6 +34,12 @@ const FilterPanel: React.FC = () => {
 
   const [isDateRange, setIsDateRange] = useState(false)
 
+  // A record of what is shut, not what is open, so sections default to open
+  // and each one is independent — deliberately not an accordion.
+  const [shut, setShut] = useState<Record<string, boolean>>({})
+  const toggle = (key: string) => () => setShut(prev => ({ ...prev, [key]: !prev[key] }))
+  const open = (key: string) => !shut[key]
+
   // Surface a rejected filter (limit reached) the way the Angular info toast did.
   useEffect(() => {
     if (!rejection) return
@@ -61,6 +67,10 @@ const FilterPanel: React.FC = () => {
 
       <div className="flex-1 overflow-y-auto pb-6">
         <SectionHeading
+          collapsible
+          expanded={open('annotations')}
+          onToggle={toggle('annotations')}
+          controls="filter-section-annotations"
           right={
             <Checkbox
               size="xs"
@@ -72,7 +82,11 @@ const FilterPanel: React.FC = () => {
         >
           Annotations
         </SectionHeading>
-        <div className="flex flex-col gap-3 px-3 py-3">
+        <div
+          id="filter-section-annotations"
+          hidden={!open('annotations')}
+          className="flex flex-col gap-3 px-3 py-3"
+        >
           <TermChipFilter
             label="Filter by Any Ontology Term"
             name="terms"
@@ -108,14 +122,12 @@ const FilterPanel: React.FC = () => {
           />
           <TextChipFilter
             label="Filter by Reference"
-            placeholder="Add PMID filter"
             values={criteria.pmids}
             onAdd={add(FilterType.PMIDS)}
             onRemove={remove(FilterType.PMIDS)}
           />
           <SelectChipFilter
             label="Filter by Organism"
-            placeholder="Search species"
             options={organisms.map(o => ({ value: o.taxonIri, label: o.taxonName }))}
             values={criteria.organisms.map(o => ({ key: o.taxonIri, label: o.taxonName }))}
             onAdd={option =>
@@ -130,11 +142,21 @@ const FilterPanel: React.FC = () => {
           />
         </div>
 
-        <SectionHeading>Contributor</SectionHeading>
-        <div className="flex flex-col gap-3 px-3 py-3">
+        <SectionHeading
+          collapsible
+          expanded={open('contributor')}
+          onToggle={toggle('contributor')}
+          controls="filter-section-contributor"
+        >
+          Contributor
+        </SectionHeading>
+        <div
+          id="filter-section-contributor"
+          hidden={!open('contributor')}
+          className="flex flex-col gap-3 px-3 py-3"
+        >
           <SelectChipFilter
             label="Filter by Contributor"
-            placeholder="Search contributors"
             options={contributors.map(c => ({ value: c.uri, label: c.name ?? c.uri }))}
             values={criteria.contributors.map(c => ({ key: c.uri, label: c.name ?? c.uri }))}
             onAdd={option => {
@@ -150,7 +172,6 @@ const FilterPanel: React.FC = () => {
           />
           <SelectChipFilter
             label="Filter by Group"
-            placeholder="Search groups"
             options={groups.map(g => ({ value: g.id, label: g.label }))}
             values={criteria.groups.map(g => ({ key: g.id, label: g.label }))}
             onAdd={option => {
@@ -167,6 +188,10 @@ const FilterPanel: React.FC = () => {
         </div>
 
         <SectionHeading
+          collapsible
+          expanded={open('date')}
+          onToggle={toggle('date')}
+          controls="filter-section-date"
           right={
             <Checkbox
               size="xs"
@@ -178,7 +203,11 @@ const FilterPanel: React.FC = () => {
         >
           Date last modified
         </SectionHeading>
-        <div className="flex flex-col gap-3 px-3 py-3">
+        <div
+          id="filter-section-date"
+          hidden={!open('date')}
+          className="flex flex-col gap-3 px-3 py-3"
+        >
           {isDateRange ? (
             <>
               <TextChipFilter
@@ -207,11 +236,21 @@ const FilterPanel: React.FC = () => {
           )}
         </div>
 
-        <SectionHeading>Model</SectionHeading>
-        <div className="flex flex-col gap-3 px-3 py-3">
+        <SectionHeading
+          collapsible
+          expanded={open('model')}
+          onToggle={toggle('model')}
+          controls="filter-section-model"
+        >
+          Model
+        </SectionHeading>
+        <div
+          id="filter-section-model"
+          hidden={!open('model')}
+          className="flex flex-col gap-3 px-3 py-3"
+        >
           <TextChipFilter
             label="Filter by Model Ids"
-            placeholder="Add model id filter"
             values={criteria.ids}
             transform={cleanModelId}
             onAdd={add(FilterType.IDS)}
@@ -219,14 +258,12 @@ const FilterPanel: React.FC = () => {
           />
           <TextChipFilter
             label="Filter by Title"
-            placeholder="Add title filter (only one allowed)"
             values={criteria.titles}
             onAdd={add(FilterType.TITLES)}
             onRemove={remove(FilterType.TITLES)}
           />
           <SelectChipFilter
             label="Filter by State"
-            placeholder="Search states"
             options={MODEL_STATES.map(s => ({ value: s.value, label: s.label }))}
             values={criteria.states.map(state => ({
               key: state,

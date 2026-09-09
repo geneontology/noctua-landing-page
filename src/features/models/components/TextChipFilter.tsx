@@ -4,7 +4,6 @@ import ChipInputField from './ChipInputField'
 
 interface TextChipFilterProps {
   label: string
-  placeholder?: string
   values: string[]
   onAdd: (value: string) => void
   onRemove: (index: number) => void
@@ -19,7 +18,6 @@ interface TextChipFilterProps {
  */
 const TextChipFilter: React.FC<TextChipFilterProps> = ({
   label,
-  placeholder,
   values,
   onAdd,
   onRemove,
@@ -42,13 +40,13 @@ const TextChipFilter: React.FC<TextChipFilterProps> = ({
       htmlFor={id}
       chips={values.map(value => ({ key: value, label: value }))}
       onRemove={onRemove}
+      alwaysFloat={inputType === 'date'}
     >
       <input
         id={id}
         type={inputType}
-        placeholder={placeholder}
         value={draft}
-        className="w-full border-none bg-transparent text-xs text-gray-900 outline-none placeholder:text-gray-400"
+        className="w-full border-none bg-transparent text-xs text-gray-900 outline-none"
         onChange={e => setDraft(e.currentTarget.value)}
         onKeyDown={e => {
           if (e.key === 'Enter' || (e.key === ',' && inputType === 'text')) {

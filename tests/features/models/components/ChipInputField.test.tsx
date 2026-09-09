@@ -25,7 +25,7 @@ describe('ChipInputField', () => {
 
     const input = screen.getByLabelText('Filter by Model Ids')
     const chip = screen.getByText('gomodel:1')
-    const box = input.closest('div.flex-wrap')
+    const box = input.closest('[data-floating]')
 
     expect(box).not.toBeNull()
     expect(box!.contains(chip)).toBe(true)
@@ -71,8 +71,8 @@ describe('chip-to-field association', () => {
   it('keeps each chip inside its own field', () => {
     renderTwoFields()
 
-    const idsBox = screen.getByLabelText('Filter by Model Ids').closest('div.flex-wrap')!
-    const titleBox = screen.getByLabelText('Filter by Title').closest('div.flex-wrap')!
+    const idsBox = screen.getByLabelText('Filter by Model Ids').closest('[data-floating]')!
+    const titleBox = screen.getByLabelText('Filter by Title').closest('[data-floating]')!
 
     expect(idsBox.contains(screen.getByText('gomodel:1'))).toBe(true)
     expect(idsBox.contains(screen.getByText('kinase'))).toBe(false)
@@ -116,5 +116,98 @@ describe('chip-to-field association', () => {
 
     expect(onRemoveTitles).toHaveBeenCalledWith(0)
     expect(onRemoveIds).not.toHaveBeenCalled()
+  })
+})
+
+describe('the floating label', () => {
+  const floatingOf = (control: HTMLElement) =>
+    control.closest('[data-floating]')?.getAttribute('data-floating')
+
+  // Empty and unfocused, the label sits inside the box and reads as the
+  // placeholder — the FloatingTextarea behaviour, not a permanent header.
+  it('sits inside the box while the field is empty and unfocused', () => {
+    renderWithProviders(
+      <TextChipFilter label="Filter by Title" values={[]} onAdd={vi.fn()} onRemove={vi.fn()} />
+    )
+
+    expect(floatingOf(screen.getByLabelText('Filter by Title'))).toBe('false')
+  })
+
+  it('lifts on focus', async () => {
+    const { user } = renderWithProviders(
+      <TextChipFilter label="Filter by Title" values={[]} onAdd={vi.fn()} onRemove={vi.fn()} />
+    )
+    const input = screen.getByLabelText('Filter by Title')
+
+    await user.click(input)
+
+    expect(floatingOf(input)).toBe('true')
+  })
+
+  it('stays lifted while the field holds typed text', async () => {
+    const { user } = renderWithProviders(
+      <TextChipFilter label="Filter by Title" values={[]} onAdd={vi.fn()} onRemove={vi.fn()} />
+    )
+    const input = screen.getByLabelText('Filter by Title')
+
+    await user.type(input, 'kin')
+    await user.tab()
+
+    expect(floatingOf(input)).toBe('true')
+  })
+
+  // Chips fill the box, so the label must stay clear of them even unfocused.
+  it('stays lifted while the field holds chips', () => {
+    renderWithProviders(
+      <TextChipFilter
+        label="Filter by Title"
+        values={['kinase']}
+        onAdd={vi.fn()}
+        onRemove={vi.fn()}
+      />
+    )
+
+    expect(floatingOf(screen.getByLabelText('Filter by Title'))).toBe('true')
+  })
+
+  it('drops back once focus leaves an empty field', async () => {
+    const { user } = renderWithProviders(
+      <TextChipFilter label="Filter by Title" values={[]} onAdd={vi.fn()} onRemove={vi.fn()} />
+    )
+    const input = screen.getByLabelText('Filter by Title')
+
+    await user.click(input)
+    await user.tab()
+
+    expect(floatingOf(input)).toBe('false')
+  })
+})
+
+describe('date fields', () => {
+  const floatingOf = (control: HTMLElement) =>
+    control.closest('[data-floating]')?.getAttribute('data-floating')
+
+  // Chrome always draws mm/dd/yyyy through ::-webkit-datetime-edit, which the
+  // placeholder rules cannot reach, so an inline label would sit on top of it.
+  it('keeps the label lifted even while empty and unfocused', () => {
+    renderWithProviders(
+      <TextChipFilter
+        label="Filter by Exact Date"
+        inputType="date"
+        values={[]}
+        onAdd={vi.fn()}
+        onRemove={vi.fn()}
+      />
+    )
+
+    expect(floatingOf(screen.getByLabelText('Filter by Exact Date'))).toBe('true')
+  })
+
+  it('does not lift a text field for the same reason', () => {
+    renderWithProviders(
+      <TextChipFilter label="Filter by Title" values={[]} onAdd={vi.fn()} onRemove={vi.fn()} />
+    )
+
+    expect(floatingOf(screen.getByLabelText('Filter by Title'))).toBe('false')
   })
 })
