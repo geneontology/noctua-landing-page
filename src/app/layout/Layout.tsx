@@ -27,10 +27,10 @@ const Layout: React.FC = () => {
     <div className="flex h-screen w-full flex-col bg-gray-300">
       <LoadingOverlay />
 
-      {/* Announcement banner unmounted for now. The feature is intact in
-          `src/features/announcements/` — re-render <AnnouncementBanner /> here
-          to bring it back. Unmounted rather than deleted so nothing fetches
-          notification.json in the meantime. */}
+      {/* Announcement banner stays unmounted. The feature is intact in
+          `src/features/announcements/` — render <AnnouncementBanner /> here,
+          above the toolbar, to bring it back. Unmounted rather than deleted so
+          nothing fetches notification.json in the meantime. */}
 
       <div className="h-12 shrink-0 border-b-2 border-b-primary-500">
         <Toolbar />
