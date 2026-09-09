@@ -1,5 +1,6 @@
 import type React from 'react'
 import { IoClose } from 'react-icons/io5'
+import { CHIP_COLORS, chipColors } from '../data/modelConstants'
 
 interface FilterChipListProps {
   items: { key: string; label: string; title?: string }[]
@@ -9,6 +10,14 @@ interface FilterChipListProps {
    *  alongside the input. */
   className?: string
 }
+
+/**
+ * The Angular `noc-chip-color` recipe — a 1px border in the chip colour over a
+ * 20%-alpha fill — same as the filter bar and the table's chips. Inside a field
+ * it also has to stay legible against the box's own outline, which is why the
+ * border is a definite colour rather than a tint of the background.
+ */
+const CHIP = chipColors(CHIP_COLORS.filter)
 
 /** The removable chips for a filter input. */
 const FilterChipList: React.FC<FilterChipListProps> = ({ items, onRemove, className }) => {
@@ -20,13 +29,14 @@ const FilterChipList: React.FC<FilterChipListProps> = ({ items, onRemove, classN
         <span
           key={item.key}
           title={item.title ?? item.label}
-          className="flex max-w-full items-center rounded-full border border-primary-200 bg-primary-50 py-0.5 pl-2 pr-1 text-2xs text-primary-900"
+          style={CHIP.chipStyle}
+          className="flex h-[22px] max-w-full items-center rounded-full border pl-2 pr-1 text-2xs text-gray-800"
         >
           <span className="truncate">{item.label}</span>
           <button
             type="button"
             aria-label={`Remove ${item.label}`}
-            className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full hover:bg-primary-200"
+            className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-gray-600 hover:bg-black/10"
             onClick={() => onRemove(index)}
           >
             <IoClose size={11} />
