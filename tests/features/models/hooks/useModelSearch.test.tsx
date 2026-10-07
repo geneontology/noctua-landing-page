@@ -1,11 +1,12 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import type { PropsWithChildren } from 'react'
-import { renderHook, waitFor } from '@testing-library/react'
+import { act, renderHook, waitFor } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { useModelSearch } from '@/features/models/hooks/useModelSearch'
 import { makeStore } from '@/app/store/store'
 import type { RootState } from '@/app/store/store'
-import { emptyCriteria } from '@/features/models/models/searchCriteria'
+import { FilterType, emptyCriteria } from '@/features/models/models/searchCriteria'
+import { addFilter } from '@/features/models/slices/modelSearchSlice'
 import { buildCamSearchResponseItem } from '@tests/fixtures/models'
 
 const json = (body: unknown) =>
@@ -182,6 +183,36 @@ describe('useModelSearch', () => {
 
       await waitFor(() => expect(result.current.isError).toBe(true))
       expect(result.current.models).toEqual([])
+    })
+
+    // Regression: RTK Query keeps the last *successful* data, so a failed
+    // search left the previous criteria's rows on screen under the new chips.
+    it('drops the previous rows when a later search fails', async () => {
+      serve({ models: [buildCamSearchResponseItem({ id: 'gomodel:old' })], total: 1 })
+      const { result, store } = renderSearch()
+      await waitFor(() => expect(result.current.models).toHaveLength(1))
+
+      vi.stubGlobal('fetch', vi.fn(async () => new Response('nope', { status: 500 })))
+      act(() => {
+        store.dispatch(addFilter({ type: FilterType.TITLES, value: 'wnt' }))
+      })
+
+      await waitFor(() => expect(result.current.isError).toBe(true))
+      expect(result.current.models).toEqual([])
+    })
+
+    it('keeps the previous rows up while the next search loads', async () => {
+      serve({ models: [buildCamSearchResponseItem({ id: 'gomodel:old' })], total: 1 })
+      const { result, store } = renderSearch()
+      await waitFor(() => expect(result.current.models).toHaveLength(1))
+
+      vi.stubGlobal('fetch', vi.fn(() => new Promise<Response>(() => {})))
+      act(() => {
+        store.dispatch(addFilter({ type: FilterType.TITLES, value: 'wnt' }))
+      })
+
+      await waitFor(() => expect(result.current.isFetching).toBe(true))
+      expect(result.current.models.map(m => m.id)).toEqual(['gomodel:old'])
     })
   })
 

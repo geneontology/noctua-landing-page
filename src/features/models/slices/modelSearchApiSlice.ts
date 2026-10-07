@@ -7,15 +7,28 @@ import { buildSearchQuery, serializeSearchQuery } from '../services/searchQuery'
 
 const addTagTypes = ['models'] as const
 
+type SearchArgs = { criteria: SearchCriteria; page?: CamPage }
+
+/**
+ * Key the cache on the request Barista sees rather than on the criteria object.
+ * The object also carries display labels, and a chip label resolving after load
+ * (`hydrateTermLabel`) must not refetch an identical search and count.
+ */
+const keyByRequest =
+  (toQuery: (args: SearchArgs) => string) =>
+  ({ endpointName, queryArgs }: { endpointName: string; queryArgs: SearchArgs }) =>
+    `${endpointName}(${toQuery(queryArgs)})`
+
+const searchQuery = ({ criteria, page }: SearchArgs) =>
+  serializeSearchQuery(buildSearchQuery(criteria, page))
+
 export const modelSearchApi = apiService
   .enhanceEndpoints({ addTagTypes })
   .injectEndpoints({
     endpoints: builder => ({
       searchModels: builder.query<CamSearchResult[], { criteria: SearchCriteria; page: CamPage }>({
-        query: ({ criteria, page }) => {
-          const query = serializeSearchQuery(buildSearchQuery(criteria, page))
-          return { url: `${ENVIRONMENT.searchApi}/models?${query}` }
-        },
+        query: args => ({ url: `${ENVIRONMENT.searchApi}/models?${searchQuery(args)}` }),
+        serializeQueryArgs: keyByRequest(searchQuery),
         transformResponse: (response: { models?: CamSearchResponseItem[] }) =>
           mapCamSearchResponse(response?.models ?? []),
         providesTags: ['models'],
@@ -29,6 +42,7 @@ export const modelSearchApi = apiService
           params.append('count', '')
           return { url: `${ENVIRONMENT.searchApi}/models?${serializeSearchQuery(params)}` }
         },
+        serializeQueryArgs: keyByRequest(({ criteria }) => searchQuery({ criteria })),
         transformResponse: (response: { n?: number }) => response?.n ?? 0,
         providesTags: ['models'],
       }),

@@ -18,12 +18,17 @@ export const useModelSearch = () => {
   const groups = useAppSelector(selectGroups)
 
   const {
-    data: results = [],
+    data,
     isFetching,
     isError,
     error,
     refetch: refetchResults,
   } = useSearchModelsQuery({ criteria, page })
+
+  // `data` is the last *successful* result for any criteria. That is what keeps
+  // the previous page up while the next one loads, but once the current search
+  // has failed it would show the old rows under the new filters.
+  const results = useMemo(() => (isError ? [] : (data ?? [])), [data, isError])
 
   const { data: total = 0, refetch: refetchCount } = useCountModelsQuery({ criteria })
 

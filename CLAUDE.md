@@ -20,7 +20,10 @@ Toolkit, and Mantine v9.
 - `npm run build:beta-test` — Same flow against the `noctua-landing-page-beta` workbench in `staging` mode
 - `npm run test` — Vitest run (looks for `tests/**/*.test.{ts,tsx}` only — files outside `tests/` are ignored)
 - Run a single test file: `npx vitest run tests/features/models/slices/modelSearchSlice.test.ts`
-- `npm run test:e2e` — Playwright e2e (`test:e2e:ui`, `test:e2e:headed` variants)
+- `npm run test:coverage` — Vitest with v8 coverage (text summary + `coverage/` HTML report)
+- `npm run test:e2e` — Playwright e2e (`test:e2e:ui`, `test:e2e:headed` variants). Boots `npm run dev`;
+  every Barista/Minerva/GOlr call is answered by `e2e/mocks/backend.ts` (`mockBackend(page, overrides)`
+  returns the mutable `state` and the recorded `calls`), so no live service is needed.
 - `npm run lint` / `lint:fix` — ESLint
 - `npm run format` — Prettier
 - `npm run type-check` — `tsc -p tsconfig.app.json --noEmit`

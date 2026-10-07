@@ -110,6 +110,18 @@ describe('ModelsTable empty state', () => {
     expect(screen.queryByRole('button', { name: 'Clear all filters' })).not.toBeInTheDocument()
   })
 
+  // A failed search is not an empty result: "no models match" would send the
+  // user off loosening filters that were never the problem.
+  it('says the search failed rather than that nothing matched', () => {
+    renderWithProviders(<ModelsTable models={[]} isFetching={false} isError />, {
+      preloadedState: withFilters,
+    })
+
+    expect(screen.getByText('Could not load models. Try refreshing.')).toBeInTheDocument()
+    expect(screen.queryByText('No models match these filters.')).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: 'Clear all filters' })).not.toBeInTheDocument()
+  })
+
   it('clears every filter from the empty state', async () => {
     const { store, user } = renderWithProviders(<ModelsTable models={[]} isFetching={false} />, {
       preloadedState: withFilters,

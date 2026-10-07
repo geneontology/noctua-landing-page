@@ -144,6 +144,39 @@ describe('FilterPanel', () => {
 
       expect(screen.getByLabelText('Filter by Exact Date')).toBeInTheDocument()
     })
+
+    // Regression: the toggle was local state defaulting to off, so a range
+    // that arrived via `?startdate=` was neither visible nor removable here.
+    it('opens in range mode when a range filter is already active', () => {
+      renderWithProviders(<FilterPanel />, {
+        preloadedState: withCriteria({ startdates: ['2026-01-01'] }),
+      })
+
+      expect(screen.getByLabelText('Date Range')).toBeChecked()
+      expect(screen.getByText('2026-01-01')).toBeInTheDocument()
+    })
+
+    it('keeps an active range visible after unticking', async () => {
+      const { user } = renderWithProviders(<FilterPanel />, {
+        preloadedState: withCriteria({ enddates: ['2026-02-01'] }),
+      })
+
+      await user.click(screen.getByLabelText('Date Range'))
+
+      expect(screen.getByText('2026-02-01')).toBeInTheDocument()
+      expect(screen.getByLabelText('Filter by Exact Date')).toBeInTheDocument()
+    })
+
+    it('keeps an active exact date visible in range mode', async () => {
+      const { user } = renderWithProviders(<FilterPanel />, {
+        preloadedState: withCriteria({ exactdates: ['2026-03-01'] }),
+      })
+
+      await user.click(screen.getByLabelText('Date Range'))
+
+      expect(screen.getByText('2026-03-01')).toBeInTheDocument()
+      expect(screen.getByLabelText('Start Date')).toBeInTheDocument()
+    })
   })
 
   it('shows existing filter values as chips', () => {

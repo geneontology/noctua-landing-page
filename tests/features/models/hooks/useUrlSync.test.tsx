@@ -5,7 +5,7 @@ import { Provider } from 'react-redux'
 import { makeStore } from '@/app/store/store'
 import { emptyCriteria } from '@/features/models/models/searchCriteria'
 import { FilterType } from '@/features/models/models/searchCriteria'
-import { addFilter, clearAll } from '@/features/models/slices/modelSearchSlice'
+import { addFilter, clearAll, hydrateTermLabel } from '@/features/models/slices/modelSearchSlice'
 
 
 /**
@@ -88,6 +88,7 @@ describe('useUrlSync', () => {
   // Clearing back to nothing should leave a bare URL rather than an empty `?`,
   // and should not add another history entry.
   it('replaces with a bare URL once every filter is cleared', async () => {
+    realReplaceState({}, '', '/?title=kinase')
     const { store } = renderSync({ ...emptyCriteria(), titles: ['kinase'] })
 
     act(() => {
@@ -96,6 +97,43 @@ describe('useUrlSync', () => {
 
     await waitFor(() => expect(replaceState).toHaveBeenCalled())
     expect(replaceState.mock.calls[0][2]).not.toContain('?')
+    realReplaceState({}, '', '/')
+  })
+
+  // Regression: a change the URL cannot show (a chip label resolving) still
+  // pushed the same URL again, so Back appeared to do nothing.
+  it('records no history when nothing the URL shows has changed', async () => {
+    realReplaceState({}, '', '/?term=GO%3A0016301')
+    fetchTerm.mockResolvedValue({ id: 'GO:0016301', label: 'kinase activity' })
+    const { store } = renderSync({
+      ...emptyCriteria(),
+      terms: [{ id: 'GO:0016301', label: 'GO:0016301' }],
+    })
+
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.terms[0].label).toBe('kinase activity')
+    )
+    expect(pushState).not.toHaveBeenCalled()
+    expect(replaceState).not.toHaveBeenCalled()
+    realReplaceState({}, '', '/')
+  })
+
+  it('treats a differently encoded URL for the same search as unchanged', async () => {
+    realReplaceState({}, '', '/?term=GO:0016301&page=1')
+    const { store } = renderSync({
+      ...emptyCriteria(),
+      terms: [{ id: 'GO:0016301', label: 'kinase activity' }],
+    })
+
+    act(() => {
+      store.dispatch(hydrateTermLabel({ type: FilterType.TERMS, id: 'GO:0016301', label: 'kinase' }))
+    })
+
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.terms[0].label).toBe('kinase')
+    )
+    expect(pushState).not.toHaveBeenCalled()
+    realReplaceState({}, '', '/')
   })
 
   it('serializes an entity filter by its id', async () => {
@@ -262,6 +300,44 @@ describe('useUrlSync history navigation', () => {
     })
 
     await waitFor(() => expect(pushState).toHaveBeenCalled())
+  })
+
+  // Regression: the label lookup was a one-shot, and the URL carries ids only,
+  // so Back to a term search left its chip reading "GO:0016301" for good.
+  it('gives a term restored by Back its label again, without a new lookup', async () => {
+    fetchTerm.mockResolvedValue({ id: 'GO:0016301', label: 'kinase activity' })
+    const { store } = renderSync({
+      ...emptyCriteria(),
+      terms: [{ id: 'GO:0016301', label: 'GO:0016301' }],
+    })
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.terms[0].label).toBe('kinase activity')
+    )
+
+    setUrl('title=wnt')
+    back()
+    await waitFor(() => expect(store.getState().modelSearch.criteria.terms).toEqual([]))
+    setUrl('term=GO%3A0016301')
+    back()
+
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.terms).toEqual([
+        { id: 'GO:0016301', label: 'kinase activity' },
+      ])
+    )
+    expect(fetchTerm).toHaveBeenCalledTimes(1)
+  })
+
+  it('looks up a term first seen through Back', async () => {
+    fetchTerm.mockResolvedValue({ id: 'GO:0008150', label: 'biological_process' })
+    const { store } = renderSync()
+
+    setUrl('term=GO%3A0008150')
+    back()
+
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.terms[0].label).toBe('biological_process')
+    )
   })
 
   it('stops listening once unmounted', async () => {

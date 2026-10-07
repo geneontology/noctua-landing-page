@@ -174,6 +174,9 @@ const AnchoredMenu = ({
   )
 }
 
+const ITEM_CLASS =
+  'block w-full px-3 py-1.5 text-left text-sm text-gray-900 no-underline hover:bg-primary-200 focus:bg-primary-200 focus:outline-none'
+
 interface MenuItemProps {
   onClick?: (e: React.MouseEvent) => void
   className?: string
@@ -188,10 +191,39 @@ export const MenuItem = ({ onClick, className, children }: MenuItemProps) => (
     // sequence and Tab leaves the menu rather than walking it.
     tabIndex={-1}
     onClick={onClick}
-    className={`block w-full px-3 py-1.5 text-left text-sm text-gray-900 hover:bg-primary-200 focus:bg-primary-200 focus:outline-none ${className ?? ''}`}
+    className={`${ITEM_CLASS} ${className ?? ''}`}
   >
     {children}
   </button>
+)
+
+interface MenuLinkProps {
+  href: string
+  /** Runs alongside the navigation — typically closing the menu. */
+  onClick?: () => void
+  className?: string
+  children: ReactNode
+  'data-pw'?: string
+}
+
+/**
+ * A menu item that is itself the link, opening in a new tab. A link nested in
+ * a {@link MenuItem} button never received Enter (the button took it and only
+ * closed the menu), and only its text, not the whole row, was clickable.
+ */
+export const MenuLink = ({ href, onClick, className, children, ...rest }: MenuLinkProps) => (
+  <a
+    role="menuitem"
+    tabIndex={-1}
+    href={href}
+    target="_blank"
+    rel="noopener noreferrer"
+    onClick={onClick}
+    className={`${ITEM_CLASS} ${className ?? ''}`}
+    {...rest}
+  >
+    {children}
+  </a>
 )
 
 export default AnchoredMenu

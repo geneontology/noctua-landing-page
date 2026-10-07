@@ -106,6 +106,12 @@ export default defineConfig(({ command, mode }) => {
       setupFiles: 'tests/setup.ts',
       include: ['tests/**/*.test.{ts,tsx}'],
       mockReset: true,
+      coverage: {
+        provider: 'v8',
+        include: ['src/**/*.{ts,tsx}'],
+        exclude: ['src/**/*.d.ts', 'src/main.tsx'],
+        reporter: ['text', 'html'],
+      },
     },
     define: {
       __APP_ENV__: JSON.stringify(env.APP_ENV),

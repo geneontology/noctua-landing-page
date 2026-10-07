@@ -32,7 +32,13 @@ const FilterPanel: React.FC = () => {
   const groups = useAppSelector(selectGroups)
   const { data: organisms = [] } = useGetTaxaQuery()
 
-  const [isDateRange, setIsDateRange] = useState(false)
+  // The toggle picks which fields to add with, but a field holding active
+  // filters stays visible either way — otherwise a range arriving from the URL,
+  // or one left behind by unticking the box, could be neither seen nor removed.
+  const hasRange = criteria.startdates.length > 0 || criteria.enddates.length > 0
+  const [isDateRange, setIsDateRange] = useState(hasRange)
+  const showRange = isDateRange || hasRange
+  const showExact = !isDateRange || criteria.exactdates.length > 0
 
   // A record of what is shut, not what is open, so sections default to open
   // and each one is independent — deliberately not an accordion.
@@ -208,7 +214,16 @@ const FilterPanel: React.FC = () => {
           hidden={!open('date')}
           className="flex flex-col gap-3 px-3 py-3"
         >
-          {isDateRange ? (
+          {showExact && (
+            <TextChipFilter
+              label="Filter by Exact Date"
+              inputType="date"
+              values={criteria.exactdates}
+              onAdd={add(FilterType.EXACT_DATES)}
+              onRemove={remove(FilterType.EXACT_DATES)}
+            />
+          )}
+          {showRange && (
             <>
               <TextChipFilter
                 label="Start Date"
@@ -225,14 +240,6 @@ const FilterPanel: React.FC = () => {
                 onRemove={remove(FilterType.END_DATES)}
               />
             </>
-          ) : (
-            <TextChipFilter
-              label="Filter by Exact Date"
-              inputType="date"
-              values={criteria.exactdates}
-              onAdd={add(FilterType.EXACT_DATES)}
-              onRemove={remove(FilterType.EXACT_DATES)}
-            />
           )}
         </div>
 

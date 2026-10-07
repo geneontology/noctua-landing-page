@@ -5,6 +5,16 @@ import { formatSolrQueryString, mapGOlrResponse } from '../services/lookupServic
 
 let jsonpCounter = 0
 
+/**
+ * A stalled connection fires neither `load` nor `error`, and RTK Query dedupes a
+ * pending argument, so without a deadline that search would spin forever and
+ * never be retried.
+ */
+export const JSONP_TIMEOUT_MS = 15_000
+
+/** Quote a value for a Solr phrase (`field:"…"`), so an id can't break out of it. */
+const solrPhrase = (value: string): string => `"${value.replace(/["\\]/g, '\\$&')}"`
+
 function createJsonpScript(url: string): Promise<any> {
   return new Promise((resolve, reject) => {
     const callbackName = `jsonp_callback_${Date.now()}_${++jsonpCounter}`
@@ -13,9 +23,20 @@ function createJsonpScript(url: string): Promise<any> {
     let called = false
 
     const cleanup = () => {
+      clearTimeout(timer)
       if (script.parentNode) script.parentNode.removeChild(script)
       delete (window as any)[callbackName]
     }
+
+    const timer = setTimeout(() => {
+      if (called) return
+      console.warn(`JSONP: no response within ${JSONP_TIMEOUT_MS}ms`, jsonpUrl)
+      // Leave a no-op behind: if the script does arrive late, its call must not
+      // throw on a missing global.
+      cleanup()
+      ;(window as any)[callbackName] = () => delete (window as any)[callbackName]
+      reject(new Error('JSONP request timed out'))
+    }, JSONP_TIMEOUT_MS)
 
     ;(window as any)[callbackName] = (data: any) => {
       called = true
@@ -140,7 +161,7 @@ const lookupApi = apiService
               fl: 'annotation_class,annotation_class_label',
               packet: '1',
               callback_type: 'search',
-              fq: ['document_category:"ontology_class"', `annotation_class:"${id}"`],
+              fq: ['document_category:"ontology_class"', `annotation_class:${solrPhrase(id)}`],
             })
 
             const url = `${ENVIRONMENT.globalGolrNeoServer}select?${params.toString()}`

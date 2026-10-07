@@ -37,10 +37,11 @@ describe('Toolbar', () => {
     expect(wordmark).toHaveAttribute('href', auth.noctuaUrl)
   })
 
-  it('names the workbench', () => {
+  // This page is Noctua's front door, so the title is just "Noctua".
+  it('titles the app Noctua, with no workbench name after it', () => {
     renderWithProviders(<Toolbar />)
 
-    expect(screen.getByText('Landing Page')).toBeInTheDocument()
+    expect(screen.queryByText('Landing Page')).not.toBeInTheDocument()
   })
 
   it('links the GitHub issue tracker', () => {
@@ -83,6 +84,25 @@ describe('Toolbar', () => {
       const login = screen.getByText('Login').closest('a')
       expect(login).toHaveAttribute('href', auth.loginUrl)
       expect(login).toHaveAttribute('data-pw', 'noc-login-button')
+    })
+
+    // Regression: the login URL is built once, but the search keeps rewriting
+    // the address bar; Barista must send the user back to the search as it is
+    // at click time, not as it was on first render.
+    it('returns to the current search after login', async () => {
+      const originalHref = window.location.href
+      const { user } = renderWithProviders(<Toolbar />)
+      window.history.replaceState(null, '', '/page?title=wnt&page=2')
+      // jsdom cannot navigate; stop the click once React has handled it.
+      document.addEventListener('click', e => e.preventDefault(), { once: true })
+
+      const login = screen.getByText('Login').closest('a')!
+      await user.click(login)
+
+      const url = new URL(login.href)
+      expect(`${url.origin}${url.pathname}`).toBe(auth.loginUrl)
+      expect(url.searchParams.get('return')).toBe(window.location.href)
+      window.history.replaceState(null, '', originalHref)
     })
 
     it('shows no user menu', () => {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  canonicalQuery,
   criteriaFromParams,
   pageFromParams,
   paramsFromCriteria,
@@ -137,5 +138,30 @@ describe('paramsFromCriteria page round-trip', () => {
 
   it('still works with no page supplied', () => {
     expect(paramsFromCriteria(criteria).has('page')).toBe(false)
+  })
+})
+
+describe('canonicalQuery', () => {
+  it('matches what the app writes for the same search', () => {
+    const criteria = buildCriteria({ terms: [{ id: 'GO:0016301', label: 'kinase' }] })
+    const written = paramsFromCriteria(criteria, { pageNumber: 2, size: DEFAULT_PAGE_SIZE })
+
+    expect(canonicalQuery(`?${written}`)).toBe(written.toString())
+  })
+
+  it('treats a hand-written, unencoded URL as the same search', () => {
+    expect(canonicalQuery('?term=GO:0016301')).toBe(canonicalQuery('?term=GO%3A0016301'))
+  })
+
+  it('drops parameters the app does not own', () => {
+    expect(canonicalQuery('?barista_token=abc&title=wnt&utm_source=x')).toBe('title=wnt')
+  })
+
+  it('drops a default first page', () => {
+    expect(canonicalQuery('?title=wnt&page=1')).toBe('title=wnt')
+  })
+
+  it('is empty for an unfiltered search', () => {
+    expect(canonicalQuery('')).toBe('')
   })
 })

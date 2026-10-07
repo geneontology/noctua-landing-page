@@ -41,7 +41,7 @@ const LandingPage: React.FC = () => {
       <div className="flex flex-col bg-noc-surface">
         <FilterChipBar />
         <ResultsBar total={total} isFetching={isFetching} onRefresh={refresh} />
-        <ModelsTable models={models} isFetching={isFetching} />
+        <ModelsTable models={models} isFetching={isFetching} isError={isError} />
       </div>
     </div>
   )

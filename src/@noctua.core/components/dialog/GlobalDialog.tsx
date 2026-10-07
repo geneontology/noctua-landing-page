@@ -17,6 +17,7 @@ const GlobalDialog: React.FC<GlobalDialogProps> = ({ componentMap }) => {
     showActions,
     confirmLabel,
     cancelLabel,
+    preventBackdropClose,
     bodyScroll,
     component,
     customProps,
@@ -35,6 +36,7 @@ const GlobalDialog: React.FC<GlobalDialogProps> = ({ componentMap }) => {
       showActions={showActions}
       confirmLabel={confirmLabel}
       cancelLabel={cancelLabel}
+      preventBackdropClose={preventBackdropClose}
       bodyScroll={bodyScroll}
       onClose={() => dispatch(closeDialog())}
       onConfirm={() => dispatch(closeDialog())}

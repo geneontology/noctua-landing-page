@@ -1,5 +1,6 @@
 import type React from 'react'
 import { useAuth } from '@/features/auth/authProvider'
+import { withCurrentReturn } from '@/features/auth/authServices'
 import { EXTERNAL_LINKS } from '@/@noctua.core/data/constants'
 import { WorkbenchId } from '../models/workbenchId'
 import { useCreateModel } from '../hooks/useCreateModel'
@@ -78,6 +79,9 @@ const WelcomeHeader: React.FC = () => {
           You must{' '}
           <a
             href={loginUrl}
+            onClick={e => {
+              e.currentTarget.href = withCurrentReturn(loginUrl)
+            }}
             className="mx-1 mt-5 inline-block rounded bg-noc-login px-3 py-1.5 text-[#eee] no-underline shadow-md hover:brightness-110"
             data-pw="noc-login-link"
           >

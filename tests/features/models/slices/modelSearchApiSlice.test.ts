@@ -104,6 +104,56 @@ describe('searchModels', () => {
   })
 })
 
+// Regression: the cache key was the whole criteria object, labels included,
+// so a chip label resolving after load fired an identical search and count.
+describe('cache key', () => {
+  const kinase = (label: string) => ({
+    criteria: { ...emptyCriteria(), terms: [{ id: 'GO:0016301', label }] },
+    page: { pageNumber: 0, size: 50 },
+  })
+
+  it('reuses the search when only a display label changed', async () => {
+    serve({ models: [] })
+    const store = makeStore()
+
+    await store.dispatch(modelSearchApi.endpoints.searchModels.initiate(kinase('GO:0016301')))
+    await store.dispatch(modelSearchApi.endpoints.searchModels.initiate(kinase('kinase activity')))
+
+    expect(urls).toHaveLength(1)
+  })
+
+  it('reuses the count when only a display label changed', async () => {
+    serve({ n: 3 })
+    const store = makeStore()
+    const count = (label: string) =>
+      store.dispatch(
+        modelSearchApi.endpoints.countModels.initiate({ criteria: kinase(label).criteria })
+      )
+
+    await count('GO:0016301')
+    await count('kinase activity')
+
+    expect(urls).toHaveLength(1)
+  })
+
+  it('still refetches when the request itself changes', async () => {
+    serve({ models: [] })
+    const store = makeStore()
+    const other = {
+      criteria: { ...emptyCriteria(), terms: [{ id: 'GO:0008150', label: 'x' }] },
+      page: { pageNumber: 0, size: 50 },
+    }
+
+    await store.dispatch(modelSearchApi.endpoints.searchModels.initiate(kinase('a')))
+    await store.dispatch(modelSearchApi.endpoints.searchModels.initiate(other))
+    await store.dispatch(
+      modelSearchApi.endpoints.searchModels.initiate({ ...kinase('a'), page: { pageNumber: 1, size: 50 } })
+    )
+
+    expect(urls).toHaveLength(3)
+  })
+})
+
 describe('countModels', () => {
   const run = async (criteria = emptyCriteria(), body: unknown = { n: 0 }) => {
     serve(body)

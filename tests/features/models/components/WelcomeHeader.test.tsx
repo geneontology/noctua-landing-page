@@ -65,6 +65,19 @@ describe('WelcomeHeader', () => {
       expect(screen.queryByText('Create')).not.toBeInTheDocument()
     })
 
+    it('returns to the current search after login', async () => {
+      const originalHref = window.location.href
+      const { user } = renderWithProviders(<WelcomeHeader />)
+      window.history.replaceState(null, '', '/page?title=wnt')
+      document.addEventListener('click', e => e.preventDefault(), { once: true })
+
+      const login = screen.getByText('Login').closest('a')!
+      await user.click(login)
+
+      expect(new URL(login.href).searchParams.get('return')).toBe(window.location.href)
+      window.history.replaceState(null, '', originalHref)
+    })
+
     it('says models are still viewable', () => {
       renderWithProviders(<WelcomeHeader />)
 

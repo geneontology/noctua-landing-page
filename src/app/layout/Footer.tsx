@@ -25,9 +25,16 @@ const Footer: React.FC = () => {
           </a>
         </div>
         <div className="mr-4">
-          <Link to="/docs/go-citation-policy/" className="text-white">
+          {/* A geneontology.org page. As an in-app <Link> it hit a route this
+              app does not have, and the router's error page replaced the app. */}
+          <a
+            href={EXTERNAL_LINKS.GO_CITATION_POLICY}
+            className="text-white"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             Citation and Terms of Use
-          </Link>
+          </a>
         </div>
       </div>
 

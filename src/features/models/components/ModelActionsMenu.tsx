@@ -1,7 +1,7 @@
 import type React from 'react'
 import { Button } from '@mantine/core'
 import { IoChevronDown } from 'react-icons/io5'
-import AnchoredMenu, { MenuItem } from '@/@noctua.core/components/menu/AnchoredMenu'
+import AnchoredMenu, { MenuItem, MenuLink } from '@/@noctua.core/components/menu/AnchoredMenu'
 import { usePopover } from '@/@noctua.core/hooks/usePopover'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { openDialog, DialogComponent } from '@/@noctua.core/components/dialog/dialogSlice'
@@ -70,29 +70,14 @@ const ModelActionsMenu: React.FC<ModelActionsMenuProps> = ({ model }) => {
         placement="bottom-end"
       >
         {links.map(link => (
-          <MenuItem key={link.label} onClick={menu.close}>
-            <a
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full"
-              data-pw={link.pw}
-            >
-              {link.label}
-            </a>
-          </MenuItem>
+          <MenuLink key={link.label} href={link.href} onClick={menu.close} data-pw={link.pw}>
+            {link.label}
+          </MenuLink>
         ))}
         <MenuItem onClick={openCopyDialog}>Copy Model</MenuItem>
-        <MenuItem onClick={menu.close}>
-          <a
-            href={urls.workbenches[WorkbenchId.ANNOTATION_PREVIEW]}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full"
-          >
-            Annotation Preview
-          </a>
-        </MenuItem>
+        <MenuLink href={urls.workbenches[WorkbenchId.ANNOTATION_PREVIEW]} onClick={menu.close}>
+          Annotation Preview
+        </MenuLink>
       </AnchoredMenu>
     </>
   )

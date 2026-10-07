@@ -1,10 +1,11 @@
 import type React from 'react'
 import { ActionIcon, Button } from '@mantine/core'
-import AnchoredMenu, { MenuItem } from '@/@noctua.core/components/menu/AnchoredMenu'
+import AnchoredMenu, { MenuItem, MenuLink } from '@/@noctua.core/components/menu/AnchoredMenu'
 import { usePopover } from '@/@noctua.core/hooks/usePopover'
 import { FaGithub } from 'react-icons/fa'
 import { IoChevronDown } from 'react-icons/io5'
 import { useAuth } from '@/features/auth/authProvider'
+import { withCurrentReturn } from '@/features/auth/authServices'
 import { useAppSelector } from '../hooks'
 import { selectAuthUser } from '@/features/auth/slices/authSlice'
 import { ENVIRONMENT, EXTERNAL_LINKS } from '@/@noctua.core/data/constants'
@@ -22,7 +23,7 @@ const Toolbar: React.FC = () => {
   const envLabel = isDev ? '(dev)' : isBeta ? '(beta)' : null
 
   const logout = () => {
-    window.location.href = logoutUrl
+    window.location.href = withCurrentReturn(logoutUrl)
   }
 
   return (
@@ -39,16 +40,6 @@ const Toolbar: React.FC = () => {
             rel="noreferrer"
           >
             Noctua
-          </a>
-          <a
-            className="mr-1 text-xl text-gray-900 no-underline hover:text-black"
-            href="/"
-            onClick={e => {
-              e.preventDefault()
-              window.location.reload()
-            }}
-          >
-            Landing Page
           </a>
           {envLabel && <span className="text-xl text-gray-700">{envLabel}</span>}
         </div>
@@ -93,16 +84,9 @@ const Toolbar: React.FC = () => {
             open={helpMenu.isOpen}
             onClose={helpMenu.close}
           >
-            <MenuItem onClick={helpMenu.close}>
-              <a
-                href={EXTERNAL_LINKS.NOCTUA_USERS_GUIDE}
-                target="_blank"
-                rel="noreferrer"
-                className="w-full"
-              >
-                Noctua User&apos;s Guide
-              </a>
-            </MenuItem>
+            <MenuLink href={EXTERNAL_LINKS.NOCTUA_USERS_GUIDE} onClick={helpMenu.close}>
+              Noctua User&apos;s Guide
+            </MenuLink>
           </AnchoredMenu>
         </div>
 
@@ -141,6 +125,9 @@ const Toolbar: React.FC = () => {
               <Button
                 component="a"
                 href={loginUrl}
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.currentTarget.href = withCurrentReturn(loginUrl)
+                }}
                 className="!bg-green-600 !text-white hover:!bg-green-700"
                 data-pw="noc-login-button"
               >

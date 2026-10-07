@@ -318,24 +318,60 @@ describe('SelectChipFilter', () => {
     expect(screen.queryByText('Ada Lovelace')).not.toBeInTheDocument()
   })
 
-  // KNOWN LIMITATION, pinned so a fix is a deliberate change rather than a
-  // silent one. SelectChipFilter resolves the user's pick by display label
-  // (`options.find(o => o.label === submitted)`) because Mantine's Autocomplete
-  // has no value/label split. Mantine itself rejects two options sharing a
-  // label, so two contributors with the same display name cannot both be
-  // offered — the second is dropped by the component library, not by us.
-  it('cannot offer two options that share a display label', () => {
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {})
+  // Regression: Mantine's Autocomplete throws on duplicate strings, and the
+  // labels went in as-is — so two Barista users sharing a nickname unmounted
+  // the whole page. Shared labels now carry their value to stay distinct.
+  describe('options that share a label', () => {
+    const TWINS = [
+      { value: 'http://orcid.org/0000-0003', label: 'Jane Doe' },
+      { value: 'http://orcid.org/0000-0004', label: 'Jane Doe' },
+    ]
 
-    expect(() =>
-      renderSelect({
-        options: [
-          { value: 'http://orcid.org/0000-0003', label: 'Jane Doe' },
-          { value: 'http://orcid.org/0000-0004', label: 'Jane Doe' },
-        ],
-      })
-    ).toThrowError(/Duplicate options are not supported/)
+    it('renders instead of throwing', () => {
+      expect(() => renderSelect({ options: TWINS })).not.toThrow()
+    })
 
-    consoleError.mockRestore()
+    it('offers each one, told apart by its value', async () => {
+      const { user } = renderSelect({ options: TWINS })
+
+      await user.click(comboboxFor('Filter by Contributor'))
+
+      expect(await screen.findByText('Jane Doe (http://orcid.org/0000-0003)')).toBeInTheDocument()
+      expect(screen.getByText('Jane Doe (http://orcid.org/0000-0004)')).toBeInTheDocument()
+    })
+
+    it('adds the one the user picked', async () => {
+      const { onAdd, user } = renderSelect({ options: TWINS })
+
+      await user.click(comboboxFor('Filter by Contributor'))
+      await user.click(await screen.findByText('Jane Doe (http://orcid.org/0000-0004)'))
+
+      expect(onAdd).toHaveBeenCalledExactlyOnceWith(TWINS[1])
+    })
+
+    it('leaves unique labels untouched', async () => {
+      const { user } = renderSelect({ options: [...TWINS, ...OPTIONS] })
+
+      await user.click(comboboxFor('Filter by Contributor'))
+
+      expect(await screen.findByText('Ada Lovelace')).toBeInTheDocument()
+    })
+  })
+
+  it('offers an option with a blank label under its value', async () => {
+    const blank = [
+      { value: 'http://orcid.org/0000-0005', label: '' },
+      { value: 'http://orcid.org/0000-0006', label: '  ' },
+    ]
+    const { onAdd, user } = renderSelect({ options: blank })
+
+    await user.click(comboboxFor('Filter by Contributor'))
+    await user.click(await screen.findByText('http://orcid.org/0000-0006'))
+
+    expect(onAdd).toHaveBeenCalledExactlyOnceWith(blank[1])
+  })
+
+  it('collapses an entry that is listed twice', () => {
+    expect(() => renderSelect({ options: [OPTIONS[0], OPTIONS[0]] })).not.toThrow()
   })
 })

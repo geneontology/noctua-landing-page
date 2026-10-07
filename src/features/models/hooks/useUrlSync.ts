@@ -9,7 +9,12 @@ import {
   selectPage,
 } from '../slices/modelSearchSlice'
 import { FilterType } from '../models/searchCriteria'
-import { criteriaFromParams, pageFromParams, paramsFromCriteria } from '../services/urlSync'
+import {
+  canonicalQuery,
+  criteriaFromParams,
+  pageFromParams,
+  paramsFromCriteria,
+} from '../services/urlSync'
 
 /** Filter types whose values arrive from the URL as bare CURIEs needing a label. */
 const TERM_FILTERS = [FilterType.TERMS, FilterType.GPS] as const
@@ -28,21 +33,33 @@ export const useUrlSync = () => {
   const page = useAppSelector(selectPage)
   const filtersCount = useAppSelector(selectFiltersCount)
   const [fetchTerm] = useLazyGetTermByIdQuery()
-  const labelsRequested = useRef(false)
+
+  /**
+   * Labels looked up so far, by id (`null` while pending or when GOlr had none).
+   * Each id is asked for once; a term that comes back bare later — Back and
+   * Forward restore filters from the URL, which carries ids only — is relabelled
+   * from here instead of staying a raw CURIE.
+   */
+  const knownLabels = useRef(new Map<string, string | null>())
 
   // Resolve labels for entity filters that came in as bare identifiers.
   useEffect(() => {
-    if (labelsRequested.current) return
-    labelsRequested.current = true
-
+    const known = knownLabels.current
     TERM_FILTERS.forEach(type => {
       criteria[type]
         .filter(term => term.label === term.id)
         .forEach(async ({ id }) => {
+          if (known.has(id)) {
+            const label = known.get(id)
+            if (label) dispatch(hydrateTermLabel({ type, id, label }))
+            return
+          }
+          known.set(id, null)
           const result = await fetchTerm(id)
             .unwrap()
             .catch(() => null)
           if (result?.label) {
+            known.set(id, result.label)
             dispatch(hydrateTermLabel({ type, id, label: result.label }))
           }
         })
@@ -86,6 +103,10 @@ export const useUrlSync = () => {
 
     const base = `${window.location.origin}${window.location.pathname}`
     const query = paramsFromCriteria(criteria, page).toString()
+
+    // Nothing the address bar shows has changed — a chip label resolving, say —
+    // so there is no new position to record.
+    if (query === canonicalQuery(window.location.search)) return
 
     if (query) {
       window.history.pushState({}, '', `${base}?${query}`)

@@ -38,6 +38,9 @@ downloads
 # Claude Code
 .claude/settings.local.json
 
+# Coverage
+coverage/
+
 # Playwright
 playwright-report/
 test-results/

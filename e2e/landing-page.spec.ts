@@ -1,65 +1,63 @@
 import { expect, test } from '@playwright/test'
+import { mockBackend, model } from './mocks/backend'
 
-/**
- * Structural smoke tests. Assertions that need model data are guarded, so the
- * suite still passes when no Barista instance is reachable.
- */
 test.describe('landing page', () => {
   test('renders the welcome header, filter panel and results table', async ({ page }) => {
+    await mockBackend(page)
     await page.goto('./')
 
-    await expect(page.getByText('WELCOME TO NOCTUA')).toBeVisible({ timeout: 30_000 })
+    await expect(page.getByText('WELCOME TO NOCTUA')).toBeVisible()
 
-    // Left nav
     await expect(page.getByText('Filter by', { exact: true })).toBeVisible()
-    for (const section of ['ANNOTATIONS', 'CONTRIBUTOR', 'DATE LAST MODIFIED', 'MODEL']) {
-      await expect(page.getByText(section, { exact: true })).toBeVisible()
+    for (const section of ['Annotations', 'Contributor', 'Date last modified', 'Model']) {
+      await expect(page.getByRole('button', { name: section, exact: true })).toBeVisible()
     }
 
-    // Results
     await expect(page.getByText('Results:')).toBeVisible()
     for (const column of ['Title', 'Saved', 'State', 'Date Modified', 'Contributors']) {
       await expect(page.getByRole('columnheader', { name: column })).toBeVisible()
     }
   })
 
-  test('prompts anonymous visitors to log in', async ({ page }) => {
+  test('lists the models Barista returns, with the total', async ({ page }) => {
+    await mockBackend(page, { models: [model(1, { title: 'Wnt signaling' }), model(2)], total: 2 })
     await page.goto('./')
-    await expect(page.getByText('WELCOME TO NOCTUA')).toBeVisible({ timeout: 30_000 })
 
-    await expect(page.getByText(/You must.*Login.*to create or edit models/)).toBeVisible()
-    await expect(page.locator('[data-pw="noc-login-button"]')).toBeVisible()
+    await expect(page.getByRole('cell', { name: 'Wnt signaling' })).toBeVisible()
+    await expect(page.locator('tbody tr')).toHaveCount(2)
+    await expect(page.getByText('1 – 2 of 2')).toBeVisible()
   })
 
-  test('seeds the filters from URL parameters', async ({ page }) => {
-    await page.goto('./?state=production')
-    await expect(page.getByText('WELCOME TO NOCTUA')).toBeVisible({ timeout: 30_000 })
+  test('joins contributor URIs to their names', async ({ page }) => {
+    await mockBackend(page)
+    await page.goto('./')
 
-    await expect(page.getByText(/Model States/)).toBeVisible()
-    await expect(page.getByText('Clear All')).toBeVisible()
+    await expect(page.locator('tbody tr').first().getByText('Ada Lovelace')).toBeVisible()
   })
 
-  test('collapses and reopens the filter panel', async ({ page }) => {
+  test('issues one search and one count for a plain visit', async ({ page }) => {
+    const { calls } = await mockBackend(page)
     await page.goto('./')
-    await expect(page.getByText('Filter by', { exact: true })).toBeVisible({ timeout: 30_000 })
+    await expect(page.locator('tbody tr')).toHaveCount(3)
 
-    await page.getByLabel('Toggle search filters').click()
-    await expect(page.getByText('Filter by', { exact: true })).toBeHidden()
-
-    await page.getByLabel('Toggle search filters').click()
-    await expect(page.getByText('Filter by', { exact: true })).toBeVisible()
+    expect(calls.search).toHaveLength(1)
+    expect(calls.count).toHaveLength(1)
   })
 
-  test('adds a state filter when a model state chip is clicked', async ({ page }) => {
+  test('says so when nothing is found', async ({ page }) => {
+    await mockBackend(page, { models: [] })
     await page.goto('./')
-    await expect(page.getByText('Results:')).toBeVisible({ timeout: 30_000 })
 
-    const rows = page.locator('tbody tr')
-    test.skip((await rows.count()) === 0, 'no models available from Barista')
+    await expect(page.getByText('No models found.')).toBeVisible()
+  })
 
-    await rows.first().getByRole('button').first().click()
+  test('links the footer citation policy to geneontology.org', async ({ page }) => {
+    await mockBackend(page)
+    await page.goto('./')
 
-    await expect(page.getByText(/Model States/)).toBeVisible()
-    await expect(page).toHaveURL(/state=/)
+    await expect(page.getByRole('link', { name: 'Citation and Terms of Use' })).toHaveAttribute(
+      'href',
+      'https://geneontology.org/docs/go-citation-policy/'
+    )
   })
 })

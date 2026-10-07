@@ -69,4 +69,5 @@ export const EXTERNAL_LINKS = {
   NOCTUA_PRODUCTION: 'http://noctua.geneontology.org/',
   GO_ANNOTATIONS_DOCS: 'https://geneontology.org/docs/go-annotations/',
   GOCAM_OVERVIEW_DOCS: 'https://geneontology.org/docs/gocam-overview/',
+  GO_CITATION_POLICY: 'https://geneontology.org/docs/go-citation-policy/',
 }

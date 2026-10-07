@@ -65,8 +65,11 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
     },
     {
       skip: !debouncedSearchTerm || debouncedSearchTerm.length < MIN_SEARCH_LENGTH,
-      selectFromResult: ({ data, isLoading, isFetching }) => ({
-        data: data || [],
+      // `currentData` belongs to the current search text only and is undefined
+      // while it is in flight, so an empty result for a refined search replaces
+      // the previous matches instead of being mistaken for "nothing yet".
+      selectFromResult: ({ currentData, isLoading, isFetching }) => ({
+        data: currentData,
         isLoading,
         isFetching,
       }),
@@ -76,7 +79,7 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
   const searching = isLoading || isFetching
 
   useEffect(() => {
-    if (data && data.length > 0) {
+    if (data) {
       setOptions(data)
       setHighlightedIndex(-1)
     }
@@ -126,11 +129,11 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
     }
   }, [value, clearOnSelect])
 
+  // Keep the options on close: the cached result for the same text will not
+  // arrive again, so clearing them here left a reopened list saying "No results
+  // found" until the text changed. Stale text is cleared by the effect above.
   useEffect(() => {
-    if (!open) {
-      setOptions([])
-      setHighlightedIndex(-1)
-    }
+    if (!open) setHighlightedIndex(-1)
   }, [open])
 
   const handleOptionSelect = (option: GOlrResponse) => {
@@ -201,6 +204,9 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
         <Portal>
           <div
             ref={listRef}
+            // Keep focus in the input: otherwise dragging this list's scrollbar
+            // blurs it, and the blur timer closes the list mid-scroll.
+            onMouseDown={e => e.preventDefault()}
             className="max-h-60 overflow-y-auto rounded-md bg-accent-50 shadow-lg"
             style={{
               position: 'fixed',

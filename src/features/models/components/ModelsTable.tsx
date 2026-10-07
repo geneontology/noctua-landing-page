@@ -20,6 +20,8 @@ import ModelActionsMenu from './ModelActionsMenu'
 interface ModelsTableProps {
   models: CamRow[]
   isFetching: boolean
+  /** The current search failed; say so rather than "No models found." */
+  isError?: boolean
 }
 
 /** 10px bold uppercase primary, matching the Angular `.mat-header-cell`. */
@@ -81,15 +83,20 @@ const Skeleton: React.FC<{ rows?: number }> = ({ rows = 8 }) => (
   </div>
 )
 
-const EmptyState: React.FC<{ filtered: boolean; onClear: () => void }> = ({
+const EmptyState: React.FC<{ filtered: boolean; failed: boolean; onClear: () => void }> = ({
   filtered,
+  failed,
   onClear,
 }) => (
   <div className="flex flex-col items-center gap-3 bg-noc-surface px-4 py-16 text-center">
     <p className="text-sm text-gray-600">
-      {filtered ? 'No models match these filters.' : 'No models found.'}
+      {failed
+        ? 'Could not load models. Try refreshing.'
+        : filtered
+          ? 'No models match these filters.'
+          : 'No models found.'}
     </p>
-    {filtered && (
+    {filtered && !failed && (
       <button
         type="button"
         className="rounded-full border border-noc-primary/50 bg-white px-4 py-1.5 text-xs text-noc-primary shadow-sm hover:bg-noc-primary/5"
@@ -101,7 +108,7 @@ const EmptyState: React.FC<{ filtered: boolean; onClear: () => void }> = ({
   </div>
 )
 
-const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching }) => {
+const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching, isError = false }) => {
   const dispatch = useAppDispatch()
   const filtersCount = useAppSelector(selectFiltersCount)
   const isWide = useIsAtLeast('md')
@@ -120,7 +127,13 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching }) => {
   if (models.length === 0 && isFetching) return <Skeleton />
 
   if (models.length === 0) {
-    return <EmptyState filtered={filtersCount > 0} onClear={() => dispatch(clearAll())} />
+    return (
+      <EmptyState
+        filtered={filtersCount > 0}
+        failed={isError}
+        onClear={() => dispatch(clearAll())}
+      />
+    )
   }
 
   // Below `md` the six columns cannot fit without a horizontal scroll that

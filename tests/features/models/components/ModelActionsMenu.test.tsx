@@ -103,15 +103,42 @@ describe('ModelActionsMenu', () => {
     it('opens every link in a new tab with a safe rel', async () => {
       await openMenu(false)
 
-      const links = menuItems()
-        .map(item => item.querySelector('a'))
-        .filter(Boolean) as HTMLAnchorElement[]
+      const links = menuItems().filter(item => item.tagName === 'A')
 
       expect(links.length).toBeGreaterThan(0)
       links.forEach(link => {
         expect(link).toHaveAttribute('target', '_blank')
         expect(link.getAttribute('rel')).toContain('noopener')
       })
+    })
+
+    // Regression: each link sat inside a menu-item <button>. Focus landed on
+    // the button, so Enter only closed the menu and never followed the link.
+    it('makes each link the menu item itself', async () => {
+      await openMenu(false)
+
+      const item = screen.getByText('Graph Editor').closest('[role="menuitem"]')
+      expect(item?.tagName).toBe('A')
+      expect(item?.querySelector('button, a')).toBeNull()
+    })
+
+    it('follows the focused link on Enter and closes the menu', async () => {
+      const { user } = await openMenu(false)
+      const followed: string[] = []
+      const record = (e: MouseEvent) => {
+        const link = (e.target as HTMLElement).closest('a')
+        if (link) followed.push(link.textContent ?? '')
+        e.preventDefault()
+      }
+      document.addEventListener('click', record)
+
+      const first = menuItems()[0]
+      expect(first).toHaveFocus()
+      await user.keyboard('{Enter}')
+
+      document.removeEventListener('click', record)
+      expect(followed).toEqual([first.textContent])
+      expect(screen.queryAllByRole('menuitem', { hidden: true })).toHaveLength(0)
     })
 
     it('keeps the Playwright hook the Angular template carried', async () => {
@@ -128,7 +155,7 @@ describe('ModelActionsMenu', () => {
     it('is a button, not a link', async () => {
       await openMenu(false)
 
-      expect(screen.getByText('Copy Model').querySelector('a')).toBeNull()
+      expect(screen.getByText('Copy Model').tagName).toBe('BUTTON')
     })
 
     it('opens the copy dialog with the model attached', async () => {

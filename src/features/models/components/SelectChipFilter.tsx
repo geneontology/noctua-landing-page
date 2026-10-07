@@ -1,5 +1,5 @@
 import type React from 'react'
-import { useId, useRef, useState } from 'react'
+import { useId, useMemo, useRef, useState } from 'react'
 import { Autocomplete } from '@mantine/core'
 import ChipInputField from './ChipInputField'
 
@@ -15,6 +15,26 @@ interface SelectChipFilterProps {
   values: { key: string; label: string }[]
   onAdd: (option: SelectOption) => void
   onRemove: (index: number) => void
+}
+
+/**
+ * Mantine's Autocomplete takes bare strings and throws on a duplicate — which
+ * unmounted the whole page when two Barista users shared a nickname. Give every
+ * option a unique display string: a blank label falls back to the value, and a
+ * label shared by several options carries its value to tell them apart.
+ */
+const displayLabels = (options: SelectOption[]): Map<string, SelectOption> => {
+  const named = options.map(option => ({ option, text: option.label.trim() || option.value }))
+  const counts = new Map<string, number>()
+  named.forEach(({ text }) => counts.set(text, (counts.get(text) ?? 0) + 1))
+
+  const byDisplay = new Map<string, SelectOption>()
+  named.forEach(({ option, text }) => {
+    const display = (counts.get(text) ?? 0) > 1 ? `${text} (${option.value})` : text
+    // Identical label and value too: the same entry twice, so one is enough.
+    if (!byDisplay.has(display)) byDisplay.set(display, option)
+  })
+  return byDisplay
 }
 
 /**
@@ -41,13 +61,15 @@ const SelectChipFilter: React.FC<SelectChipFilterProps> = ({
    */
   const clearNextChange = useRef(false)
 
+  const byDisplay = useMemo(() => displayLabels(options), [options])
+
   return (
     <ChipInputField label={label} htmlFor={id} chips={values} onRemove={onRemove}>
       <Autocomplete
         id={id}
         size="xs"
         value={draft}
-        data={options.map(option => option.label)}
+        data={[...byDisplay.keys()]}
         limit={50}
         maxDropdownHeight={240}
         variant="unstyled"
@@ -63,7 +85,7 @@ const SelectChipFilter: React.FC<SelectChipFilterProps> = ({
           setDraft(value)
         }}
         onOptionSubmit={submitted => {
-          const option = options.find(o => o.label === submitted)
+          const option = byDisplay.get(submitted)
           if (option) onAdd(option)
           clearNextChange.current = true
           setDraft('')

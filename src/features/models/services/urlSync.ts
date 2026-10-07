@@ -28,7 +28,7 @@ const PARAM_TO_FILTER: Record<string, FilterType> = {
  * every term on the next request.
  *
  * Entity filters arrive as bare identifiers, so labels start out as the id and
- * are patched in later by `useTermLabelHydration`.
+ * are patched in later by `useUrlSync`.
  */
 export const criteriaFromParams = (searchParams: URLSearchParams): SearchCriteria => {
   const criteria = emptyCriteria()
@@ -113,4 +113,14 @@ export const paramsFromCriteria = (
   if (page && page.size !== DEFAULT_PAGE_SIZE) params.append('size', String(page.size))
 
   return params
+}
+
+/**
+ * The query string `paramsFromCriteria` would write for the position in `search`
+ * — so a hand-written or differently-encoded URL compares equal to the one the
+ * app writes for the same search.
+ */
+export const canonicalQuery = (search: string): string => {
+  const params = new URLSearchParams(search)
+  return paramsFromCriteria(criteriaFromParams(params), pageFromParams(params)).toString()
 }

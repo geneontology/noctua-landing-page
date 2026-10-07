@@ -9,7 +9,7 @@ import { SPLASH_SCREEN_DELAY_MS } from '@/@noctua.core/data/uiConstants'
  * unreachable the page still renders; the affected chips just fall back to raw
  * URIs rather than leaving the user staring at a spinner.
  */
-const SPLASH_TIMEOUT_MS = 8000
+export const SPLASH_TIMEOUT_MS = 8000
 
 interface SplashScreenProps {
   children: React.ReactNode
