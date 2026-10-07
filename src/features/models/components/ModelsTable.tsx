@@ -172,12 +172,14 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching, isError =
   return (
     <div className="w-full grow bg-noc-surface pb-24">
       <table className="w-full min-w-[900px] table-fixed border-collapse text-xs">
+        {/* As in the Angular table, Contributors takes the spare width: a model
+            can have many, while a long title just wraps onto a second line. */}
         <colgroup>
-          <col />
+          <col style={{ width: '25%' }} />
           <col style={{ width: 60 }} />
           <col style={{ width: 130 }} />
           <col style={{ width: 145 }} />
-          <col style={{ width: '30%' }} />
+          <col />
           <col style={{ width: 110 }} />
         </colgroup>
         <thead

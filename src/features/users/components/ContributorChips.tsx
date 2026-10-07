@@ -5,7 +5,11 @@ import AnchoredMenu, { MenuItem } from '@/@noctua.core/components/menu/AnchoredM
 import Chip from '@/@noctua.core/components/chip/Chip'
 import type { Contributor } from '@/features/users/models/contributor'
 
-const MAX_VISIBLE = 2
+/**
+ * Chips shown before the rest fold into "+N more". They wrap within the cell,
+ * so this bounds how tall a row with a long contributor list can grow.
+ */
+export const MAX_VISIBLE = 6
 
 /** Angular `noc-user-chip`: #bbc9cc border, 20% fill, initials in black on the circle. */
 const CHIP_STYLE = { borderColor: '#bbc9cc', backgroundColor: 'rgba(187, 201, 204, 0.2)' }
@@ -31,8 +35,8 @@ const ContributorChips: React.FC<ContributorChipsProps> = ({ contributors, onChi
   const hidden = contributors.slice(MAX_VISIBLE)
 
   return (
-    <div className="flex grow items-center overflow-x-auto">
-      <div className="flex flex-nowrap gap-1.5">
+    <div className="flex grow items-center">
+      <div className="flex flex-wrap gap-1.5">
         {visible.map(contributor => (
           <Chip
             key={contributor.uri}

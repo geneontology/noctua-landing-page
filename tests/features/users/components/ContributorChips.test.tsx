@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 import { screen } from '@testing-library/react'
-import ContributorChips from '@/features/users/components/ContributorChips'
+import ContributorChips, { MAX_VISIBLE } from '@/features/users/components/ContributorChips'
 import type { Contributor } from '@/features/users/models/contributor'
 import { renderWithProviders } from '@tests/test-utils'
 
@@ -22,37 +22,51 @@ describe('ContributorChips', () => {
     expect(screen.queryByText(/more/)).not.toBeInTheDocument()
   })
 
-  it('shows a chip per contributor when there are two or fewer', () => {
-    renderWithProviders(<ContributorChips contributors={many(2)} />)
+  it('shows a chip per contributor up to the cap', () => {
+    renderWithProviders(<ContributorChips contributors={many(MAX_VISIBLE)} />)
 
     expect(screen.getByText('Curator 1')).toBeInTheDocument()
-    expect(screen.getByText('Curator 2')).toBeInTheDocument()
+    expect(screen.getByText(`Curator ${MAX_VISIBLE}`)).toBeInTheDocument()
     expect(screen.queryByText(/more/)).not.toBeInTheDocument()
   })
 
-  // Only two fit in the table cell; the rest collapse behind an overflow chip.
-  it('collapses the third and beyond into a +N more chip', () => {
-    renderWithProviders(<ContributorChips contributors={many(5)} />)
+  // Contributors get the table's spare width, and chips wrap within it, so
+  // more than the old two fit; past the cap the rest fold behind one chip.
+  it('shows more than two contributors', () => {
+    renderWithProviders(<ContributorChips contributors={many(4)} />)
 
-    expect(screen.getByText('Curator 1')).toBeInTheDocument()
-    expect(screen.getByText('Curator 2')).toBeInTheDocument()
+    expect(screen.getByText('Curator 3')).toBeInTheDocument()
+    expect(screen.getByText('Curator 4')).toBeInTheDocument()
+  })
+
+  it('collapses the contributors past the cap into a +N more chip', () => {
+    renderWithProviders(<ContributorChips contributors={many(MAX_VISIBLE + 3)} />)
+
+    expect(screen.getByText(`Curator ${MAX_VISIBLE}`)).toBeInTheDocument()
     expect(screen.getByText('+3 more')).toBeInTheDocument()
-    expect(screen.queryByText('Curator 3')).not.toBeInTheDocument()
+    expect(screen.queryByText(`Curator ${MAX_VISIBLE + 1}`)).not.toBeInTheDocument()
   })
 
   it('counts exactly one overflow correctly', () => {
-    renderWithProviders(<ContributorChips contributors={many(3)} />)
+    renderWithProviders(<ContributorChips contributors={many(MAX_VISIBLE + 1)} />)
 
     expect(screen.getByText('+1 more')).toBeInTheDocument()
   })
 
   it('lists the hidden contributors when the overflow chip is opened', async () => {
-    const { user } = renderWithProviders(<ContributorChips contributors={many(4)} />)
+    const { user } = renderWithProviders(<ContributorChips contributors={many(MAX_VISIBLE + 2)} />)
 
     await user.click(screen.getByText('+2 more'))
 
-    expect(screen.getByText('Curator 3')).toBeInTheDocument()
-    expect(screen.getByText('Curator 4')).toBeInTheDocument()
+    expect(screen.getByText(`Curator ${MAX_VISIBLE + 1}`)).toBeInTheDocument()
+    expect(screen.getByText(`Curator ${MAX_VISIBLE + 2}`)).toBeInTheDocument()
+  })
+
+  it('wraps rather than scrolling sideways', () => {
+    const { container } = renderWithProviders(<ContributorChips contributors={many(4)} />)
+
+    expect(container.querySelector('.flex-wrap')).not.toBeNull()
+    expect(container.querySelector('.overflow-x-auto')).toBeNull()
   })
 
   describe('chip clicks', () => {
@@ -69,14 +83,15 @@ describe('ContributorChips', () => {
 
     it('calls back from inside the overflow menu too', async () => {
       const onChipClick = vi.fn()
+      const last = `Curator ${MAX_VISIBLE + 2}`
       const { user } = renderWithProviders(
-        <ContributorChips contributors={many(4)} onChipClick={onChipClick} />
+        <ContributorChips contributors={many(MAX_VISIBLE + 2)} onChipClick={onChipClick} />
       )
 
       await user.click(screen.getByText('+2 more'))
-      await user.click(screen.getByText('Curator 4'))
+      await user.click(screen.getByText(last))
 
-      expect(onChipClick).toHaveBeenCalledWith(expect.objectContaining({ name: 'Curator 4' }))
+      expect(onChipClick).toHaveBeenCalledWith(expect.objectContaining({ name: last }))
     })
 
     // Without a handler the chip renders as a div, so it is not focusable or
