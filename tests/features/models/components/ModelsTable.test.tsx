@@ -46,6 +46,17 @@ describe('ModelsTable', () => {
     expect(screen.getByText('No models found.')).toBeInTheDocument()
   })
 
+  // The same palette as VPE, so a state reads the same in both apps.
+  it.each([
+    ['development', 'Development', 'bg-orange-100'],
+    ['delete', 'Delete', 'bg-red-100'],
+    ['template', 'Template', 'bg-gray-100'],
+  ])('colours the %s chip as VPE does', (state, label, chipBackground) => {
+    renderWithProviders(<ModelsTable models={[buildCamRow({ state })]} isFetching={false} />)
+
+    expect(screen.getByText(label).closest('button')).toHaveClass(chipBackground)
+  })
+
   it('adds the state to the filters when its chip is clicked', async () => {
     const { store, user } = renderWithProviders(
       <ModelsTable models={[buildCamRow({ state: 'review' })]} isFetching={false} />
@@ -189,9 +200,7 @@ describe('ModelsTable narrow layout', () => {
 
   it('keeps the actions reachable in the card layout', () => {
     narrow()
-    renderWithProviders(
-      <ModelsTable models={[buildCamRow()]} isFetching={false} />
-    )
+    renderWithProviders(<ModelsTable models={[buildCamRow()]} isFetching={false} />)
 
     expect(screen.getByRole('button', { name: /Actions/ })).toBeInTheDocument()
   })

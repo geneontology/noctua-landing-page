@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { useLazyGetTermByIdQuery } from '@/features/search/slices/lookupApiSlice'
+import { selectContributors, selectGroups } from '@/features/users/slices/metadataSlice'
+import { useGetTaxaQuery } from '../slices/modelSearchApiSlice'
 import {
+  hydrateEntityLabel,
   hydrateTermLabel,
   restoreFromUrl,
   selectCriteria,
@@ -17,7 +20,21 @@ import {
 } from '../services/urlSync'
 
 /** Filter types whose values arrive from the URL as bare CURIEs needing a label. */
-const TERM_FILTERS = [FilterType.TERMS, FilterType.GPS] as const
+const TERM_FILTERS = [
+  FilterType.TERMS,
+  FilterType.MOLECULES,
+  FilterType.OBSOLETE_TERMS,
+  FilterType.GPS,
+] as const
+
+/**
+ * Pauses before each attempt at a term label. GOlr is JSONP with a 15s deadline
+ * and does time out now and then; a single failed try used to leave the chip a
+ * raw CURIE for the rest of the session.
+ */
+const LOOKUP_RETRY_DELAYS_MS = [0, 1000, 3000]
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 /**
  * Keeps the address bar in step with the search criteria so a search is shareable.
@@ -33,14 +50,46 @@ export const useUrlSync = () => {
   const page = useAppSelector(selectPage)
   const filtersCount = useAppSelector(selectFiltersCount)
   const [fetchTerm] = useLazyGetTermByIdQuery()
+  const contributors = useAppSelector(selectContributors)
+  const groups = useAppSelector(selectGroups)
+  // Also fetched by the filter panel; asked for here too because the panel is
+  // unmounted while the narrow-screen drawer is shut.
+  const { data: taxa } = useGetTaxaQuery()
 
   /**
    * Labels looked up so far, by id (`null` while pending or when GOlr had none).
-   * Each id is asked for once; a term that comes back bare later — Back and
+   * Each id is answered once; a term that comes back bare later — Back and
    * Forward restore filters from the URL, which carries ids only — is relabelled
-   * from here instead of staying a raw CURIE.
+   * from here instead of staying a raw CURIE. A lookup that failed outright is
+   * dropped from here, so it is tried again later.
    */
   const knownLabels = useRef(new Map<string, string | null>())
+
+  const mounted = useRef(true)
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+    }
+  }, [])
+
+  /** The term's label, `null` if GOlr has none; throws if every attempt failed. */
+  const lookUpLabel = useCallback(
+    async (id: string): Promise<string | null> => {
+      for (const delay of LOOKUP_RETRY_DELAYS_MS) {
+        if (delay) await sleep(delay)
+        if (!mounted.current) return null
+        try {
+          const result = await fetchTerm(id).unwrap()
+          return result?.label ?? null
+        } catch {
+          // Transient (timeout, network): try again.
+        }
+      }
+      throw new Error(`No label for ${id}`)
+    },
+    [fetchTerm]
+  )
 
   // Resolve labels for entity filters that came in as bare identifiers.
   useEffect(() => {
@@ -55,16 +104,50 @@ export const useUrlSync = () => {
             return
           }
           known.set(id, null)
-          const result = await fetchTerm(id)
-            .unwrap()
-            .catch(() => null)
-          if (result?.label) {
-            known.set(id, result.label)
-            dispatch(hydrateTermLabel({ type, id, label: result.label }))
+          try {
+            const label = await lookUpLabel(id)
+            if (label) {
+              known.set(id, label)
+              dispatch(hydrateTermLabel({ type, id, label }))
+            }
+          } catch {
+            // Forget the attempt, so the next change of search — or Back —
+            // asks again instead of leaving this id unnamed for good.
+            known.delete(id)
           }
         })
     })
-  }, [criteria, dispatch, fetchTerm])
+  }, [criteria, dispatch, lookUpLabel])
+
+  // Contributors, groups and organisms arrive from the URL as ORCIDs, group
+  // URLs and taxon ids. Their names are already loaded (Barista metadata and
+  // taxa), so fill them in as soon as both are present. An id with no match
+  // keeps showing the id.
+  useEffect(() => {
+    const byUri = new Map(contributors.map(c => [c.uri, c.name]))
+    criteria.contributors.forEach(({ uri, name }) => {
+      const label = byUri.get(uri)
+      if (name === uri && label && label !== uri) {
+        dispatch(hydrateEntityLabel({ type: FilterType.CONTRIBUTORS, key: uri, label }))
+      }
+    })
+
+    const byId = new Map(groups.map(g => [g.id, g.label]))
+    criteria.groups.forEach(({ id, label: current }) => {
+      const label = byId.get(id)
+      if (current === id && label && label !== id) {
+        dispatch(hydrateEntityLabel({ type: FilterType.GROUPS, key: id, label }))
+      }
+    })
+
+    const byIri = new Map((taxa ?? []).map(t => [t.taxonIri, t.taxonName]))
+    criteria.organisms.forEach(({ taxonIri, taxonName }) => {
+      const label = byIri.get(taxonIri)
+      if (taxonName === taxonIri && label && label !== taxonIri) {
+        dispatch(hydrateEntityLabel({ type: FilterType.ORGANISMS, key: taxonIri, label }))
+      }
+    })
+  }, [criteria, contributors, groups, taxa, dispatch])
 
   /**
    * Set while a history entry is being adopted, so the write effect below
@@ -79,9 +162,7 @@ export const useUrlSync = () => {
     params.delete('barista_token')
 
     adoptingHistory.current = true
-    dispatch(
-      restoreFromUrl({ criteria: criteriaFromParams(params), page: pageFromParams(params) })
-    )
+    dispatch(restoreFromUrl({ criteria: criteriaFromParams(params), page: pageFromParams(params) }))
   }, [dispatch])
 
   useEffect(() => {

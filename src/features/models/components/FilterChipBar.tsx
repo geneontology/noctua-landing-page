@@ -32,8 +32,10 @@ const FilterChipBar: React.FC = () => {
   const active = FILTER_TYPES.filter(type => criteria[type].length > 0)
 
   return (
-    <div className="sticky z-10 mb-1 flex shrink-0 items-center gap-2 overflow-x-auto whitespace-nowrap bg-white px-2.5 shadow-noc-2"
-      style={{ height: FILTER_BAR_HEIGHT, top: 0 }}>
+    <div
+      className="sticky z-10 mb-1 flex shrink-0 items-center gap-2 overflow-x-auto bg-white px-2.5 whitespace-nowrap shadow-noc-2"
+      style={{ height: FILTER_BAR_HEIGHT, top: 0 }}
+    >
       {/* Below lg the panel is an overlay, so it needs a way in. */}
       {!isDesktop && (
         <button
@@ -46,7 +48,7 @@ const FilterChipBar: React.FC = () => {
         </button>
       )}
 
-      <small className="shrink-0 text-2xs text-gray-500">Filtered By:</small>
+      <small className="shrink-0 text-[0.8rem] text-gray-500">Filtered By:</small>
 
       {filtersCount > 0 && (
         <button
@@ -80,7 +82,7 @@ const FilterChipBar: React.FC = () => {
         </span>
       ))}
 
-      {active.length === 0 && <span className="text-2xs text-gray-400">none</span>}
+      {active.length === 0 && <span className="text-xs text-gray-400">none</span>}
     </div>
   )
 }

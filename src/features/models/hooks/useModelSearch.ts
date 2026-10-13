@@ -1,7 +1,7 @@
-import { useMemo } from 'react'
-import { useAppSelector } from '@/app/hooks'
+import { useEffect, useMemo } from 'react'
+import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { selectContributors, selectGroups } from '@/features/users/slices/metadataSlice'
-import { selectCriteria, selectPage } from '../slices/modelSearchSlice'
+import { selectCriteria, selectPage, setPage } from '../slices/modelSearchSlice'
 import { useCountModelsQuery, useSearchModelsQuery } from '../slices/modelSearchApiSlice'
 import type { CamRow } from '../models/camSearch'
 
@@ -12,6 +12,7 @@ import type { CamRow } from '../models/camSearch'
  * keeping derived data out of the query cache.
  */
 export const useModelSearch = () => {
+  const dispatch = useAppDispatch()
   const criteria = useAppSelector(selectCriteria)
   const page = useAppSelector(selectPage)
   const contributors = useAppSelector(selectContributors)
@@ -30,7 +31,25 @@ export const useModelSearch = () => {
   // has failed it would show the old rows under the new filters.
   const results = useMemo(() => (isError ? [] : (data ?? [])), [data, isError])
 
-  const { data: total = 0, refetch: refetchCount } = useCountModelsQuery({ criteria })
+  const {
+    data: lastTotal = 0,
+    currentData: currentTotal,
+    refetch: refetchCount,
+  } = useCountModelsQuery({ criteria })
+
+  // Same reasoning for the count: after a failed search the old total and its
+  // "1 – 50 of N" range stayed up, with paging enabled, above "Could not load".
+  const total = isError ? 0 : lastTotal
+
+  // A page past the end — a hand-edited `?page=99999`, or a shared link whose
+  // results have since shrunk — showed "4999901 – 54036 of 54036" over an empty
+  // table. Once this search's own count is in, settle on its last page.
+  // `currentData` only: the cached total may belong to other criteria.
+  useEffect(() => {
+    if (currentTotal === undefined) return
+    const lastPage = Math.max(0, Math.ceil(currentTotal / page.size) - 1)
+    if (page.pageNumber > lastPage) dispatch(setPage({ pageNumber: lastPage }))
+  }, [currentTotal, page.pageNumber, page.size, dispatch])
 
   const contributorsByUri = useMemo(
     () => new Map(contributors.map(c => [c.uri, c])),

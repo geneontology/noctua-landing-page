@@ -20,8 +20,13 @@ const serveCopy = (newId: string | null = 'gomodel:copy', status = 200) =>
 
 const copyRequest = () => JSON.parse(lastBody!.get('requests') as string)[0]
 
-const render = (model = buildCamRow({ id: 'gomodel:src', title: 'MSH2 Hsap' })) =>
-  renderWithProviders(<CopyModelDialog model={model} />)
+/** Copying needs a Barista token, so the dialog renders signed in unless told otherwise. */
+const SIGNED_IN = { auth: { user: null, baristaToken: 'tok' } }
+
+const render = (
+  model = buildCamRow({ id: 'gomodel:src', title: 'MSH2 Hsap' }),
+  preloadedState: object = SIGNED_IN
+) => renderWithProviders(<CopyModelDialog model={model} />, { preloadedState })
 
 afterEach(() => {
   lastBody = null
@@ -184,5 +189,20 @@ describe('CopyModelDialog', () => {
 
     expect(store.getState().dialog.open).toBe(false)
     expect(lastBody).toBeNull()
+  })
+
+  // Prod greys the form out with "Log in to Continue". Without a token the
+  // request went out anyway and Minerva rejected it.
+  describe('when logged out', () => {
+    it('says to log in and will not copy', async () => {
+      serveCopy()
+      const { user } = render(undefined, {})
+
+      expect(screen.getByRole('alert')).toHaveTextContent('Log in to copy this model.')
+      const copy = screen.getByRole('button', { name: 'Copy' })
+      expect(copy).toBeDisabled()
+      await user.click(copy)
+      expect(fetch).not.toHaveBeenCalled()
+    })
   })
 })

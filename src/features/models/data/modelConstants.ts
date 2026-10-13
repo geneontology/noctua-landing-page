@@ -18,18 +18,11 @@ export const modelStateLabel = (value: string): string =>
  * solid circle for the icon — reproduced by `chipColors` below.
  */
 export const CHIP_COLORS = {
-  neutral: '#cccccc',
   contributor: '#bbc9cc',
   date: '#bbc9cc',
   filter: '#bbc9cc',
   clearAll: '#da7f7f',
 } as const
-
-export const STATE_COLORS: Record<string, string> = {
-  development: '#f4c89c',
-  production: '#b6f1cc',
-  review: '#d8f6a3',
-}
 
 const hexToRgba = (hex: string, alpha: number): string => {
   const value = hex.replace('#', '')
@@ -51,9 +44,6 @@ export const chipColors = (
   chipStyle: { borderColor: color, backgroundColor: hexToRgba(color, 0.2) },
   circleStyle: { backgroundColor: color },
 })
-
-export const stateChipColors = (state: string) =>
-  chipColors(STATE_COLORS[state] ?? CHIP_COLORS.neutral)
 
 /**
  * GOlr `isa_closure` roots per autocomplete field, ported from the Angular
@@ -92,6 +82,9 @@ export const STICKY_GAP = 4
 
 export const RESULTS_BAR_TOP = FILTER_BAR_HEIGHT + STICKY_GAP
 export const TABLE_HEADER_TOP = RESULTS_BAR_TOP + RESULTS_BAR_HEIGHT + STICKY_GAP
+
+/** The reference databases the [+] picker offers, as Angular's `evidenceDB` options did. */
+export const REFERENCE_DBS = ['PMID', 'DOI', 'GO_REF'] as const
 
 /** Max number of values allowed per filter, matching the Angular limits. */
 export const MAX_FILTER_VALUES = 10

@@ -116,3 +116,18 @@ test.describe('creating and copying (signed in)', () => {
     await expect(dialog.getByRole('button', { name: 'Copy', exact: true })).toBeDisabled()
   })
 })
+
+// Prod greys the form out with "Log in to Continue". Without a token the copy
+// went out anyway and Minerva rejected it.
+test('Copy Model asks to log in when logged out', async ({ page }) => {
+  const { calls } = await mockBackend(page)
+  await page.goto('./')
+
+  await page.locator('tbody tr').first().getByRole('button', { name: 'Actions' }).click()
+  await page.getByRole('menuitem', { name: 'Copy Model' }).click()
+
+  const dialog = page.getByRole('dialog')
+  await expect(dialog.getByRole('alert')).toHaveText('Log in to copy this model.')
+  await expect(dialog.getByRole('button', { name: 'Copy', exact: true })).toBeDisabled()
+  expect(calls.m3Batch).toHaveLength(0)
+})

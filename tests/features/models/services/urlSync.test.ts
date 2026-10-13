@@ -70,13 +70,25 @@ describe('round trip', () => {
     expect(criteriaFromParams(paramsFromCriteria(criteria))).toEqual(criteria)
   })
 
-  it('folds chemicals and obsolete terms back into terms', () => {
-    // Both serialize as `term`, so the distinction is lost across a URL. The
-    // filters still apply — they just come back as plain terms.
-    const params = paramsFromCriteria(
-      buildCriteria({ molecules: [{ id: 'CHEBI:1', label: 'CHEBI:1' }] })
-    )
-    expect(criteriaFromParams(params).terms.map(t => t.id)).toEqual(['CHEBI:1'])
+  // Regression: both were written as `term`, so Back, Forward or a reload
+  // moved a chemical or obsolete-term filter into "Any Ontology Term".
+  it('keeps chemicals and obsolete terms in their own filters', () => {
+    const criteria = buildCriteria({
+      molecules: [{ id: 'CHEBI:1', label: 'CHEBI:1' }],
+      obsoleteTerms: [{ id: 'GO:0000001', label: 'GO:0000001' }],
+    })
+    const params = paramsFromCriteria(criteria)
+
+    expect(params.getAll('molecule')).toEqual(['CHEBI:1'])
+    expect(params.getAll('obsoleteterm')).toEqual(['GO:0000001'])
+    expect(params.has('term')).toBe(false)
+    expect(criteriaFromParams(params)).toEqual(criteria)
+  })
+
+  it("reads Angular's obsoleteTerm spelling too", () => {
+    const criteria = criteriaFromParams(new URLSearchParams('obsoleteTerm=GO:0000001'))
+
+    expect(criteria.obsoleteTerms).toEqual([{ id: 'GO:0000001', label: 'GO:0000001' }])
   })
 })
 

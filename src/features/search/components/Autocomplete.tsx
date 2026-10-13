@@ -5,7 +5,11 @@ import { useSearchTermsQuery } from '../slices/lookupApiSlice'
 import type { GOlrResponse } from '../models/search'
 import { Loader, Portal } from '@mantine/core'
 import FloatingTextarea from '@/@noctua.core/components/textarea/FloatingTextarea'
-import { DEBOUNCE_MS, BLUR_CLOSE_DELAY_MS, MIN_SEARCH_LENGTH } from '@/@noctua.core/data/uiConstants'
+import {
+  DEBOUNCE_MS,
+  BLUR_CLOSE_DELAY_MS,
+  MIN_SEARCH_LENGTH,
+} from '@/@noctua.core/data/uiConstants'
 
 interface TermAutocompleteProps {
   label: string
@@ -145,6 +149,10 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
   }
 
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    // A term is one line. With the list shut (after Escape), Enter used to fall
+    // through to the textarea and add a newline, which scrolled the text out of
+    // the one-row field and changed the search.
+    if (event.key === 'Enter') event.preventDefault()
     if (!open) return
 
     switch (event.key) {
@@ -207,7 +215,7 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
             // Keep focus in the input: otherwise dragging this list's scrollbar
             // blurs it, and the blur timer closes the list mid-scroll.
             onMouseDown={e => e.preventDefault()}
-            className="max-h-60 overflow-y-auto rounded-md bg-accent-50 shadow-lg"
+            className="max-h-64 overflow-y-auto rounded bg-noc-dropdown shadow-lg"
             style={{
               position: 'fixed',
               top: dropdownPos.top + 4,
@@ -218,17 +226,17 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
           >
             {!searching && options.length === 0 && (
               <div className="p-4 text-center text-xs text-gray-500">
-                {inputValue.length < MIN_SEARCH_LENGTH
-                  ? 'Type to search'
-                  : 'No results found'}
+                {inputValue.length < MIN_SEARCH_LENGTH ? 'Type to search' : 'No results found'}
               </div>
             )}
 
             {options.map((option, index) => (
               <div
                 key={option.id}
-                className={`flex min-h-[40px] cursor-pointer items-center border-b border-primary-100 px-4 py-2 text-xs ${
-                  index === highlightedIndex ? 'bg-primary-100' : 'bg-accent-50 hover:bg-primary-50'
+                className={`flex min-h-[40px] cursor-pointer items-center border-b border-noc-dropdown-rule px-4 py-2 text-xs ${
+                  index === highlightedIndex
+                    ? 'bg-noc-dropdown-hover'
+                    : 'hover:bg-noc-dropdown-hover'
                 } ${option.isObsolete ? 'opacity-60' : ''}`}
                 onClick={() => handleOptionSelect(option)}
                 onMouseEnter={() => setHighlightedIndex(index)}

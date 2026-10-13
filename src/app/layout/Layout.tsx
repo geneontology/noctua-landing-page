@@ -39,7 +39,12 @@ const Layout: React.FC = () => {
       <div className="flex min-h-0 flex-1">
         <LeftDrawer />
         <div id="results-scroll" className="flex flex-1 flex-col overflow-auto bg-white">
-          <Outlet />
+          {/* Grows to fill the column, so a short page (one result, or none)
+              still pushes the footer to the bottom instead of leaving it
+              floating mid-screen over blank space. */}
+          <main className="flex shrink-0 grow flex-col">
+            <Outlet />
+          </main>
           <Footer />
         </div>
       </div>

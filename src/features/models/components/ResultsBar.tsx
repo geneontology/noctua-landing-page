@@ -36,7 +36,7 @@ const ResultsBar: React.FC<ResultsBarProps> = ({ total, isFetching, onRefresh })
 
   return (
     <div
-      className="sticky z-10 mb-1 flex h-10 shrink-0 items-center gap-2 bg-white pl-5 pr-2.5 shadow-noc-2"
+      className="sticky z-10 mb-1 flex h-10 shrink-0 items-center gap-2 bg-white pr-2.5 pl-5 shadow-noc-2"
       style={{ top: RESULTS_BAR_TOP }}
     >
       {isFetching && (
@@ -47,7 +47,7 @@ const ResultsBar: React.FC<ResultsBarProps> = ({ total, isFetching, onRefresh })
         />
       )}
 
-      <small className="text-2xs text-gray-500">Results:</small>
+      <small className="text-[0.8rem] text-gray-500">Results:</small>
       <span className="rounded-l-full border border-noc-primary/40 px-3 py-0.5 text-xs font-bold text-noc-primary">
         {total}
       </span>
@@ -77,15 +77,13 @@ const ResultsBar: React.FC<ResultsBarProps> = ({ total, isFetching, onRefresh })
             color="gray"
             size="sm"
             aria-label={density === 'compact' ? 'Use comfortable rows' : 'Use compact rows'}
-            onClick={() =>
-              dispatch(setDensity(density === 'compact' ? 'comfortable' : 'compact'))
-            }
+            onClick={() => dispatch(setDensity(density === 'compact' ? 'comfortable' : 'compact'))}
           >
             {density === 'compact' ? <MdViewAgenda /> : <MdViewHeadline />}
           </ActionIcon>
         </Tooltip>
 
-        <span className="text-2xs text-gray-600">GO CAMs per page:</span>
+        <span className="text-xs text-gray-600">GO CAMs per page:</span>
         <Select
           size="xs"
           w={72}
@@ -96,7 +94,7 @@ const ResultsBar: React.FC<ResultsBarProps> = ({ total, isFetching, onRefresh })
           aria-label="Page size"
         />
 
-        <span className="text-2xs text-gray-600">
+        <span className="text-xs text-gray-600">
           {from} – {to} of {total}
         </span>
 

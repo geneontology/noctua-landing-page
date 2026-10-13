@@ -1,14 +1,16 @@
-import type React from 'react';
-import { Link } from 'react-router-dom';
-import { EXTERNAL_LINKS } from '@/@noctua.core/data/constants';
+import type React from 'react'
+import { Link } from 'react-router-dom'
+import { EXTERNAL_LINKS } from '@/@noctua.core/data/constants'
 
 const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear()
 
   return (
     <div className="footer flex flex-row items-start bg-gradient-to-r from-slate-900 to-indigo-900 p-5 text-white">
-      {/* Left Section */}
-      <div className="flex flex-1 flex-row items-start">
+      {/* Left Section. Angular's 50% / spacer / 40% split: as three equal
+          columns the links got a third of the width and "Contact us" wrapped
+          at 1280px. */}
+      <div className="flex max-w-[50%] basis-1/2 flex-row items-start">
         <div className="mr-4">
           <Link to="/" className="text-white">
             Home
@@ -42,7 +44,7 @@ const Footer: React.FC = () => {
       <span className="grow"></span>
 
       {/* Right Section */}
-      <div className="flex-1 text-right">
+      <div className="max-w-[40%] basis-2/5 text-right">
         <small>
           Copyright © 1999-{currentYear} Member of the{' '}
           <a
@@ -69,7 +71,7 @@ const Footer: React.FC = () => {
         </small>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

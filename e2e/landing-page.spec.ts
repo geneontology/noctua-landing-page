@@ -10,7 +10,7 @@ test.describe('landing page', () => {
 
     await expect(page.getByText('Filter by', { exact: true })).toBeVisible()
     for (const section of ['Annotations', 'Contributor', 'Date last modified', 'Model']) {
-      await expect(page.getByRole('button', { name: section, exact: true })).toBeVisible()
+      await expect(page.getByText(section, { exact: true })).toBeVisible()
     }
 
     await expect(page.getByText('Results:')).toBeVisible()
@@ -51,6 +51,32 @@ test.describe('landing page', () => {
     await expect(page.getByText('No models found.')).toBeVisible()
   })
 
+  // Regression: nothing grew to fill the scroll column, so a short result left
+  // the footer floating mid-screen over blank space.
+  test('keeps the footer at the bottom when there are few results', async ({ page }) => {
+    // Tall enough that one row and the hero leave room to spare; at 720px the
+    // page overflows anyway and the footer rightly sits below the fold.
+    await page.setViewportSize({ width: 1600, height: 1000 })
+    await mockBackend(page, { models: [model(1)], total: 1 })
+    await page.goto('./')
+    await expect(page.locator('tbody tr')).toHaveCount(1)
+
+    const footer = await page.locator('.footer').boundingBox()
+    const viewport = page.viewportSize()
+    expect(footer && viewport && Math.abs(footer.y + footer.height - viewport.height)).toBeLessThan(
+      2
+    )
+  })
+
+  test('pushes the footer below the fold for a full page', async ({ page }) => {
+    await mockBackend(page, { models: Array.from({ length: 50 }, (_, i) => model(i + 1)) })
+    await page.goto('./')
+    await expect(page.locator('tbody tr')).toHaveCount(50)
+
+    const footer = await page.locator('.footer').boundingBox()
+    expect(footer?.y).toBeGreaterThan(page.viewportSize()?.height ?? 0)
+  })
+
   test('links the footer citation policy to geneontology.org', async ({ page }) => {
     await mockBackend(page)
     await page.goto('./')
@@ -59,5 +85,18 @@ test.describe('landing page', () => {
       'href',
       'https://geneontology.org/docs/go-citation-policy/'
     )
+  })
+})
+
+test.describe('footer at 1280px', () => {
+  // Regression: three equal columns gave the links a third of the width and
+  // "Contact us" wrapped. Angular split it 50% / 40%.
+  test('keeps each link on one line', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 800 })
+    await mockBackend(page)
+    await page.goto('./')
+
+    const contact = await page.getByRole('link', { name: 'Contact us' }).boundingBox()
+    expect(contact?.height).toBeLessThan(30)
   })
 })

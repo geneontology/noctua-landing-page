@@ -174,10 +174,37 @@ const lookupApi = apiService
           }
         },
       }),
+
+      /** Title, authors and date of a PubMed article, for the reference picker's preview. */
+      getPubmedInfo: builder.query<{ title: string; authors: string; date: string } | null, string>(
+        {
+          queryFn: async pmid => {
+            try {
+              const url = `${ENVIRONMENT.pubmedApiUrl}${encodeURIComponent(pmid)}`
+              const res = await fetch(url)
+              if (!res.ok) return { data: null }
+              const data = await res.json()
+              const entry = data?.result?.[pmid]
+              if (!entry) return { data: null }
+              const title = entry.title || ''
+              const authors = Array.isArray(entry.authors)
+                ? entry.authors
+                    .map((a: { name?: string }) => a.name)
+                    .filter(Boolean)
+                    .join(', ')
+                : ''
+              const date = entry.pubdate || ''
+              return { data: { title, authors, date } }
+            } catch {
+              return { data: null }
+            }
+          },
+        }
+      ),
     }),
     overrideExisting: false,
   })
 
-export const { useSearchTermsQuery, useLazyGetTermByIdQuery } = lookupApi
+export const { useSearchTermsQuery, useLazyGetTermByIdQuery, useLazyGetPubmedInfoQuery } = lookupApi
 
 export default lookupApi

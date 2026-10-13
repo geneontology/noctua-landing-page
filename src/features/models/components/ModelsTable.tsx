@@ -7,13 +7,8 @@ import ContributorChips from '@/features/users/components/ContributorChips'
 import { addFilter, clearAll, selectFiltersCount } from '../slices/modelSearchSlice'
 import { selectDensity } from '@/@noctua.core/state/preferencesSlice'
 import { FilterType } from '../models/searchCriteria'
-import {
-  CHIP_COLORS,
-  TABLE_HEADER_TOP,
-  chipColors,
-  modelStateLabel,
-  stateChipColors,
-} from '../data/modelConstants'
+import { CHIP_COLORS, TABLE_HEADER_TOP, chipColors, modelStateLabel } from '../data/modelConstants'
+import { getStateColor } from '../data/stateColors'
 import type { CamRow } from '../models/camSearch'
 import ModelActionsMenu from './ModelActionsMenu'
 
@@ -24,26 +19,32 @@ interface ModelsTableProps {
   isError?: boolean
 }
 
-/** 10px bold uppercase primary, matching the Angular `.mat-header-cell`. */
-const HEADER_CELL = 'px-2.5 py-1.5 text-left text-2xs font-bold uppercase text-noc-primary'
+/** 10px bold primary, matching the Angular `.mat-header-cell` — which is not uppercased. */
+const HEADER_CELL = 'px-2.5 py-1.5 text-left text-2xs font-bold text-noc-primary'
 
 const dateChip = chipColors(CHIP_COLORS.date)
 
 const SavedMark: React.FC<{ modified: boolean }> = ({ modified }) =>
   modified ? (
-    <FaRegTimesCircle className="inline text-red-500" title="Unsaved changes" aria-label="Unsaved changes" />
+    <FaRegTimesCircle
+      className="inline text-red-500"
+      title="Unsaved changes"
+      aria-label="Unsaved changes"
+    />
   ) : (
     <FaRegCheckCircle className="inline text-green-600" title="Saved" aria-label="Saved" />
   )
 
+/** Coloured as in VPE, so a state reads the same in both apps; the icon takes
+ *  the circle's text colour and a rule separates it from the label, as there. */
 const StateChip: React.FC<{ state: string; onClick: () => void }> = ({ state, onClick }) => {
-  const colors = stateChipColors(state)
+  const colors = getStateColor(state)
   return (
     <Chip
       size="sm"
-      icon={<FaTasks size={10} className="text-[#888]" />}
-      chipStyle={colors.chipStyle}
-      circleStyle={colors.circleStyle}
+      icon={<FaTasks size={10} />}
+      chipClass={colors.chip}
+      circleClass={`border-r ${colors.circle}`}
       title="Add state to filters"
       className="max-w-[200px]"
       onClick={onClick}
@@ -150,7 +151,9 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching, isError =
               <SavedMark modified={model.modified} />
             </div>
             <div className="mb-2 flex flex-wrap items-center gap-1.5">
-              {model.state && <StateChip state={model.state} onClick={filterByState(model.state)} />}
+              {model.state && (
+                <StateChip state={model.state} onClick={filterByState(model.state)} />
+              )}
               {model.date && <DateChip date={model.date} onClick={filterByDate(model.date)} />}
             </div>
             <div className="mb-2">
@@ -198,7 +201,7 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching, isError =
         <tbody>
           {models.map(model => (
             <tr key={model.id} className="border-b border-noc-rule align-middle hover:bg-white/60">
-              <td className={`${cellPad} pl-3 pr-2.5 text-xs text-gray-900`}>
+              <td className={`${cellPad} pr-2.5 pl-3 text-xs text-gray-900`}>
                 <span title={model.id}>{model.title}</span>
               </td>
 

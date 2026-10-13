@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
-import { screen } from '@testing-library/react'
+import { fireEvent, screen } from '@testing-library/react'
 import FilterChipList from '@/features/models/components/FilterChipList'
 import TextChipFilter from '@/features/models/components/TextChipFilter'
 import SelectChipFilter from '@/features/models/components/SelectChipFilter'
@@ -188,6 +188,45 @@ describe('TextChipFilter', () => {
       expect(onAdd).not.toHaveBeenCalled()
     })
 
+    // Regression: a native date box displayed mm/dd/yyyy and garbled a typed
+    // ISO date into "mm/dd/261002", adding nothing.
+    it('takes a typed YYYY-MM-DD date', async () => {
+      const { onAdd, user } = renderText({ label: 'Filter by Exact Date', inputType: 'date' })
+
+      await user.type(screen.getByLabelText('Filter by Exact Date'), '2026-10-02{Enter}')
+
+      expect(onAdd).toHaveBeenCalledExactlyOnceWith('2026-10-02')
+    })
+
+    it('pads and normalizes a slashed date', async () => {
+      const { onAdd, user } = renderText({ label: 'Filter by Exact Date', inputType: 'date' })
+
+      await user.type(screen.getByLabelText('Filter by Exact Date'), '2026/7/3{Enter}')
+
+      expect(onAdd).toHaveBeenCalledExactlyOnceWith('2026-07-03')
+    })
+
+    it('flags a date that does not exist and keeps it for correcting', async () => {
+      const { onAdd, user } = renderText({ label: 'Filter by Exact Date', inputType: 'date' })
+      const input = screen.getByLabelText('Filter by Exact Date')
+
+      await user.type(input, '2026-02-30{Enter}')
+
+      expect(onAdd).not.toHaveBeenCalled()
+      expect(input).toHaveValue('2026-02-30')
+      expect(input).toHaveAttribute('aria-invalid', 'true')
+    })
+
+    it('adds the day picked from the calendar', () => {
+      const { onAdd, container } = renderText({ label: 'Filter by Exact Date', inputType: 'date' })
+      const picker = container.querySelector('input[type="date"]') as HTMLInputElement
+
+      fireEvent.change(picker, { target: { value: '2026-10-02' } })
+
+      expect(onAdd).toHaveBeenCalledExactlyOnceWith('2026-10-02')
+      expect(screen.getByLabelText('Pick exact date from a calendar')).toBeInTheDocument()
+    })
+
     it('ignores a comma in a date input', async () => {
       const { onAdd, user } = renderText({ label: 'Filter by Exact Date', inputType: 'date' })
 
@@ -204,9 +243,7 @@ describe('SelectChipFilter', () => {
     { value: 'http://orcid.org/0000-0002', label: 'Grace Hopper' },
   ]
 
-  const renderSelect = (
-    props: Partial<React.ComponentProps<typeof SelectChipFilter>> = {}
-  ) => {
+  const renderSelect = (props: Partial<React.ComponentProps<typeof SelectChipFilter>> = {}) => {
     const onAdd = vi.fn()
     const onRemove = vi.fn()
     return {
@@ -373,5 +410,31 @@ describe('SelectChipFilter', () => {
 
   it('collapses an entry that is listed twice', () => {
     expect(() => renderSelect({ options: [OPTIONS[0], OPTIONS[0]] })).not.toThrow()
+  })
+
+  // Regression: a cap of 50 cut Barista's 86 organisms off at "H…" and hid
+  // most of its 152 users and 116 groups.
+  it('offers every option, not just the first 50', async () => {
+    const many = Array.from({ length: 160 }, (_, i) => ({
+      value: `u${i}`,
+      label: `User ${String(i).padStart(3, '0')}`,
+    }))
+    const { user } = renderSelect({ options: many })
+
+    await user.click(comboboxFor('Filter by Contributor'))
+
+    expect(await screen.findByText('User 159')).toBeInTheDocument()
+    expect(screen.getAllByRole('option', { hidden: true })).toHaveLength(160)
+  })
+
+  it('shows an option detail beside its label, as the Angular id column did', async () => {
+    const { user } = renderSelect({
+      options: [{ ...OPTIONS[0], detail: 'http://orcid.org/0000-0001' }],
+    })
+
+    await user.click(comboboxFor('Filter by Contributor'))
+
+    expect(await screen.findByText('Ada Lovelace')).toBeInTheDocument()
+    expect(screen.getByText('http://orcid.org/0000-0001')).toBeInTheDocument()
   })
 })

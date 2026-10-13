@@ -54,3 +54,13 @@ export const cleanModelId = (value: string): string => {
   const cleanId = value.trim()
   return cleanId.includes(prefix) ? cleanId : prefix + cleanId
 }
+
+/**
+ * Barista matches references only as `DB:accession` — `pmid=PMID:21873635`
+ * finds models, `pmid=21873635` finds none. A bare number can only be a PubMed
+ * id, so give it the prefix; anything else is left as typed.
+ */
+export const cleanReference = (value: string): string => {
+  const trimmed = value.trim()
+  return /^\d+$/.test(trimmed) ? `PMID:${trimmed}` : trimmed
+}

@@ -33,7 +33,11 @@ export interface GolrTerm {
   label: string
 }
 
-export const ADA = { nickname: 'Ada Lovelace', uri: 'https://orcid.org/0000-0001', color: '#3b82f6' }
+export const ADA = {
+  nickname: 'Ada Lovelace',
+  uri: 'https://orcid.org/0000-0001',
+  color: '#3b82f6',
+}
 export const GRACE = { nickname: 'Grace Hopper', uri: 'https://orcid.org/0000-0002' }
 export const GROUP = { id: 'http://geneontology.org/groups/test', label: 'Test Group' }
 
@@ -126,7 +130,8 @@ export const mockBackend = async (
     const isCount = url.searchParams.has('count')
     ;(isCount ? calls.count : calls.search).push(url)
 
-    if (state.searchStatus !== 200) return json(route, { error: 'mocked failure' }, state.searchStatus)
+    if (state.searchStatus !== 200)
+      return json(route, { error: 'mocked failure' }, state.searchStatus)
     if (isCount) return json(route, { n: state.total ?? state.models.length })
 
     const offset = Number(url.searchParams.get('offset') ?? 0)
@@ -183,6 +188,10 @@ export const mockBackend = async (
       body: `${callback}(${JSON.stringify({ response: { docs } })})`,
     })
   })
+
+  // PubMed's esummary, behind the reference picker's PMID preview. Nothing
+  // known by default; a test that wants a preview can route over this.
+  await page.route(/eutils\.ncbi\.nlm\.nih\.gov\//, route => json(route, { result: {} }))
 
   // Barista's login/logout pages: a placeholder, so following the link lands
   // somewhere the test can read the URL of.

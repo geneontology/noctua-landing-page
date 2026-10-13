@@ -58,7 +58,10 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
-describe('Layout', () => {
+// The first render here mounts the whole shell — toolbar, filter panel, every
+// Mantine field — cold. Alone it takes ~1.5s, but under a full parallel run it
+// measured 5.7–6.6s and tripped the 5s default, failing at random.
+describe('Layout', { timeout: 15_000 }, () => {
   it('frames the routed page with the toolbar, filters and footer', () => {
     renderLayout()
 
@@ -74,6 +77,17 @@ describe('Layout', () => {
     expect(document.getElementById('results-scroll')).toContainElement(
       screen.getByText('landing outlet')
     )
+  })
+
+  // jsdom has no layout, so this pins the structure; e2e checks the position.
+  // Regression: with nothing growing, a short page left the footer mid-screen.
+  it('puts the page in a growing main region ahead of the footer', () => {
+    renderLayout()
+
+    const main = screen.getByRole('main')
+    expect(main).toContainElement(screen.getByText('landing outlet'))
+    expect(main).toHaveClass('grow')
+    expect(main.nextElementSibling).toHaveClass('footer')
   })
 
   it('starts analytics once', () => {

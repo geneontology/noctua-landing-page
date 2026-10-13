@@ -1,0 +1,39 @@
+/**
+ * Mantine combobox dropdowns (the filter pickers, the page-size and reference
+ * DB selects), dressed as the Angular `.noc-term-autocomplete` panel measured
+ * on prod: a #fbf9de panel, 8px rows split by a 60% primary rule, 12px text.
+ * On plain white the open list was hard to tell apart from the page under it.
+ *
+ * Global and by Mantine's static class names because Mantine's own stylesheet
+ * loads first (main.tsx), so equal-specificity rules here win. The GOlr term
+ * autocomplete draws its own list with the same token.
+ */
+
+.mantine-Autocomplete-dropdown,
+.mantine-Select-dropdown {
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--color-noc-dropdown);
+  box-shadow:
+    0 2px 4px -1px rgba(0, 0, 0, 0.2),
+    0 4px 5px 0 rgba(0, 0, 0, 0.14),
+    0 1px 10px 0 rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+
+.mantine-Autocomplete-option,
+.mantine-Select-option {
+  padding: 8px;
+  border-radius: 0;
+  border-bottom: 1px solid var(--color-noc-dropdown-rule);
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.mantine-Autocomplete-option:hover,
+.mantine-Select-option:hover,
+.mantine-Autocomplete-option[data-combobox-selected],
+.mantine-Select-option[data-combobox-selected] {
+  background-color: var(--color-noc-dropdown-hover);
+}

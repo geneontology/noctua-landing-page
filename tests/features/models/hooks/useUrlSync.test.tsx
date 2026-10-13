@@ -6,7 +6,7 @@ import { makeStore } from '@/app/store/store'
 import { emptyCriteria } from '@/features/models/models/searchCriteria'
 import { FilterType } from '@/features/models/models/searchCriteria'
 import { addFilter, clearAll, hydrateTermLabel } from '@/features/models/slices/modelSearchSlice'
-
+import { setUsers } from '@/features/users/slices/metadataSlice'
 
 /**
  * The GOlr lookup rides on JSONP, which cannot resolve under jsdom, so the
@@ -14,20 +14,29 @@ import { addFilter, clearAll, hydrateTermLabel } from '@/features/models/slices/
  */
 const fetchTerm = vi.fn()
 vi.mock('@/features/search/slices/lookupApiSlice', () => ({
-  useLazyGetTermByIdQuery: () => [
-    (id: string) => ({ unwrap: () => fetchTerm(id) }),
-  ],
+  useLazyGetTermByIdQuery: () => [(id: string) => ({ unwrap: () => fetchTerm(id) })],
 }))
 
 const { useUrlSync } = await import('@/features/models/hooks/useUrlSync')
 
-const renderSync = (criteria = emptyCriteria()) => {
+/** Taxa the mocked Barista `/search/taxa` returns; the hook names organisms from them. */
+let taxa: { id: string; label: string }[] = []
+
+const renderSync = (
+  criteria = emptyCriteria(),
+  metadata?: { contributors?: unknown[]; groups?: unknown[] }
+) => {
   const store = makeStore({
     modelSearch: { criteria, page: { pageNumber: 0, size: 50 }, lastRejection: null },
+    ...(metadata && {
+      metadata: {
+        contributors: metadata.contributors ?? [],
+        groups: metadata.groups ?? [],
+        loading: false,
+      } as never,
+    }),
   })
-  const wrapper = ({ children }: PropsWithChildren) => (
-    <Provider store={store}>{children}</Provider>
-  )
+  const wrapper = ({ children }: PropsWithChildren) => <Provider store={store}>{children}</Provider>
   return { store, ...renderHook(() => useUrlSync(), { wrapper }) }
 }
 
@@ -39,6 +48,14 @@ let pushState: ReturnType<typeof vi.spyOn>
 let replaceState: ReturnType<typeof vi.spyOn>
 
 beforeEach(() => {
+  taxa = []
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(
+      async () =>
+        new Response(JSON.stringify({ taxa }), { headers: { 'content-type': 'application/json' } })
+    )
+  )
   fetchTerm.mockReset()
   fetchTerm.mockResolvedValue(null)
   pushState = vi.spyOn(window.history, 'pushState').mockImplementation(() => {})
@@ -47,6 +64,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 })
 
 describe('useUrlSync', () => {
@@ -126,12 +144,12 @@ describe('useUrlSync', () => {
     })
 
     act(() => {
-      store.dispatch(hydrateTermLabel({ type: FilterType.TERMS, id: 'GO:0016301', label: 'kinase' }))
+      store.dispatch(
+        hydrateTermLabel({ type: FilterType.TERMS, id: 'GO:0016301', label: 'kinase' })
+      )
     })
 
-    await waitFor(() =>
-      expect(store.getState().modelSearch.criteria.terms[0].label).toBe('kinase')
-    )
+    await waitFor(() => expect(store.getState().modelSearch.criteria.terms[0].label).toBe('kinase'))
     expect(pushState).not.toHaveBeenCalled()
     realReplaceState({}, '', '/')
   })
@@ -169,9 +187,7 @@ describe('useUrlSync', () => {
         gps: [{ id: 'UniProtKB:P1', label: 'UniProtKB:P1' }],
       })
 
-      await waitFor(() =>
-        expect(store.getState().modelSearch.criteria.gps[0].label).toBe('MSH2')
-      )
+      await waitFor(() => expect(store.getState().modelSearch.criteria.gps[0].label).toBe('MSH2'))
     })
 
     // A term the user picked already has a real label; re-fetching it would be
@@ -207,6 +223,24 @@ describe('useUrlSync', () => {
       expect(store.getState().modelSearch.criteria.terms[0].label).toBe('GO:0016301')
     })
 
+    // GOlr is JSONP with a deadline and times out now and then. One failed
+    // try used to leave the chip a raw CURIE for the rest of the session.
+    it('tries again when a lookup fails', async () => {
+      fetchTerm
+        .mockRejectedValueOnce(new Error('timed out'))
+        .mockResolvedValue({ id: 'GO:0016301', label: 'kinase activity' })
+      const { store } = renderSync({
+        ...emptyCriteria(),
+        terms: [{ id: 'GO:0016301', label: 'GO:0016301' }],
+      })
+
+      await waitFor(
+        () => expect(store.getState().modelSearch.criteria.terms[0].label).toBe('kinase activity'),
+        { timeout: 3000 }
+      )
+      expect(fetchTerm).toHaveBeenCalledTimes(2)
+    })
+
     // Guarded by a ref so later criteria changes do not re-trigger the sweep.
     it('only sweeps for labels once', async () => {
       fetchTerm.mockResolvedValue({ id: 'GO:0016301', label: 'kinase activity' })
@@ -227,6 +261,87 @@ describe('useUrlSync', () => {
   })
 })
 
+// The URL carries ORCIDs, group URLs and taxon ids; the names are already
+// loaded, so the chips should show them.
+describe('useUrlSync entity names', () => {
+  const ORCID = 'https://orcid.org/0000-0001'
+  const GROUP_URL = 'http://www.wormbase.org'
+
+  it('names a contributor from the Barista users', async () => {
+    const { store } = renderSync(
+      { ...emptyCriteria(), contributors: [{ uri: ORCID, name: ORCID }] },
+      { contributors: [{ uri: ORCID, name: 'Ada Lovelace' }] }
+    )
+
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.contributors[0].name).toBe('Ada Lovelace')
+    )
+  })
+
+  it('names a group from the Barista groups', async () => {
+    const { store } = renderSync(
+      { ...emptyCriteria(), groups: [{ id: GROUP_URL, label: GROUP_URL }] },
+      { groups: [{ id: GROUP_URL, label: 'WormBase' }] }
+    )
+
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.groups[0].label).toBe('WormBase')
+    )
+  })
+
+  it('names an organism from the taxa', async () => {
+    taxa = [{ id: 'NCBITaxon:9606', label: 'Homo sapiens' }]
+    const { store } = renderSync({
+      ...emptyCriteria(),
+      organisms: [{ taxonIri: 'NCBITaxon:9606', taxonName: 'NCBITaxon:9606' }],
+    })
+
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.organisms[0].taxonName).toBe('Homo sapiens')
+    )
+  })
+
+  it('names them once the lists arrive, not only if they were there first', async () => {
+    const { store } = renderSync(
+      { ...emptyCriteria(), contributors: [{ uri: ORCID, name: ORCID }] },
+      { contributors: [] }
+    )
+
+    act(() => {
+      store.dispatch(setUsers([{ uri: ORCID, name: 'Ada Lovelace' }]))
+    })
+
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.contributors[0].name).toBe('Ada Lovelace')
+    )
+  })
+
+  it('keeps the id when there is no name for it', async () => {
+    const { store } = renderSync(
+      { ...emptyCriteria(), contributors: [{ uri: ORCID, name: ORCID }] },
+      { contributors: [{ uri: 'https://orcid.org/other', name: 'Someone Else' }] }
+    )
+
+    await act(() => new Promise(resolve => setTimeout(resolve, 50)))
+    expect(store.getState().modelSearch.criteria.contributors[0].name).toBe(ORCID)
+  })
+
+  it('does not record history for a name filling in', async () => {
+    realReplaceState({}, '', `/?contributor=${encodeURIComponent(ORCID)}`)
+    const { store } = renderSync(
+      { ...emptyCriteria(), contributors: [{ uri: ORCID, name: ORCID }] },
+      { contributors: [{ uri: ORCID, name: 'Ada Lovelace' }] }
+    )
+
+    await waitFor(() =>
+      expect(store.getState().modelSearch.criteria.contributors[0].name).toBe('Ada Lovelace')
+    )
+    expect(pushState).not.toHaveBeenCalled()
+    expect(replaceState).not.toHaveBeenCalled()
+    realReplaceState({}, '', '/')
+  })
+})
+
 describe('useUrlSync history navigation', () => {
   const setUrl = (query: string) => {
     realReplaceState({}, '', `/${query ? `?${query}` : ''}`)
@@ -242,9 +357,7 @@ describe('useUrlSync history navigation', () => {
     setUrl('title=kinase')
     back()
 
-    await waitFor(() =>
-      expect(store.getState().modelSearch.criteria.titles).toEqual(['kinase'])
-    )
+    await waitFor(() => expect(store.getState().modelSearch.criteria.titles).toEqual(['kinase']))
   })
 
   it('adopts the page position too', async () => {
@@ -253,10 +366,12 @@ describe('useUrlSync history navigation', () => {
     setUrl('title=kinase&page=3&size=25')
     back()
 
-    await waitFor(() => expect(store.getState().modelSearch.page).toEqual({
-      pageNumber: 2,
-      size: 25,
-    }))
+    await waitFor(() =>
+      expect(store.getState().modelSearch.page).toEqual({
+        pageNumber: 2,
+        size: 25,
+      })
+    )
   })
 
   it('returns to an unfiltered search when Back reaches a bare URL', async () => {
@@ -279,9 +394,7 @@ describe('useUrlSync history navigation', () => {
 
     // Wait on the adoption itself; the write effect deliberately produces no
     // history call at all on that render.
-    await waitFor(() =>
-      expect(store.getState().modelSearch.criteria.titles).toEqual(['kinase'])
-    )
+    await waitFor(() => expect(store.getState().modelSearch.criteria.titles).toEqual(['kinase']))
     expect(pushState).not.toHaveBeenCalled()
   })
 
@@ -290,9 +403,7 @@ describe('useUrlSync history navigation', () => {
 
     setUrl('title=kinase')
     back()
-    await waitFor(() =>
-      expect(store.getState().modelSearch.criteria.titles).toEqual(['kinase'])
-    )
+    await waitFor(() => expect(store.getState().modelSearch.criteria.titles).toEqual(['kinase']))
 
     pushState.mockClear()
     act(() => {

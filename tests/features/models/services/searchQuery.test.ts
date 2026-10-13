@@ -2,12 +2,15 @@ import { describe, expect, it } from 'vitest'
 import {
   buildSearchQuery,
   cleanModelId,
+  cleanReference,
   serializeSearchQuery,
 } from '@/features/models/services/searchQuery'
 import { buildCriteria } from '@tests/fixtures/models'
 
-const query = (criteria: Parameters<typeof buildSearchQuery>[0], page?: { pageNumber: number; size: number }) =>
-  serializeSearchQuery(buildSearchQuery(criteria, page))
+const query = (
+  criteria: Parameters<typeof buildSearchQuery>[0],
+  page?: { pageNumber: number; size: number }
+) => serializeSearchQuery(buildSearchQuery(criteria, page))
 
 describe('buildSearchQuery', () => {
   it('emits pagination as offset/limit', () => {
@@ -93,5 +96,24 @@ describe('cleanModelId', () => {
 
   it('leaves an already-prefixed id alone', () => {
     expect(cleanModelId('gomodel:5b91dbd100002057')).toBe('gomodel:5b91dbd100002057')
+  })
+})
+
+// Barista matches references only with their prefix: `PMID:21873635` finds
+// models, the bare `21873635` finds none.
+describe('cleanReference', () => {
+  it('prefixes a bare number as a PubMed id', () => {
+    expect(cleanReference(' 21873635 ')).toBe('PMID:21873635')
+  })
+
+  it.each(['PMID:21873635', 'GO_REF:0000033', 'DOI:10.1093/nar/gky1055'])(
+    'leaves the prefixed %s alone',
+    value => {
+      expect(cleanReference(value)).toBe(value)
+    }
+  )
+
+  it('leaves text that is not a bare number as typed', () => {
+    expect(cleanReference('smith 2019')).toBe('smith 2019')
   })
 })

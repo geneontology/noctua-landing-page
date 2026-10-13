@@ -1,6 +1,5 @@
 import type React from 'react'
 import { useEffect } from 'react'
-import { IoClose } from 'react-icons/io5'
 import FilterPanel from '@/features/models/components/FilterPanel'
 import { useIsAtLeast } from '@/@noctua.core/hooks/useBreakpoint'
 import { useAppDispatch, useAppSelector } from '../hooks'
@@ -58,15 +57,7 @@ const LeftDrawer: React.FC = () => {
         aria-label="Search filters"
         className="fixed inset-y-0 left-0 z-40 flex w-[85vw] max-w-[340px] flex-col border-r border-[#bbb] bg-white shadow-xl"
       >
-        <button
-          type="button"
-          aria-label="Close filters"
-          className="absolute right-2 top-2 z-10 flex h-7 w-7 items-center justify-center rounded-full text-gray-600 hover:bg-gray-100"
-          onClick={() => dispatch(setLeftDrawerOpen(false))}
-        >
-          <IoClose size={16} />
-        </button>
-        <FilterPanel />
+        <FilterPanel onClose={() => dispatch(setLeftDrawerOpen(false))} />
       </div>
     </>
   )

@@ -25,8 +25,12 @@ const CopyModelDialog: React.FC<CopyModelDialogProps> = ({ model }) => {
   const [title, setTitle] = useState(model?.title ? `Copy of ${model.title}` : '')
   const [preserveEvidence, setPreserveEvidence] = useState(false)
 
+  // Minerva rejects a copy without a token. Prod greys the form out with "Log in
+  // to Continue"; without this the request went out anyway and failed.
+  const loggedIn = Boolean(baristaToken)
+
   const handleCopy = useCallback(async () => {
-    if (!model?.id || !title.trim()) return
+    if (!model?.id || !title.trim() || !baristaToken) return
 
     try {
       const result = await copyModel({
@@ -64,6 +68,11 @@ const CopyModelDialog: React.FC<CopyModelDialogProps> = ({ model }) => {
 
   return (
     <div className="flex flex-col">
+      {!loggedIn && (
+        <div role="alert" className="bg-accent-100 px-4 py-2 text-sm text-gray-800">
+          Log in to copy this model.
+        </div>
+      )}
       <SectionHeading>Source Model</SectionHeading>
       <div className="flex flex-col gap-1 px-4 py-4 text-sm">
         <div className="flex gap-2">
@@ -119,7 +128,7 @@ const CopyModelDialog: React.FC<CopyModelDialogProps> = ({ model }) => {
           variant="filled"
           size="sm"
           onClick={handleCopy}
-          disabled={isLoading || !title.trim()}
+          disabled={isLoading || !title.trim() || !loggedIn}
         >
           {isLoading ? 'Copying...' : 'Copy'}
         </Button>

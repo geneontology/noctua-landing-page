@@ -1,16 +1,24 @@
-/* The Material outline label, matching @noctua.core/components/textarea/
-   FloatingTextarea.module.css so the chip fields and the plain textarea fields
-   behave identically: the label sits inside the box as a placeholder, and only
-   lifts onto the border once the field is focused or holds something. */
+/* The Material outline field, as the Angular filter panel drew it: the label
+   sits inside the box as a placeholder and, once the field is focused or holds
+   something, shrinks onto the top border. Geometry follows prod's
+   `mat-form-field appearance="outline"` — a 44px box, and a label scaled to 75%
+   and centred on the border line. Floating it at full size instead left it
+   sticking 6px out above the box, which read as the box growing on click. */
 
 .wrap {
+  /* Shared by the label's resting and floated positions, so they stay in step
+     with the box height. */
+  --chip-field-height: 44px;
+  --chip-label-size: 12px;
+  --chip-label-scale: 0.75;
   position: relative;
 }
 
 .wrap .label {
   position: absolute;
   z-index: 2;
-  top: 9px;
+  /* Vertically centred in the empty box. */
+  top: calc((var(--chip-field-height) - var(--chip-label-size)) / 2);
   left: 6px;
   margin: 0 !important;
   padding: 0 4px;
@@ -19,7 +27,7 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  font-size: 12px !important;
+  font-size: var(--chip-label-size) !important;
   font-weight: 400 !important;
   line-height: 1 !important;
   color: var(--color-gray-500) !important;
@@ -35,13 +43,24 @@
   color: var(--color-primary-500) !important;
 }
 
+/* Lift by the resting offset plus half the scaled height, which puts the
+   label's midline exactly on the 1px border. The 75% scale also widens the
+   label's max-width budget, so long labels keep the same visible length. */
 .wrap[data-floating='true'] .label {
-  transform: translate(-2px, -15px);
+  max-width: calc(90% / var(--chip-label-scale));
+  transform: translate(
+      -2px,
+      calc(
+        (var(--chip-field-height) - var(--chip-label-size)) / -2 - var(--chip-label-size) *
+          var(--chip-label-scale) / 2
+      )
+    )
+    scale(var(--chip-label-scale));
 }
 
 .box {
   display: flex;
-  min-height: 38px;
+  min-height: var(--chip-field-height);
   width: 100%;
   flex-wrap: wrap;
   align-items: center;
@@ -59,3 +78,8 @@
   border-color: var(--color-primary-500);
 }
 
+/* Prod thickens the outline of the field being edited. An inset shadow rather
+   than a wider border, so the box keeps its size. */
+.wrap:focus-within .box {
+  box-shadow: inset 0 0 0 1px var(--color-primary-500);
+}

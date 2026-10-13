@@ -10,13 +10,9 @@ interface ChipInputFieldProps {
   htmlFor: string
   chips: { key: string; label: string; title?: string }[]
   onRemove: (index: number) => void
-  /**
-   * Keep the label lifted even when the field looks empty. Needed for
-   * `type="date"`, whose native `mm/dd/yyyy` hint always occupies the box and
-   * cannot be hidden — it is drawn by `::-webkit-datetime-edit`, not by the
-   * placeholder, so an inline label would sit straight on top of it.
-   */
-  alwaysFloat?: boolean
+  /** A control pinned to the end of the box, after the input — the Angular
+   *  `matSuffix`, e.g. the Reference field's [+] picker. */
+  rightSection?: ReactNode
   /** The bare input/textarea/combobox. Rendered as a sibling of the chips. */
   children: ReactNode
 }
@@ -34,7 +30,7 @@ const ChipInputField: React.FC<ChipInputFieldProps> = ({
   htmlFor,
   chips,
   onRemove,
-  alwaysFloat = false,
+  rightSection,
   children,
 }) => {
   const [focused, setFocused] = useState(false)
@@ -44,12 +40,17 @@ const ChipInputField: React.FC<ChipInputFieldProps> = ({
    * The label only lifts once the field holds something, so an empty field
    * reads as a placeholder — the FloatingTextarea behaviour.
    *
-   * Text is tracked from bubbling `input` events rather than a prop, because
-   * the three filter variants own their draft differently (a plain input, a
+   * Text is tracked from the control itself rather than a prop, because the
+   * three filter variants own their draft differently (a plain input, a
    * Mantine combobox, and the GOlr autocomplete's textarea) and none of them
-   * would report it the same way.
+   * would report it the same way. Typing is caught by bubbling `input` events;
+   * a draft the component clears in code fires none, so blur reads the value
+   * again — otherwise the label stayed lifted over an emptied field.
    */
-  const floating = alwaysFloat || focused || hasText || chips.length > 0
+  const floating = focused || hasText || chips.length > 0
+
+  const readText = () =>
+    setHasText(Boolean((document.getElementById(htmlFor) as HTMLInputElement | null)?.value))
 
   return (
     <div className={`${classes.wrap} w-full`} data-floating={floating ? 'true' : 'false'}>
@@ -60,15 +61,19 @@ const ChipInputField: React.FC<ChipInputFieldProps> = ({
       <div
         className={classes.box}
         onFocusCapture={() => setFocused(true)}
-        onBlurCapture={() => setFocused(false)}
-        onInput={(e: FormEvent) =>
-          setHasText(Boolean((e.target as HTMLInputElement | HTMLTextAreaElement).value))
-        }
+        onBlurCapture={() => {
+          setFocused(false)
+          readText()
+        }}
+        // Only the labelled control counts — not, say, a date field's hidden
+        // calendar input.
+        onInput={(e: FormEvent) => (e.target as HTMLElement).id === htmlFor && readText()}
       >
         {/* `contents` so each chip is a direct flex sibling of the input, letting
             the input trail the last chip rather than dropping to its own row. */}
         <FilterChipList items={chips} onRemove={onRemove} className="contents" />
         <div className="min-w-[80px] flex-1">{children}</div>
+        {rightSection && <div className="flex shrink-0 items-center">{rightSection}</div>}
       </div>
     </div>
   )

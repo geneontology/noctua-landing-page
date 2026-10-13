@@ -37,9 +37,7 @@ const renderSearch = (preloadedState: Partial<RootState> = {}) => {
     ...preloadedState,
   })
 
-  const wrapper = ({ children }: PropsWithChildren) => (
-    <Provider store={store}>{children}</Provider>
-  )
+  const wrapper = ({ children }: PropsWithChildren) => <Provider store={store}>{children}</Provider>
 
   return { store, ...renderHook(() => useModelSearch(), { wrapper }) }
 }
@@ -124,9 +122,7 @@ describe('useModelSearch', () => {
       const { result } = renderSearch(metadata([], [GROUP]))
 
       await waitFor(() => expect(result.current.models).toHaveLength(1))
-      expect(result.current.models[0].groups).toEqual([
-        { id: 'urn:unknown', label: 'urn:unknown' },
-      ])
+      expect(result.current.models[0].groups).toEqual([{ id: 'urn:unknown', label: 'urn:unknown' }])
     })
 
     it('preserves contributor order as Barista returned it', async () => {
@@ -178,7 +174,10 @@ describe('useModelSearch', () => {
 
   describe('error handling', () => {
     it('flags an error and keeps the model list empty', async () => {
-      vi.stubGlobal('fetch', vi.fn(async () => new Response('nope', { status: 500 })))
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async () => new Response('nope', { status: 500 }))
+      )
       const { result } = renderSearch()
 
       await waitFor(() => expect(result.current.isError).toBe(true))
@@ -192,7 +191,10 @@ describe('useModelSearch', () => {
       const { result, store } = renderSearch()
       await waitFor(() => expect(result.current.models).toHaveLength(1))
 
-      vi.stubGlobal('fetch', vi.fn(async () => new Response('nope', { status: 500 })))
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async () => new Response('nope', { status: 500 }))
+      )
       act(() => {
         store.dispatch(addFilter({ type: FilterType.TITLES, value: 'wnt' }))
       })
@@ -206,13 +208,83 @@ describe('useModelSearch', () => {
       const { result, store } = renderSearch()
       await waitFor(() => expect(result.current.models).toHaveLength(1))
 
-      vi.stubGlobal('fetch', vi.fn(() => new Promise<Response>(() => {})))
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(() => new Promise<Response>(() => {}))
+      )
       act(() => {
         store.dispatch(addFilter({ type: FilterType.TITLES, value: 'wnt' }))
       })
 
       await waitFor(() => expect(result.current.isFetching).toBe(true))
       expect(result.current.models.map(m => m.id)).toEqual(['gomodel:old'])
+    })
+
+    // Regression: the count kept the last successful total, so the bar read
+    // "1 – 50 of 54036" with paging enabled above "Could not load models".
+    it('drops the previous total when a later search fails', async () => {
+      serve({ models: [buildCamSearchResponseItem()], total: 54036 })
+      const { result, store } = renderSearch()
+      await waitFor(() => expect(result.current.total).toBe(54036))
+
+      // The count still answers; only the search fails.
+      vi.stubGlobal(
+        'fetch',
+        vi.fn(async (input: Request) =>
+          /[?&]count(&|$)/.test(input.url)
+            ? json({ n: 54036 })
+            : new Response('nope', { status: 500 })
+        )
+      )
+      act(() => {
+        store.dispatch(addFilter({ type: FilterType.TITLES, value: 'wnt' }))
+      })
+
+      await waitFor(() => expect(result.current.isError).toBe(true))
+      expect(result.current.total).toBe(0)
+    })
+  })
+
+  // Regression: `?page=99999` showed "4999901 – 54036 of 54036" over an empty table.
+  describe('a page past the end', () => {
+    it('settles on the last page once the count is in', async () => {
+      serve({ models: [], total: 120 })
+      const { store } = renderSearch({
+        modelSearch: {
+          criteria: emptyCriteria(),
+          page: { pageNumber: 99998, size: 50 },
+          lastRejection: null,
+        },
+      })
+
+      await waitFor(() => expect(store.getState().modelSearch.page.pageNumber).toBe(2))
+    })
+
+    it('settles on the first page when nothing matches', async () => {
+      serve({ models: [], total: 0 })
+      const { store } = renderSearch({
+        modelSearch: {
+          criteria: emptyCriteria(),
+          page: { pageNumber: 4, size: 50 },
+          lastRejection: null,
+        },
+      })
+
+      await waitFor(() => expect(store.getState().modelSearch.page.pageNumber).toBe(0))
+    })
+
+    it('leaves a page that exists alone', async () => {
+      serve({ models: [buildCamSearchResponseItem()], total: 120 })
+      const { result, store } = renderSearch({
+        modelSearch: {
+          criteria: emptyCriteria(),
+          page: { pageNumber: 2, size: 50 },
+          lastRejection: null,
+        },
+      })
+
+      await waitFor(() => expect(result.current.total).toBe(120))
+      expect(store.getState().modelSearch.page.pageNumber).toBe(2)
     })
   })
 

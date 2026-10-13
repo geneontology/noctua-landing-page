@@ -48,7 +48,12 @@ const renderAutocomplete = (props: Props = {}) => {
 /** The props the component last handed to the query hook. */
 const lastQuery = () => {
   const [arg, options] = searchTerms.mock.calls.at(-1) as [
-    { searchText: string; closureIds?: string[]; excludeClosureIds?: string[]; obsoleteOnly?: boolean },
+    {
+      searchText: string
+      closureIds?: string[]
+      excludeClosureIds?: string[]
+      obsoleteOnly?: boolean
+    },
     { skip: boolean },
   ]
   return { arg, skip: options.skip }
@@ -88,7 +93,12 @@ describe('TermAutocomplete', () => {
 
       await user.type(input, 'kinase')
 
-      await waitFor(() => expect(lastQuery()).toEqual({ arg: expect.objectContaining({ searchText: 'kinase' }), skip: false }))
+      await waitFor(() =>
+        expect(lastQuery()).toEqual({
+          arg: expect.objectContaining({ searchText: 'kinase' }),
+          skip: false,
+        })
+      )
       // Debounced: the intermediate prefixes never reach the server.
       const texts = searchTerms.mock.calls
         .filter(([, options]) => !(options as { skip: boolean }).skip)
@@ -162,7 +172,9 @@ describe('TermAutocomplete', () => {
     })
 
     it('links each id out to its term page', async () => {
-      results.kinase = [term('GO:0016301', 'kinase activity', { link: 'https://example.org/GO:0016301' })]
+      results.kinase = [
+        term('GO:0016301', 'kinase activity', { link: 'https://example.org/GO:0016301' }),
+      ]
       const { user, input } = renderAutocomplete()
 
       await user.type(input, 'kinase')
@@ -274,6 +286,17 @@ describe('TermAutocomplete', () => {
       expect(onChange).not.toHaveBeenCalled()
       // Enter is swallowed rather than inserted into the textarea.
       expect(input).toHaveValue('kinase')
+    })
+
+    // Regression: with the list shut, Enter fell through to the textarea and
+    // added a newline, scrolling the text out of the one-row field.
+    it('does not add a newline on Enter after Escape', async () => {
+      const { user, onChange, input } = await typeAndWait()
+
+      await user.keyboard('{Escape}{Enter}')
+
+      expect(input).toHaveValue('kinase')
+      expect(onChange).not.toHaveBeenCalled()
     })
 
     it('follows the mouse when hovering an option', async () => {

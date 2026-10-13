@@ -42,9 +42,13 @@
   --color-noc-chip: #bbc9cc;
   --color-noc-chip-icon: #59939e;
   --color-noc-chip-clear: #da7f7f;
-  --color-noc-state-development: #f4c89c;
-  --color-noc-state-production: #b6f1cc;
-  --color-noc-state-review: #d8f6a3;
+
+  /* The Angular `.noc-term-autocomplete` panel: a pale yellow list with each
+     option ruled off in the primary colour at 60% (measured on prod). Hover is
+     a primary tint rather than Material's 4% black, which barely showed. */
+  --color-noc-dropdown: #fbf9de;
+  --color-noc-dropdown-rule: rgba(59, 89, 152, 0.6);
+  --color-noc-dropdown-hover: rgba(59, 89, 152, 0.12);
 
   /* $noc-primary-color-light — the hairline Angular rules the sticky table
      header and each row with. */

@@ -51,15 +51,26 @@ describe('modelSearchSlice', () => {
       state = reducer(state, addFilter({ type: FilterType.PMIDS, value: `PMID:${i}` }))
     }
     expect(state.criteria.pmids).toHaveLength(10)
-    // Reads as a sentence with the filter's own name, not its enum value.
-    expect(state.lastRejection).toBe('Only 10 References filters allowed')
+    // Prod's wording, with the filter's own name rather than its enum value.
+    expect(state.lastRejection).toBe('Reached maximum number of references filters allowed')
   })
 
   it('allows only one title filter', () => {
     let state = reducer(initial(), addFilter({ type: FilterType.TITLES, value: 'first' }))
     state = reducer(state, addFilter({ type: FilterType.TITLES, value: 'second' }))
     expect(state.criteria.titles).toEqual(['first'])
-    expect(state.lastRejection).toBe('Only 1 Titles filter allowed')
+    expect(state.lastRejection).toBe('Reached maximum number of titles filters allowed')
+  })
+
+  it('keeps acronyms capitalised in the limit message', () => {
+    let state = initial()
+    for (let i = 0; i < 11; i++) {
+      state = reducer(
+        state,
+        addFilter({ type: FilterType.TERMS, value: { id: `GO:${i}`, label: `t${i}` } })
+      )
+    }
+    expect(state.lastRejection).toBe('Reached maximum number of GO terms filters allowed')
   })
 
   it('returns to the first page whenever the criteria change', () => {

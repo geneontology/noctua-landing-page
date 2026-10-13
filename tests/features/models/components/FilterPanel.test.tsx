@@ -46,6 +46,18 @@ describe('FilterPanel', () => {
   })
 
   describe('the Clear button', () => {
+    // Regression: at `?exact=1` Clear stayed disabled, so Exact Term could not
+    // be reset with it. Prod's Clear is always enabled.
+    it('is enabled when only Exact Term is set, and resets it', async () => {
+      const { store, user } = renderWithProviders(<FilterPanel />, {
+        preloadedState: withCriteria({ expand: false }),
+      })
+
+      await user.click(screen.getByRole('button', { name: 'Clear' }))
+
+      expect(store.getState().modelSearch.criteria.expand).toBe(true)
+    })
+
     it('is disabled while no filter is active', () => {
       renderWithProviders(<FilterPanel />)
 
@@ -327,83 +339,29 @@ describe('FilterChipBar filters toggle', () => {
   })
 })
 
-describe('collapsible sections', () => {
-  const heading = (name: string) => screen.getByRole('button', { name })
+// The Angular panel had plain section headers, and the whole panel fits on one
+// screen, so nothing folds away: every field is always on show.
+describe('section headings', () => {
+  it.each(['Annotations', 'Contributor', 'Date last modified', 'Model'])(
+    'shows %s as a plain heading, not a toggle',
+    name => {
+      renderWithProviders(<FilterPanel />)
 
-  it('starts with every section open', () => {
+      expect(screen.getByText(name)).toBeInTheDocument()
+      expect(screen.queryByRole('button', { name })).not.toBeInTheDocument()
+    }
+  )
+
+  it('shows a field from every section at once', () => {
     renderWithProviders(<FilterPanel />)
 
-    expect(heading('Annotations')).toHaveAttribute('aria-expanded', 'true')
-    expect(heading('Contributor')).toHaveAttribute('aria-expanded', 'true')
-    expect(heading('Date last modified')).toHaveAttribute('aria-expanded', 'true')
-    expect(heading('Model')).toHaveAttribute('aria-expanded', 'true')
-  })
-
-  it('shuts one section without touching its fields elsewhere', async () => {
-    const { user } = renderWithProviders(<FilterPanel />)
-
-    await user.click(heading('Annotations'))
-
-    expect(heading('Annotations')).toHaveAttribute('aria-expanded', 'false')
-    expect(screen.getByLabelText('Filter by Any Ontology Term')).not.toBeVisible()
-    expect(screen.getByLabelText('Filter by Model Ids')).toBeVisible()
-  })
-
-  // Deliberately not an accordion: shutting or opening one says nothing about
-  // the others.
-  it('lets several sections be shut at once', async () => {
-    const { user } = renderWithProviders(<FilterPanel />)
-
-    await user.click(heading('Annotations'))
-    await user.click(heading('Model'))
-
-    expect(heading('Annotations')).toHaveAttribute('aria-expanded', 'false')
-    expect(heading('Model')).toHaveAttribute('aria-expanded', 'false')
-    expect(heading('Contributor')).toHaveAttribute('aria-expanded', 'true')
-  })
-
-  it('keeps the others open when one is opened again', async () => {
-    const { user } = renderWithProviders(<FilterPanel />)
-
-    await user.click(heading('Annotations'))
-    await user.click(heading('Contributor'))
-    await user.click(heading('Annotations'))
-
-    expect(heading('Annotations')).toHaveAttribute('aria-expanded', 'true')
-    expect(heading('Contributor')).toHaveAttribute('aria-expanded', 'false')
-  })
-
-  it('points each heading at the region it discloses', () => {
-    renderWithProviders(<FilterPanel />)
-
-    expect(heading('Annotations')).toHaveAttribute('aria-controls', 'filter-section-annotations')
-  })
-
-  // The checkboxes live beside the toggle, not inside it — clicking one must
-  // not fold the section away underneath the user.
-  it('does not collapse when the Exact Term checkbox is clicked', async () => {
-    const { user } = renderWithProviders(<FilterPanel />)
-
-    await user.click(screen.getByLabelText('Exact Term'))
-
-    expect(heading('Annotations')).toHaveAttribute('aria-expanded', 'true')
-  })
-
-  it('does not collapse when the Date Range checkbox is clicked', async () => {
-    const { user } = renderWithProviders(<FilterPanel />)
-
-    await user.click(screen.getByLabelText('Date Range'))
-
-    expect(heading('Date last modified')).toHaveAttribute('aria-expanded', 'true')
-  })
-
-  it('keeps a shut section mounted, so its chips survive', async () => {
-    const { user } = renderWithProviders(<FilterPanel />, {
-      preloadedState: withCriteria({ ids: ['gomodel:1'] }),
-    })
-
-    await user.click(heading('Model'))
-
-    expect(screen.getByText('gomodel:1')).toBeInTheDocument()
+    for (const label of [
+      'Filter by Any Ontology Term',
+      'Filter by Contributor',
+      'Filter by Exact Date',
+      'Filter by Model Ids',
+    ]) {
+      expect(screen.getAllByLabelText(label)[0]).toBeVisible()
+    }
   })
 })

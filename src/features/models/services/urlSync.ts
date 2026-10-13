@@ -13,6 +13,13 @@ const PARAM_TO_FILTER: Record<string, FilterType> = {
   startdate: FilterType.START_DATES,
   enddate: FilterType.END_DATES,
   term: FilterType.TERMS,
+  // Each term filter has its own parameter. Writing chemicals and obsolete
+  // terms as `term` (as the Angular API query did) turned them into plain GO
+  // terms on Back, Forward or reload.
+  molecule: FilterType.MOLECULES,
+  obsoleteterm: FilterType.OBSOLETE_TERMS,
+  // Angular's spelling, so its links keep working.
+  obsoleteTerm: FilterType.OBSOLETE_TERMS,
   gp: FilterType.GPS,
   contributor: FilterType.CONTRIBUTORS,
   group: FilterType.GROUPS,
@@ -39,8 +46,10 @@ export const criteriaFromParams = (searchParams: URLSearchParams): SearchCriteri
 
     switch (type) {
       case FilterType.TERMS:
+      case FilterType.MOLECULES:
+      case FilterType.OBSOLETE_TERMS:
       case FilterType.GPS:
-        criteria[type] = values.map(id => ({ id, label: id }))
+        criteria[type] = [...criteria[type], ...values.map(id => ({ id, label: id }))]
         break
       case FilterType.CONTRIBUTORS:
         criteria[type] = values.map(uri => ({ uri, name: uri }))
@@ -85,10 +94,7 @@ export const pageFromParams = (searchParams: URLSearchParams): CamPage => {
  * query: `expand` is inverted into an `exact` flag and the page is 1-based, so
  * a default, first-page search still produces a clean URL.
  */
-export const paramsFromCriteria = (
-  criteria: SearchCriteria,
-  page?: CamPage
-): URLSearchParams => {
+export const paramsFromCriteria = (criteria: SearchCriteria, page?: CamPage): URLSearchParams => {
   const params = new URLSearchParams()
 
   criteria.titles.forEach(v => params.append('title', v))
@@ -99,8 +105,8 @@ export const paramsFromCriteria = (
   criteria.startdates.forEach(v => params.append('startdate', v))
   criteria.enddates.forEach(v => params.append('enddate', v))
   criteria.terms.forEach(v => params.append('term', v.id))
-  criteria.molecules.forEach(v => params.append('term', v.id))
-  criteria.obsoleteTerms.forEach(v => params.append('term', v.id))
+  criteria.molecules.forEach(v => params.append('molecule', v.id))
+  criteria.obsoleteTerms.forEach(v => params.append('obsoleteterm', v.id))
   criteria.gps.forEach(v => params.append('gp', v.id))
   criteria.contributors.forEach(v => params.append('contributor', v.uri))
   criteria.groups.forEach(v => params.append('group', v.id))

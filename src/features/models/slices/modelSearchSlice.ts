@@ -26,9 +26,7 @@ interface ModelSearchState {
  * first and immediately superseding it.
  */
 const locationParams = (): URLSearchParams => {
-  const params = new URLSearchParams(
-    typeof window === 'undefined' ? '' : window.location.search
-  )
+  const params = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search)
   params.delete('barista_token')
   return params
 }
@@ -41,6 +39,18 @@ const initialState: ModelSearchState = {
 
 const limitFor = (type: FilterType) =>
   type === FilterType.TITLES ? MAX_TITLE_FILTERS : MAX_FILTER_VALUES
+
+/**
+ * A filter's label as it reads mid-sentence, for prod's wording ("Reached
+ * maximum number of titles filters allowed"). Title-case words drop their
+ * capital; acronyms (GO, GPs, IDs) keep theirs. Prod interpolated the raw enum,
+ * which read as "obsoleteTerms" for some filters.
+ */
+const filterPhrase = (type: FilterType): string =>
+  FILTER_LABELS[type]
+    .split(' ')
+    .map(word => (/^[A-Z][a-z]+$/.test(word) ? word.toLowerCase() : word))
+    .join(' ')
 
 export const modelSearchSlice = createSlice({
   name: 'modelSearch',
@@ -55,7 +65,7 @@ export const modelSearchSlice = createSlice({
       const limit = limitFor(type)
 
       if (list.length >= limit) {
-        state.lastRejection = `Only ${limit} ${FILTER_LABELS[type]} filter${limit === 1 ? '' : 's'} allowed`
+        state.lastRejection = `Reached maximum number of ${filterPhrase(type)} filters allowed`
         return
       }
 
@@ -108,6 +118,36 @@ export const modelSearchSlice = createSlice({
       if (found) found.label = label
     },
 
+    /**
+     * Name an id-only contributor, group or organism filter — the URL carries
+     * only ORCIDs, group URLs and taxon ids. Only values still showing their id
+     * are touched.
+     */
+    hydrateEntityLabel: (
+      state,
+      action: PayloadAction<{
+        type: FilterType.CONTRIBUTORS | FilterType.GROUPS | FilterType.ORGANISMS
+        key: string
+        label: string
+      }>
+    ) => {
+      const { type, key, label } = action.payload
+      const { criteria } = state
+      if (type === FilterType.CONTRIBUTORS) {
+        criteria.contributors.forEach(c => {
+          if (c.uri === key && c.name === key) c.name = label
+        })
+      } else if (type === FilterType.GROUPS) {
+        criteria.groups.forEach(g => {
+          if (g.id === key && g.label === key) g.label = label
+        })
+      } else {
+        criteria.organisms.forEach(o => {
+          if (o.taxonIri === key && o.taxonName === key) o.taxonName = label
+        })
+      }
+    },
+
     setPage: (state, action: PayloadAction<{ pageNumber: number; size?: number }>) => {
       const { pageNumber, size } = action.payload
       if (size !== undefined && size !== state.page.size) {
@@ -129,10 +169,7 @@ export const modelSearchSlice = createSlice({
      * Back button. Two separate dispatches would fire two searches, the first
      * against a half-restored state.
      */
-    restoreFromUrl: (
-      state,
-      action: PayloadAction<{ criteria: SearchCriteria; page: CamPage }>
-    ) => {
+    restoreFromUrl: (state, action: PayloadAction<{ criteria: SearchCriteria; page: CamPage }>) => {
       state.criteria = action.payload.criteria
       state.page = action.payload.page
       state.lastRejection = null
@@ -148,6 +185,7 @@ export const {
   setExpand,
   setCriteria,
   hydrateTermLabel,
+  hydrateEntityLabel,
   setPage,
   clearRejection,
   restoreFromUrl,

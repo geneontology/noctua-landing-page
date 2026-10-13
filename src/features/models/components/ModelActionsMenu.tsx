@@ -25,12 +25,26 @@ const ModelActionsMenu: React.FC<ModelActionsMenuProps> = ({ model }) => {
   const editorLinks =
     model.conformsToGpad === true
       ? [
-          { label: 'Standard Annotations Editor', href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS], pw: 'open-standard-annotation-button' },
-          { label: 'Visual Pathway Editor', href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR] },
+          {
+            label: 'Standard Annotations Editor',
+            href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS],
+            pw: 'open-standard-annotation-button',
+          },
+          {
+            label: 'Visual Pathway Editor',
+            href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR],
+          },
         ]
       : [
-          { label: 'Visual Pathway Editor', href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR] },
-          { label: 'Standard Annotations Editor', href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS], pw: 'open-standard-annotation-button' },
+          {
+            label: 'Visual Pathway Editor',
+            href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR],
+          },
+          {
+            label: 'Standard Annotations Editor',
+            href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS],
+            pw: 'open-standard-annotation-button',
+          },
         ]
 
   const links = [
@@ -58,7 +72,7 @@ const ModelActionsMenu: React.FC<ModelActionsMenuProps> = ({ model }) => {
         variant="default"
         size="compact-xs"
         rightSection={<IoChevronDown size={11} />}
-        className="!border-noc-primary/50 !bg-white !text-2xs !text-noc-primary !shadow-sm"
+        className="!border-noc-primary/50 !bg-white !text-xs !text-noc-primary !shadow-sm"
         onClick={e => menu.open(e.currentTarget)}
       >
         Actions

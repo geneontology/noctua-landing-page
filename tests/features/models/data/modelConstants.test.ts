@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest'
 import {
-  CHIP_COLORS,
   CLOSURE_IDS,
   FILTER_BAR_HEIGHT,
   RESULTS_BAR_HEIGHT,
@@ -10,10 +9,8 @@ import {
   MAX_FILTER_VALUES,
   MAX_TITLE_FILTERS,
   MODEL_STATES,
-  STATE_COLORS,
   chipColors,
   modelStateLabel,
-  stateChipColors,
 } from '@/features/models/data/modelConstants'
 
 describe('modelStateLabel', () => {
@@ -54,17 +51,6 @@ describe('chipColors', () => {
   it('handles the channel extremes without clipping', () => {
     expect(chipColors('#000000').chipStyle.backgroundColor).toBe('rgba(0, 0, 0, 0.2)')
     expect(chipColors('#ffffff').chipStyle.backgroundColor).toBe('rgba(255, 255, 255, 0.2)')
-  })
-})
-
-describe('stateChipColors', () => {
-  it.each(['development', 'production', 'review'])('uses the Angular palette for %s', state => {
-    expect(stateChipColors(state).circleStyle.backgroundColor).toBe(STATE_COLORS[state])
-  })
-
-  it('falls back to neutral for a state with no colour of its own', () => {
-    expect(stateChipColors('template').circleStyle.backgroundColor).toBe(CHIP_COLORS.neutral)
-    expect(stateChipColors('').circleStyle.backgroundColor).toBe(CHIP_COLORS.neutral)
   })
 })
 

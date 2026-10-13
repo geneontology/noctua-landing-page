@@ -7,7 +7,20 @@ export interface SelectOption {
   /** Unique key; also the string the user matches against. */
   value: string
   label: string
+  /** Shown small and right-aligned in the dropdown — the Angular `noc-term-id`
+   *  column (a contributor's ORCID, a group's URL). */
+  detail?: string
 }
+
+/**
+ * High enough to offer every option. A cap of 50 cut Barista's 86 organisms off
+ * at "H…" and hid most of its 152 users and 116 groups; these lists are small
+ * enough to render whole.
+ */
+const OPTION_LIMIT = 1000
+
+/** The Angular `.noc-term-autocomplete` panel was 400px wide, wider than the field. */
+const DROPDOWN_WIDTH = 400
 
 interface SelectChipFilterProps {
   label: string
@@ -70,8 +83,31 @@ const SelectChipFilter: React.FC<SelectChipFilterProps> = ({
         size="xs"
         value={draft}
         data={[...byDisplay.keys()]}
-        limit={50}
-        maxDropdownHeight={240}
+        limit={OPTION_LIMIT}
+        maxDropdownHeight={256}
+        comboboxProps={{ width: DROPDOWN_WIDTH, position: 'bottom-start' }}
+        renderOption={({ option }) => {
+          const detail = byDisplay.get(option.value)?.detail
+          return (
+            // The Angular option row: name and id both `flex: 0 1 auto` and
+            // free to wrap, so a long group URL shares the row and breaks onto
+            // a second line instead of squeezing the name out. The id may also
+            // break mid-token: Mantine sizes the list to its min-content width,
+            // and an unbreakable URL piece beside "University_of_Toronto" made
+            // that wider than the panel, clipping every row's right edge.
+            <div className="flex w-full items-center gap-2 whitespace-normal">
+              <span className="shrink">{option.value}</span>
+              <span className="grow" />
+              {/* Skipped when the label already carries it — a blank name falls
+                  back to the value, and twins are told apart by it. */}
+              {detail && !option.value.includes(detail) && (
+                <span className="shrink text-right text-2xs [overflow-wrap:anywhere] text-black/60">
+                  {detail}
+                </span>
+              )}
+            </div>
+          )
+        }}
         variant="unstyled"
         // The outlined box belongs to ChipInputField; the combobox inside it is
         // borderless so the two do not nest visibly.

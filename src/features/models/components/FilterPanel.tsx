@@ -1,6 +1,7 @@
 import type React from 'react'
 import { useEffect, useState } from 'react'
-import { Button, Checkbox } from '@mantine/core'
+import { ActionIcon, Button, Checkbox } from '@mantine/core'
+import { IoClose } from 'react-icons/io5'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import SectionHeading from '@/@noctua.core/components/form/SectionHeading'
 import { showToast } from '@/@noctua.core/components/toast/toastSlice'
@@ -22,8 +23,15 @@ import { cleanModelId } from '../services/searchQuery'
 import TextChipFilter from './TextChipFilter'
 import TermChipFilter from './TermChipFilter'
 import SelectChipFilter from './SelectChipFilter'
+import ReferenceChipFilter from './ReferenceChipFilter'
 
-const FilterPanel: React.FC = () => {
+interface FilterPanelProps {
+  /** Shown as a close button in the header, for the overlay drawer below `lg`.
+   *  In the header row rather than floated over it, where it covered Clear. */
+  onClose?: () => void
+}
+
+const FilterPanel: React.FC<FilterPanelProps> = ({ onClose }) => {
   const dispatch = useAppDispatch()
   const criteria = useAppSelector(selectCriteria)
   const filtersCount = useAppSelector(selectFiltersCount)
@@ -40,12 +48,6 @@ const FilterPanel: React.FC = () => {
   const showRange = isDateRange || hasRange
   const showExact = !isDateRange || criteria.exactdates.length > 0
 
-  // A record of what is shut, not what is open, so sections default to open
-  // and each one is independent — deliberately not an accordion.
-  const [shut, setShut] = useState<Record<string, boolean>>({})
-  const toggle = (key: string) => () => setShut(prev => ({ ...prev, [key]: !prev[key] }))
-  const open = (key: string) => !shut[key]
-
   // Surface a rejected filter (limit reached) the way the Angular info toast did.
   useEffect(() => {
     if (!rejection) return
@@ -61,22 +63,34 @@ const FilterPanel: React.FC = () => {
     <div className="flex h-full flex-col">
       <div className="flex shrink-0 items-center justify-between border-b border-gray-200 px-3 py-2">
         <span className="text-sm font-medium text-gray-800">Filter by</span>
-        <Button
-          variant="outline"
-          size="compact-xs"
-          disabled={filtersCount === 0}
-          onClick={() => dispatch(clearAll())}
-        >
-          Clear
-        </Button>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="outline"
+            size="compact-xs"
+            // Exact Term is a setting Clear resets too, so it counts as something
+            // to clear — prod's Clear is never disabled.
+            disabled={filtersCount === 0 && criteria.expand}
+            onClick={() => dispatch(clearAll())}
+          >
+            Clear
+          </Button>
+          {onClose && (
+            <ActionIcon
+              variant="subtle"
+              color="gray"
+              size="md"
+              radius="xl"
+              aria-label="Close filters"
+              onClick={onClose}
+            >
+              <IoClose size={16} />
+            </ActionIcon>
+          )}
+        </div>
       </div>
 
       <div className="flex-1 overflow-y-auto pb-6">
         <SectionHeading
-          collapsible
-          expanded={open('annotations')}
-          onToggle={toggle('annotations')}
-          controls="filter-section-annotations"
           right={
             <Checkbox
               size="xs"
@@ -88,11 +102,7 @@ const FilterPanel: React.FC = () => {
         >
           Annotations
         </SectionHeading>
-        <div
-          id="filter-section-annotations"
-          hidden={!open('annotations')}
-          className="flex flex-col gap-3 px-3 py-3"
-        >
+        <div className="flex flex-col gap-3 px-3 py-3">
           <TermChipFilter
             label="Filter by Any Ontology Term"
             name="terms"
@@ -126,8 +136,7 @@ const FilterPanel: React.FC = () => {
             onAdd={add(FilterType.MOLECULES)}
             onRemove={remove(FilterType.MOLECULES)}
           />
-          <TextChipFilter
-            label="Filter by Reference"
+          <ReferenceChipFilter
             values={criteria.pmids}
             onAdd={add(FilterType.PMIDS)}
             onRemove={remove(FilterType.PMIDS)}
@@ -148,22 +157,15 @@ const FilterPanel: React.FC = () => {
           />
         </div>
 
-        <SectionHeading
-          collapsible
-          expanded={open('contributor')}
-          onToggle={toggle('contributor')}
-          controls="filter-section-contributor"
-        >
-          Contributor
-        </SectionHeading>
-        <div
-          id="filter-section-contributor"
-          hidden={!open('contributor')}
-          className="flex flex-col gap-3 px-3 py-3"
-        >
+        <SectionHeading>Contributor</SectionHeading>
+        <div className="flex flex-col gap-3 px-3 py-3">
           <SelectChipFilter
             label="Filter by Contributor"
-            options={contributors.map(c => ({ value: c.uri, label: c.name ?? c.uri }))}
+            options={contributors.map(c => ({
+              value: c.uri,
+              label: c.name ?? c.uri,
+              detail: c.uri,
+            }))}
             values={criteria.contributors.map(c => ({ key: c.uri, label: c.name ?? c.uri }))}
             onAdd={option => {
               const contributor = contributors.find(c => c.uri === option.value)
@@ -178,7 +180,7 @@ const FilterPanel: React.FC = () => {
           />
           <SelectChipFilter
             label="Filter by Group"
-            options={groups.map(g => ({ value: g.id, label: g.label }))}
+            options={groups.map(g => ({ value: g.id, label: g.label, detail: g.id }))}
             values={criteria.groups.map(g => ({ key: g.id, label: g.label }))}
             onAdd={option => {
               const group = groups.find(g => g.id === option.value)
@@ -194,10 +196,6 @@ const FilterPanel: React.FC = () => {
         </div>
 
         <SectionHeading
-          collapsible
-          expanded={open('date')}
-          onToggle={toggle('date')}
-          controls="filter-section-date"
           right={
             <Checkbox
               size="xs"
@@ -209,11 +207,7 @@ const FilterPanel: React.FC = () => {
         >
           Date last modified
         </SectionHeading>
-        <div
-          id="filter-section-date"
-          hidden={!open('date')}
-          className="flex flex-col gap-3 px-3 py-3"
-        >
+        <div className="flex flex-col gap-3 px-3 py-3">
           {showExact && (
             <TextChipFilter
               label="Filter by Exact Date"
@@ -243,19 +237,8 @@ const FilterPanel: React.FC = () => {
           )}
         </div>
 
-        <SectionHeading
-          collapsible
-          expanded={open('model')}
-          onToggle={toggle('model')}
-          controls="filter-section-model"
-        >
-          Model
-        </SectionHeading>
-        <div
-          id="filter-section-model"
-          hidden={!open('model')}
-          className="flex flex-col gap-3 px-3 py-3"
-        >
+        <SectionHeading>Model</SectionHeading>
+        <div className="flex flex-col gap-3 px-3 py-3">
           <TextChipFilter
             label="Filter by Model Ids"
             values={criteria.ids}
@@ -276,9 +259,7 @@ const FilterPanel: React.FC = () => {
               key: state,
               label: modelStateLabel(state),
             }))}
-            onAdd={option =>
-              dispatch(addFilter({ type: FilterType.STATES, value: option.value }))
-            }
+            onAdd={option => dispatch(addFilter({ type: FilterType.STATES, value: option.value }))}
             onRemove={remove(FilterType.STATES)}
           />
         </div>

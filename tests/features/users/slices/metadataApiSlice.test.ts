@@ -86,7 +86,7 @@ describe('getAllData', () => {
     const { result } = await loadAll()
 
     expect(result.data?.users).toHaveLength(4)
-    expect(result.data?.users[0]).toMatchObject({ uri: 'https://orcid.org/9', initials: '' })
+    expect(result.data?.users.at(-1)).toMatchObject({ uri: 'https://orcid.org/9', initials: '' })
   })
 
   it('maps groups', async () => {
@@ -105,10 +105,64 @@ describe('getAllData', () => {
 
     expect(store.getState().metadata.contributors.map(c => c.name)).toEqual([
       'Ada Lovelace',
-      'Pascal',
       'Mary Anne Smith',
+      'Pascal',
     ])
     expect(store.getState().metadata.groups.map(g => g.label)).toEqual(['Group A', 'Group B'])
+  })
+
+  // Barista returns both lists in no useful order; the Angular app sorted them
+  // at load, and every picker reads them from here.
+  it('sorts users by name, ignoring case, with nameless users last', async () => {
+    serve({
+      body: [
+        { nickname: 'paul thomas', uri: 'p' },
+        { uri: 'nameless' },
+        { nickname: 'Huaiyu Mi', uri: 'h' },
+        { nickname: 'Ada Lovelace', uri: 'a' },
+      ],
+    })
+    const { result } = await loadAll()
+
+    expect(result.data?.users.map(u => u.uri)).toEqual(['a', 'h', 'p', 'nameless'])
+  })
+
+  // Barista sends no colour, so every chip came out grey. Angular derived one
+  // from the first initial; prod shows LF in lime, VW in indigo, SP in pink.
+  it.each([
+    ['Livia Famiglietti', '#f0f4c3'],
+    ['Val Wood', '#c5cae9'],
+    ['Sylvain Poux', '#f8bbd0'],
+    // Index 0 had no colour in Angular either; the chip keeps its default.
+    ['Ada Lovelace', undefined],
+  ])('colours %s from the first initial', async (nickname, color) => {
+    serve({ body: [{ nickname, uri: 'u' }] })
+    const { result } = await loadAll()
+
+    expect(result.data?.users[0].color).toBe(color)
+  })
+
+  it('keeps a colour Barista does send', async () => {
+    serve({ body: [{ nickname: 'Val Wood', uri: 'u', color: '#123456' }] })
+    const { result } = await loadAll()
+
+    expect(result.data?.users[0].color).toBe('#123456')
+  })
+
+  it('sorts groups by label', async () => {
+    serve(
+      {},
+      {
+        body: [
+          { id: 'l', label: 'LBL' },
+          { id: 'g', label: 'GO Central' },
+          { id: 'a', label: 'ARUK-UCL' },
+        ],
+      }
+    )
+    const { result } = await loadAll()
+
+    expect(result.data?.groups.map(g => g.label)).toEqual(['ARUK-UCL', 'GO Central', 'LBL'])
   })
 
   it('treats a null body as empty lists', async () => {

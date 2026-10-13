@@ -187,9 +187,9 @@ describe('date fields', () => {
   const floatingOf = (control: HTMLElement) =>
     control.closest('[data-floating]')?.getAttribute('data-floating')
 
-  // Chrome always draws mm/dd/yyyy through ::-webkit-datetime-edit, which the
-  // placeholder rules cannot reach, so an inline label would sit on top of it.
-  it('keeps the label lifted even while empty and unfocused', () => {
+  // A text input with a YYYY-MM-DD hint, unlike the native date box, so its
+  // label can rest inside like every other field's.
+  it('rests the label inside while empty and unfocused', () => {
     renderWithProviders(
       <TextChipFilter
         label="Filter by Exact Date"
@@ -200,14 +200,28 @@ describe('date fields', () => {
       />
     )
 
-    expect(floatingOf(screen.getByLabelText('Filter by Exact Date'))).toBe('true')
+    expect(floatingOf(screen.getByLabelText('Filter by Exact Date'))).toBe('false')
   })
+})
 
-  it('does not lift a text field for the same reason', () => {
-    renderWithProviders(
+// Regression: a draft cleared in code fires no input event, so committing a
+// value and then removing its chip left the label lifted over an empty box.
+describe('a draft cleared in code', () => {
+  const floatingOf = (control: HTMLElement) =>
+    control.closest('[data-floating]')?.getAttribute('data-floating')
+
+  it('lets the label settle once the field is empty and blurred', async () => {
+    const { user } = renderWithProviders(
       <TextChipFilter label="Filter by Title" values={[]} onAdd={vi.fn()} onRemove={vi.fn()} />
     )
+    const input = screen.getByLabelText('Filter by Title')
 
-    expect(floatingOf(screen.getByLabelText('Filter by Title'))).toBe('false')
+    // Committing clears the draft in code; `values` stays empty, as if the
+    // new chip had already been removed again.
+    await user.type(input, 'wnt{Enter}')
+    await user.tab()
+
+    expect(input).toHaveValue('')
+    expect(floatingOf(input)).toBe('false')
   })
 })
