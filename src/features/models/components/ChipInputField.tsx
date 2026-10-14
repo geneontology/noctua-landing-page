@@ -1,6 +1,6 @@
 import type React from 'react'
 import type { FormEvent, ReactNode } from 'react'
-import { useState } from 'react'
+import { useCallback, useLayoutEffect, useRef, useState } from 'react'
 import FilterChipList from './FilterChipList'
 import classes from './ChipInputField.module.css'
 
@@ -49,8 +49,28 @@ const ChipInputField: React.FC<ChipInputFieldProps> = ({
    */
   const floating = focused || hasText || chips.length > 0
 
-  const readText = () =>
-    setHasText(Boolean((document.getElementById(htmlFor) as HTMLInputElement | null)?.value))
+  const readText = useCallback(
+    () => setHasText(Boolean((document.getElementById(htmlFor) as HTMLInputElement | null)?.value)),
+    [htmlFor]
+  )
+
+  const boxRef = useRef<HTMLDivElement>(null)
+
+  // A chip's remove button takes focus with it when it unmounts, and fires no
+  // blur — so the field went on looking focused, label lifted, over an empty
+  // box. Check where focus really is once the chip has gone.
+  useLayoutEffect(() => {
+    if (focused && !boxRef.current?.contains(document.activeElement)) {
+      setFocused(false)
+      readText()
+    }
+  }, [chips.length, focused, readText])
+
+  // From the keyboard, carry on in this field rather than dropping to <body>.
+  const removeChip = (index: number, viaKeyboard: boolean) => {
+    onRemove(index)
+    if (viaKeyboard) document.getElementById(htmlFor)?.focus()
+  }
 
   return (
     <div className={`${classes.wrap} w-full`} data-floating={floating ? 'true' : 'false'}>
@@ -59,6 +79,7 @@ const ChipInputField: React.FC<ChipInputFieldProps> = ({
       </label>
 
       <div
+        ref={boxRef}
         className={classes.box}
         onFocusCapture={() => setFocused(true)}
         onBlurCapture={() => {
@@ -71,7 +92,7 @@ const ChipInputField: React.FC<ChipInputFieldProps> = ({
       >
         {/* `contents` so each chip is a direct flex sibling of the input, letting
             the input trail the last chip rather than dropping to its own row. */}
-        <FilterChipList items={chips} onRemove={onRemove} className="contents" />
+        <FilterChipList items={chips} onRemove={removeChip} className="contents" />
         <div className="min-w-[80px] flex-1">{children}</div>
         {rightSection && <div className="flex shrink-0 items-center">{rightSection}</div>}
       </div>

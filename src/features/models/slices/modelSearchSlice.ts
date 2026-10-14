@@ -7,10 +7,10 @@ import {
   FilterType,
   countFilters,
   emptyCriteria,
+  filterLimit,
   filterValueKey,
 } from '../models/searchCriteria'
 import type { CamPage } from '../models/camSearch'
-import { MAX_FILTER_VALUES, MAX_TITLE_FILTERS } from '../data/modelConstants'
 import { criteriaFromParams, pageFromParams } from '../services/urlSync'
 
 interface ModelSearchState {
@@ -18,6 +18,13 @@ interface ModelSearchState {
   page: CamPage
   /** Set when an `addFilter` was rejected, so the UI can surface a toast. */
   lastRejection: string | null
+  /**
+   * The next address-bar write should replace the current history entry rather
+   * than add one — set when the app corrects the position itself (a page past
+   * the end), which is not a step the user took and must not be one Back
+   * returns to.
+   */
+  replaceUrl?: boolean
 }
 
 /**
@@ -36,9 +43,6 @@ const initialState: ModelSearchState = {
   page: pageFromParams(locationParams()),
   lastRejection: null,
 }
-
-const limitFor = (type: FilterType) =>
-  type === FilterType.TITLES ? MAX_TITLE_FILTERS : MAX_FILTER_VALUES
 
 /**
  * A filter's label as it reads mid-sentence, for prod's wording ("Reached
@@ -62,7 +66,7 @@ export const modelSearchSlice = createSlice({
     ) => {
       const { type, value } = action.payload
       const list = state.criteria[type] as unknown[]
-      const limit = limitFor(type)
+      const limit = filterLimit(type)
 
       if (list.length >= limit) {
         state.lastRejection = `Reached maximum number of ${filterPhrase(type)} filters allowed`
@@ -160,6 +164,22 @@ export const modelSearchSlice = createSlice({
       }
     },
 
+    /**
+     * Move to a page the app worked out itself — the last real one, when the
+     * URL asked for one past the end. Replaces the history entry: pushed, Back
+     * returned to the bad page, which clamped and pushed again, so Back could
+     * never leave the site.
+     */
+    clampPage: (state, action: PayloadAction<number>) => {
+      state.page.pageNumber = action.payload
+      state.replaceUrl = true
+    },
+
+    /** The address bar has caught up with a `replaceUrl` change. */
+    urlReplaced: state => {
+      state.replaceUrl = false
+    },
+
     clearRejection: state => {
       state.lastRejection = null
     },
@@ -187,6 +207,8 @@ export const {
   hydrateTermLabel,
   hydrateEntityLabel,
   setPage,
+  clampPage,
+  urlReplaced,
   clearRejection,
   restoreFromUrl,
 } = modelSearchSlice.actions
@@ -194,6 +216,7 @@ export const {
 export const selectCriteria = (state: RootState) => state.modelSearch.criteria
 export const selectPage = (state: RootState) => state.modelSearch.page
 export const selectRejection = (state: RootState) => state.modelSearch.lastRejection
+export const selectReplaceUrl = (state: RootState) => Boolean(state.modelSearch.replaceUrl)
 
 export const selectFiltersCount = createSelector([selectCriteria], countFilters)
 

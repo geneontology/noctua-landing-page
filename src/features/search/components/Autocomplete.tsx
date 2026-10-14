@@ -60,7 +60,7 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
     width: number
   } | null>(null)
 
-  const { data, isLoading, isFetching } = useSearchTermsQuery(
+  const { data, isLoading, isFetching, isError } = useSearchTermsQuery(
     {
       searchText: debouncedSearchTerm,
       closureIds: rootTypeIds,
@@ -72,10 +72,11 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
       // `currentData` belongs to the current search text only and is undefined
       // while it is in flight, so an empty result for a refined search replaces
       // the previous matches instead of being mistaken for "nothing yet".
-      selectFromResult: ({ currentData, isLoading, isFetching }) => ({
+      selectFromResult: ({ currentData, isLoading, isFetching, isError }) => ({
         data: currentData,
         isLoading,
         isFetching,
+        isError,
       }),
     }
   )
@@ -104,7 +105,11 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
     const update = () => {
       const rect = anchorRef.current?.getBoundingClientRect()
       if (!rect) return
-      setDropdownPos({ top: rect.bottom, left: rect.left, width: Math.max(rect.width, 400) })
+      // At least 400px, as in Angular, but kept on screen: on a phone a 400px
+      // list from the field's left edge ran off the right side.
+      const width = Math.min(Math.max(rect.width, 400), window.innerWidth - 8)
+      const left = Math.max(4, Math.min(rect.left, window.innerWidth - width - 4))
+      setDropdownPos({ top: rect.bottom, left, width })
     }
     update()
     window.addEventListener('resize', update)
@@ -171,6 +176,9 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
         }
         break
       case 'Escape':
+        // Closing the list is all this Escape does — not also the drawer or
+        // dialog the field sits in.
+        event.stopPropagation()
         setOpen(false)
         break
     }
@@ -226,7 +234,13 @@ const TermAutocomplete: React.FC<TermAutocompleteProps> = ({
           >
             {!searching && options.length === 0 && (
               <div className="p-4 text-center text-xs text-gray-500">
-                {inputValue.length < MIN_SEARCH_LENGTH ? 'Type to search' : 'No results found'}
+                {/* A failed GOlr lookup is not an empty one: "No results found"
+                    told the curator their term did not exist. */}
+                {inputValue.length < MIN_SEARCH_LENGTH
+                  ? 'Type to search'
+                  : isError
+                    ? 'Search failed — the term service did not answer. Try again.'
+                    : 'No results found'}
               </div>
             )}
 

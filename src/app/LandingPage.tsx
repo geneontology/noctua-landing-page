@@ -16,7 +16,7 @@ const LandingPage: React.FC = () => {
 
   const criteria = useAppSelector(selectCriteria)
   const page = useAppSelector(selectPage)
-  const { models, total, isFetching, isError, refresh } = useModelSearch()
+  const { models, total, totalUnknown, isFetching, isError, refresh } = useModelSearch()
 
   // Return to the top of the results whenever the query changes, matching the
   // Angular `scrollToTop()` on every search.
@@ -40,7 +40,13 @@ const LandingPage: React.FC = () => {
           undifferentiated white block. */}
       <div className="flex grow flex-col bg-noc-surface">
         <FilterChipBar />
-        <ResultsBar total={total} isFetching={isFetching} onRefresh={refresh} />
+        <ResultsBar
+          total={total}
+          totalUnknown={totalUnknown}
+          rowCount={models.length}
+          isFetching={isFetching}
+          onRefresh={refresh}
+        />
         <ModelsTable models={models} isFetching={isFetching} isError={isError} />
       </div>
     </div>

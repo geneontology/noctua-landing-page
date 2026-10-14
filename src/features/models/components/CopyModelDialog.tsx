@@ -99,6 +99,15 @@ const CopyModelDialog: React.FC<CopyModelDialogProps> = ({ model }) => {
             </span>
           </div>
         ) : null}
+        {/* Prod's copy panel listed the groups too. */}
+        {model.groups?.length ? (
+          <div className="flex gap-2">
+            <span className="font-medium text-gray-600">Groups:</span>
+            <span className="text-gray-800">
+              {model.groups.map(g => g.label ?? g.id).join(', ')}
+            </span>
+          </div>
+        ) : null}
       </div>
 
       <SectionHeading>New Model</SectionHeading>

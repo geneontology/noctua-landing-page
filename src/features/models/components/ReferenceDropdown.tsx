@@ -7,6 +7,7 @@ import { ENVIRONMENT } from '@/@noctua.core/data/constants'
 import { MIN_PMID_LENGTH, PUBMED_LOOKUP_DELAY_MS } from '@/@noctua.core/data/uiConstants'
 import { useLazyGetPubmedInfoQuery } from '@/features/search/slices/lookupApiSlice'
 import { REFERENCE_DBS } from '../data/modelConstants'
+import { splitReference } from '../services/searchQuery'
 
 type ReferenceDb = (typeof REFERENCE_DBS)[number]
 
@@ -31,11 +32,19 @@ const DB_OPTIONS = REFERENCE_DBS.map(db => ({ value: db, label: `${db}:` }))
 const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({ anchorEl, onClose, onSave }) => {
   const [db, setDb] = useState<ReferenceDb>('PMID')
   const [accession, setAccession] = useState('')
-  const [triggerPubmed, { data: pubmedInfo, isFetching: pubmedLoading }] =
+  const [triggerPubmed, { currentData: pubmedInfo, isFetching }, { lastArg }] =
     useLazyGetPubmedInfoQuery()
 
   const open = Boolean(anchorEl)
-  const trimmed = accession.trim()
+  // A pasted `PMID:123` (or `pmid: 123`) names its own database; it wins over
+  // the select, so the result is never `PMID:PMID:123`.
+  const typed = splitReference(accession)
+  const effectiveDb = typed.db ?? db
+  const trimmed = typed.accession
+  const isPmid = effectiveDb === 'PMID' && trimmed.length >= MIN_PMID_LENGTH
+  // Only the article for what is in the box now: `data` would be the previous
+  // lookup's while this one waits out its debounce, under the new link.
+  const previewReady = lastArg === trimmed && !isFetching
 
   // Each opening starts clean, on PMID, as the Angular form did.
   useEffect(() => {
@@ -46,15 +55,15 @@ const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({ anchorEl, onClose
   }, [open])
 
   useEffect(() => {
-    if (db === 'PMID' && trimmed.length >= MIN_PMID_LENGTH) {
+    if (isPmid) {
       const timer = setTimeout(() => triggerPubmed(trimmed), PUBMED_LOOKUP_DELAY_MS)
       return () => clearTimeout(timer)
     }
-  }, [db, trimmed, triggerPubmed])
+  }, [isPmid, trimmed, triggerPubmed])
 
   const handleSave = () => {
     if (!trimmed) return
-    onSave(`${db}:${trimmed}`)
+    onSave(`${effectiveDb}:${trimmed}`)
     onClose()
   }
 
@@ -65,6 +74,7 @@ const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({ anchorEl, onClose
       onClose={onClose}
       placement="bottom-end"
       className="!shadow-lg"
+      trapFocus
     >
       <div
         role="dialog"
@@ -97,7 +107,8 @@ const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({ anchorEl, onClose
                 handleSave()
               }
             }}
-            autoFocus
+            // The focus trap lands here rather than on the database select.
+            data-autofocus
             className="min-w-0 flex-1"
           />
           <ActionIcon variant="subtle" color="gray" size="md" aria-label="Cancel" onClick={onClose}>
@@ -115,10 +126,10 @@ const ReferenceDropdown: React.FC<ReferenceDropdownProps> = ({ anchorEl, onClose
           </ActionIcon>
         </div>
 
-        {db === 'PMID' && trimmed.length >= MIN_PMID_LENGTH && (
+        {isPmid && (
           <div className="mt-2 border-t border-gray-300 pt-2 text-xs">
-            {pubmedLoading && <Loader size={14} />}
-            {!pubmedLoading && pubmedInfo && (
+            {!previewReady && <Loader size={14} />}
+            {previewReady && pubmedInfo && (
               <div className="flex flex-col gap-1">
                 <a
                   href={`${ENVIRONMENT.pubmedUrl}${trimmed}`}

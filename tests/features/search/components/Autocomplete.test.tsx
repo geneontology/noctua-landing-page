@@ -144,6 +144,22 @@ describe('TermAutocomplete', () => {
       expect(await screen.findByText('No results found')).toBeInTheDocument()
     })
 
+    // Regression: with GOlr down the list said "No results found", as if the
+    // term did not exist.
+    it('says the search failed when GOlr does not answer', async () => {
+      searchTerms.mockImplementation((_arg: unknown, { skip }: { skip: boolean }) =>
+        skip
+          ? { data: undefined, isLoading: false, isFetching: false }
+          : { data: undefined, isLoading: false, isFetching: false, isError: true }
+      )
+      const { user, input } = renderAutocomplete()
+
+      await user.type(input, 'kinase')
+
+      expect(await screen.findByText(/Search failed/)).toBeInTheDocument()
+      expect(screen.queryByText('No results found')).not.toBeInTheDocument()
+    })
+
     // Regression: options were only replaced by a non-empty result, so a
     // search that narrowed to nothing kept showing the previous term's matches.
     it('drops the previous matches when a refined search finds nothing', async () => {

@@ -26,7 +26,10 @@ export const toIsoDate = (raw: string): string | null => {
   const match = /^(\d{4})[-/](\d{1,2})[-/](\d{1,2})$/.exec(raw.trim())
   if (!match) return null
   const [year, month, day] = match.slice(1).map(Number)
-  const date = new Date(Date.UTC(year, month - 1, day))
+  // `setUTCFullYear`, not `Date.UTC`: the latter reads years 0–99 as 1900–1999,
+  // turning 0012-03-04 into 1912-03-04.
+  const date = new Date(0)
+  date.setUTCFullYear(year, month - 1, day)
   // Rejects 2026-02-30 and the like, which Date would roll into March.
   if (date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return null
   return date.toISOString().slice(0, 10)

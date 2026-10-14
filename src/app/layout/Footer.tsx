@@ -1,8 +1,11 @@
 import type React from 'react'
 import { Link } from 'react-router-dom'
 import { EXTERNAL_LINKS } from '@/@noctua.core/data/constants'
+import { useAppDispatch } from '@/app/hooks'
+import { clearAll } from '@/features/models/slices/modelSearchSlice'
 
 const Footer: React.FC = () => {
+  const dispatch = useAppDispatch()
   const currentYear = new Date().getFullYear()
 
   return (
@@ -12,7 +15,10 @@ const Footer: React.FC = () => {
           at 1280px. */}
       <div className="flex max-w-[50%] basis-1/2 flex-row items-start">
         <div className="mr-4">
-          <Link to="/" className="text-white">
+          {/* Prod's Home is a full load of the bare page. The filters live in
+              the store, so a route change alone bared the address bar but left
+              every filter on, and a reload or bookmark then disagreed. */}
+          <Link to="/" className="text-white" onClick={() => dispatch(clearAll())}>
             Home
           </Link>
         </div>

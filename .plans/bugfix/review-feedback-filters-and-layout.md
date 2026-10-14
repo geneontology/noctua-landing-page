@@ -120,8 +120,33 @@ pointed at prod Barista (`VITE_BARISTA_URL=http://barista.berkeleybop.org`).
 - [x] Removed the Angular state palette (`STATE_COLORS`, `stateChipColors`, `CHIP_COLORS.neutral`, `--color-noc-state-*`); tests moved to `stateColors.test.ts` + ModelsTable.
 - Organisms dropdown empty at one point: a Barista server issue, not the app (user, 2026-10-13).
 
+### Phase 6d: Code-review findings on the committed change (c5c5a31) ✅
+- [x] Page clamp no longer traps Back: `clampPage` sets `replaceUrl`, and the URL writer uses `replaceState` for it (e2e from about:blank).
+- [x] Keyboard-highlighted dropdown option kept Mantine's white text: `color: inherit` in dropdowns.css.
+- [x] PubMed preview uses `currentData` and the lookup's `lastArg`; never the previous article.
+- [x] AnchoredPopover (shared, mirrored to VPE): opt-in `trapFocus`, focus back to the anchor when lost, Escape inside an open select closes only that list.
+- [x] Chip removal: label settles when the remove button unmounts; keyboard removal keeps focus in the field.
+- [x] `toIsoDate` keeps years 0000–0099 (`setUTCFullYear`).
+- [x] `splitReference` / `cleanReference` normalise `pmid: 123` etc.; a pasted prefix in the picker wins over the select.
+- [x] `criteriaFromParams` de-duplicates and caps at the filter limit (`filterLimit` moved to searchCriteria).
+- Not committed. Build in workbenches/ is from c5c5a31 and uncommitted (user stopped that commit).
+
+### Phase 6e: Second prod comparison (logged-in, widths, keyboard, errors) ✅ partly
+- [x] Keyboard focus visible again: removed `* :focus { outline: none !important }` and two siblings in app-base.css; `:focus-visible` ring on non-text controls (Mantine's own ring returns too).
+- [x] Narrow filter overlay is modal: Escape closes (unless an open list inside owns it), focus trapped, focus back to the opener, `aria-modal`.
+- [x] Footer Home clears the filters (was: bare URL, filters still on).
+- [x] Count failure: total shown as "—", range without "of", Next while a full page returns, Last off (`totalUnknown`).
+- [x] Auth (shared, mirrored to VPE): token cleared only on a token-less answer or 401/403, kept through 5xx/network errors.
+- [x] Toolbar colours as Angular: dev #fad38a, beta #fdcbbc, prod white (dropped the stray `bg-mauve-300`).
+- [x] GOlr down: "Search failed …" instead of "No results found"; Escape at an open term list stops there (both mirrored to VPE).
+- [x] Long unbroken titles wrap (`[overflow-wrap:anywhere]`); copy dialog lists Groups.
+- [x] Analytics off in dev builds (dev server and e2e no longer report to the live GA property).
+- [x] Actions column (user: shrink the table): min-width 900 → 660, fixed columns trimmed (52/120/118/96); contributor chips and their wrappers `min-w-0` so long names truncate. Measured on prod data at 375/768/1024/1100/1240/1600: no sideways scroll, Actions on screen, no chip overflowing its cell.
+- [x] Copy Model (user: keep opening VPE) — unchanged.
+- [x] Phone width (user: make it usable): results bar wraps below `md`, page-size select can't be squeezed, partner logos hidden below `sm`, dropdowns clamped to the screen (term autocomplete clamp mirrored to VPE).
+
 ### Phase 7: Wrap-up
-- [x] type-check, lint, 700 unit, 56 e2e all green.
+- [x] type-check, lint, 731 unit, 60 e2e all green; VPE 1404 tests (61 pre-existing VPE type errors, none ours).
 - [x] Fold in confirmed findings from the bug-hunt agent.
 - [x] Mirrored to VPE (uncommitted there): `metadataApiSlice.ts` (sort, colours, null-safe initials and body), `search/components/Autocomplete.tsx` (dropdown tokens, Enter after Escape), `index.css` (noc-dropdown tokens), new `tests/features/users/slices/metadataApiSlice.test.ts`. VPE: 1396 tests pass; its 61 pre-existing type errors are elsewhere (63 before; the 2 in metadataApiSlice fixed).
 - [ ] Reply to the reviewer with per-item answers.

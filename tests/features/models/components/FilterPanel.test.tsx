@@ -295,6 +295,42 @@ describe('LeftDrawer on a narrow viewport', () => {
     expect(store.getState().drawer.leftDrawerOpen).toBe(false)
   })
 
+  // Regression: the overlay ignored Escape and let Tab wander behind it.
+  it('closes on Escape, and hands focus back to what opened it', async () => {
+    setViewport(false)
+    const { store, user } = renderWithProviders(
+      <>
+        <button type="button">Filters</button>
+        <LeftDrawer />
+      </>
+    )
+    const opener = screen.getByRole('button', { name: 'Filters' })
+    opener.focus()
+
+    act(() => {
+      store.dispatch(setLeftDrawerOpen(true))
+    })
+    await user.click(screen.getByLabelText('Filter by Title'))
+    await user.keyboard('{Escape}')
+
+    expect(store.getState().drawer.leftDrawerOpen).toBe(false)
+    expect(opener).toHaveFocus()
+  })
+
+  it('is marked modal', () => {
+    setViewport(false)
+    const { store } = renderWithProviders(<LeftDrawer />)
+
+    act(() => {
+      store.dispatch(setLeftDrawerOpen(true))
+    })
+
+    expect(screen.getByRole('dialog', { name: 'Search filters' })).toHaveAttribute(
+      'aria-modal',
+      'true'
+    )
+  })
+
   it('stays a static panel with no dialog role on a wide viewport', () => {
     renderWithProviders(<LeftDrawer />)
 

@@ -43,7 +43,7 @@ describe('FilterChipList', () => {
 
     await user.click(screen.getByLabelText('Remove second'))
 
-    expect(onRemove).toHaveBeenCalledWith(1)
+    expect(onRemove).toHaveBeenCalledWith(1, false)
   })
 
   it('falls back to the label for the tooltip when no title is given', () => {
@@ -204,6 +204,15 @@ describe('TextChipFilter', () => {
       await user.type(screen.getByLabelText('Filter by Exact Date'), '2026/7/3{Enter}')
 
       expect(onAdd).toHaveBeenCalledExactlyOnceWith('2026-07-03')
+    })
+
+    // Date.UTC reads years 0–99 as 1900–1999.
+    it('keeps a year below 100 as typed', async () => {
+      const { onAdd, user } = renderText({ label: 'Filter by Exact Date', inputType: 'date' })
+
+      await user.type(screen.getByLabelText('Filter by Exact Date'), '0012-03-04{Enter}')
+
+      expect(onAdd).toHaveBeenCalledExactlyOnceWith('0012-03-04')
     })
 
     it('flags a date that does not exist and keeps it for correcting', async () => {

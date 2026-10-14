@@ -50,12 +50,29 @@ describe('CopyModelDialog', () => {
       expect(screen.getByText('Tremayne Mushayahama')).toBeInTheDocument()
     })
 
+    it('lists the groups, as prod did', () => {
+      render(
+        buildCamRow({
+          id: 'gomodel:src',
+          title: 'MSH2 Hsap',
+          groups: [
+            { id: 'http://geneontology.org', label: 'GO Central' },
+            { id: 'http://www.wormbase.org', label: 'WormBase' },
+          ],
+        })
+      )
+
+      expect(screen.getByText('Groups:')).toBeInTheDocument()
+      expect(screen.getByText('GO Central, WormBase')).toBeInTheDocument()
+    })
+
     it('omits rows the model has no value for', () => {
       render(buildCamRow({ id: 'gomodel:src', title: '', state: '', contributors: [] }))
 
       expect(screen.queryByText('Title:')).not.toBeInTheDocument()
       expect(screen.queryByText('State:')).not.toBeInTheDocument()
       expect(screen.queryByText('Contributors:')).not.toBeInTheDocument()
+      expect(screen.queryByText('Groups:')).not.toBeInTheDocument()
     })
   })
 

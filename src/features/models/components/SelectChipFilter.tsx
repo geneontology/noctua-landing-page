@@ -19,8 +19,9 @@ export interface SelectOption {
  */
 const OPTION_LIMIT = 1000
 
-/** The Angular `.noc-term-autocomplete` panel was 400px wide, wider than the field. */
-const DROPDOWN_WIDTH = 400
+/** The Angular `.noc-term-autocomplete` panel was 400px wide, wider than the
+ *  field — but never wider than a phone screen. */
+const DROPDOWN_WIDTH = 'min(400px, calc(100vw - 16px))'
 
 interface SelectChipFilterProps {
   label: string

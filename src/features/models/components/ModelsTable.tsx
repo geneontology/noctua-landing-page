@@ -145,7 +145,10 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching, isError =
         {models.map(model => (
           <div key={model.id} className="rounded-md border border-noc-rule bg-white p-3 shadow-sm">
             <div className="mb-2 flex items-start gap-2">
-              <span className="grow text-xs font-medium text-gray-900" title={model.id}>
+              <span
+                className="grow text-xs font-medium [overflow-wrap:anywhere] text-gray-900"
+                title={model.id}
+              >
                 {model.title}
               </span>
               <SavedMark modified={model.modified} />
@@ -174,16 +177,20 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching, isError =
   // #results-scroll handles both axes, as the Angular page scroller did.
   return (
     <div className="w-full grow bg-noc-surface pb-24">
-      <table className="w-full min-w-[900px] table-fixed border-collapse text-xs">
+      {/* 660px fits beside the 340px filter panel from `lg` (1024px) up. At 900px
+          the Actions column sat off-screen up to ~1240px, and scrolling across
+          to it slid the table out from under the sticky bars. The fixed columns
+          are as narrow as their chips allow. */}
+      <table className="w-full min-w-[660px] table-fixed border-collapse text-xs">
         {/* As in the Angular table, Contributors takes the spare width: a model
             can have many, while a long title just wraps onto a second line. */}
         <colgroup>
           <col style={{ width: '25%' }} />
-          <col style={{ width: 60 }} />
-          <col style={{ width: 130 }} />
-          <col style={{ width: 145 }} />
+          <col style={{ width: 52 }} />
+          <col style={{ width: 120 }} />
+          <col style={{ width: 118 }} />
           <col />
-          <col style={{ width: 110 }} />
+          <col style={{ width: 96 }} />
         </colgroup>
         <thead
           className="sticky z-10 bg-white shadow-[inset_0_-1px_0_var(--color-noc-rule)]"
@@ -201,7 +208,11 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching, isError =
         <tbody>
           {models.map(model => (
             <tr key={model.id} className="border-b border-noc-rule align-middle hover:bg-white/60">
-              <td className={`${cellPad} pr-2.5 pl-3 text-xs text-gray-900`}>
+              {/* A title with no break point (an id run together, a long URL)
+                  otherwise spills over the Saved and State columns. */}
+              <td
+                className={`${cellPad} pr-2.5 pl-3 text-xs [overflow-wrap:anywhere] text-gray-900`}
+              >
                 <span title={model.id}>{model.title}</span>
               </td>
 

@@ -28,8 +28,10 @@ const serve = (respond: () => Response) =>
     })
   )
 
-const json = (body: unknown, status = 200) => () =>
-  new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
+const json =
+  (body: unknown, status = 200) =>
+  () =>
+    new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } })
 
 const renderSetup = (store = makeStore()) => {
   const wrapper = ({ children }: PropsWithChildren) => <Provider store={store}>{children}</Provider>
@@ -144,12 +146,30 @@ describe('useAuthSetup', () => {
       expect(localStorage.getItem('barista_token')).toBeNull()
     })
 
-    it('logs out and forgets the token when the lookup fails', async () => {
+    it('logs out and forgets the token when Barista refuses it', async () => {
       serve(json({ message: 'nope' }, 403))
       const { store } = renderSetup()
 
       await waitFor(() => expect(store.getState().auth.baristaToken).toBeNull())
       expect(localStorage.getItem('barista_token')).toBeNull()
+    })
+  })
+
+  // Regression: one 502 on the first load wiped the token, so the curator stayed
+  // logged out even after Barista recovered.
+  describe('Barista unavailable', () => {
+    beforeEach(() => {
+      window.history.replaceState(null, '', '/page?barista_token=tok-123')
+    })
+
+    it.each([500, 502, 503])('keeps the token through a %i', async status => {
+      serve(json({ message: 'down' }, status))
+      const { store } = renderSetup()
+
+      await waitFor(() => expect(fetch).toHaveBeenCalled())
+      await new Promise(resolve => setTimeout(resolve, 50))
+      expect(store.getState().auth.baristaToken).toBe('tok-123')
+      expect(localStorage.getItem('barista_token')).toBe('tok-123')
     })
   })
 

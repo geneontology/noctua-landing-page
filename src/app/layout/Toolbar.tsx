@@ -19,7 +19,10 @@ const Toolbar: React.FC = () => {
 
   const { isDev, isBeta, isProd } = ENVIRONMENT
 
-  const toolbarBg = isDev ? 'bg-brown-100' : isBeta ? 'bg-accent-500' : 'bg-white'
+  // The Angular toolbar's colours: #fad38a in dev, #fdcbbc in beta, white in
+  // production. `bg-brown-100` is not a Tailwind colour, and an unconditional
+  // `bg-mauve-300` after it painted every environment mauve, beta included.
+  const toolbarBg = isDev ? 'bg-accent-500' : isBeta ? 'bg-[#fdcbbc]' : 'bg-white'
   const envLabel = isDev ? '(dev)' : isBeta ? '(beta)' : null
 
   const logout = () => {
@@ -27,9 +30,7 @@ const Toolbar: React.FC = () => {
   }
 
   return (
-    <div
-      className={`relative flex h-full items-center py-0 px-4 ${toolbarBg} bg-mauve-300`}
-    >
+    <div className={`relative flex h-full items-center px-4 py-0 ${toolbarBg}`}>
       {/* Logo / Branding — left side */}
       <div className="flex h-full flex-col items-start justify-center py-2">
         <div className="flex flex-row items-center">
@@ -44,7 +45,7 @@ const Toolbar: React.FC = () => {
           {envLabel && <span className="text-xl text-gray-700">{envLabel}</span>}
         </div>
         {!isProd && (
-          <div className="text-2xs italic font-bold text-gray-700">
+          <div className="text-2xs font-bold text-gray-700 italic">
             Testing Version. Visit{' '}
             <a
               className="underline hover:text-black"
@@ -77,13 +78,11 @@ const Toolbar: React.FC = () => {
         </div>
 
         {/* Help */}
-        <div className="flex flex-row items-center border-r border-gray-300 pl-3 pr-3">
-          <Button variant="subtle" onClick={e => helpMenu.open(e.currentTarget)}>Help</Button>
-          <AnchoredMenu
-            anchorEl={helpMenu.anchor}
-            open={helpMenu.isOpen}
-            onClose={helpMenu.close}
-          >
+        <div className="flex flex-row items-center border-r border-gray-300 pr-3 pl-3">
+          <Button variant="subtle" onClick={e => helpMenu.open(e.currentTarget)}>
+            Help
+          </Button>
+          <AnchoredMenu anchorEl={helpMenu.anchor} open={helpMenu.isOpen} onClose={helpMenu.close}>
             <MenuLink href={EXTERNAL_LINKS.NOCTUA_USERS_GUIDE} onClick={helpMenu.close}>
               Noctua User&apos;s Guide
             </MenuLink>
@@ -96,15 +95,13 @@ const Toolbar: React.FC = () => {
             <>
               <Button
                 variant="subtle"
-                className="!h-10 !text-left !normal-case !text-xs"
+                className="!h-10 !text-left !text-xs !normal-case"
                 onClick={e => userMenu.open(e.currentTarget)}
               >
                 <div className="flex flex-row items-center">
                   <div className="mr-1.5 flex max-w-[150px] flex-col items-start overflow-hidden leading-5">
                     <div className="truncate">{user.name}</div>
-                    <div className="truncate text-2xs text-gray-500">
-                      {user.group?.label}
-                    </div>
+                    <div className="truncate text-2xs text-gray-500">{user.group?.label}</div>
                   </div>
                   <IoChevronDown />
                 </div>
@@ -138,25 +135,18 @@ const Toolbar: React.FC = () => {
         </div>
       </div>
 
-      {/* GO Logo — right side */}
-      <div className="flex h-full w-[200px] flex-row items-center justify-start border-r border-gray-300 py-1 pl-2">
+      {/* GO Logo — right side. The partner logos give way on a phone, where
+          they shrank to a few pixels wide anyway. */}
+      <div className="hidden h-full w-[200px] flex-row items-center justify-start border-r border-gray-300 py-1 pl-2 sm:flex">
         <a href={EXTERNAL_LINKS.GO_HOMEPAGE} target="_blank" rel="noreferrer">
-          <img
-            src="assets/images/logos/go-logo.large.png"
-            alt="GO Logo"
-            className="h-10"
-          />
+          <img src="assets/images/logos/go-logo.large.png" alt="GO Logo" className="h-10" />
         </a>
       </div>
 
       {/* Alliance Logo — far right */}
-      <div className="border-l border-gray-300 py-1">
+      <div className="hidden border-l border-gray-300 py-1 sm:block">
         <a href={EXTERNAL_LINKS.ALLIANCE_GENOME} target="_blank" rel="noreferrer">
-          <img
-            src="assets/images/logos/alliance-logo.png"
-            alt="Alliance Logo"
-            className="h-10"
-          />
+          <img src="assets/images/logos/alliance-logo.png" alt="Alliance Logo" className="h-10" />
         </a>
       </div>
     </div>

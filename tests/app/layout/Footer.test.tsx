@@ -3,6 +3,7 @@ import { screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
 import Footer from '@/app/layout/Footer'
 import { EXTERNAL_LINKS } from '@/@noctua.core/data/constants'
+import { emptyCriteria } from '@/features/models/models/searchCriteria'
 import { renderWithProviders } from '@tests/test-utils'
 
 const renderFooter = () =>
@@ -19,6 +20,30 @@ describe('Footer', () => {
     renderFooter()
 
     expect(linkTo('Home')).toHaveAttribute('href', '/')
+  })
+
+  // Prod's Home is a full load of the bare page; a route change alone left
+  // every filter on under a bare address bar.
+  it('clears the filters on Home', async () => {
+    const { store, user } = renderWithProviders(
+      <MemoryRouter>
+        <Footer />
+      </MemoryRouter>,
+      {
+        preloadedState: {
+          modelSearch: {
+            criteria: { ...emptyCriteria(), titles: ['wnt'] },
+            page: { pageNumber: 2, size: 50 },
+            lastRejection: null,
+          },
+        },
+      }
+    )
+
+    await user.click(linkTo('Home'))
+
+    expect(store.getState().modelSearch.criteria.titles).toEqual([])
+    expect(store.getState().modelSearch.page.pageNumber).toBe(0)
   })
 
   it('links to GO help in a new tab', () => {

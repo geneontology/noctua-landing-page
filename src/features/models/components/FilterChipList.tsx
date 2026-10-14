@@ -4,7 +4,9 @@ import { CHIP_COLORS, chipColors } from '../data/modelConstants'
 
 interface FilterChipListProps {
   items: { key: string; label: string; title?: string }[]
-  onRemove: (index: number) => void
+  /** `viaKeyboard` is true when the remove button was pressed with Enter or
+   *  Space, so the caller can put focus somewhere useful afterwards. */
+  onRemove: (index: number, viaKeyboard: boolean) => void
   /** Override the wrapper layout — `contents` makes the chips flex siblings of
    *  whatever else shares the parent, which is how ChipInputField inlines them
    *  alongside the input. */
@@ -30,14 +32,15 @@ const FilterChipList: React.FC<FilterChipListProps> = ({ items, onRemove, classN
           key={item.key}
           title={item.title ?? item.label}
           style={CHIP.chipStyle}
-          className="flex h-[22px] max-w-full items-center rounded-full border pl-2 pr-1 text-2xs text-gray-800"
+          className="flex h-[22px] max-w-full items-center rounded-full border pr-1 pl-2 text-2xs text-gray-800"
         >
           <span className="truncate">{item.label}</span>
           <button
             type="button"
             aria-label={`Remove ${item.label}`}
             className="ml-1 flex h-4 w-4 shrink-0 items-center justify-center rounded-full text-gray-600 hover:bg-black/10"
-            onClick={() => onRemove(index)}
+            // A keyboard-triggered click has no pointer position, so detail is 0.
+            onClick={e => onRemove(index, e.detail === 0)}
           >
             <IoClose size={11} />
           </button>

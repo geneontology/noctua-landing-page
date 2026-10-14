@@ -1,7 +1,7 @@
 import { useEffect, useMemo } from 'react'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import { selectContributors, selectGroups } from '@/features/users/slices/metadataSlice'
-import { selectCriteria, selectPage, setPage } from '../slices/modelSearchSlice'
+import { clampPage, selectCriteria, selectPage } from '../slices/modelSearchSlice'
 import { useCountModelsQuery, useSearchModelsQuery } from '../slices/modelSearchApiSlice'
 import type { CamRow } from '../models/camSearch'
 
@@ -34,6 +34,7 @@ export const useModelSearch = () => {
   const {
     data: lastTotal = 0,
     currentData: currentTotal,
+    isError: countFailed,
     refetch: refetchCount,
   } = useCountModelsQuery({ criteria })
 
@@ -48,7 +49,7 @@ export const useModelSearch = () => {
   useEffect(() => {
     if (currentTotal === undefined) return
     const lastPage = Math.max(0, Math.ceil(currentTotal / page.size) - 1)
-    if (page.pageNumber > lastPage) dispatch(setPage({ pageNumber: lastPage }))
+    if (page.pageNumber > lastPage) dispatch(clampPage(lastPage))
   }, [currentTotal, page.pageNumber, page.size, dispatch])
 
   const contributorsByUri = useMemo(
@@ -74,5 +75,9 @@ export const useModelSearch = () => {
     refetchCount()
   }
 
-  return { models, total, isFetching, isError, error, refresh }
+  // The rows came back but the count did not: the total is unknown, not zero.
+  // Reading it as 0 put "0 – 0 of 0" over a full table and disabled paging.
+  const totalUnknown = !isError && countFailed
+
+  return { models, total, totalUnknown, isFetching, isError, error, refresh }
 }

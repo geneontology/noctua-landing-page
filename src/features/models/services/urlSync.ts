@@ -1,5 +1,5 @@
 import type { SearchCriteria } from '../models/searchCriteria'
-import { FilterType, emptyCriteria } from '../models/searchCriteria'
+import { FilterType, emptyCriteria, filterLimit, filterValueKey } from '../models/searchCriteria'
 import type { CamPage } from '../models/camSearch'
 import { DEFAULT_PAGE_SIZE, PAGE_SIZE_OPTIONS } from '../models/camSearch'
 
@@ -63,6 +63,20 @@ export const criteriaFromParams = (searchParams: URLSearchParams): SearchCriteri
       default:
         criteria[type] = values as never
     }
+  }
+
+  // The same rules adding a filter by hand obeys: no value twice (`obsoleteterm`
+  // and Angular's `obsoleteTerm` can name one id), and no more than the limit —
+  // a hand-edited URL could otherwise send fifteen terms.
+  for (const type of new Set(Object.values(PARAM_TO_FILTER))) {
+    const seen = new Set<string>()
+    const kept = (criteria[type] as unknown[]).filter(value => {
+      const key = filterValueKey(type, value)
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+    criteria[type] = kept.slice(0, filterLimit(type)) as never
   }
 
   if (searchParams.has('exact')) {

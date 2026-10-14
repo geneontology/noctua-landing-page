@@ -1,4 +1,5 @@
 import type { CamPage } from '../models/camSearch'
+import { REFERENCE_DBS } from '../data/modelConstants'
 import type { SearchCriteria } from '../models/searchCriteria'
 
 /**
@@ -55,12 +56,31 @@ export const cleanModelId = (value: string): string => {
   return cleanId.includes(prefix) ? cleanId : prefix + cleanId
 }
 
+const REFERENCE_PREFIX = new RegExp(`^(${REFERENCE_DBS.join('|')})\\s*:\\s*(.*)$`, 'i')
+
 /**
- * Barista matches references only as `DB:accession` — `pmid=PMID:21873635`
- * finds models, `pmid=21873635` finds none. A bare number can only be a PubMed
- * id, so give it the prefix; anything else is left as typed.
+ * Split a reference into a known database and its accession — `pmid: 123`,
+ * `PMID:123` and `GO_REF:0000033` all qualify, in any case and spacing. A value
+ * without a known prefix has no `db`.
+ */
+export const splitReference = (
+  value: string
+): { db?: (typeof REFERENCE_DBS)[number]; accession: string } => {
+  const trimmed = value.trim()
+  const match = REFERENCE_PREFIX.exec(trimmed)
+  if (!match) return { accession: trimmed }
+  const db = REFERENCE_DBS.find(known => known === match[1].toUpperCase())
+  return { db, accession: match[2].trim() }
+}
+
+/**
+ * Barista matches references only as `DB:accession` with the database in
+ * capitals — `pmid=PMID:21873635` finds models; `21873635`, `pmid:21873635` and
+ * `PMID: 21873635` find none. A bare number can only be a PubMed id, so it gets
+ * the prefix; a known prefix is normalised; anything else is left as typed.
  */
 export const cleanReference = (value: string): string => {
-  const trimmed = value.trim()
-  return /^\d+$/.test(trimmed) ? `PMID:${trimmed}` : trimmed
+  const { db, accession } = splitReference(value)
+  if (db) return `${db}:${accession}`
+  return /^\d+$/.test(accession) ? `PMID:${accession}` : accession
 }

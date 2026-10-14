@@ -245,6 +245,21 @@ describe('useModelSearch', () => {
     })
   })
 
+  it('marks the total unknown, not zero, when only the count fails', async () => {
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async (input: Request) =>
+        /[?&]count(&|$)/.test(input.url)
+          ? new Response('nope', { status: 500 })
+          : json({ models: [buildCamSearchResponseItem()] })
+      )
+    )
+    const { result } = renderSearch()
+
+    await waitFor(() => expect(result.current.totalUnknown).toBe(true))
+    expect(result.current.models).toHaveLength(1)
+  })
+
   // Regression: `?page=99999` showed "4999901 – 54036 of 54036" over an empty table.
   describe('a page past the end', () => {
     it('settles on the last page once the count is in', async () => {

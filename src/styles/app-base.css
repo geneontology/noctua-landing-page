@@ -8,8 +8,15 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-* :focus {
-  outline: none !important;
+/* Keyboard focus must show. These rules used to strip every outline
+   (`* :focus { outline: none !important }`), Mantine's own focus ring included,
+   so tabbing through chips, page buttons, checkboxes and links showed nothing.
+   A mouse click still draws no ring; text fields keep their own focus state
+   (the outlined filter box, Mantine's input border). */
+:where(a, button, summary, [role='button'], [tabindex]:not([tabindex='-1'])):focus-visible,
+:where(input[type='checkbox'], input[type='radio']):focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
 }
 
 body {
@@ -116,10 +123,6 @@ body.no-animate *::after {
   animation: none !important;
 }
 
-button:focus {
-  outline: none;
-}
-
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -128,6 +131,3 @@ input:-webkit-autofill:active {
   transition-property: background-color, color;
 }
 
-:focus {
-  outline-color: transparent;
-}

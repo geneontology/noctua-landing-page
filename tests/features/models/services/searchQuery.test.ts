@@ -4,6 +4,7 @@ import {
   cleanModelId,
   cleanReference,
   serializeSearchQuery,
+  splitReference,
 } from '@/features/models/services/searchQuery'
 import { buildCriteria } from '@tests/fixtures/models'
 
@@ -115,5 +116,25 @@ describe('cleanReference', () => {
 
   it('leaves text that is not a bare number as typed', () => {
     expect(cleanReference('smith 2019')).toBe('smith 2019')
+  })
+
+  it.each([
+    ['pmid:21873635', 'PMID:21873635'],
+    ['PMID: 21873635', 'PMID:21873635'],
+    [' go_ref : 0000033 ', 'GO_REF:0000033'],
+    ['doi:10.1093/nar/gky1055', 'DOI:10.1093/nar/gky1055'],
+  ])('normalises the prefix of %s', (raw, clean) => {
+    expect(cleanReference(raw)).toBe(clean)
+  })
+})
+
+describe('splitReference', () => {
+  it('splits a known prefix from its accession', () => {
+    expect(splitReference('pmid: 123')).toEqual({ db: 'PMID', accession: '123' })
+  })
+
+  it('has no database for an unprefixed or unknown one', () => {
+    expect(splitReference('123')).toEqual({ accession: '123' })
+    expect(splitReference('ISBN:123')).toEqual({ accession: 'ISBN:123' })
   })
 })

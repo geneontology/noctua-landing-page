@@ -36,4 +36,7 @@
 .mantine-Autocomplete-option[data-combobox-selected],
 .mantine-Select-option[data-combobox-selected] {
   background-color: var(--color-noc-dropdown-hover);
+  /* Mantine paints the keyboard-highlighted option white-on-primary; on this
+     pale tint its white text all but vanished. */
+  color: inherit;
 }

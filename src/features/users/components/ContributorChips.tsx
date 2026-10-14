@@ -35,16 +35,20 @@ const ContributorChips: React.FC<ContributorChipsProps> = ({ contributors, onChi
   const hidden = contributors.slice(MAX_VISIBLE)
 
   return (
-    <div className="flex grow items-center">
-      <div className="flex flex-wrap gap-1.5">
+    // `min-w-0` on both, so a long name truncates inside its chip instead of
+    // widening the column past the table — which pushed Actions off-screen.
+    <div className="flex min-w-0 grow items-center">
+      <div className="flex min-w-0 flex-wrap gap-1.5">
         {visible.map(contributor => (
           <Chip
             key={contributor.uri}
             size="sm"
             icon={<ContributorIcon contributor={contributor} />}
-            chipStyle={contributor.color ? { ...CHIP_STYLE, borderColor: contributor.color } : CHIP_STYLE}
+            chipStyle={
+              contributor.color ? { ...CHIP_STYLE, borderColor: contributor.color } : CHIP_STYLE
+            }
             circleStyle={contributor.color ? { backgroundColor: contributor.color } : CIRCLE_STYLE}
-            className="max-w-[200px]"
+            className="max-w-[200px] min-w-0"
             title={`Add ${contributor.name ?? contributor.uri} to filters`}
             onClick={onChipClick ? () => onChipClick(contributor) : undefined}
           >

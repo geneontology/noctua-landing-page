@@ -100,3 +100,41 @@ test.describe('footer at 1280px', () => {
     expect(contact?.height).toBeLessThan(30)
   })
 })
+
+test.describe('narrower screens', () => {
+  // Regression: a 900px table beside the 340px filter panel put Actions
+  // off-screen up to ~1240px wide.
+  test('keeps Actions on screen beside the filter panel at 1024px', async ({ page }) => {
+    await page.setViewportSize({ width: 1024, height: 800 })
+    await mockBackend(page, {
+      models: [
+        model(1, {
+          contributors: [
+            'https://orcid.org/0000-0001',
+            'https://orcid.org/0000-0002',
+            'https://orcid.org/0000-0099',
+          ],
+        }),
+      ],
+    })
+    await page.goto('./')
+
+    const actions = await page.getByRole('button', { name: 'Actions' }).first().boundingBox()
+    expect((actions?.x ?? 0) + (actions?.width ?? 0)).toBeLessThanOrEqual(1024)
+    const sideways = await page
+      .locator('#results-scroll')
+      .evaluate(el => el.scrollWidth - el.clientWidth)
+    expect(sideways).toBe(0)
+  })
+
+  // At phone width the results bar wraps rather than running off the screen.
+  test('keeps paging on screen at 375px', async ({ page }) => {
+    await page.setViewportSize({ width: 375, height: 800 })
+    await mockBackend(page, { models: Array.from({ length: 60 }, (_, i) => model(i + 1)) })
+    await page.goto('./')
+
+    const next = await page.getByRole('button', { name: 'Next page' }).boundingBox()
+    expect((next?.x ?? 0) + (next?.width ?? 0)).toBeLessThanOrEqual(375)
+    await expect(page.getByRole('img', { name: 'GO Logo' })).toBeHidden()
+  })
+})

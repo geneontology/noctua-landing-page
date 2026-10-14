@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react'
-import { Portal } from '@mantine/core'
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { FocusTrap, Portal } from '@mantine/core'
 
 interface AnchoredPopoverProps {
   anchorEl: HTMLElement | null
@@ -14,6 +14,9 @@ interface AnchoredPopoverProps {
   closeOnClickOutside?: boolean
   /** When false, pressing Escape does not trigger onClose. Default: true. */
   closeOnEscape?: boolean
+  /** Keep Tab inside the popover while it is open, for dialog-like content.
+   *  Focus starts on the element marked `data-autofocus`, else the first one. */
+  trapFocus?: boolean
 }
 
 const VIEWPORT_PAD = 4
@@ -34,6 +37,7 @@ const AnchoredPopover = ({
   placement = 'bottom-start',
   closeOnClickOutside = true,
   closeOnEscape = true,
+  trapFocus = false,
 }: AnchoredPopoverProps) => {
   // State-backed ref: Mantine's Portal returns null on first render and only
   // mounts its children after its own internal effect runs. A plain useRef
@@ -112,12 +116,34 @@ const AnchoredPopover = ({
     // dialog's keydown handler (otherwise pressing Escape would close both).
     const handleKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
+      // An open select or autocomplete inside closes its own list first. Its
+      // handler is on the target, so let the event through; the popover root
+      // stops it there before it can reach a parent dialog.
+      const target = e.target as HTMLElement | null
+      if (el && target && el.contains(target) && target.closest('[aria-expanded="true"]')) return
       e.stopPropagation()
       if (closeOnEscape) onClose()
     }
     document.addEventListener('keydown', handleKey, true)
     return () => document.removeEventListener('keydown', handleKey, true)
-  }, [open, onClose, closeOnEscape])
+  }, [open, onClose, closeOnEscape, el])
+
+  // Hand focus back to whatever opened the popover. Unmounting the content
+  // otherwise drops it on <body>, and the next Tab starts from the top of the
+  // page. Only when focus really was lost — a click into another field keeps it.
+  const lastAnchor = useRef<HTMLElement | null>(null)
+  useEffect(() => {
+    if (anchorEl) lastAnchor.current = anchorEl
+  }, [anchorEl])
+  const wasOpen = useRef(open)
+  useEffect(() => {
+    if (wasOpen.current && !open) {
+      const active = document.activeElement
+      const anchor = lastAnchor.current
+      if ((!active || active === document.body) && anchor?.isConnected) anchor.focus()
+    }
+    wasOpen.current = open
+  }, [open])
 
   if (!open) return null
 
@@ -137,8 +163,16 @@ const AnchoredPopover = ({
         ref={setEl}
         className={`rounded-md border border-gray-200 bg-primary-100 text-gray-900 shadow-lg ${className ?? ''}`}
         style={{ position: 'fixed', visibility: 'hidden', zIndex: POPOVER_Z }}
+        // The Escape a nested select handled (see above) stops here.
+        onKeyDown={e => e.key === 'Escape' && e.stopPropagation()}
       >
-        {children}
+        {trapFocus ? (
+          <FocusTrap active>
+            <div>{children}</div>
+          </FocusTrap>
+        ) : (
+          children
+        )}
       </div>
     </Portal>
   )

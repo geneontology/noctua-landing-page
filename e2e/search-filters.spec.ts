@@ -323,3 +323,22 @@ test.describe('found in the prod comparison', () => {
     await expect(page.getByRole('dialog', { name: 'Search filters' })).toBeHidden()
   })
 })
+
+test.describe('found in review', () => {
+  // Mantine paints the keyboard-highlighted option white; on the pale yellow
+  // list that text all but vanished.
+  test('the keyboard-highlighted option stays readable', async ({ page }) => {
+    await mockBackend(page)
+    await page.goto('./')
+
+    const combobox = page.getByRole('combobox', { name: 'Filter by Contributor' })
+    await combobox.click()
+    await combobox.press('ArrowDown')
+
+    const highlighted = page.locator('[role="option"][data-combobox-selected]')
+    await expect(highlighted).toBeVisible()
+    expect(await highlighted.evaluate(el => getComputedStyle(el).color)).not.toBe(
+      'rgb(255, 255, 255)'
+    )
+  })
+})

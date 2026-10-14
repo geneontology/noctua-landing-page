@@ -85,6 +85,28 @@ describe('round trip', () => {
     expect(criteriaFromParams(params)).toEqual(criteria)
   })
 
+  // The same rules as adding a filter by hand.
+  it('reads a value named twice only once', () => {
+    const criteria = criteriaFromParams(
+      new URLSearchParams('obsoleteterm=GO:0000001&obsoleteTerm=GO:0000001&title=a&title=a')
+    )
+
+    expect(criteria.obsoleteTerms).toHaveLength(1)
+    expect(criteria.titles).toEqual(['a'])
+  })
+
+  it('stops at the filter limit', () => {
+    const params = new URLSearchParams()
+    for (let i = 0; i < 15; i++) params.append('term', `GO:${i}`)
+    params.append('title', 'a')
+    params.append('title', 'b')
+
+    const criteria = criteriaFromParams(params)
+
+    expect(criteria.terms).toHaveLength(10)
+    expect(criteria.titles).toEqual(['a'])
+  })
+
   it("reads Angular's obsoleteTerm spelling too", () => {
     const criteria = criteriaFromParams(new URLSearchParams('obsoleteTerm=GO:0000001'))
 

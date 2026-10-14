@@ -84,3 +84,18 @@ test.describe('paging', () => {
     expect(calls.search.at(-1)?.searchParams.get('limit')).toBe('100')
   })
 })
+
+// Regression: correcting a page past the end pushed a history entry. Back
+// returned to the bad page, which was corrected and pushed again, so Back
+// could never leave the site.
+test('a page past the end settles on the last page without trapping Back', async ({ page }) => {
+  await mockBackend(page, { models: [model(1), model(2), model(3)] })
+  await page.goto('about:blank')
+  await page.goto('./?title=x&page=99')
+
+  await expect(page.getByText('1 – 3 of 3')).toBeVisible()
+  await expect(page).not.toHaveURL(/page=/)
+
+  await page.goBack()
+  await expect(page).toHaveURL('about:blank')
+})

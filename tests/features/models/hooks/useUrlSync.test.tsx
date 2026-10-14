@@ -5,7 +5,12 @@ import { Provider } from 'react-redux'
 import { makeStore } from '@/app/store/store'
 import { emptyCriteria } from '@/features/models/models/searchCriteria'
 import { FilterType } from '@/features/models/models/searchCriteria'
-import { addFilter, clearAll, hydrateTermLabel } from '@/features/models/slices/modelSearchSlice'
+import {
+  addFilter,
+  clampPage,
+  clearAll,
+  hydrateTermLabel,
+} from '@/features/models/slices/modelSearchSlice'
 import { setUsers } from '@/features/users/slices/metadataSlice'
 
 /**
@@ -151,6 +156,28 @@ describe('useUrlSync', () => {
 
     await waitFor(() => expect(store.getState().modelSearch.criteria.terms[0].label).toBe('kinase'))
     expect(pushState).not.toHaveBeenCalled()
+    realReplaceState({}, '', '/')
+  })
+
+  // Regression: the clamp pushed, Back returned to the page past the end, which
+  // clamped and pushed again — so Back could never leave the site.
+  it('replaces the entry when the app corrects a page past the end', async () => {
+    realReplaceState({}, '', '/?title=x&page=99')
+    // Let the replace really move the address bar, as a browser would, so the
+    // effect's follow-up run sees it in sync.
+    replaceState.mockImplementation((...args: unknown[]) =>
+      realReplaceState(...(args as Parameters<History['replaceState']>))
+    )
+    const { store } = renderSync({ ...emptyCriteria(), titles: ['x'] })
+
+    act(() => {
+      store.dispatch(clampPage(0))
+    })
+
+    await waitFor(() => expect(replaceState).toHaveBeenCalled())
+    expect(replaceState.mock.calls.at(-1)?.[2]).toMatch(/\?title=x$/)
+    expect(pushState).not.toHaveBeenCalled()
+    expect(store.getState().modelSearch.replaceUrl).toBe(false)
     realReplaceState({}, '', '/')
   })
 

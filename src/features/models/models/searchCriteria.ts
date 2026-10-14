@@ -1,4 +1,5 @@
 import type { Contributor, Group } from '@/features/users/models/contributor'
+import { MAX_FILTER_VALUES, MAX_TITLE_FILTERS } from '../data/modelConstants'
 
 /** Every filter the Barista model search accepts, keyed by its criteria field. */
 export enum FilterType {
@@ -85,6 +86,10 @@ export const FILTER_TYPES: FilterType[] = [
 
 export const countFilters = (criteria: SearchCriteria): number =>
   FILTER_TYPES.reduce((total, type) => total + criteria[type].length, 0)
+
+/** How many values a filter may hold, matching the Angular limits. */
+export const filterLimit = (type: FilterType): number =>
+  type === FilterType.TITLES ? MAX_TITLE_FILTERS : MAX_FILTER_VALUES
 
 /** Stable identity for a filter value, used for de-duplication and React keys. */
 export const filterValueKey = (type: FilterType, value: unknown): string => {

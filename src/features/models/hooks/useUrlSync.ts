@@ -10,6 +10,8 @@ import {
   selectCriteria,
   selectFiltersCount,
   selectPage,
+  selectReplaceUrl,
+  urlReplaced,
 } from '../slices/modelSearchSlice'
 import { FilterType } from '../models/searchCriteria'
 import {
@@ -49,6 +51,7 @@ export const useUrlSync = () => {
   const criteria = useAppSelector(selectCriteria)
   const page = useAppSelector(selectPage)
   const filtersCount = useAppSelector(selectFiltersCount)
+  const replaceUrl = useAppSelector(selectReplaceUrl)
   const [fetchTerm] = useLazyGetTermByIdQuery()
   const contributors = useAppSelector(selectContributors)
   const groups = useAppSelector(selectGroups)
@@ -187,12 +190,13 @@ export const useUrlSync = () => {
 
     // Nothing the address bar shows has changed — a chip label resolving, say —
     // so there is no new position to record.
-    if (query === canonicalQuery(window.location.search)) return
-
-    if (query) {
-      window.history.pushState({}, '', `${base}?${query}`)
-    } else {
-      window.history.replaceState({}, '', base)
+    if (query !== canonicalQuery(window.location.search)) {
+      if (query && !replaceUrl) {
+        window.history.pushState({}, '', `${base}?${query}`)
+      } else {
+        window.history.replaceState({}, '', query ? `${base}?${query}` : base)
+      }
     }
-  }, [criteria, page, filtersCount])
+    if (replaceUrl) dispatch(urlReplaced())
+  }, [criteria, page, filtersCount, replaceUrl, dispatch])
 }

@@ -172,6 +172,43 @@ describe('ResultsBar', () => {
     })
   })
 
+  // Regression: a failed count read as 0, so the bar said "0 – 0 of 0" over a
+  // full table and paging was disabled.
+  describe('when the count failed', () => {
+    const renderUnknown = (rowCount: number, pageNumber = 0) =>
+      renderWithProviders(
+        <ResultsBar
+          total={0}
+          totalUnknown
+          rowCount={rowCount}
+          isFetching={false}
+          onRefresh={vi.fn()}
+        />,
+        { preloadedState: atPage(pageNumber, 50) }
+      )
+
+    it('shows the range of the rows it has, without a total', () => {
+      renderUnknown(50, 1)
+
+      expect(screen.getByText('—')).toBeInTheDocument()
+      expect(screen.getByText('51 – 100')).toBeInTheDocument()
+      expect(screen.queryByText(/of 0/)).not.toBeInTheDocument()
+    })
+
+    it('still pages on while a full page comes back, but cannot jump to the end', () => {
+      renderUnknown(50)
+
+      expect(screen.getByRole('button', { name: 'Next page' })).toBeEnabled()
+      expect(screen.getByRole('button', { name: 'Last page' })).toBeDisabled()
+    })
+
+    it('stops at a short page', () => {
+      renderUnknown(12, 3)
+
+      expect(screen.getByRole('button', { name: 'Next page' })).toBeDisabled()
+    })
+  })
+
   it('calls onRefresh when the refresh button is clicked', async () => {
     const onRefresh = vi.fn()
     const { user } = renderBar({ total: 137 }, onRefresh)

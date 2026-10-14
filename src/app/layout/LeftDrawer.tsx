@@ -1,5 +1,6 @@
 import type React from 'react'
-import { useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
+import { FocusTrap } from '@mantine/core'
 import FilterPanel from '@/features/models/components/FilterPanel'
 import { useIsAtLeast } from '@/@noctua.core/hooks/useBreakpoint'
 import { useAppDispatch, useAppSelector } from '../hooks'
@@ -32,6 +33,24 @@ const LeftDrawer: React.FC = () => {
     dispatch(setLeftDrawerOpen(isDesktop))
   }, [isDesktop, dispatch])
 
+  const close = useCallback(() => dispatch(setLeftDrawerOpen(false)), [dispatch])
+
+  // The overlay is modal, so it behaves like one: focus goes back to whatever
+  // opened it (the chip bar's Filters button) instead of dropping to <body>.
+  const opener = useRef<HTMLElement | null>(null)
+  useEffect(() => {
+    if (isDesktop) return
+    if (open) {
+      opener.current = document.activeElement as HTMLElement | null
+    } else if (opener.current) {
+      const active = document.activeElement
+      if ((!active || active === document.body) && opener.current.isConnected) {
+        opener.current.focus()
+      }
+      opener.current = null
+    }
+  }, [open, isDesktop])
+
   if (isDesktop) {
     return (
       <div
@@ -47,18 +66,24 @@ const LeftDrawer: React.FC = () => {
 
   return (
     <>
-      <div
-        className="fixed inset-0 z-30 bg-black/40"
-        aria-hidden="true"
-        onClick={() => dispatch(setLeftDrawerOpen(false))}
-      />
-      <div
-        role="dialog"
-        aria-label="Search filters"
-        className="fixed inset-y-0 left-0 z-40 flex w-[85vw] max-w-[340px] flex-col border-r border-[#bbb] bg-white shadow-xl"
-      >
-        <FilterPanel onClose={() => dispatch(setLeftDrawerOpen(false))} />
-      </div>
+      <div className="fixed inset-0 z-30 bg-black/40" aria-hidden="true" onClick={close} />
+      {/* Modal: Tab stays inside, and Escape closes it — unless an open list
+          in a field (aria-expanded) is what the Escape is for. */}
+      <FocusTrap active>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Search filters"
+          className="fixed inset-y-0 left-0 z-40 flex w-[85vw] max-w-[340px] flex-col border-r border-[#bbb] bg-white shadow-xl"
+          onKeyDown={e => {
+            if (e.key !== 'Escape') return
+            if ((e.target as HTMLElement).closest('[aria-expanded="true"]')) return
+            close()
+          }}
+        >
+          <FilterPanel onClose={close} />
+        </div>
+      </FocusTrap>
     </>
   )
 }

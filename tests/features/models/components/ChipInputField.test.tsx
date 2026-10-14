@@ -225,3 +225,35 @@ describe('a draft cleared in code', () => {
     expect(floatingOf(input)).toBe('false')
   })
 })
+
+// Regression: the chip's remove button took focus with it when it unmounted,
+// firing no blur, so the label stayed lifted over an empty box.
+describe('removing the last chip', () => {
+  const floatingOf = (control: HTMLElement) =>
+    control.closest('[data-floating]')?.getAttribute('data-floating')
+
+  const Field = ({ chips }: { chips: { key: string; label: string }[] }) => (
+    <ChipInputField label="Filter by Title" htmlFor="title" chips={chips} onRemove={vi.fn()}>
+      <input id="title" />
+    </ChipInputField>
+  )
+
+  it('lets the label settle when the chip is clicked away', async () => {
+    const { user, rerender } = renderWithProviders(<Field chips={[{ key: 'a', label: 'wnt' }]} />)
+
+    await user.click(screen.getByLabelText('Remove wnt'))
+    rerender(<Field chips={[]} />)
+
+    expect(floatingOf(screen.getByLabelText('Filter by Title'))).toBe('false')
+  })
+
+  it('keeps keyboard focus in the field rather than dropping it on the page', async () => {
+    const { user, rerender } = renderWithProviders(<Field chips={[{ key: 'a', label: 'wnt' }]} />)
+
+    screen.getByLabelText('Remove wnt').focus()
+    await user.keyboard('{Enter}')
+    rerender(<Field chips={[]} />)
+
+    expect(screen.getByLabelText('Filter by Title')).toHaveFocus()
+  })
+})
