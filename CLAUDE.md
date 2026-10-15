@@ -24,7 +24,9 @@ Toolkit, and Mantine v9.
 - `npm run test:e2e` — Playwright e2e (`test:e2e:ui`, `test:e2e:headed` variants). Boots `npm run dev`;
   every Barista/Minerva/GOlr call is answered by `e2e/mocks/backend.ts` (`mockBackend(page, overrides)`
   returns the mutable `state` and the recorded `calls`), so no live service is needed.
-- `npm run lint` / `lint:fix` — ESLint
+- `npm run lint` / `lint:fix` — ESLint 10, flat config in `eslint.config.js` (a port of the old
+  `react-app` preset). `eslint-plugin-react` / `eslint-plugin-jsx-a11y` do not support ESLint 10, so
+  React and a11y rules come from `@eslint-react/eslint-plugin` and `eslint-plugin-jsx-a11y-x`.
 - `npm run format` — Prettier
 - `npm run type-check` — `tsc -p tsconfig.app.json --noEmit`
 
