@@ -25,31 +25,30 @@ const ModelActionsMenu: React.FC<ModelActionsMenuProps> = ({ model }) => {
   const editorLinks =
     model.conformsToGpad === true
       ? [
-          {
-            label: 'Standard Annotations Editor',
-            href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS],
-            pw: 'open-standard-annotation-button',
-          },
-          {
-            label: 'Visual Pathway Editor',
-            href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR],
-          },
-        ]
+        {
+          label: 'Standard Annotations Editor',
+          href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS],
+          pw: 'open-standard-annotation-button',
+        },
+        {
+          label: 'Visual Pathway Editor',
+          href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR],
+        },
+      ]
       : [
-          {
-            label: 'Visual Pathway Editor',
-            href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR],
-          },
-          {
-            label: 'Standard Annotations Editor',
-            href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS],
-            pw: 'open-standard-annotation-button',
-          },
-        ]
+        {
+          label: 'Visual Pathway Editor',
+          href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR],
+        },
+        {
+          label: 'Standard Annotations Editor',
+          href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS],
+          pw: 'open-standard-annotation-button',
+        },
+      ]
 
   const links = [
     ...editorLinks,
-    { label: 'Noctua Form', href: urls.workbenches[WorkbenchId.FORM] },
     { label: 'Graph Editor', href: urls.graphEditorUrl },
     { label: 'Pathway Viewer', href: urls.workbenches[WorkbenchId.ALLIANCE_PATHWAY_PREVIEW] },
   ]

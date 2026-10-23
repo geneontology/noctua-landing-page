@@ -31,7 +31,6 @@ describe('ModelActionsMenu', () => {
       expect.arrayContaining([
         'Standard Annotations Editor',
         'Visual Pathway Editor',
-        'Noctua Form',
         'Graph Editor',
         'Pathway Viewer',
         'Copy Model',
