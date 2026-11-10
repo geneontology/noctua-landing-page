@@ -92,6 +92,15 @@ export const mantineTheme = createTheme({
       defaultProps: {
         size: 'sm',
       },
+      // Inside the Noctua shell, Bootstrap 3's global `input[type="checkbox"]
+      // { margin: 4px 0 0 }` outranks Mantine's single-class rule and drops the
+      // box 4px below the tick, which stays put; its `label { font-weight: bold;
+      // margin-bottom: 5px }` bolds the label and lifts it (#139). Inline styles
+      // win over both.
+      styles: {
+        input: { margin: 0 },
+        label: { fontWeight: 'normal', marginBottom: 0 },
+      },
     }),
     Tooltip: Tooltip.extend({
       defaultProps: {
