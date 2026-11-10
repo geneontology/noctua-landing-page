@@ -104,7 +104,7 @@ const ResultsBar: React.FC<ResultsBarProps> = ({
           </ActionIcon>
         </Tooltip>
 
-        <span className="text-xs text-gray-600">GO CAMs per page:</span>
+        <span className="text-xs text-gray-600">Results per page:</span>
         <Select
           size="xs"
           w={72}

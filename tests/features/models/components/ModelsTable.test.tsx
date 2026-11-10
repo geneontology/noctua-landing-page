@@ -108,7 +108,7 @@ describe('ModelsTable empty state', () => {
       preloadedState: withFilters,
     })
 
-    expect(screen.getByText('No models match these filters.')).toBeInTheDocument()
+    expect(screen.getByText('No match with these filters.')).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Clear all filters' })).toBeInTheDocument()
   })
 
@@ -129,7 +129,7 @@ describe('ModelsTable empty state', () => {
     })
 
     expect(screen.getByText('Could not load models. Try refreshing.')).toBeInTheDocument()
-    expect(screen.queryByText('No models match these filters.')).not.toBeInTheDocument()
+    expect(screen.queryByText('No match with these filters.')).not.toBeInTheDocument()
     expect(screen.queryByRole('button', { name: 'Clear all filters' })).not.toBeInTheDocument()
   })
 
