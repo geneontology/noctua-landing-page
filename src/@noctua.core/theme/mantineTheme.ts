@@ -92,6 +92,15 @@ export const mantineTheme = createTheme({
       defaultProps: {
         size: 'sm',
       },
+      // Mantine centres the tick with `position: absolute; inset: 0; margin:
+      // auto` and leaves its height to the SVG's 10:7 viewBox. WebKit does not
+      // split the vertical auto margins for that ratio-derived height, so on
+      // macOS the tick sat pinned to the top of the box (#139). A definite
+      // height (60% width x 7/10) lets every engine centre it. The 32:6
+      // indeterminate bar is still drawn centred, by preserveAspectRatio.
+      styles: {
+        icon: { height: '42%' },
+      },
     }),
     Tooltip: Tooltip.extend({
       defaultProps: {
