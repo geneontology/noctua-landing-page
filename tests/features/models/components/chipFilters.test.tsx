@@ -436,14 +436,15 @@ describe('SelectChipFilter', () => {
     expect(screen.getAllByRole('option', { hidden: true })).toHaveLength(160)
   })
 
-  it('shows an option detail beside its label, as the Angular id column did', async () => {
+  // #139: the dropdown lists names only, not the ORCID / group URI behind them.
+  it('shows the option label without its id', async () => {
     const { user } = renderSelect({
-      options: [{ ...OPTIONS[0], detail: 'http://orcid.org/0000-0001' }],
+      options: [{ value: 'http://orcid.org/0000-0001', label: 'Ada Lovelace' }],
     })
 
     await user.click(comboboxFor('Filter by Contributor'))
 
     expect(await screen.findByText('Ada Lovelace')).toBeInTheDocument()
-    expect(screen.getByText('http://orcid.org/0000-0001')).toBeInTheDocument()
+    expect(screen.queryByText(/orcid\.org/)).not.toBeInTheDocument()
   })
 })

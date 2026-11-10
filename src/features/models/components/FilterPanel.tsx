@@ -164,7 +164,6 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onClose }) => {
             options={contributors.map(c => ({
               value: c.uri,
               label: c.name ?? c.uri,
-              detail: c.uri,
             }))}
             values={criteria.contributors.map(c => ({ key: c.uri, label: c.name ?? c.uri }))}
             onAdd={option => {
@@ -180,7 +179,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onClose }) => {
           />
           <SelectChipFilter
             label="Filter by Group"
-            options={groups.map(g => ({ value: g.id, label: g.label, detail: g.id }))}
+            options={groups.map(g => ({ value: g.id, label: g.label }))}
             values={criteria.groups.map(g => ({ key: g.id, label: g.label }))}
             onAdd={option => {
               const group = groups.find(g => g.id === option.value)

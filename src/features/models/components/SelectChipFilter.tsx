@@ -7,9 +7,6 @@ export interface SelectOption {
   /** Unique key; also the string the user matches against. */
   value: string
   label: string
-  /** Shown small and right-aligned in the dropdown — the Angular `noc-term-id`
-   *  column (a contributor's ORCID, a group's URL). */
-  detail?: string
 }
 
 /**
@@ -87,28 +84,13 @@ const SelectChipFilter: React.FC<SelectChipFilterProps> = ({
         limit={OPTION_LIMIT}
         maxDropdownHeight={256}
         comboboxProps={{ width: DROPDOWN_WIDTH, position: 'bottom-start' }}
-        renderOption={({ option }) => {
-          const detail = byDisplay.get(option.value)?.detail
-          return (
-            // The Angular option row: name and id both `flex: 0 1 auto` and
-            // free to wrap, so a long group URL shares the row and breaks onto
-            // a second line instead of squeezing the name out. The id may also
-            // break mid-token: Mantine sizes the list to its min-content width,
-            // and an unbreakable URL piece beside "University_of_Toronto" made
-            // that wider than the panel, clipping every row's right edge.
-            <div className="flex w-full items-center gap-2 whitespace-normal">
-              <span className="shrink">{option.value}</span>
-              <span className="grow" />
-              {/* Skipped when the label already carries it — a blank name falls
-                  back to the value, and twins are told apart by it. */}
-              {detail && !option.value.includes(detail) && (
-                <span className="shrink text-right text-2xs [overflow-wrap:anywhere] text-black/60">
-                  {detail}
-                </span>
-              )}
-            </div>
-          )
-        }}
+        // Names only: curators asked for the ORCID / group-URI column to go
+        // (#139). A label may still break mid-token, since Mantine sizes the
+        // list to its min-content width and a long unbroken name (or a twin's
+        // id suffix) would otherwise push it past the panel's right edge.
+        renderOption={({ option }) => (
+          <span className="[overflow-wrap:anywhere] whitespace-normal">{option.value}</span>
+        )}
         variant="unstyled"
         // The outlined box belongs to ChipInputField; the combobox inside it is
         // borderless so the two do not nest visibly.
