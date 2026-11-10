@@ -121,6 +121,9 @@ const TextChipFilter: React.FC<TextChipFilterProps> = ({
       <input
         id={id}
         type="text"
+        // The browser's own form history otherwise drops earlier entries (old
+        // model titles under "Filter by Model Ids") over the field (#139).
+        autoComplete="off"
         value={draft}
         placeholder={isDate ? 'YYYY-MM-DD' : undefined}
         aria-invalid={invalid || undefined}
