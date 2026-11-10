@@ -94,7 +94,7 @@ const EmptyState: React.FC<{ filtered: boolean; failed: boolean; onClear: () => 
       {failed
         ? 'Could not load models. Try refreshing.'
         : filtered
-          ? 'No models match these filters.'
+          ? 'No match with these filters.'
           : 'No models found.'}
     </p>
     {filtered && !failed && (
