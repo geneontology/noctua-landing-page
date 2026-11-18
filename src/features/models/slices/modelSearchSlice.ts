@@ -1,0 +1,223 @@
+import type { PayloadAction } from '@reduxjs/toolkit'
+import { createSelector, createSlice } from '@reduxjs/toolkit'
+import type { RootState } from '@/app/store/store'
+import type { SearchCriteria } from '../models/searchCriteria'
+import {
+  FILTER_LABELS,
+  FilterType,
+  countFilters,
+  emptyCriteria,
+  filterLimit,
+  filterValueKey,
+} from '../models/searchCriteria'
+import type { CamPage } from '../models/camSearch'
+import { criteriaFromParams, pageFromParams } from '../services/urlSync'
+
+interface ModelSearchState {
+  criteria: SearchCriteria
+  page: CamPage
+  /** Set when an `addFilter` was rejected, so the UI can surface a toast. */
+  lastRejection: string | null
+  /**
+   * The next address-bar write should replace the current history entry rather
+   * than add one — set when the app corrects the position itself (a page past
+   * the end), which is not a step the user took and must not be one Back
+   * returns to.
+   */
+  replaceUrl?: boolean
+}
+
+/**
+ * Seed from the address bar at module load rather than in an effect, so a
+ * shared search URL issues one request instead of firing an unfiltered query
+ * first and immediately superseding it.
+ */
+const locationParams = (): URLSearchParams => {
+  const params = new URLSearchParams(typeof window === 'undefined' ? '' : window.location.search)
+  params.delete('barista_token')
+  return params
+}
+
+const initialState: ModelSearchState = {
+  criteria: criteriaFromParams(locationParams()),
+  page: pageFromParams(locationParams()),
+  lastRejection: null,
+}
+
+/**
+ * A filter's label as it reads mid-sentence, for prod's wording ("Reached
+ * maximum number of titles filters allowed"). Title-case words drop their
+ * capital; acronyms (GO, GPs, IDs) keep theirs. Prod interpolated the raw enum,
+ * which read as "obsoleteTerms" for some filters.
+ */
+const filterPhrase = (type: FilterType): string =>
+  FILTER_LABELS[type]
+    .split(' ')
+    .map(word => (/^[A-Z][a-z]+$/.test(word) ? word.toLowerCase() : word))
+    .join(' ')
+
+export const modelSearchSlice = createSlice({
+  name: 'modelSearch',
+  initialState,
+  reducers: {
+    addFilter: (
+      state,
+      action: PayloadAction<{ type: FilterType; value: SearchCriteria[FilterType][number] }>
+    ) => {
+      const { type, value } = action.payload
+      const list = state.criteria[type] as unknown[]
+      const limit = filterLimit(type)
+
+      if (list.length >= limit) {
+        state.lastRejection = `Reached maximum number of ${filterPhrase(type)} filters allowed`
+        return
+      }
+
+      const key = filterValueKey(type, value)
+      if (list.some(existing => filterValueKey(type, existing) === key)) return
+
+      list.push(value)
+      state.lastRejection = null
+      state.page.pageNumber = 0
+    },
+
+    removeFilter: (state, action: PayloadAction<{ type: FilterType; index: number }>) => {
+      const { type, index } = action.payload
+      const list = state.criteria[type] as unknown[]
+      if (index >= 0 && index < list.length) {
+        list.splice(index, 1)
+        state.page.pageNumber = 0
+      }
+    },
+
+    clearFilterType: (state, action: PayloadAction<FilterType>) => {
+      ;(state.criteria[action.payload] as unknown[]).length = 0
+      state.page.pageNumber = 0
+    },
+
+    clearAll: state => {
+      state.criteria = emptyCriteria()
+      state.page.pageNumber = 0
+      state.lastRejection = null
+    },
+
+    setExpand: (state, action: PayloadAction<boolean>) => {
+      state.criteria.expand = action.payload
+      state.page.pageNumber = 0
+    },
+
+    setCriteria: (state, action: PayloadAction<SearchCriteria>) => {
+      state.criteria = action.payload
+      state.page.pageNumber = 0
+    },
+
+    /** Patch labels onto id-only filters hydrated from URL parameters. */
+    hydrateTermLabel: (
+      state,
+      action: PayloadAction<{ type: FilterType; id: string; label: string }>
+    ) => {
+      const { type, id, label } = action.payload
+      const list = state.criteria[type] as { id: string; label: string }[]
+      const found = list.find(item => item.id === id)
+      if (found) found.label = label
+    },
+
+    /**
+     * Name an id-only contributor, group or organism filter — the URL carries
+     * only ORCIDs, group URLs and taxon ids. Only values still showing their id
+     * are touched.
+     */
+    hydrateEntityLabel: (
+      state,
+      action: PayloadAction<{
+        type: FilterType.CONTRIBUTORS | FilterType.GROUPS | FilterType.ORGANISMS
+        key: string
+        label: string
+      }>
+    ) => {
+      const { type, key, label } = action.payload
+      const { criteria } = state
+      if (type === FilterType.CONTRIBUTORS) {
+        criteria.contributors.forEach(c => {
+          if (c.uri === key && c.name === key) c.name = label
+        })
+      } else if (type === FilterType.GROUPS) {
+        criteria.groups.forEach(g => {
+          if (g.id === key && g.label === key) g.label = label
+        })
+      } else {
+        criteria.organisms.forEach(o => {
+          if (o.taxonIri === key && o.taxonName === key) o.taxonName = label
+        })
+      }
+    },
+
+    setPage: (state, action: PayloadAction<{ pageNumber: number; size?: number }>) => {
+      const { pageNumber, size } = action.payload
+      if (size !== undefined && size !== state.page.size) {
+        state.page.size = size
+        // Changing page size returns to the first page — a page index valid at
+        // size 100 may not exist at size 10.
+        state.page.pageNumber = 0
+      } else {
+        state.page.pageNumber = pageNumber
+      }
+    },
+
+    /**
+     * Move to a page the app worked out itself — the last real one, when the
+     * URL asked for one past the end. Replaces the history entry: pushed, Back
+     * returned to the bad page, which clamped and pushed again, so Back could
+     * never leave the site.
+     */
+    clampPage: (state, action: PayloadAction<number>) => {
+      state.page.pageNumber = action.payload
+      state.replaceUrl = true
+    },
+
+    /** The address bar has caught up with a `replaceUrl` change. */
+    urlReplaced: state => {
+      state.replaceUrl = false
+    },
+
+    clearRejection: state => {
+      state.lastRejection = null
+    },
+
+    /**
+     * Adopt a whole position from the address bar in one action — used by the
+     * Back button. Two separate dispatches would fire two searches, the first
+     * against a half-restored state.
+     */
+    restoreFromUrl: (state, action: PayloadAction<{ criteria: SearchCriteria; page: CamPage }>) => {
+      state.criteria = action.payload.criteria
+      state.page = action.payload.page
+      state.lastRejection = null
+    },
+  },
+})
+
+export const {
+  addFilter,
+  removeFilter,
+  clearFilterType,
+  clearAll,
+  setExpand,
+  setCriteria,
+  hydrateTermLabel,
+  hydrateEntityLabel,
+  setPage,
+  clampPage,
+  urlReplaced,
+  clearRejection,
+  restoreFromUrl,
+} = modelSearchSlice.actions
+
+export const selectCriteria = (state: RootState) => state.modelSearch.criteria
+export const selectPage = (state: RootState) => state.modelSearch.page
+export const selectRejection = (state: RootState) => state.modelSearch.lastRejection
+export const selectReplaceUrl = (state: RootState) => Boolean(state.modelSearch.replaceUrl)
+
+export const selectFiltersCount = createSelector([selectCriteria], countFilters)
+
+export default modelSearchSlice.reducer

@@ -1,0 +1,156 @@
+import type React from 'react'
+import { ActionIcon, Button } from '@mantine/core'
+import AnchoredMenu, { MenuItem, MenuLink } from '@/@noctua.core/components/menu/AnchoredMenu'
+import { usePopover } from '@/@noctua.core/hooks/usePopover'
+import { FaGithub } from 'react-icons/fa'
+import { IoChevronDown } from 'react-icons/io5'
+import { useAuth } from '@/features/auth/authProvider'
+import { withCurrentReturn } from '@/features/auth/authServices'
+import { useAppSelector } from '../hooks'
+import { selectAuthUser } from '@/features/auth/slices/authSlice'
+import { ENVIRONMENT, EXTERNAL_LINKS } from '@/@noctua.core/data/constants'
+
+const Toolbar: React.FC = () => {
+  const userMenu = usePopover()
+  const helpMenu = usePopover()
+
+  const { isLoggedIn, loginUrl, logoutUrl, noctuaUrl } = useAuth()
+  const user = useAppSelector(selectAuthUser)
+
+  const { isDev, isBeta, isProd } = ENVIRONMENT
+
+  // The Angular toolbar's colours: #fad38a in dev, #fdcbbc in beta, white in
+  // production. `bg-brown-100` is not a Tailwind colour, and an unconditional
+  // `bg-mauve-300` after it painted every environment mauve, beta included.
+  const toolbarBg = isDev ? 'bg-accent-500' : isBeta ? 'bg-[#fdcbbc]' : 'bg-white'
+  const envLabel = isDev ? '(dev)' : isBeta ? '(beta)' : null
+
+  const logout = () => {
+    window.location.href = withCurrentReturn(logoutUrl)
+  }
+
+  return (
+    <div className={`relative flex h-full items-center px-4 py-0 ${toolbarBg}`}>
+      {/* Logo / Branding — left side */}
+      <div className="flex h-full flex-col items-start justify-center py-2">
+        <div className="flex flex-row items-center">
+          <a
+            className="mr-2 text-xl font-bold no-underline hover:text-black"
+            href={noctuaUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            Noctua
+          </a>
+          {envLabel && <span className="text-xl text-gray-700">{envLabel}</span>}
+        </div>
+        {!isProd && (
+          <div className="text-2xs font-bold text-gray-700 italic">
+            Testing Version. Visit{' '}
+            <a
+              className="underline hover:text-black"
+              href={EXTERNAL_LINKS.NOCTUA_PRODUCTION}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Noctua
+            </a>{' '}
+            for production version
+          </div>
+        )}
+      </div>
+
+      {/* Right-aligned section */}
+      <div className="flex flex-1 flex-row items-center justify-end">
+        {/* GitHub */}
+        <div className="flex flex-row items-center border-r border-gray-300 pr-3">
+          <ActionIcon
+            component="a"
+            href={EXTERNAL_LINKS.GO_ONTOLOGY_ISSUES}
+            target="_blank"
+            rel="noreferrer"
+            variant="subtle"
+            color="gray"
+            size="md"
+          >
+            <FaGithub />
+          </ActionIcon>
+        </div>
+
+        {/* Help */}
+        <div className="flex flex-row items-center border-r border-gray-300 pr-3 pl-3">
+          <Button variant="subtle" onClick={e => helpMenu.open(e.currentTarget)}>
+            Help
+          </Button>
+          <AnchoredMenu anchorEl={helpMenu.anchor} open={helpMenu.isOpen} onClose={helpMenu.close}>
+            <MenuLink href={EXTERNAL_LINKS.NOCTUA_USERS_GUIDE} onClick={helpMenu.close}>
+              Noctua User&apos;s Guide
+            </MenuLink>
+          </AnchoredMenu>
+        </div>
+
+        {/* User / Login */}
+        <div className="flex flex-row items-center border-r border-gray-300 pr-3">
+          {isLoggedIn && user ? (
+            <>
+              <Button
+                variant="subtle"
+                className="!h-10 !text-left !text-xs !normal-case"
+                onClick={e => userMenu.open(e.currentTarget)}
+              >
+                <div className="flex flex-row items-center">
+                  <div className="mr-1.5 flex max-w-[150px] flex-col items-start overflow-hidden leading-5">
+                    <div className="truncate">{user.name}</div>
+                    <div className="truncate text-2xs text-gray-500">{user.group?.label}</div>
+                  </div>
+                  <IoChevronDown />
+                </div>
+              </Button>
+              <AnchoredMenu
+                anchorEl={userMenu.anchor}
+                open={userMenu.isOpen}
+                onClose={userMenu.close}
+                placement="bottom-end"
+              >
+                <MenuItem onClick={logout} className="text-red-500">
+                  Logout
+                </MenuItem>
+              </AnchoredMenu>
+            </>
+          ) : (
+            <div>
+              <Button
+                component="a"
+                href={loginUrl}
+                onClick={(e: React.MouseEvent<HTMLAnchorElement>) => {
+                  e.currentTarget.href = withCurrentReturn(loginUrl)
+                }}
+                className="!bg-green-600 !text-white hover:!bg-green-700"
+                data-pw="noc-login-button"
+              >
+                Login
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* GO Logo — right side. The partner logos give way on a phone, where
+          they shrank to a few pixels wide anyway. */}
+      <div className="hidden h-full w-[200px] flex-row items-center justify-start border-r border-gray-300 py-1 pl-2 sm:flex">
+        <a href={EXTERNAL_LINKS.GO_HOMEPAGE} target="_blank" rel="noreferrer">
+          <img src="assets/images/logos/go-logo.large.png" alt="GO Logo" className="h-10" />
+        </a>
+      </div>
+
+      {/* Alliance Logo — far right */}
+      <div className="hidden border-l border-gray-300 py-1 sm:block">
+        <a href={EXTERNAL_LINKS.ALLIANCE_GENOME} target="_blank" rel="noreferrer">
+          <img src="assets/images/logos/alliance-logo.png" alt="Alliance Logo" className="h-10" />
+        </a>
+      </div>
+    </div>
+  )
+}
+
+export default Toolbar

@@ -1,0 +1,91 @@
+import type { CSSProperties } from 'react'
+
+export const MODEL_STATES = [
+  { value: 'development', label: 'Development' },
+  { value: 'production', label: 'Production' },
+  { value: 'review', label: 'Review' },
+  { value: 'delete', label: 'Delete' },
+  { value: 'template', label: 'Template' },
+  { value: 'internal_test', label: 'Internal Test' },
+] as const
+
+export const modelStateLabel = (value: string): string =>
+  MODEL_STATES.find(s => s.value === value)?.label ?? value
+
+/**
+ * Literal chip colours from the Angular landing page's SCSS. The `noc-chip-color`
+ * mixin renders a chip as a 1px border in the colour, a 20%-alpha fill, and a
+ * solid circle for the icon — reproduced by `chipColors` below.
+ */
+export const CHIP_COLORS = {
+  contributor: '#bbc9cc',
+  date: '#bbc9cc',
+  filter: '#bbc9cc',
+  clearAll: '#da7f7f',
+} as const
+
+const hexToRgba = (hex: string, alpha: number): string => {
+  const value = hex.replace('#', '')
+  const full =
+    value.length === 3
+      ? value
+          .split('')
+          .map(c => c + c)
+          .join('')
+      : value
+  const int = parseInt(full, 16)
+  return `rgba(${(int >> 16) & 255}, ${(int >> 8) & 255}, ${int & 255}, ${alpha})`
+}
+
+/** The Angular `noc-chip-color($color)` mixin, as inline styles. */
+export const chipColors = (
+  color: string
+): { chipStyle: CSSProperties; circleStyle: CSSProperties } => ({
+  chipStyle: { borderColor: color, backgroundColor: hexToRgba(color, 0.2) },
+  circleStyle: { backgroundColor: color },
+})
+
+/**
+ * GOlr `isa_closure` roots per autocomplete field, ported from the Angular
+ * `EntityDefinition` categories used by the search filter panel.
+ */
+export const CLOSURE_IDS = {
+  /** Gene product — `GoMolecularEntity` */
+  geneProduct: ['CHEBI:33695'],
+  /** Chemical — `GoChemicalNotGPEntity`: chemical entity, excluding gene products */
+  chemical: ['CHEBI:24431'],
+  chemicalExclude: ['CHEBI:33695'],
+  /** Any ontology term — MF, BP, CC, biological phase, anatomy, cell type, stage */
+  anyTerm: [
+    'GO:0003674', // molecular function
+    'GO:0008150', // biological process
+    'GO:0005575', // cellular component
+    'GO:0044848', // biological phase
+    'UBERON:0001062', // anatomical entity
+    'CL:0000003', // cell type
+    'UBERON:0000105', // life cycle stage
+  ],
+} as const
+
+/**
+ * Geometry of the stacked sticky strips above the results.
+ *
+ * The filter bar pins to the top of the scroll container, the results bar sits
+ * below it, and the table header below both — each separated by a 4px gap that
+ * shows the grey surface through, the way Angular's `margin-bottom: 4px` did.
+ * Derived rather than written out, because three hand-kept offsets drift and
+ * the symptom is a header floating over the first row.
+ */
+export const FILTER_BAR_HEIGHT = 30
+export const RESULTS_BAR_HEIGHT = 40
+export const STICKY_GAP = 4
+
+export const RESULTS_BAR_TOP = FILTER_BAR_HEIGHT + STICKY_GAP
+export const TABLE_HEADER_TOP = RESULTS_BAR_TOP + RESULTS_BAR_HEIGHT + STICKY_GAP
+
+/** The reference databases the [+] picker offers, as Angular's `evidenceDB` options did. */
+export const REFERENCE_DBS = ['PMID', 'DOI', 'GO_REF'] as const
+
+/** Max number of values allowed per filter, matching the Angular limits. */
+export const MAX_FILTER_VALUES = 10
+export const MAX_TITLE_FILTERS = 1

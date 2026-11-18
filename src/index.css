@@ -1,0 +1,166 @@
+/* `important` makes every Tailwind utility `!important`. Required because
+   this workbench is embedded inside the Noctua shell which loads Bootstrap 3
+   globally — Bootstrap rules like `.hidden { display: none !important }`
+   otherwise override our hover/state utilities. With both sides !important,
+   source order wins, and our CSS loads after Bootstrap. */
+@import 'tailwindcss' important;
+
+@theme {
+  --color-primary-50: #e4e7ec;
+  --color-primary-100: #bbc3d0;
+  --color-primary-200: #8e9bb0;
+  --color-primary-300: #627491;
+  --color-primary-400: #3f567b;
+  --color-primary-500: #173672;
+  --color-primary-600: #132f64;
+  --color-primary-700: #102653;
+  --color-primary-800: #0c1d42;
+  --color-primary-900: #08142f;
+
+  --color-accent-50: #fef9f0;
+  --color-accent-100: #fef2dd;
+  --color-accent-200: #fde9c4;
+  --color-accent-300: #fce0ac;
+  --color-accent-400: #fbd898;
+  --color-accent-500: #fad38a;
+  --color-accent-600: #f8be54;
+  --color-accent-700: #f6ac23;
+  --color-accent-800: #dc9209;
+  --color-accent-900: #ab7207;
+
+  /* ── Landing-page palette, carried over from the Angular app ──────
+     The Angular landing page used its own Material theme (primary
+     $mat-noctuadark 500, accent light-blue 600) plus a set of literal
+     chip/hero colours. They are kept as their own tokens rather than
+     repainting VPE's primary/accent, which the shared components use. */
+  --color-noc-primary: #3b5998;
+  --color-noc-primary-light: #798fb8;
+  --color-noc-accent: #039be5;
+  --color-noc-hero: #00174f;
+  --color-noc-login: #52a16c;
+  --color-noc-surface: #f7f7f7;
+  --color-noc-chip: #bbc9cc;
+  --color-noc-chip-icon: #59939e;
+  --color-noc-chip-clear: #da7f7f;
+
+  /* The Angular `.noc-term-autocomplete` panel: a pale yellow list with each
+     option ruled off in the primary colour at 60% (measured on prod). Hover is
+     a primary tint rather than Material's 4% black, which barely showed. */
+  --color-noc-dropdown: #fbf9de;
+  --color-noc-dropdown-rule: rgba(59, 89, 152, 0.6);
+  --color-noc-dropdown-hover: rgba(59, 89, 152, 0.12);
+
+  /* $noc-primary-color-light — the hairline Angular rules the sticky table
+     header and each row with. */
+  --color-noc-rule: rgba(121, 143, 184, 0.3);
+
+  /* Angular Material `mat.elevation(2)`, which lifts the filter and results
+     bars off the #f7f7f7 surface. Tailwind's shadow-sm is far too flat for it. */
+  --shadow-noc-2:
+    0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 2px 2px 0 rgba(0, 0, 0, 0.14),
+    0 1px 5px 0 rgba(0, 0, 0, 0.12);
+
+  --text-2xs: 0.625rem;
+  --text-2xs--line-height: 0.875rem;
+  --text-3xs: 0.5rem;
+  --text-3xs--line-height: 0.625rem;
+}
+
+.navbar {
+  display: none !important;
+  visibility: hidden;
+}
+
+/* ── Noctua shell (Bootstrap 3) reset ──────────────────────────────
+   When this workbench is mounted inside the Noctua shell, Bootstrap 3,
+   bbop.css, and amigo.css cascade into our DOM. The `important` flag on
+   the Tailwind import handles utility conflicts; the rules below reset
+   non-utility cascades that still bleed through. Scoped to `#root` so
+   we don't fight the parent navbar's own styling. */
+#root {
+  a:hover {
+    text-decoration: none;
+  }
+  button {
+    background: transparent;
+    border: none;
+    line-height: normal;
+  }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Oxygen', 'Ubuntu',
+    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+@layer base {
+  a {
+    @apply text-blue-800 hover:text-primary-800;
+  }
+}
+
+/* NOTE: VPE's base `thead tr` / `th` / `td` rules are deliberately not carried
+   over. They painted accent-700 rules above and below the header, a 40px
+   `h-10` header cell, a `border-r` gridline on every cell, and `align-top`
+   text — none of which the Angular landing page had. `.mat-cell` there was
+   `display:flex; align-items:center` with no vertical borders, and
+   `.mat-header-cell` was 10px bold primary with `padding: 0 10px`. ModelsTable
+   styles its own cells; leave them to it. */
+
+/* Indeterminate progress. Mantine's Progress only renders a determinate bar,
+   and `value={100}` reads as "finished" while a fetch is still in flight. */
+@keyframes noc-indeterminate {
+  0% {
+    left: -40%;
+    width: 40%;
+  }
+  50% {
+    left: 25%;
+    width: 55%;
+  }
+  100% {
+    left: 100%;
+    width: 40%;
+  }
+}
+
+.noc-indeterminate {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-primary-50);
+}
+
+.noc-indeterminate::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 9999px;
+  background-color: var(--color-noc-accent);
+  animation: noc-indeterminate 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .noc-indeterminate::after {
+    animation: none;
+    left: 0;
+    width: 100%;
+    opacity: 0.5;
+  }
+}
