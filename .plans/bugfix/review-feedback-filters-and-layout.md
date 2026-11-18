@@ -14,8 +14,8 @@ e2e tests green, and before/after screenshots next to prod for the visual items.
   `src/features/users/slices/metadataApiSlice.ts`, `src/features/search/{components/Autocomplete.tsx,slices/lookupApiSlice.ts}`,
   `src/@noctua.core/theme/mantineTheme.ts`, `src/@noctua.core/components/textarea/FloatingTextarea.module.css`,
   `src/app/layout/Layout.tsx`, `src/app/LandingPage.tsx`, `src/index.css`
-- **Angular reference (prod):** `git show master:src/@noctua.search/components/search-filter/search-filter.component.{html,ts,scss}`,
-  `master:src/@noctua.editor/inline-reference/reference-dropdown/*`, `master:src/@noctua.common/services/noctua-data.service.ts`
+- **Angular reference (prod):** `git show angular-final:src/@noctua.search/components/search-filter/search-filter.component.{html,ts,scss}`,
+  `angular-final:src/@noctua.editor/inline-reference/reference-dropdown/*`, `angular-final:src/@noctua.common/services/noctua-data.service.ts`
 - **VPE port source for item 7:** `C:\work\go\noctua-visual-pathway-editor\src\features\gocam\components\forms\ReferenceDropdown.tsx`
   and `getPubmedInfo` in VPE's `src/features/search/slices/lookupApiSlice.ts`
 - **Triggered by:** reviewer feedback on the beta build, items 1–9
