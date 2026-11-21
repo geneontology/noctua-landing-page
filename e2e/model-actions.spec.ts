@@ -52,6 +52,30 @@ test.describe('Actions menu', () => {
   })
 })
 
+// /search/models carries `annotation-editor-sae: true` on tagged models (minerva#612).
+test('an SAE-tagged model is not offered VPE, Copy Model or the Pathway Viewer', async ({
+  page,
+}) => {
+  await mockBackend(page, { models: [model(7, { 'annotation-editor-sae': true })] })
+  await page.goto('./')
+  await page.getByRole('button', { name: 'Actions' }).click()
+
+  await expect(page.getByRole('menuitem', { name: 'Standard Annotations Editor' })).toBeVisible()
+  await expect(page.getByRole('menuitem', { name: 'Visual Pathway Editor' })).toHaveCount(0)
+  await expect(page.getByRole('menuitem', { name: 'Copy Model' })).toHaveCount(0)
+  await expect(page.getByRole('menuitem', { name: 'Pathway Viewer' })).toHaveCount(0)
+})
+
+test('a model tagged not-SAE is not offered the Standard Annotations Editor', async ({ page }) => {
+  await mockBackend(page, { models: [model(7, { 'annotation-editor-sae': false })] })
+  await page.goto('./')
+  await page.getByRole('button', { name: 'Actions' }).click()
+
+  await expect(page.getByRole('menuitem', { name: 'Visual Pathway Editor' })).toBeVisible()
+  await expect(page.getByRole('menuitem', { name: 'Standard Annotations Editor' })).toHaveCount(0)
+  await expect(page.getByRole('menuitem', { name: 'Copy Model' })).toBeVisible()
+})
+
 test.describe('creating and copying (signed in)', () => {
   test('Create asks Minerva for a new model and opens it', async ({ page, context }) => {
     const { calls } = await mockBackend(page, { newModelId: 'gomodel:fresh' })
@@ -66,7 +90,43 @@ test.describe('creating and copying (signed in)', () => {
     expect(calls.m3Batch).toHaveLength(1)
     expect(calls.m3Batch[0].get('token')).toBe(CURATOR_TOKEN)
     expect(operations(calls.m3Batch[0])).toEqual([
-      expect.objectContaining({ entity: 'model', operation: 'add' }),
+      {
+        entity: 'model',
+        operation: 'add',
+        arguments: {
+          values: [{ key: 'annotation-editor-sae', value: 'false', 'value-type': 'xsd:boolean' }],
+        },
+      },
+    ])
+  })
+
+  test('Create for the Standard Annotations Editor tags the new model', async ({
+    page,
+    context,
+  }) => {
+    const { calls } = await mockBackend(page, { newModelId: 'gomodel:sae' })
+    await page.goto(`./?barista_token=${CURATOR_TOKEN}`)
+
+    const [opened] = await Promise.all([
+      context.waitForEvent('page'),
+      page.locator('[data-pw="create-standard-annotations-button"]').click(),
+    ])
+
+    expect(opened.url()).toContain('gomodel%3Asae')
+    expect(operations(calls.m3Batch[0])).toEqual([
+      {
+        entity: 'model',
+        operation: 'add',
+        arguments: {
+          values: [
+            {
+              key: 'annotation-editor-sae',
+              value: 'true',
+              'value-type': 'xsd:boolean',
+            },
+          ],
+        },
+      },
     ])
   })
 

@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import modelApi from '@/features/models/slices/modelApiSlice'
 import { makeStore } from '@/app/store/store'
 import type { RootState } from '@/app/store/store'
+import { WorkbenchId } from '@/features/models/models/workbenchId'
 
 /** Captures the Request fetchBaseQuery builds so the encoding can be asserted. */
 let lastRequest: Request | null = null
@@ -40,10 +41,14 @@ afterEach(() => {
 })
 
 describe('createModel', () => {
-  const run = async (preloaded = authState(), response: unknown = { data: { id: 'gomodel:new' } }) => {
+  const run = async (
+    preloaded = authState(),
+    response: unknown = { data: { id: 'gomodel:new' } },
+    workbenchId = WorkbenchId.VISUAL_PATHWAY_EDITOR
+  ) => {
     vi.stubGlobal('fetch', mockFetch(response))
     const store = makeStore(preloaded)
-    const result = await store.dispatch(modelApi.endpoints.createModel.initiate())
+    const result = await store.dispatch(modelApi.endpoints.createModel.initiate(workbenchId))
     return result
   }
 
@@ -95,11 +100,45 @@ describe('createModel', () => {
     expect((await bodyParams()).has('provided-by')).toBe(false)
   })
 
-  it('asks for a single model add with no arguments', async () => {
+  it('tags a model created for the Visual Pathway Editor as not SAE', async () => {
     await run()
 
     expect(await parsedRequests()).toEqual([
-      { entity: 'model', operation: 'add', arguments: {} },
+      {
+        entity: 'model',
+        operation: 'add',
+        arguments: {
+          values: [{ key: 'annotation-editor-sae', value: 'false', 'value-type': 'xsd:boolean' }],
+        },
+      },
+    ])
+  })
+
+  it('leaves a model created for any other workbench untagged', async () => {
+    await run(authState(), undefined, WorkbenchId.FORM)
+
+    expect(await parsedRequests()).toEqual([{ entity: 'model', operation: 'add', arguments: {} }])
+  })
+
+  // minerva#612: the lowercase shorthand — Minerva's lookup is case-sensitive, and an
+  // unknown relative key fails the whole create.
+  it('tags a model created for the Standard Annotations Editor with exactly one annotation', async () => {
+    await run(authState(), undefined, WorkbenchId.STANDARD_ANNOTATIONS)
+
+    expect(await parsedRequests()).toEqual([
+      {
+        entity: 'model',
+        operation: 'add',
+        arguments: {
+          values: [
+            {
+              key: 'annotation-editor-sae',
+              value: 'true',
+              'value-type': 'xsd:boolean',
+            },
+          ],
+        },
+      },
     ])
   })
 
@@ -127,7 +166,9 @@ describe('createModel', () => {
     vi.stubGlobal('fetch', mockFetch({ message: 'nope' }, 500))
     const store = makeStore(authState())
 
-    const result = await store.dispatch(modelApi.endpoints.createModel.initiate())
+    const result = await store.dispatch(
+      modelApi.endpoints.createModel.initiate(WorkbenchId.VISUAL_PATHWAY_EDITOR)
+    )
 
     expect(result.error).toBeDefined()
     expect(result.data).toBeUndefined()

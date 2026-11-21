@@ -2,7 +2,14 @@ import type { FetchArgs } from '@reduxjs/toolkit/query'
 import apiService from '@/app/store/apiService'
 import { getBaristaApiUrl } from '@/@noctua.core/services/linksService'
 import type { RootState } from '@/app/store/store'
-import { AnnotationKey, OperationEntity, OperationType } from '../models/operations'
+import {
+  AnnotationKey,
+  OperationEntity,
+  OperationType,
+  NOT_SAE_TAG_ANNOTATION,
+  SAE_TAG_ANNOTATION,
+} from '../models/operations'
+import { WorkbenchId } from '../models/workbenchId'
 
 const addTagTypes = ['models'] as const
 
@@ -38,12 +45,23 @@ const batchRequest = (requests: M3BatchRequest[], state: RootState): FetchArgs =
 
 export const modelApi = apiService.enhanceEndpoints({ addTagTypes }).injectEndpoints({
   endpoints: builder => ({
-    /** Create an empty model. Angular did this through the bbop manager's `add_model()`. */
-    createModel: builder.mutation<{ modelId: string } | null, void>({
-      async queryFn(_arg, queryApi, _extraOptions, baseQuery) {
+    /**
+     * Create an empty model for the given editor. Angular did this through the bbop manager's
+     * `add_model()`. Each create carries exactly one SAE tag: `true` for SAE, `false` for VPE.
+     * Any other workbench leaves the model untagged.
+     */
+    createModel: builder.mutation<{ modelId: string } | null, WorkbenchId>({
+      async queryFn(workbenchId, queryApi, _extraOptions, baseQuery) {
+        const tag =
+          workbenchId === WorkbenchId.STANDARD_ANNOTATIONS
+            ? SAE_TAG_ANNOTATION
+            : workbenchId === WorkbenchId.VISUAL_PATHWAY_EDITOR
+              ? NOT_SAE_TAG_ANNOTATION
+              : null
+        const args = tag ? { values: [tag] } : {}
         const result = await baseQuery(
           batchRequest(
-            [{ entity: OperationEntity.MODEL, operation: OperationType.ADD, arguments: {} }],
+            [{ entity: OperationEntity.MODEL, operation: OperationType.ADD, arguments: args }],
             queryApi.getState() as RootState
           )
         )

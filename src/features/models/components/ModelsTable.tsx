@@ -1,5 +1,6 @@
 import type React from 'react'
 import { FaCalendarDay, FaRegCheckCircle, FaRegTimesCircle, FaTasks } from 'react-icons/fa'
+import { TbCircleDashed, TbHierarchy2, TbListDetails } from 'react-icons/tb'
 import { useAppDispatch, useAppSelector } from '@/app/hooks'
 import Chip from '@/@noctua.core/components/chip/Chip'
 import { useIsAtLeast } from '@/@noctua.core/hooks/useBreakpoint'
@@ -34,6 +35,27 @@ const SavedMark: React.FC<{ modified: boolean }> = ({ modified }) =>
   ) : (
     <FaRegCheckCircle className="inline text-green-600" title="Saved" aria-label="Saved" />
   )
+
+const EDITOR_MARKS = {
+  sae: { Icon: TbListDetails, label: 'Standard Annotations model', color: 'text-violet-600' },
+  vpe: { Icon: TbHierarchy2, label: 'GO-CAM (Visual Pathway) model', color: 'text-blue-600' },
+  untagged: {
+    Icon: TbCircleDashed,
+    label: 'Not yet tagged as SAE or GO-CAM',
+    color: 'text-gray-400',
+  },
+}
+
+/** Which editor a model belongs to, from its SAE tag: true → SAE, false → VPE, absent → untagged. */
+export const EditorMark: React.FC<{ saeTag?: boolean }> = ({ saeTag }) => {
+  const { Icon, label, color } =
+    EDITOR_MARKS[saeTag === true ? 'sae' : saeTag === false ? 'vpe' : 'untagged']
+  return (
+    <span role="img" aria-label={label} title={label} className={`inline-flex shrink-0 ${color}`}>
+      <Icon size={18} aria-hidden="true" />
+    </span>
+  )
+}
 
 /** Coloured as in VPE, so a state reads the same in both apps; the icon takes
  *  the circle's text colour and a rule separates it from the label, as there. */
@@ -145,6 +167,7 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching, isError =
         {models.map(model => (
           <div key={model.id} className="rounded-md border border-noc-rule bg-white p-3 shadow-sm">
             <div className="mb-2 flex items-start gap-2">
+              <EditorMark saeTag={model.saeTag} />
               <span
                 className="grow text-xs font-medium [overflow-wrap:anywhere] text-gray-900"
                 title={model.id}
@@ -213,7 +236,10 @@ const ModelsTable: React.FC<ModelsTableProps> = ({ models, isFetching, isError =
               <td
                 className={`${cellPad} pr-2.5 pl-3 text-xs [overflow-wrap:anywhere] text-gray-900`}
               >
-                <span title={model.id}>{model.title}</span>
+                <div className="flex items-center gap-2">
+                  <EditorMark saeTag={model.saeTag} />
+                  <span title={model.id}>{model.title}</span>
+                </div>
               </td>
 
               <td className={`${cellPad} text-center text-lg`}>

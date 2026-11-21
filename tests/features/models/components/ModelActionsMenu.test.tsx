@@ -5,9 +5,9 @@ import { DialogComponent } from '@/@noctua.core/components/dialog/dialogSlice'
 import { renderWithProviders } from '@tests/test-utils'
 import { buildCamRow } from '@tests/fixtures/models'
 
-const openMenu = async (conformsToGpad?: boolean) => {
+const openMenu = async (saeTag?: boolean) => {
   const rendered = renderWithProviders(
-    <ModelActionsMenu model={buildCamRow({ id: 'gomodel:abc', conformsToGpad })} />
+    <ModelActionsMenu model={buildCamRow({ id: 'gomodel:abc', saeTag })} />
   )
   await rendered.user.click(screen.getByRole('button', { name: /Actions/ }))
   return rendered
@@ -25,7 +25,7 @@ const itemLabels = () => menuItems().map(item => item.textContent?.trim())
 
 describe('ModelActionsMenu', () => {
   it('offers every action the Angular menu had', async () => {
-    await openMenu(false)
+    await openMenu()
 
     expect(itemLabels()).toEqual(
       expect.arrayContaining([
@@ -39,39 +39,80 @@ describe('ModelActionsMenu', () => {
     )
   })
 
-  // Angular put the editor matching the model's GPAD conformance first.
-  it('leads with the Standard Annotations editor for a GPAD-conformant model', async () => {
-    await openMenu(true)
+  it('leads with the Visual Pathway Editor for an untagged model, still offering SAE', async () => {
+    await openMenu()
 
     const labels = itemLabels()
-    expect(labels.indexOf('Standard Annotations Editor')).toBeLessThan(
-      labels.indexOf('Visual Pathway Editor')
-    )
+    expect(labels[0]).toBe('Visual Pathway Editor')
+    expect(labels).toContain('Standard Annotations Editor')
   })
 
-  it('leads with the Visual Pathway editor for a non-conformant model', async () => {
-    await openMenu(false)
+  it('gives an untagged model both editors, VPE first, plus every other action', async () => {
+    await openMenu()
 
-    const labels = itemLabels()
-    expect(labels.indexOf('Visual Pathway Editor')).toBeLessThan(
-      labels.indexOf('Standard Annotations Editor')
-    )
+    expect(itemLabels()).toEqual([
+      'Visual Pathway Editor',
+      'Standard Annotations Editor',
+      'Graph Editor',
+      'Pathway Viewer',
+      'Copy Model',
+      'Annotation Preview',
+    ])
   })
 
-  // `conforms-to-gpad` is absent on older models; Angular treated any
-  // non-true value as "not conformant".
-  it('treats an unknown conformance as non-conformant', async () => {
-    await openMenu(undefined)
+  describe('a model tagged not-SAE (created in VPE)', () => {
+    it('offers the Visual Pathway Editor but not SAE', async () => {
+      await openMenu(false)
 
-    const labels = itemLabels()
-    expect(labels.indexOf('Visual Pathway Editor')).toBeLessThan(
-      labels.indexOf('Standard Annotations Editor')
-    )
+      expect(itemLabels()).toEqual([
+        'Visual Pathway Editor',
+        'Graph Editor',
+        'Pathway Viewer',
+        'Copy Model',
+        'Annotation Preview',
+      ])
+    })
+  })
+
+  describe('an SAE-tagged model', () => {
+    it('does not offer the Visual Pathway Editor', async () => {
+      await openMenu(true)
+
+      expect(itemLabels()).not.toContain('Visual Pathway Editor')
+    })
+
+    it('leads with the Standard Annotations Editor', async () => {
+      await openMenu(true)
+
+      expect(itemLabels()[0]).toBe('Standard Annotations Editor')
+    })
+
+    it('does not offer Copy Model', async () => {
+      await openMenu(true)
+
+      expect(itemLabels()).not.toContain('Copy Model')
+    })
+
+    it('does not offer the Pathway Viewer', async () => {
+      await openMenu(true)
+
+      expect(itemLabels()).not.toContain('Pathway Viewer')
+    })
+
+    it('keeps the remaining actions', async () => {
+      await openMenu(true)
+
+      expect(itemLabels()).toEqual([
+        'Standard Annotations Editor',
+        'Graph Editor',
+        'Annotation Preview',
+      ])
+    })
   })
 
   describe('the links it builds', () => {
     it('points each workbench link at that workbench with the model id', async () => {
-      await openMenu(false)
+      await openMenu()
 
       const link = screen.getByText('Visual Pathway Editor').closest('a') as HTMLAnchorElement
       expect(link.getAttribute('href')).toContain('noctua-visual-pathway-editor')
@@ -79,28 +120,28 @@ describe('ModelActionsMenu', () => {
     })
 
     it('sends the graph editor to the Noctua editor route, not a workbench', async () => {
-      await openMenu(false)
+      await openMenu()
 
       const link = screen.getByText('Graph Editor').closest('a') as HTMLAnchorElement
       expect(link.getAttribute('href')).toContain('/editor/graph/gomodel:abc')
     })
 
     it('routes the Pathway Viewer to the alliance preview workbench', async () => {
-      await openMenu(false)
+      await openMenu()
 
       const link = screen.getByText('Pathway Viewer').closest('a') as HTMLAnchorElement
       expect(link.getAttribute('href')).toContain('noctua-alliance-pathway-preview')
     })
 
     it('routes Annotation Preview to the annpreview workbench', async () => {
-      await openMenu(false)
+      await openMenu()
 
       const link = screen.getByText('Annotation Preview').closest('a') as HTMLAnchorElement
       expect(link.getAttribute('href')).toContain('annpreview')
     })
 
     it('opens every link in a new tab with a safe rel', async () => {
-      await openMenu(false)
+      await openMenu()
 
       const links = menuItems().filter(item => item.tagName === 'A')
 
@@ -114,7 +155,7 @@ describe('ModelActionsMenu', () => {
     // Regression: each link sat inside a menu-item <button>. Focus landed on
     // the button, so Enter only closed the menu and never followed the link.
     it('makes each link the menu item itself', async () => {
-      await openMenu(false)
+      await openMenu()
 
       const item = screen.getByText('Graph Editor').closest('[role="menuitem"]')
       expect(item?.tagName).toBe('A')
@@ -122,7 +163,7 @@ describe('ModelActionsMenu', () => {
     })
 
     it('follows the focused link on Enter and closes the menu', async () => {
-      const { user } = await openMenu(false)
+      const { user } = await openMenu()
       const followed: string[] = []
       const record = (e: MouseEvent) => {
         const link = (e.target as HTMLElement).closest('a')
@@ -141,24 +182,22 @@ describe('ModelActionsMenu', () => {
     })
 
     it('keeps the Playwright hook the Angular template carried', async () => {
-      await openMenu(false)
+      await openMenu()
 
-      const link = screen
-        .getByText('Standard Annotations Editor')
-        .closest('a') as HTMLAnchorElement
+      const link = screen.getByText('Standard Annotations Editor').closest('a') as HTMLAnchorElement
       expect(link).toHaveAttribute('data-pw', 'open-standard-annotation-button')
     })
   })
 
   describe('Copy Model', () => {
     it('is a button, not a link', async () => {
-      await openMenu(false)
+      await openMenu()
 
       expect(screen.getByText('Copy Model').tagName).toBe('BUTTON')
     })
 
     it('opens the copy dialog with the model attached', async () => {
-      const { store, user } = await openMenu(false)
+      const { store, user } = await openMenu()
 
       await user.click(screen.getByText('Copy Model'))
 

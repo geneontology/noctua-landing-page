@@ -1,4 +1,5 @@
 import type { Contributor, Group } from '@/features/users/models/contributor'
+import { AnnotationKey } from './operations'
 
 /** A model as it comes back from Barista's `/search/models` endpoint. */
 export interface CamSearchResponseItem {
@@ -8,7 +9,8 @@ export interface CamSearchResponseItem {
   state: string
   contributors: string[]
   groups: string[]
-  'conforms-to-gpad'?: boolean
+  /** The SAE tag (minerva#612): `true` when tagged, omitted for untagged models. */
+  [AnnotationKey.ANNOTATION_EDITOR_SAE]?: boolean | string
   'modified-p'?: boolean
 }
 
@@ -18,7 +20,11 @@ export interface CamSearchResult {
   title: string
   date: string
   state: string
-  conformsToGpad?: boolean
+  /**
+   * The SAE tag: `true` for a Standard Annotations model, `false` for an explicit non-SAE (VPE)
+   * model, `undefined` when the model carries no tag at all.
+   */
+  saeTag?: boolean
   modified: boolean
   contributorUris: string[]
   groupIds: string[]
@@ -38,13 +44,21 @@ export interface CamPage {
 export const PAGE_SIZE_OPTIONS = [10, 25, 50, 100]
 export const DEFAULT_PAGE_SIZE = 50
 
+/** Reads the tag as true / false / absent; anything unrecognised counts as absent. */
+const readSaeTag = (item: CamSearchResponseItem): boolean | undefined => {
+  const value = item[AnnotationKey.ANNOTATION_EDITOR_SAE]
+  if (value === true || value === 'true') return true
+  if (value === false || value === 'false') return false
+  return undefined
+}
+
 export const mapCamSearchResponse = (items: CamSearchResponseItem[] = []): CamSearchResult[] =>
   items.map(item => ({
     id: item.id,
     title: item.title,
     date: item.date,
     state: item.state,
-    conformsToGpad: item['conforms-to-gpad'],
+    saeTag: readSaeTag(item),
     modified: item['modified-p'] === true,
     contributorUris: item.contributors ?? [],
     groupIds: item.groups ?? [],

@@ -21,7 +21,7 @@ export const useCreateModel = () => {
   const create = useCallback(
     async (workbenchId: WorkbenchId) => {
       try {
-        const result = await createModel().unwrap()
+        const result = await createModel(workbenchId).unwrap()
         if (!result?.modelId) {
           dispatch(showToast({ message: 'Could not create the model', severity: 'error' }))
           return
