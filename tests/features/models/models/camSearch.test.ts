@@ -8,11 +8,8 @@ import { buildCamSearchResponseItem } from '@tests/fixtures/models'
 
 describe('mapCamSearchResponse', () => {
   it('renames the hyphenated Barista fields to camelCase', () => {
-    const [row] = mapCamSearchResponse([
-      buildCamSearchResponseItem({ 'conforms-to-gpad': true, 'modified-p': true }),
-    ])
+    const [row] = mapCamSearchResponse([buildCamSearchResponseItem({ 'modified-p': true })])
 
-    expect(row.conformsToGpad).toBe(true)
     expect(row.modified).toBe(true)
   })
 
@@ -34,13 +31,19 @@ describe('mapCamSearchResponse', () => {
     })
   })
 
-  it('leaves conformsToGpad undefined when Barista omits it', () => {
-    const item = buildCamSearchResponseItem()
-    delete item['conforms-to-gpad']
+  it.each([
+    [true, true],
+    ['true', true],
+    [false, false],
+    ['false', false],
+    [undefined, undefined],
+    ['yes', undefined],
+  ])('reads annotation-editor-sae %s as saeTag %s', (value, expected) => {
+    const [row] = mapCamSearchResponse([
+      buildCamSearchResponseItem({ 'annotation-editor-sae': value }),
+    ])
 
-    const [row] = mapCamSearchResponse([item])
-
-    expect(row.conformsToGpad).toBeUndefined()
+    expect(row.saeTag).toBe(expected)
   })
 
   // `modified-p` is tri-state on the wire: true, false, or absent. Only an

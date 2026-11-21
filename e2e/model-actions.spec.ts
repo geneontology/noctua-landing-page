@@ -52,6 +52,30 @@ test.describe('Actions menu', () => {
   })
 })
 
+// /search/models carries `annotation-editor-sae: true` on tagged models (minerva#612).
+test('an SAE-tagged model is not offered VPE, Copy Model or the Pathway Viewer', async ({
+  page,
+}) => {
+  await mockBackend(page, { models: [model(7, { 'annotation-editor-sae': true })] })
+  await page.goto('./')
+  await page.getByRole('button', { name: 'Actions' }).click()
+
+  await expect(page.getByRole('menuitem', { name: 'Standard Annotations Editor' })).toBeVisible()
+  await expect(page.getByRole('menuitem', { name: 'Visual Pathway Editor' })).toHaveCount(0)
+  await expect(page.getByRole('menuitem', { name: 'Copy Model' })).toHaveCount(0)
+  await expect(page.getByRole('menuitem', { name: 'Pathway Viewer' })).toHaveCount(0)
+})
+
+test('a model tagged not-SAE is not offered the Standard Annotations Editor', async ({ page }) => {
+  await mockBackend(page, { models: [model(7, { 'annotation-editor-sae': false })] })
+  await page.goto('./')
+  await page.getByRole('button', { name: 'Actions' }).click()
+
+  await expect(page.getByRole('menuitem', { name: 'Visual Pathway Editor' })).toBeVisible()
+  await expect(page.getByRole('menuitem', { name: 'Standard Annotations Editor' })).toHaveCount(0)
+  await expect(page.getByRole('menuitem', { name: 'Copy Model' })).toBeVisible()
+})
+
 test.describe('creating and copying (signed in)', () => {
   test('Create asks Minerva for a new model and opens it', async ({ page, context }) => {
     const { calls } = await mockBackend(page, { newModelId: 'gomodel:fresh' })

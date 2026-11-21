@@ -7,7 +7,6 @@ export const buildCamRow = (overrides: Partial<CamRow> = {}): CamRow => ({
   title: 'enabled by MSH2 Hsap',
   date: '2026-07-23',
   state: 'development',
-  conformsToGpad: false,
   modified: false,
   contributorUris: ['http://orcid.org/0000-0002-2874-6934'],
   groupIds: [],
@@ -31,7 +30,6 @@ export const buildCamSearchResponseItem = (
   state: 'development',
   contributors: ['http://orcid.org/0000-0002-2874-6934'],
   groups: [],
-  'conforms-to-gpad': false,
   'modified-p': false,
   ...overrides,
 })

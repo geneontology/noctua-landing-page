@@ -17,7 +17,7 @@ export interface SearchModel {
   state: string
   contributors: string[]
   groups: string[]
-  'conforms-to-gpad'?: boolean
+  'annotation-editor-sae'?: boolean
   'modified-p'?: boolean
 }
 
@@ -50,7 +50,6 @@ export const model = (n: number, overrides: Partial<SearchModel> = {}): SearchMo
   state: 'development',
   contributors: [ADA.uri],
   groups: [GROUP.id],
-  'conforms-to-gpad': false,
   'modified-p': false,
   ...overrides,
 })

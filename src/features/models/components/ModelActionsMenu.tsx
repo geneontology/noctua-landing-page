@@ -20,37 +20,34 @@ const ModelActionsMenu: React.FC<ModelActionsMenuProps> = ({ model }) => {
   const baristaToken = useAppSelector(selectBaristaToken)
 
   const urls = buildModelUrls(model.id, baristaToken)
+  const isSae = model.saeTag === true
 
-  // Angular put the editor matching the model's GPAD conformance first.
+  const vpeLink: { label: string; href: string; pw?: string } = {
+    label: 'Visual Pathway Editor',
+    href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR],
+  }
+  const saeLink = {
+    label: 'Standard Annotations Editor',
+    href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS],
+    pw: 'open-standard-annotation-button',
+  }
+
+  // #140, from the SAE tag: true → SAE only, false (a VPE model) → VPE only. An untagged model
+  // leads with VPE but still offers SAE — not every model holding standard annotations is tagged.
   const editorLinks =
-    model.conformsToGpad === true
-      ? [
-        {
-          label: 'Standard Annotations Editor',
-          href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS],
-          pw: 'open-standard-annotation-button',
-        },
-        {
-          label: 'Visual Pathway Editor',
-          href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR],
-        },
-      ]
-      : [
-        {
-          label: 'Visual Pathway Editor',
-          href: urls.workbenches[WorkbenchId.VISUAL_PATHWAY_EDITOR],
-        },
-        {
-          label: 'Standard Annotations Editor',
-          href: urls.workbenches[WorkbenchId.STANDARD_ANNOTATIONS],
-          pw: 'open-standard-annotation-button',
-        },
-      ]
-
+    model.saeTag === true ? [saeLink] : model.saeTag === false ? [vpeLink] : [vpeLink, saeLink]
   const links = [
     ...editorLinks,
     { label: 'Graph Editor', href: urls.graphEditorUrl },
-    { label: 'Pathway Viewer', href: urls.workbenches[WorkbenchId.ALLIANCE_PATHWAY_PREVIEW] },
+    // A standard-annotations model has no pathway to view.
+    ...(isSae
+      ? []
+      : [
+          {
+            label: 'Pathway Viewer',
+            href: urls.workbenches[WorkbenchId.ALLIANCE_PATHWAY_PREVIEW],
+          },
+        ]),
   ]
 
   const openCopyDialog = () => {
@@ -87,7 +84,7 @@ const ModelActionsMenu: React.FC<ModelActionsMenuProps> = ({ model }) => {
             {link.label}
           </MenuLink>
         ))}
-        <MenuItem onClick={openCopyDialog}>Copy Model</MenuItem>
+        {!isSae && <MenuItem onClick={openCopyDialog}>Copy Model</MenuItem>}
         <MenuLink href={urls.workbenches[WorkbenchId.ANNOTATION_PREVIEW]} onClick={menu.close}>
           Annotation Preview
         </MenuLink>

@@ -23,6 +23,24 @@ describe('ModelsTable', () => {
     expect(screen.getByText('2026-01-02')).toBeInTheDocument()
   })
 
+  // SAE tag true → SAE icon, false → VPE icon, absent → the untagged icon.
+  it('marks each model with the editor its SAE tag points to', () => {
+    renderWithProviders(
+      <ModelsTable
+        models={[
+          buildCamRow({ id: 'gomodel:1', saeTag: true }),
+          buildCamRow({ id: 'gomodel:2', saeTag: false }),
+          buildCamRow({ id: 'gomodel:3' }),
+        ]}
+        isFetching={false}
+      />
+    )
+
+    expect(screen.getByRole('img', { name: 'Standard Annotations model' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'GO-CAM (Visual Pathway) model' })).toBeInTheDocument()
+    expect(screen.getByRole('img', { name: 'Not yet tagged as SAE or GO-CAM' })).toBeInTheDocument()
+  })
+
   it('flags unsaved models and marks saved ones', () => {
     renderWithProviders(
       <ModelsTable
