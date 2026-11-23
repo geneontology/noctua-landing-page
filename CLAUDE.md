@@ -127,7 +127,7 @@ a `<base href>` when `VITE_BASE_URL` is set.
 
 `src/@noctua.core/`, `src/features/auth/`, `src/features/users/`, and `src/features/search/` are copies
 of the equivalent VPE files. Fixes that apply to both should be made in both, or the shared subset
-should be extracted into a package — see `.plans/feature/landing-page-react-port.md` for the manifest
+should be extracted into a package — see `docs/plans-archive/feature/landing-page-react-port.md` for the manifest
 and the extraction sketch.
 
 ## Conventions
@@ -144,9 +144,13 @@ Fixture builders live in `tests/fixtures/models.ts` — prefer these over hand-r
 
 ## Task Management
 
-Create and maintain plan files in `.plans/<category>/<task-name>.md` for non-trivial work. See
-[.plans/template.md](.plans/template.md) for the full template, recovery-checkpoint convention, and
-category folders (`bugfix`, `feature`, `refactor`, `config`, `docs`, `testing`, `misc`).
+Non-trivial work is tracked with [OpenSpec](openspec/) (`spec-driven` schema; project rules in `openspec/config.yaml`).
+
+- `openspec/specs/<capability>/spec.md` — current behavior of the app, one folder per capability. Run `openspec list --specs` for the inventory.
+- `openspec/changes/<name>/` — work in progress: `proposal.md`, `design.md`, `tasks.md`, and delta specs under `specs/`. Run `openspec list` for open changes.
+- Workflow: `/opsx:explore` (think) → `/opsx:propose` (create change) → `/opsx:apply` (implement, ticking `tasks.md`) → `/opsx:archive` (merge deltas into `specs/`).
+- Resuming after context loss: read the open change's `tasks.md`; unchecked boxes are the checkpoint.
+- `docs/plans-archive/` holds the pre-OpenSpec task plans. Read-only history: don't edit, add to, or track work there.
 
 ## Git Commits
 
