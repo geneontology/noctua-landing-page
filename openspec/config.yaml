@@ -1,0 +1,34 @@
+schema: spec-driven
+
+context: |
+  Users are GO curators searching Causal Activity Models (GO-CAMs) stored in Barista/Minerva and
+  opening them in the editing workbenches; the landing page is the entry point to Noctua.
+  User-facing wording (labels, placeholders, empty states, toasts, error and limit messages) is
+  part of the behavior and must be specified exactly when a requirement depends on it.
+  When a feature is ported from the previous implementation, match its behavior exactly
+  ("no less, no more") but implement it idiomatically in React (hooks, Redux selectors,
+  RTK Query); never transliterate service patterns.
+  Never reference the previous implementation in specs, designs, or code comments.
+  Do not use people's names from conversations or issues as examples in artifacts; describe
+  the role instead (e.g. "the curator", "the reviewer", "the model owner").
+  Prefer the simplest change that satisfies the request; no unrequested robustness or dedup.
+
+rules:
+  proposal:
+    - Reference GitHub issues as (#NNN); never write Closes/Fixes unless told to
+    - State explicitly what is out of scope when the request is narrow
+  tasks:
+    - Do not add test-writing tasks unless the change is about tests or the user asked for them;
+      verify with existing tests, type-check, lint, or a described manual check in the browser
+    - Tasks that need a manual browser check say exactly what to click and what to expect
+  design:
+    - Use the shared dialog wrappers in src/@noctua.core/components/dialog/ over raw Modal
+
+operations:
+  apply:
+    guidance:
+      - Do not commit or push unless the user asks
+      - Work on the currently checked-out branch; do not create branches unless asked
+  archive:
+    guidance:
+      - Summarize which main specs were updated before finishing
